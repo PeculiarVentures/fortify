@@ -1,0 +1,6 @@
+.DS_Store
+
+build
+out
+node_modules
+*pvpkcs11*

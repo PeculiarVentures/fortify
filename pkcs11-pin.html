@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Enter PKCS#11 PIN</title>
+    <link rel="stylesheet" href="style/main.css">
+    <style>
+        #pin {
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="content">
+            <div class="center">
+                <h3>Fortify Authorization</h3>
+                <p style="text-align: center;">
+                    A web site has requested access to you certificates and cryptographi keys
+                </p>
+                <p>
+                    Enter PIN for PKCS#11 device:
+                </p>
+                <input type="password" id="pin" onchange="txtPinChange()" />
+            </div>
+        </div>
+        <div class="footer">
+            <div class="center">
+                <div>
+                    <button class="btn accept" onclick="btnOkClick()">OK</button>
+                    <button class="btn" onclick="btnCancelClick()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var electron = require('electron');
+        var currentWindow = electron.remote.getCurrentWindow();
+
+        function btnOkClick() {
+            currentWindow.params.pin = document.getElementById("pin").value || "";
+            currentWindow.close();
+        }
+
+        function btnCancelClick() {
+            currentWindow.close();
+        }
+    </script>
+</body>
+
+</html>
