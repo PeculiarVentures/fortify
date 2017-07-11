@@ -1,6 +1,15 @@
 # Fortify
 Desktop application
 
+## Install dependencies
+
+```
+npm install
+```
+
+> NOTE: `.npmrc` has `opessl_dir` param. Update it to your local path before `install` script run
+
+
 ## Build
 
 ```
