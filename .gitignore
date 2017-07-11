@@ -3,5 +3,5 @@
 build
 out
 node_modules
-*pvpkcs11*
+*pvpkcs11*?
 .idea

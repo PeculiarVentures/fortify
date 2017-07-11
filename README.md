@@ -1,10 +1,21 @@
 # Fortify
 Desktop application
 
+## Install dependencies
+
+```
+npm install
+```
+
+> NOTE: `.npmrc` has `opessl_dir` param. Update it to your local path before `install` script run
+
+
 ## Build
 
 ```
 npm run build
 ```
 
-> NOTE: webcrypto-local has uses dev link to pvpkcs11 lib. For application you have to copy compiled pvpkcs11 lib to project directory and update `node_modules/webcrypto-local/out/local/provider.js:155` and replace path for the lib to the `library = path.join(__dirname, "../../../../libpvpkcs11.dylib");`
+> NOTE: Put compiled `pvpkcs11.dylib` to project folder
+
+> NOTE: PKIjs has [issuer](https://github.com/PeculiarVentures/PKI.js/issues/113). Use [instruction](https://github.com/PeculiarVentures/webcrypto-local#build--server) to fix it

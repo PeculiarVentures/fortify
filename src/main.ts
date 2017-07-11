@@ -1,9 +1,10 @@
 import * as electron from "electron";
-import { Tray, BrowserWindow } from "electron";
+import { Tray, BrowserWindow, shell } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 import * as url from "url";
 import * as os from "os";
+import * as winston from "winston";
 
 const { LocalServer } = require("webcrypto-local");
 
@@ -12,54 +13,13 @@ const APP_TMP_DIR = path.join(TMP_DIR, ".fortify");
 if (!fs.existsSync(APP_TMP_DIR)) {
     fs.mkdirSync(APP_TMP_DIR);
 }
-const APP_LOG_FILE = path.join(APP_TMP_DIR, `log-${new Date().toISOString()}.log`);
-const logStream = fs.createWriteStream(APP_LOG_FILE);
-
-const stdout_write = process.stdout.write;
-const stderr_write = process.stderr.write;
-
-// Wrap write function for stdout
-function writeStdout(buffer: Buffer | string, cb?: Function): boolean;
-function writeStdout(str: string, encoding?: string, cb?: Function): boolean;
-function writeStdout(this: any, str: Buffer | string, encoding?: any, cb?: Function) {
-    logStream.write(str, encoding, cb);
-    return stdout_write.apply(this, arguments) as boolean;
-}
-
-// Wrap write function for stderr
-function writeStderr(buffer: Buffer | string, cb?: Function): boolean;
-function writeStderr(str: string, encoding?: string, cb?: Function): boolean;
-function writeStderr(this: any, str: Buffer | string, encoding?: any, cb?: Function) {
-    logStream.write(str, encoding, cb);
-    return stderr_write.apply(this, arguments) as boolean;
-}
-
-process.stdout.write = writeStdout;
-process.stderr.write = writeStderr;
-
-const LOG_FILE = path.join(__dirname, "..", "log.md");
-
-function flog(message: string) {
-    fs.writeFileSync(LOG_FILE, message + "\n", { flag: "a+" });
-}
+const APP_LOG_FILE = path.join(APP_TMP_DIR, `log-${new Date().toDateString()}.log`);
+winston.add(winston.transports.File, { filename: APP_LOG_FILE });
 
 const { app, Menu, MenuItem } = electron;
-app.dock.hide();
-
-interface Logger {
-    info(message: string): void;
-    error(message: string): void;
+if ("dock" in app) {
+    app.dock.hide();
 }
-
-let log: Logger = {
-    info: (message: string) => {
-        console.log(`Info: ${message}`);
-    },
-    error: (message: string) => {
-        console.error(`Error: ${message}`);
-    }
-};
-
 
 let tray: Electron.Tray;
 
@@ -82,6 +42,13 @@ app.on("ready", () => {
             CreateAboutWindow();
         }
 
+        const menuLog = new MenuItem({
+            label: "Log"
+        });
+        menuLog.click = () => {
+            shell.openItem(APP_LOG_FILE);
+        }
+
         const menuSeparator = new MenuItem({
             type: "separator"
         });
@@ -96,6 +63,7 @@ app.on("ready", () => {
 
         // contextMenu.append(menuManage);
         contextMenu.append(menuAbout);
+        contextMenu.append(menuLog);
         contextMenu.append(menuSeparator);
         contextMenu.append(menuExit);
 
@@ -103,10 +71,10 @@ app.on("ready", () => {
         tray.setContextMenu(contextMenu);
 
         StartService();
-        // CreateWindow();
+        CreateWindow();
     })()
         .catch((err) => {
-            console.error(err);
+            winston.error(err.toString());
             app.emit("error", err);
         })
 
@@ -154,12 +122,13 @@ function StartService() {
 
     server.listen("localhost:8080")
         .on("listening", (e: any) => {
-            log.info(`${e.address}`);
-            log.info(`USER PROFILE: ${process.env["USERPROFILE"]}`);
+            winston.info(`Server: Started at ${e}`);
+        })
+        .on("info", (message: string) => {
+            winston.info(message);
         })
         .on("error", (e: Error) => {
-            console.error(e);
-            log.error(e.message + "\n" + e.stack);
+            winston.info(e.toString());
         })
         .on("notify", (p: any) => {
             const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
@@ -227,9 +196,8 @@ function StartService() {
                     throw new Error("Unknown Notify param");
             }
         })
-        .on("close", (e: any) => {
-            log.info(`Close: ${e.remoteAddress}`);
-            console.log("Close:", e.remoteAddress);
+        .on("disconnect", (e: any) => {
+            winston.info(`Close: ${e}`);
         });
 }
 
