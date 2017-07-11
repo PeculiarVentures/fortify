@@ -17,11 +17,13 @@
   "devDependencies": {
     "@types/electron": "^1.6.10",
     "@types/node": "^7.0.28",
+    "@types/winston": "^2.3.3",
     "ts-loader": "^2.1.0",
     "typescript": "^2.4.1"
   },
   "dependencies": {
     "node-webcrypto-ossl": "^1.0.28",
-    "webcrypto-local": "git+ssh://git@github.com/PeculiarVentures/webcrypto-local.git"
+    "webcrypto-local": "git+ssh://git@github.com/PeculiarVentures/webcrypto-local.git",
+    "winston": "^2.3.1"
   }
 }
