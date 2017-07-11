@@ -1,5 +1,5 @@
 import * as electron from "electron";
-import { Tray, BrowserWindow, shell } from "electron";
+import { Tray, BrowserWindow, shell, nativeImage } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 import * as url from "url";
@@ -22,10 +22,15 @@ if ("dock" in app) {
 }
 
 let tray: Electron.Tray;
+const trayIconPath = path.join(__dirname, "..", "icons/tray/icon.png");
+const trayIconPressedPath = path.join(__dirname, "..", "icons/tray/icon_pressed.png");
 
 app.on("ready", () => {
     (async () => {
-        tray = new Tray(path.join(__dirname, "..", "favicon-16x16.png"));
+        tray = new Tray(trayIconPath);
+        const trayIconPressed = nativeImage.createFromPath(trayIconPressedPath);
+        tray.setPressedImage(trayIconPressed);
+
         const contextMenu = new Menu();
 
         const menuManage = new MenuItem({
@@ -33,21 +38,21 @@ app.on("ready", () => {
         });
         menuManage.click = () => {
             CreateManageWindow();
-        }
+        };
 
         const menuAbout = new MenuItem({
             label: "About"
         });
         menuAbout.click = () => {
             CreateAboutWindow();
-        }
+        };
 
         const menuLog = new MenuItem({
             label: "Log"
         });
         menuLog.click = () => {
             shell.openItem(APP_LOG_FILE);
-        }
+        };
 
         const menuSeparator = new MenuItem({
             type: "separator"
@@ -59,7 +64,7 @@ app.on("ready", () => {
 
         menuExit.click = () => {
             app.exit();
-        }
+        };
 
         // contextMenu.append(menuManage);
         contextMenu.append(menuAbout);
@@ -78,7 +83,7 @@ app.on("ready", () => {
             app.emit("error", err);
         })
 
-})
+});
 
 // Quit when all windows are closed.
 // app.on('window-all-closed', function () {
@@ -102,7 +107,7 @@ function CreateWindow() {
         pathname: path.join(__dirname, "..", 'index.html'),
         protocol: 'file:',
         slashes: true
-    }))
+    }));
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
@@ -201,7 +206,7 @@ function StartService() {
         });
 }
 
-let aboutWindow: Electron.BrowserWindow | null = null
+let aboutWindow: Electron.BrowserWindow | null = null;
 function CreateAboutWindow() {
     // Create the browser window.
     if (aboutWindow) {
@@ -222,7 +227,7 @@ function CreateAboutWindow() {
         pathname: path.join(__dirname, "..", 'about.html'),
         protocol: 'file:',
         slashes: true
-    }))
+    }));
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
@@ -233,7 +238,7 @@ function CreateAboutWindow() {
     })
 }
 
-let manageWindow: Electron.BrowserWindow | null = null
+let manageWindow: Electron.BrowserWindow | null = null;
 function CreateManageWindow() {
     // Create the browser window.
     if (manageWindow) {
@@ -254,7 +259,7 @@ function CreateManageWindow() {
         pathname: path.join(__dirname, "..", 'manage.html'),
         protocol: 'file:',
         slashes: true
-    }))
+    }));
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()

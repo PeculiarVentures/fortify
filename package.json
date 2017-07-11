@@ -23,7 +23,11 @@
     "typescript": "^2.4.1"
   },
   "dependencies": {
+    "asn1js": "^2.0.15",
+    "electron": "^1.6.11",
+    "electron-packager": "^8.7.2",
     "node-webcrypto-ossl": "^1.0.28",
+    "pkijs": "^2.0.59",
     "webcrypto-local": "git+ssh://git@github.com/PeculiarVentures/webcrypto-local.git",
     "winston": "^2.3.1"
   }
