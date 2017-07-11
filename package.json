@@ -8,8 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "build": "npm run build:js && npm run build:package",
-    "build:package": "electron-packager . --arch=x64 --out=build --icon=icon.icns --overwrite --electron-version=1.6.11",
-    "build:js": "tsc"
+    "build:package": "electron-packager . --arch=x64 --out=build --icon=icon.icns --overwrite=true --electron-version=1.6.11",
+    "build:js": "tsc",
+    "build:dmg": "electron-installer-dmg build/Fortify-darwin-x64/Fortify.app fortify-mac-x64 --out=build --overwrite --icon=favicon-32x32.png"
   },
   "keywords": [],
   "author": "",
