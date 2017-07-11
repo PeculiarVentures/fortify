@@ -1,11 +1,10 @@
 import * as electron from "electron";
-import { Tray, BrowserWindow } from "electron";
+import { Tray, BrowserWindow, shell } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 import * as url from "url";
 import * as os from "os";
 import * as winston from "winston";
-
 
 const { LocalServer } = require("webcrypto-local");
 
@@ -43,6 +42,13 @@ app.on("ready", () => {
             CreateAboutWindow();
         }
 
+        const menuLog = new MenuItem({
+            label: "Log"
+        });
+        menuLog.click = () => {
+            shell.openItem(APP_LOG_FILE);
+        }
+
         const menuSeparator = new MenuItem({
             type: "separator"
         });
@@ -57,6 +63,7 @@ app.on("ready", () => {
 
         // contextMenu.append(menuManage);
         contextMenu.append(menuAbout);
+        contextMenu.append(menuLog);
         contextMenu.append(menuSeparator);
         contextMenu.append(menuExit);
 
