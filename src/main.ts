@@ -22,13 +22,25 @@ if ("dock" in app) {
 }
 
 let tray: Electron.Tray;
-const trayIconPath = path.join(__dirname, "..", "icons/tray/icon.png");
-const trayIconPressedPath = path.join(__dirname, "..", "icons/tray/icon_pressed.png");
+
+const icons = {
+    tray: path.join(__dirname, "..", "icons/tray/icon.png"),
+    trayWhite: path.join(__dirname, "..", "icons/tray/icon_pressed.png"),
+    favicon: path.join(__dirname, "..", "icons/favicon-32x32.png"),
+};
+
+const htmls = {
+    index: path.join(__dirname, "..", 'htmls/index.html'),
+    keyPin: path.join(__dirname, "..", 'htmls/2key-pin.html'),
+    pkcsPin: path.join(__dirname, "..", 'htmls/pkcs11-pin.html'),
+    about: path.join(__dirname, "..", 'htmls/about.html'),
+    manage: path.join(__dirname, "..", 'htmls/manage.html'),
+};
 
 app.on("ready", () => {
     (async () => {
-        tray = new Tray(trayIconPath);
-        const trayIconPressed = nativeImage.createFromPath(trayIconPressedPath);
+        tray = new Tray(icons.tray);
+        const trayIconPressed = nativeImage.createFromPath(icons.trayWhite);
         tray.setPressedImage(trayIconPressed);
 
         const contextMenu = new Menu();
@@ -81,7 +93,7 @@ app.on("ready", () => {
         .catch((err) => {
             winston.error(err.toString());
             app.emit("error", err);
-        })
+        });
 
 });
 
@@ -104,7 +116,7 @@ function CreateWindow() {
 
     // and load the index.html of the app.
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, "..", 'index.html'),
+        pathname: htmls.index,
         protocol: 'file:',
         slashes: true
     }));
@@ -118,7 +130,7 @@ function CreateWindow() {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         // mainWindow = null
-    })
+    });
 }
 
 const server = new LocalServer();
@@ -152,12 +164,12 @@ function StartService() {
                         autoHideMenuBar: true,
                         modal: true,
                         alwaysOnTop: true,
-                        icon: path.join(__dirname, "..", "tray_icon.png"),
+                        icon: icons.favicon,
                     });
 
                     // and load the index.html of the app.
                     window.loadURL(url.format({
-                        pathname: path.join(__dirname, "..", '2key-pin.html'),
+                        pathname: htmls.keyPin,
                         protocol: 'file:',
                         slashes: true
                     }));
@@ -179,12 +191,12 @@ function StartService() {
                         autoHideMenuBar: true,
                         resizable: false,
                         minimizable: false,
-                        icon: path.join(__dirname, "..", "favicon-32x32.png")
+                        icon: icons.favicon,
                     });
 
                     // and load the index.html of the app.
                     window.loadURL(url.format({
-                        pathname: path.join(__dirname, "..", 'pkcs11-pin.html'),
+                        pathname: htmls.pkcsPin,
                         protocol: 'file:',
                         slashes: true
                     }));
@@ -219,12 +231,12 @@ function CreateAboutWindow() {
         minimizable: false,
         resizable: false,
         title: "About",
-        icon: path.join(__dirname, "..", "favicon-32x32.png")
+        icon: icons.favicon,
     });
 
     // and load the index.html of the app.
     aboutWindow.loadURL(url.format({
-        pathname: path.join(__dirname, "..", 'about.html'),
+        pathname: htmls.about,
         protocol: 'file:',
         slashes: true
     }));
@@ -235,7 +247,7 @@ function CreateAboutWindow() {
     // Emitted when the window is closed.
     aboutWindow.on('closed', function () {
         aboutWindow = null
-    })
+    });
 }
 
 let manageWindow: Electron.BrowserWindow | null = null;
@@ -251,12 +263,12 @@ function CreateManageWindow() {
         minimizable: false,
         resizable: false,
         title: "Manage",
-        icon: path.join(__dirname, "..", "tray_icon.png")
+        icon: icons.favicon,
     });
 
     // and load the index.html of the app.
     manageWindow.loadURL(url.format({
-        pathname: path.join(__dirname, "..", 'manage.html'),
+        pathname: htmls.manage,
         protocol: 'file:',
         slashes: true
     }));
@@ -267,5 +279,5 @@ function CreateManageWindow() {
     // Emitted when the window is closed.
     manageWindow.on('closed', function () {
         manageWindow = null
-    })
+    });
 }
