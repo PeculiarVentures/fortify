@@ -37,6 +37,15 @@ const htmls = {
     manage: path.join(__dirname, "..", 'htmls/manage.html'),
 };
 
+const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {
+    winston.info(`Someone tried to run a second instance`);
+});
+
+if (isSecondInstance) {
+    winston.info(`Close second instance`);
+    app.quit();
+}
+
 app.on("ready", () => {
     (async () => {
         tray = new Tray(icons.tray);
