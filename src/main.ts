@@ -6,8 +6,6 @@ import * as url from "url";
 import * as os from "os";
 import * as winston from "winston";
 
-const { LocalServer } = require("webcrypto-local");
-
 const TMP_DIR = os.tmpdir();
 const APP_TMP_DIR = path.join(TMP_DIR, ".fortify");
 if (!fs.existsSync(APP_TMP_DIR)) {
@@ -15,6 +13,7 @@ if (!fs.existsSync(APP_TMP_DIR)) {
 }
 const APP_LOG_FILE = path.join(APP_TMP_DIR, `log-${new Date().toDateString()}.log`);
 winston.add(winston.transports.File, { filename: APP_LOG_FILE });
+winston.info(`Application started at ${new Date()}`);
 
 const { app, Menu, MenuItem } = electron;
 if ("dock" in app) {
@@ -142,7 +141,15 @@ function CreateWindow() {
     });
 }
 
-const server = new LocalServer();
+let LocalServer: any;
+let server: any;
+try {
+    LocalServer = require("webcrypto-local").LocalServer;
+    server = new LocalServer();
+}
+catch (e) {
+    winston.error(e.toString());
+}
 
 function StartService() {
 
