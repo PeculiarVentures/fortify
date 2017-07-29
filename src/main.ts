@@ -24,7 +24,7 @@ if ("dock" in app) {
 let tray: Electron.Tray;
 
 const icons = {
-    tray: path.join(__dirname, "..", "icons/tray/icon.png"),
+    tray: os.platform() === "win32" ? path.join(__dirname, "..", "icons/favicon-32x32.png") : path.join(__dirname, "..", "icons/tray/icon.png"),
     trayWhite: path.join(__dirname, "..", "icons/tray/icon_pressed.png"),
     favicon: path.join(__dirname, "..", "icons/favicon-32x32.png"),
 };
