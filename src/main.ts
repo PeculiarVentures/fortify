@@ -128,6 +128,13 @@ app.on("ready", () => {
             submenu: menuLogSubMenu,
         });
 
+        const menuTools = new MenuItem({
+            label: "Tools",
+        });
+        menuTools.click = () => {
+            shell.openExternal("https://peculiarventures.github.io/webcrypto-local");
+        };
+
         const menuSeparator = new MenuItem({
             type: "separator"
         });
@@ -143,6 +150,7 @@ app.on("ready", () => {
         // contextMenu.append(menuManage);
         contextMenu.append(menuAbout);
         contextMenu.append(menuLog);
+        contextMenu.append(menuTools);
         contextMenu.append(menuSeparator);
         contextMenu.append(menuExit);
 
