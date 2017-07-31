@@ -11,8 +11,41 @@ const APP_TMP_DIR = path.join(TMP_DIR, ".fortify");
 if (!fs.existsSync(APP_TMP_DIR)) {
     fs.mkdirSync(APP_TMP_DIR);
 }
-const APP_LOG_FILE = path.join(APP_TMP_DIR, `log-${new Date().toDateString()}.log`);
-winston.add(winston.transports.File, { filename: APP_LOG_FILE });
+const APP_LOG_FILE = path.join(APP_TMP_DIR, `LOG.log`);
+const APP_CONFIG_FILE = path.join(APP_TMP_DIR, `config.json`);
+
+interface IConfigure {
+    logging?: boolean;
+}
+
+function ConfigureRead(path: string) {
+    let res: IConfigure;
+    if (!fs.existsSync(path)) {
+        // Create config with default data
+        res = {};
+        ConfigureWrite(APP_CONFIG_FILE, res);
+    } else {
+        const json = fs.readFileSync(APP_CONFIG_FILE, "utf8");
+        res = JSON.parse(json);
+    }
+    return res;
+}
+function ConfigureWrite(path: string, config: IConfigure) {
+    const json = JSON.stringify(config, null, "  ");
+    fs.writeFileSync(path, json, { flag: "w+" });
+}
+winston.clear();
+function LoggingSwitch(enabled: boolean) {
+    if (enabled) {
+        winston.add(winston.transports.File, { filename: APP_LOG_FILE, options: { flags: "w+" } });
+    } else {
+        winston.clear();
+    }
+}
+
+const configure = ConfigureRead(APP_CONFIG_FILE);
+LoggingSwitch(configure.logging!);
+
 winston.info(`Application started at ${new Date()}`);
 
 const { app, Menu, MenuItem } = electron;
@@ -67,12 +100,33 @@ app.on("ready", () => {
             CreateAboutWindow();
         };
 
-        const menuLog = new MenuItem({
-            label: "Log"
+        const menuLogSubMenu = new Menu();
+        const menuLogView = new MenuItem({
+            label: "View log",
+            enabled: configure.logging,
         });
-        menuLog.click = () => {
+        menuLogView.click = () => {
             shell.openItem(APP_LOG_FILE);
         };
+        const menuLogDisable = new MenuItem({
+            label: "On/Off",
+            type: "checkbox",
+            checked: configure.logging
+        });
+
+        menuLogDisable.click = () => {
+            configure.logging = !configure.logging;
+            menuLogDisable.checked = configure.logging;
+            menuLogView.enabled = configure.logging;
+            ConfigureWrite(APP_CONFIG_FILE, configure);
+            LoggingSwitch(configure.logging);
+        };
+        menuLogSubMenu.append(menuLogView);
+        menuLogSubMenu.append(menuLogDisable);
+        const menuLog = new MenuItem({
+            label: "Logging",
+            submenu: menuLogSubMenu,
+        });
 
         const menuSeparator = new MenuItem({
             type: "separator"
