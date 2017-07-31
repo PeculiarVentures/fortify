@@ -20,6 +20,14 @@
             function btnCloseClick() {
                 currentWindow.close();
             }
+
+            window.onkeydown = function (args) {
+            switch (args.keyCode) {
+                case 27:
+                    btnCancelClick();
+                    break;
+            }
+        }
         </script>
         <div class="page">
             <div class="content _about">
