@@ -300,6 +300,7 @@ let aboutWindow: Electron.BrowserWindow | null = null;
 function CreateAboutWindow() {
     // Create the browser window.
     if (aboutWindow) {
+        aboutWindow.focus();
         return;
     }
     aboutWindow = new BrowserWindow({
