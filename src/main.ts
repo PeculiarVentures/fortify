@@ -6,7 +6,7 @@ import * as url from "url";
 import * as os from "os";
 import * as winston from "winston";
 
-const TMP_DIR = os.tmpdir();
+const TMP_DIR = os.homedir();
 const APP_TMP_DIR = path.join(TMP_DIR, ".fortify");
 if (!fs.existsSync(APP_TMP_DIR)) {
     fs.mkdirSync(APP_TMP_DIR);
@@ -37,7 +37,11 @@ function ConfigureWrite(path: string, config: IConfigure) {
 winston.clear();
 function LoggingSwitch(enabled: boolean) {
     if (enabled) {
-        winston.add(winston.transports.File, { filename: APP_LOG_FILE, options: { flags: "w+" } });
+        const options = { flag: "w+" };
+        if (!fs.existsSync(APP_LOG_FILE)) {
+            fs.writeFileSync(APP_LOG_FILE, "", options);
+        }
+        winston.add(winston.transports.File, { filename: APP_LOG_FILE, options: options });
     } else {
         winston.clear();
     }
@@ -103,15 +107,15 @@ app.on("ready", () => {
         const menuLogSubMenu = new Menu();
         const menuLogView = new MenuItem({
             label: "View log",
-            enabled: configure.logging,
+            enabled: !!configure.logging,
         });
         menuLogView.click = () => {
             shell.openItem(APP_LOG_FILE);
         };
         const menuLogDisable = new MenuItem({
-            label: "On/Off",
+            label: "Enable/Disable",
             type: "checkbox",
-            checked: configure.logging
+            checked: !!configure.logging
         });
 
         menuLogDisable.click = () => {
