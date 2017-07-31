@@ -1,52 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Accept Remote key</title>
-        <link rel="stylesheet" href="../style/main.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Accept Remote key</title>
+    <link rel="stylesheet" href="../style/main.css">
+</head>
 
-    <body>
-        <div class="page">
-            <div class="content center">
-                <p>Accept Remote Key</p>
-                <div id="pin"></div>
-            </div>
-            <div class="footer">
-                <div class="center">
-                    <div>
-                        <button class="btn accept" onclick="btnOkClick()">OK</button>
-                        <button class="btn" onclick="btnCancelClick()">Cancel</button>
-                    </div>
+<body>
+    <div class="page">
+        <div class="content center">
+            <p>Accept Remote Key</p>
+            <div id="pin"></div>
+        </div>
+        <div class="footer">
+            <div class="center">
+                <div>
+                    <button class="btn accept" onclick="btnOkClick()">OK</button>
+                    <button class="btn" onclick="btnCancelClick()">Cancel</button>
                 </div>
             </div>
         </div>
-        <script>
-            const electron = require('electron');
-            const currentWindow = electron.remote.getCurrentWindow();
+    </div>
+    <script>
+        const electron = require('electron');
+        const currentWindow = electron.remote.getCurrentWindow();
 
-            const $pin = document.getElementById("pin");
-            const pin = currentWindow.params.pin.toString();
+        const $pin = document.getElementById("pin");
+        const pin = currentWindow.params.pin.toString();
 
-            for (let i = 0; i < pin.length; i++) {
-                const $num = document.createElement("div");
-                $num.textContent = pin.charAt(i);
+        for (let i = 0; i < pin.length; i++) {
+            const $num = document.createElement("div");
+            $num.textContent = pin.charAt(i);
 
-                $pin.appendChild($num);
+            $pin.appendChild($num);
+        }
+
+        function btnOkClick() {
+            currentWindow.params.accept = true;
+            currentWindow.close();
+        }
+
+        function btnCancelClick() {
+            currentWindow.close();
+        }
+
+        window.onkeydown = function (args) {
+            switch (args.keyCode) {
+                case 13:
+                    btnOkClick();
+                    break;
+                case 27:
+                    btnCancelClick();
+                    break;
             }
-
-            function btnOkClick() {
-                currentWindow.params.accept = true;
-                currentWindow.close();
-            }
-
-            function btnCancelClick() {
-                currentWindow.close();
-            }
-        </script>
-    </body>
+        }
+    </script>
+</body>
 
 </html>

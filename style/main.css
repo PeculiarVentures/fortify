@@ -51,8 +51,8 @@ html, body {
 
 .accept {
     color: white;
-    border-color: #77D042;
-    background: #77D042;
+    border-color: #91ca3f;
+    background: #91ca3f;
 }
 
 .accept:focus {
@@ -63,6 +63,12 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;   
+}
+
+.right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;   
 }
 
 .about_text {

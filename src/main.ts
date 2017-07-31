@@ -255,7 +255,7 @@ function StartService() {
                 case "pin": {
                     // Create the browser window.
                     const window = new BrowserWindow({
-                        width: 400,
+                        width: 500,
                         height: 400,
                         alwaysOnTop: true,
                         autoHideMenuBar: true,

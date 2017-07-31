@@ -1,50 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Enter PKCS#11 PIN</title>
-        <link rel="stylesheet" href="../style/main.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fortify Security</title>
+    <link rel="stylesheet" href="../style/main.css">
+</head>
 
-    <body>
-        <div class="page">
-            <div class="content">
-                <div class="center">
-                    <h3>Fortify Authorization</h3>
-                    <p style="text-align: center;">
-                        A website has requested access to your certificates and cryptographic keys. 
-                    </p>
-                    <p>
-                       Enter the PIN for the inserted smart card or token.
-                    </p>
-                    <input type="password" id="input_pin" onchange="txtPinChange()" />
-                </div>
+<body>
+    <div class="page">
+        <div class="content">
+            <div>
+                <h3>Smart Card</h3>
+                <p>
+                    Please enter your PIN.
+                </p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 32px 32px 32px 0">
+                                <img src="../icons/smart_card.png" alt="Smart Card" width="96px">
+                            </td>
+                            <td>
+                                <div>PIN</div>
+                                <div>
+                                    <input type="password" id="input_pin" onchange="txtPinChange()" />
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="footer">
-                <div class="center">
-                    <div>
-                        <button class="btn accept" onclick="btnOkClick()">OK</button>
-                        <button class="btn" onclick="btnCancelClick()">Cancel</button>
-                    </div>
+        </div>
+        <div class="footer">
+            <div class="right">
+                <div>
+                    <button class="btn accept" onclick="btnOkClick()">OK</button>
+                    <button class="btn" onclick="btnCancelClick()">Cancel</button>
                 </div>
             </div>
         </div>
-        <script>
-            var electron = require('electron');
-            var currentWindow = electron.remote.getCurrentWindow();
+    </div>
+    <script>
+        var electron = require('electron');
+        var currentWindow = electron.remote.getCurrentWindow();
 
-            function btnOkClick() {
-                currentWindow.params.pin = document.getElementById("input_pin").value || "";
-                currentWindow.close();
-            }
+        function btnOkClick() {
+            currentWindow.params.pin = document.getElementById("input_pin").value || "";
+            currentWindow.close();
+        }
 
-            function btnCancelClick() {
-                currentWindow.close();
+        function btnCancelClick() {
+            currentWindow.close();
+        }
+
+        window.onkeydown = function (args) {
+            switch (args.keyCode) {
+                case 13:
+                    btnOkClick();
+                    break;
+                case 27:
+                    btnCancelClick();
+                    break;
             }
-        </script>
-    </body>
+        }
+    </script>
+</body>
 
 </html>
