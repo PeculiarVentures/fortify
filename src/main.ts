@@ -219,7 +219,7 @@ catch (e) {
 
 function StartService() {
 
-    server.listen("localhost:8080")
+    server.listen("localhost:31337")
         .on("listening", (e: any) => {
             winston.info(`Server: Started at ${e}`);
         })
