@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "build": "npm run build:js && npm run build:package",
-    "build:package": "electron-packager . --arch=x64 --out=build --icon=icons/icon.icns --overwrite=true --electron-version=1.6.11",
+    "build:package": "electron-packager . --arch=x64 --out=build --icon=icons/icon.icns --overwrite=true --electron-version=1.6.11 --app-bundle-id=com.peculiarventures.fortify",
     "build:js": "tsc",
     "build:dmg": "electron-installer-dmg build/Fortify-darwin-x64/Fortify.app fortify-mac-x64 --out=build --overwrite --icon=icons/favicon-32x32.png"
   },
@@ -19,7 +19,6 @@
     "@types/electron": "^1.6.10",
     "@types/node": "^7.0.28",
     "@types/winston": "^2.3.3",
-    "ts-loader": "^2.1.0",
     "typescript": "^2.4.1"
   },
   "dependencies": {
