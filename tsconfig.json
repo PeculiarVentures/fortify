@@ -9,6 +9,7 @@
     "outDir": "out"
   },
   "files": [
-    "src/main.ts"
+    "src/main.ts",
+    "src/ssl.ts"
   ]
 }

@@ -6,6 +6,12 @@ import * as url from "url";
 import * as os from "os";
 import * as winston from "winston";
 
+// PKI
+import * as asn1js from "asn1js";
+const pkijs = require("pkijs");
+
+import * as ssl from "./ssl";
+
 const TMP_DIR = os.homedir();
 const APP_TMP_DIR = path.join(TMP_DIR, ".fortify");
 if (!fs.existsSync(APP_TMP_DIR)) {
@@ -13,6 +19,8 @@ if (!fs.existsSync(APP_TMP_DIR)) {
 }
 const APP_LOG_FILE = path.join(APP_TMP_DIR, `LOG.log`);
 const APP_CONFIG_FILE = path.join(APP_TMP_DIR, `config.json`);
+const APP_SSL_CERT = path.join(APP_TMP_DIR, `cert.pem`);
+const APP_SSL_KEY = path.join(APP_TMP_DIR, `key.pem`);
 
 interface IConfigure {
     logging?: boolean;
@@ -161,7 +169,7 @@ app.on("ready", () => {
         tray.setToolTip(`Fortify`);
         tray.setContextMenu(contextMenu);
 
-        StartService();
+        await StartService();
         CreateWindow();
     })()
         .catch((err) => {
@@ -211,15 +219,52 @@ let LocalServer: any;
 let server: any;
 try {
     LocalServer = require("webcrypto-local").LocalServer;
-    server = new LocalServer();
 }
 catch (e) {
     winston.error(e.toString());
 }
 
-function StartService() {
+function CheckSSL() {
+    if (fs.existsSync(APP_SSL_CERT) && fs.existsSync(APP_SSL_KEY)) {
+        const sslCert = fs.readFileSync(APP_SSL_CERT, "utf8").replace(/-{5}[\w\s]+-{5}/ig, "").replace(/\r/g, "").replace(/\n/g, "");
 
-    server.listen("localhost:31337")
+        // Parse cert
+
+        const asn1 = asn1js.fromBER(new Uint8Array(new Buffer(sslCert, "base64")).buffer);
+        const cert = new pkijs.Certificate({ schema: asn1.result });
+
+        // Check date
+        if (cert.notAfter.value < new Date()) {
+            winston.info(`SSL certificate is expired`);
+            return false;
+        }
+        return true;
+    }
+    winston.info(`SSL certificate is not found`);
+    return false;
+}
+
+async function StartService() {
+
+    let sslData;
+    if (!CheckSSL()) {
+        winston.info(`SSL certificate is created`);
+        sslData = await ssl.generate();
+        // write files
+        fs.writeFileSync(APP_SSL_CERT, sslData.cert);
+        fs.writeFileSync(APP_SSL_KEY, sslData.key);
+    } else {
+        // read files
+        sslData = {
+            cert: fs.readFileSync(APP_SSL_CERT),
+            key: fs.readFileSync(APP_SSL_KEY),
+        };
+        winston.info(`SSL certificate is loaded`);
+    }
+
+    server = new LocalServer(sslData);
+
+    server.listen("127.0.0.1:31337")
         .on("listening", (e: any) => {
             winston.info(`Server: Started at ${e}`);
         })
