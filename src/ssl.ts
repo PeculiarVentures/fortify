@@ -1,4 +1,8 @@
+import * as os from "os";
+import * as path from "path";
+
 import * as asn1js from "asn1js";
+const sudo = require("sudo-prompt");
 const pkijs = require("pkijs");
 const CryptoOpenSSL = require("node-webcrypto-ossl");
 const crypto = new CryptoOpenSSL();
@@ -22,17 +26,15 @@ async function GenerateCertificatePEM(keyPair: CryptoKeyPair) {
 
     const commonName = new pkijs.AttributeTypeAndValue({
         type: "2.5.4.3", // Common name
-        value: new asn1js.PrintableString({ value: "localhost" })
-    });
-    const organization = new pkijs.AttributeTypeAndValue({
-        type: "2.5.4.10", // Organization
         value: new asn1js.PrintableString({ value: "fortifyapp.com" })
     });
+    // const organization = new pkijs.AttributeTypeAndValue({
+    //     type: "2.5.4.10", // Organization
+    //     value: new asn1js.PrintableString({ value: "fortifyapp.com" })
+    // });
 
     certificate.issuer.typesAndValues.push(commonName);
-    certificate.issuer.typesAndValues.push(organization);
     certificate.subject.typesAndValues.push(commonName);
-    certificate.subject.typesAndValues.push(organization);
 
     // Valid period is 1 year
     certificate.notBefore.value = new Date(); // current date
@@ -118,4 +120,37 @@ export async function generate() {
         cert: new Buffer(certPEM),
         key: new Buffer(privateKeyPEM),
     };
+}
+
+export async function InstallTrustedCertificate(certPath: string) {
+    const platform = os.platform();
+    switch (platform) {
+        case "darwin":
+            await InstalTrustedOSX(certPath);
+            break;
+        case "win32":
+        case "linux":
+        default:
+            throw new Error(`Unsupported OS platform '${platform}'`)
+    }
+
+}
+
+async function InstalTrustedOSX(certPath: string) {
+    // install certificate to system key chain
+    await new Promise((resolve, reject) => {
+        const options = { 
+            name: "Fortify application" ,
+            icons: "/Applications/Fortify.app/Contents/Resources/icons/icon.icns"
+        };
+        const appPath = path.dirname(certPath);
+        sudo.exec(`appPath=${appPath} userDir=${os.homedir()} bash ${__dirname}/../resources/osx-ssl.sh`, options, (err: Error) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+
 }

@@ -20,6 +20,7 @@ if (!fs.existsSync(APP_TMP_DIR)) {
 const APP_LOG_FILE = path.join(APP_TMP_DIR, `LOG.log`);
 const APP_CONFIG_FILE = path.join(APP_TMP_DIR, `config.json`);
 const APP_SSL_CERT = path.join(APP_TMP_DIR, `cert.pem`);
+const APP_SSL_OLD_CERT = path.join(APP_TMP_DIR, `old_cert.pem`);
 const APP_SSL_KEY = path.join(APP_TMP_DIR, `key.pem`);
 
 interface IConfigure {
@@ -79,6 +80,7 @@ const htmls = {
     pkcsPin: path.join(__dirname, "..", 'htmls/pkcs11-pin.html'),
     about: path.join(__dirname, "..", 'htmls/about.html'),
     manage: path.join(__dirname, "..", 'htmls/manage.html'),
+    message: path.join(__dirname, "..", 'htmls/message.html'),
 };
 
 const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {
@@ -247,12 +249,35 @@ function CheckSSL() {
 async function StartService() {
 
     let sslData;
+
     if (!CheckSSL()) {
         winston.info(`SSL certificate is created`);
         sslData = await ssl.generate();
+
+        // Copy cert.pem to old_cert.pem for cert removing from key chain
+        // key chain doesn't allow to rewrite certificates
+        if (fs.existsSync(APP_SSL_CERT)) {
+            winston.info("Copy cert.pem to old_cert.pem");
+            const file = fs.readFileSync(APP_SSL_CERT);
+            fs.writeFileSync(APP_SSL_OLD_CERT, file);
+        }
+
         // write files
         fs.writeFileSync(APP_SSL_CERT, sslData.cert);
         fs.writeFileSync(APP_SSL_KEY, sslData.key);
+
+        // Set cert as trusted
+        await ssl.InstallTrustedCertificate(APP_SSL_CERT)
+            .catch((err) => {
+                winston.error(err);
+                // remove ssl files if installation is fail
+                fs.unlinkSync(APP_SSL_CERT);
+                fs.unlinkSync(APP_SSL_KEY);
+
+                CreateMessageWindow("Cannot add SSL certificate to trusted storage", () => {
+                    app.quit();
+                })
+            })
     } else {
         // read files
         sslData = {
@@ -407,5 +432,43 @@ function CreateManageWindow() {
     // Emitted when the window is closed.
     manageWindow.on('closed', function () {
         manageWindow = null
+    });
+}
+
+let messageWindow: Electron.BrowserWindow | null = null;
+function CreateMessageWindow(text: string, cb?: Function) {
+    // Create the browser window.
+    if (messageWindow) {
+        messageWindow.show();
+        return;
+    }
+    messageWindow = new BrowserWindow({
+        width: 500,
+        height: 300,
+        autoHideMenuBar: true,
+        minimizable: false,
+        resizable: false,
+        title: "Message",
+        icon: icons.favicon,
+    });
+
+    // and load the index.html of the app.
+    messageWindow.loadURL(url.format({
+        pathname: htmls.message,
+        protocol: 'file:',
+        slashes: true
+    }));
+
+    (messageWindow as any).params = {
+        text
+    };
+
+    // Open the DevTools.
+    // mainWindow.webContents.openDevTools()
+
+    // Emitted when the window is closed.
+    messageWindow.on('closed', function () {
+        manageWindow = null
+        cb && cb();
     });
 }

@@ -124,3 +124,21 @@ a {
     padding: 0 10px;
     border-radius: 2px;
 }
+
+.message-box {
+    display: flex;
+}
+
+.message-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 128px;
+    min-height: 100px;
+    padding-right: 32px;
+}
+
+.message-text {
+    overflow-y: auto;
+    overflow-wrap: break-word;
+}

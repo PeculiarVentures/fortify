@@ -27,6 +27,7 @@
     "electron-packager": "^8.7.2",
     "node-webcrypto-ossl": "^1.0.28",
     "pkijs": "^2.0.59",
+    "sudo-prompt": "^7.1.1",
     "webcrypto-local": "git+ssh://git@github.com/PeculiarVentures/webcrypto-local.git",
     "winston": "^2.3.1"
   }
