@@ -80,7 +80,8 @@ const htmls = {
     pkcsPin: path.join(__dirname, "..", 'htmls/pkcs11-pin.html'),
     about: path.join(__dirname, "..", 'htmls/about.html'),
     manage: path.join(__dirname, "..", 'htmls/manage.html'),
-    message: path.join(__dirname, "..", 'htmls/message.html'),
+    message_error: path.join(__dirname, "..", 'htmls/message_error.html'),
+    message_warn: path.join(__dirname, "..", 'htmls/message_warn.html'),
 };
 
 const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {
@@ -171,8 +172,8 @@ app.on("ready", () => {
         tray.setToolTip(`Fortify`);
         tray.setContextMenu(contextMenu);
 
-        await StartService();
         CreateWindow();
+        await StartService();
     })()
         .catch((err) => {
             winston.error(err.toString());
@@ -267,17 +268,27 @@ async function StartService() {
         fs.writeFileSync(APP_SSL_KEY, sslData.key);
 
         // Set cert as trusted
-        await ssl.InstallTrustedCertificate(APP_SSL_CERT)
-            .catch((err) => {
-                winston.error(err);
+        const warning = new Promise((resolve, reject) => { // wrap callback
+            CreateWarningWindow("We need to make the Fortify SSL certificate trusted. When we do this you will be asked for your administrator password.", () => {
+                winston.info("Window closed 1");
+                resolve();
+            });
+        })
+            .then(() => {
+                winston.info("Installing SSL certificate");
+                return ssl.InstallTrustedCertificate(APP_SSL_CERT)
+            })
+            .catch((err: Error) => {
+                winston.error(err as any);
                 // remove ssl files if installation is fail
                 fs.unlinkSync(APP_SSL_CERT);
                 fs.unlinkSync(APP_SSL_KEY);
 
-                CreateMessageWindow("Cannot add SSL certificate to trusted storage", () => {
+                CreateErrorWindow("Unable to install the SSL certificate for Fortify as a trusted root certificate. The application will not work until this is resolved.", () => {
                     app.quit();
                 })
-            })
+            });
+        await warning;
     } else {
         // read files
         sslData = {
@@ -297,7 +308,7 @@ async function StartService() {
             winston.info(message);
         })
         .on("error", (e: Error) => {
-            winston.info(e.toString());
+            winston.error(e.stack || e.toString());
         })
         .on("notify", (p: any) => {
             const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
@@ -435,31 +446,32 @@ function CreateManageWindow() {
     });
 }
 
-let messageWindow: Electron.BrowserWindow | null = null;
-function CreateMessageWindow(text: string, cb?: Function) {
+let errorWindow: Electron.BrowserWindow | null = null;
+function CreateErrorWindow(text: string, cb?: Function) {
     // Create the browser window.
-    if (messageWindow) {
-        messageWindow.show();
+    if (errorWindow) {
+        errorWindow.show();
         return;
     }
-    messageWindow = new BrowserWindow({
+    errorWindow = new BrowserWindow({
         width: 500,
         height: 300,
         autoHideMenuBar: true,
         minimizable: false,
+        fullscreenable: false,
         resizable: false,
-        title: "Message",
+        title: "Error",
         icon: icons.favicon,
     });
 
     // and load the index.html of the app.
-    messageWindow.loadURL(url.format({
-        pathname: htmls.message,
+    errorWindow.loadURL(url.format({
+        pathname: htmls.message_error,
         protocol: 'file:',
         slashes: true
     }));
 
-    (messageWindow as any).params = {
+    (errorWindow as any).params = {
         text
     };
 
@@ -467,8 +479,47 @@ function CreateMessageWindow(text: string, cb?: Function) {
     // mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
-    messageWindow.on('closed', function () {
-        manageWindow = null
+    errorWindow.on('closed', function () {
+        errorWindow = null
+        cb && cb();
+    });
+}
+
+let warnWindow: Electron.BrowserWindow | null = null;
+function CreateWarningWindow(text: string, cb?: Function) {
+    // Create the browser window.
+    if (warnWindow) {
+        warnWindow.show();
+        return;
+    }
+    warnWindow = new BrowserWindow({
+        width: 500,
+        height: 300,
+        autoHideMenuBar: true,
+        minimizable: false,
+        fullscreenable: false,
+        resizable: false,
+        title: "Warning",
+        icon: icons.favicon,
+    });
+
+    // and load the index.html of the app.
+    warnWindow.loadURL(url.format({
+        pathname: htmls.message_warn,
+        protocol: 'file:',
+        slashes: true
+    }));
+
+    (warnWindow as any).params = {
+        text
+    };
+
+    // Open the DevTools.
+    // mainWindow.webContents.openDevTools()
+
+    // Emitted when the window is closed.
+    warnWindow.on('closed', function () {
+        warnWindow = null
         cb && cb();
     });
 }
