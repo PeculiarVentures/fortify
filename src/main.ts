@@ -19,8 +19,9 @@ if (!fs.existsSync(APP_TMP_DIR)) {
 }
 const APP_LOG_FILE = path.join(APP_TMP_DIR, `LOG.log`);
 const APP_CONFIG_FILE = path.join(APP_TMP_DIR, `config.json`);
+const APP_SSL_CERT_CA = path.join(APP_TMP_DIR, `ca.pem`);
 const APP_SSL_CERT = path.join(APP_TMP_DIR, `cert.pem`);
-const APP_SSL_OLD_CERT = path.join(APP_TMP_DIR, `old_cert.pem`);
+const APP_SSL_OLD_CERT = path.join(APP_TMP_DIR, `old_ca.pem`);
 const APP_SSL_KEY = path.join(APP_TMP_DIR, `key.pem`);
 
 interface IConfigure {
@@ -264,6 +265,7 @@ async function StartService() {
         }
 
         // write files
+        fs.writeFileSync(APP_SSL_CERT_CA, sslData.root);
         fs.writeFileSync(APP_SSL_CERT, sslData.cert);
         fs.writeFileSync(APP_SSL_KEY, sslData.key);
 
@@ -276,11 +278,12 @@ async function StartService() {
         })
             .then(() => {
                 winston.info("Installing SSL certificate");
-                return ssl.InstallTrustedCertificate(APP_SSL_CERT)
+                return ssl.InstallTrustedCertificate(APP_SSL_CERT_CA)
             })
             .catch((err: Error) => {
                 winston.error(err as any);
                 // remove ssl files if installation is fail
+                fs.unlinkSync(APP_SSL_CERT_CA);
                 fs.unlinkSync(APP_SSL_CERT);
                 fs.unlinkSync(APP_SSL_KEY);
 
