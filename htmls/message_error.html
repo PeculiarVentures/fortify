@@ -14,13 +14,13 @@
 <body>
     <div class="page">
         <div class="content message-box">
-                <div class="message-icon">
-                    <img src="../icons/Error.png" width="96px">
-                </div>
-                <div class="message-text">
-                    <h3 style="padding-bottom: 32px">Error</h3>
-                    <p id="text"></p>
-                </div>
+            <div class="message-icon">
+                <img src="../icons/Error.png" width="96px">
+            </div>
+            <div class="message-text">
+                <h3 style="padding-bottom: 32px">Error</h3>
+                <p id="text"></p>
+            </div>
         </div>
         <div class="footer">
             <div class="center">
@@ -42,8 +42,9 @@
 
         window.onkeydown = function (args) {
             switch (args.keyCode) {
+                case 13:
                 case 27:
-                    btnCancelClick();
+                    btnCloseClick();
                     break;
             }
         }

@@ -24,7 +24,7 @@
         </div>
         <div class="footer">
             <div class="center">
-                <button class="btn accept" onclick="btnCloseClick()">Close</button>
+                <button class="btn accept" onclick="btnOkClick()">OK</button>
             </div>
         </div>
     </div>
@@ -36,14 +36,15 @@
         const $text = document.getElementById("text");
         $text.textContent = currentWindow.params.text.toString();
 
-        function btnCloseClick() {
+        function btnOkClick() {
             currentWindow.close();
         }
 
         window.onkeydown = function (args) {
             switch (args.keyCode) {
+                case 13:
                 case 27:
-                    btnCancelClick();
+                    btnOkClick();
                     break;
             }
         }
