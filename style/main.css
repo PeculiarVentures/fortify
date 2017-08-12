@@ -12,6 +12,10 @@ html, body {
     margin: 0;
 }
 
+body {
+    overflow: hidden;
+}
+
 .page {
     height: 100%;
     display: flex;
