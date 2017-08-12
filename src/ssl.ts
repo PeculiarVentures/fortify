@@ -5,7 +5,7 @@ import * as asn1js from "asn1js";
 const sudo = require("sudo-prompt");
 const pkijs = require("pkijs");
 const CryptoOpenSSL = require("node-webcrypto-ossl");
-const crypto = new CryptoOpenSSL();
+const crypto = new CryptoOpenSSL() as Crypto;
 // Set crypto engine for PKI
 pkijs.setEngine("OpenSSL", crypto, crypto.subtle);
 
@@ -17,24 +17,26 @@ const alg = {
 }
 const hashAlg = "SHA-256";
 
-async function GenerateCertificatePEM(keyPair: CryptoKeyPair) {
+async function GenerateCertificate(keyPair: CryptoKeyPair, caKey: CryptoKey) {
     const certificate = new pkijs.Certificate();
 
     //region Put a static values 
     certificate.version = 2;
-    certificate.serialNumber = new asn1js.Integer({ value: 1 });
+    const serialNumber = crypto.getRandomValues(new Uint8Array(10));
+    certificate.serialNumber = new asn1js.Integer();
+    certificate.serialNumber.valueBlock.valueHex = serialNumber.buffer;
 
     const commonName = new pkijs.AttributeTypeAndValue({
         type: "2.5.4.3", // Common name
         value: new asn1js.PrintableString({ value: "fortifyapp.com" })
     });
-    // const organization = new pkijs.AttributeTypeAndValue({
-    //     type: "2.5.4.10", // Organization
-    //     value: new asn1js.PrintableString({ value: "fortifyapp.com" })
-    // });
 
-    certificate.issuer.typesAndValues.push(commonName);
+
     certificate.subject.typesAndValues.push(commonName);
+    certificate.issuer.typesAndValues.push(new pkijs.AttributeTypeAndValue({
+        type: "2.5.4.3", // Common name
+        value: new asn1js.PrintableString({ value: "Fortify Local CA" })
+    }));
 
     // Valid period is 1 year
     certificate.notBefore.value = new Date(); // current date
@@ -75,14 +77,68 @@ async function GenerateCertificatePEM(keyPair: CryptoKeyPair) {
         parsedValue: subjectAlternativeName
     }));
 
+    // Basic constraints
+    const basicConstraints = new pkijs.BasicConstraints({
+        cA: false,
+    });
+    certificate.extensions.push(new pkijs.Extension({
+        extnID: "2.5.29.19",
+        critical: false,
+        extnValue: basicConstraints.toSchema().toBER(false),
+        parsedValue: basicConstraints
+    }));
+
     await certificate.subjectPublicKeyInfo.importKey(keyPair.publicKey);
-    await certificate.sign(keyPair.privateKey, hashAlg);
-    const der = certificate.toSchema(true).toBER(false);
-    return ConvertToPEM(der, "CERTIFICATE");
+    await certificate.sign(caKey, hashAlg);
+
+    return certificate;
 }
 
-async function GenerateKey() {
-    return crypto.subtle.generateKey(alg, true, ["sign", "verify"]) as CryptoKeyPair;
+async function GenerateCertificateCA(keyPair: CryptoKeyPair) {
+    const certificate = new pkijs.Certificate();
+
+    //region Put a static values 
+    certificate.version = 2;
+    const serialNumber = crypto.getRandomValues(new Uint8Array(10));
+    certificate.serialNumber = new asn1js.Integer();
+    certificate.serialNumber.valueBlock.valueHex = serialNumber.buffer;
+
+    const commonName = new pkijs.AttributeTypeAndValue({
+        type: "2.5.4.3", // Common name
+        value: new asn1js.PrintableString({ value: "Fortify Local CA" })
+    });
+
+    certificate.issuer.typesAndValues.push(commonName);
+    certificate.subject.typesAndValues.push(commonName);
+
+    // Valid period is 1 year
+    certificate.notBefore.value = new Date(); // current date
+    const notAfter = new Date();
+    notAfter.setFullYear(notAfter.getFullYear() + 1);
+    certificate.notAfter.value = notAfter;
+
+    certificate.extensions = []; // Extensions are not a part of certificate by default, it's an optional array
+
+    // Basic constraints
+    const basicConstraints = new pkijs.BasicConstraints({
+        cA: true,
+        pathLenConstraint: 2
+    });
+    certificate.extensions.push(new pkijs.Extension({
+        extnID: "2.5.29.19",
+        critical: false,
+        extnValue: basicConstraints.toSchema().toBER(false),
+        parsedValue: basicConstraints
+    }));
+
+    await certificate.subjectPublicKeyInfo.importKey(keyPair.publicKey);
+    await certificate.sign(keyPair.privateKey, hashAlg);
+
+    return certificate;
+}
+
+async function GenerateKey(): Promise<CryptoKeyPair> {
+    return crypto.subtle.generateKey(alg, true, ["sign", "verify"]);
 }
 
 async function ConvertKeyToPEM(key: CryptoKey) {
@@ -112,13 +168,19 @@ function ConvertToPEM(der: ArrayBuffer, tag: string) {
 }
 
 export async function generate() {
-    const keys = await GenerateKey();
-    const certPEM = await GenerateCertificatePEM(keys);
-    const privateKeyPEM = await ConvertKeyToPEM(keys.privateKey);
+    const root_keys = await GenerateKey();
+    const root_cert = await GenerateCertificateCA(root_keys);
+    const localhost_keys = await GenerateKey();
+    const localhost_cert = await GenerateCertificate(localhost_keys, root_keys.privateKey);
+    const key_pem = await ConvertKeyToPEM(localhost_keys.privateKey);
+
+    const root_cert_pem = ConvertToPEM(root_cert.toSchema(true).toBER(false), "CERTIFICATE");
+    const localhost_cert_pem = ConvertToPEM(localhost_cert.toSchema(true).toBER(false), "CERTIFICATE");
 
     return {
-        cert: new Buffer(certPEM),
-        key: new Buffer(privateKeyPEM),
+        root: new Buffer(root_cert_pem),
+        cert: new Buffer(localhost_cert_pem),
+        key: new Buffer(key_pem),
     };
 }
 
@@ -139,12 +201,14 @@ export async function InstallTrustedCertificate(certPath: string) {
 async function InstalTrustedOSX(certPath: string) {
     // install certificate to system key chain
     await new Promise((resolve, reject) => {
-        const options = { 
-            name: "Fortify application" ,
+        const options = {
+            name: "Fortify application",
             icons: "/Applications/Fortify.app/Contents/Resources/icons/icon.icns"
         };
         const appPath = path.dirname(certPath);
-        sudo.exec(`appPath=${appPath} userDir=${os.homedir()} bash ${__dirname}/../resources/osx-ssl.sh`, options, (err: Error) => {
+        const username = os.userInfo().username;
+        sudo.exec(`appPath=${appPath} userDir=${os.homedir()} USER=${username} bash ${__dirname}/../resources/osx-ssl.sh`, options, (err: Error, stdout: Buffer) => {
+            // console.log(stdout.toString());
             if (err) {
                 reject(err);
             } else {
