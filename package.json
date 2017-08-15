@@ -5,10 +5,11 @@
   "description": "",
   "main": "out/main.js",
   "scripts": {
+    "clear": "node scripts/build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build": "npm run build:js && npm run build:package",
-    "build:package": "electron-packager . --arch=x64 --out=build --icon=icons/icon.icns --overwrite=true --electron-version=1.6.11 --app-bundle-id=com.peculiarventures.fortify",
+    "build": "npm run build:js && npm run clear && npm run build:package",
+    "build:package": "electron-packager . --arch=x64 --out=build --icon=icons/icon.icns --overwrite=true --electron-version=1.7.6 --app-bundle-id=com.peculiarventures.fortify --no-prune",
     "build:js": "tsc",
     "build:dmg": "electron-installer-dmg build/Fortify-darwin-x64/Fortify.app fortify-mac-x64 --out=build --overwrite --icon=icons/favicon-32x32.png"
   },
@@ -16,17 +17,15 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/electron": "^1.6.10",
     "@types/node": "^7.0.28",
     "@types/winston": "^2.3.3",
     "typescript": "^2.4.1"
   },
   "dependencies": {
     "asn1js": "^2.0.15",
-    "electron": "^1.6.11",
-    "electron-packager": "^8.7.2",
+    "electron": "^1.7.6",
     "node-webcrypto-ossl": "^1.0.28",
-    "pkijs": "^2.0.59",
+    "pkijs": "^2.0.60",
     "sudo-prompt": "^7.1.1",
     "webcrypto-local": "git+ssh://git@github.com/PeculiarVentures/webcrypto-local.git",
     "winston": "^2.3.1"
