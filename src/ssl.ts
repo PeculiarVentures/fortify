@@ -1,3 +1,4 @@
+import * as child_process from "child_process";
 import * as os from "os";
 import * as path from "path";
 
@@ -188,9 +189,11 @@ export async function InstallTrustedCertificate(certPath: string) {
     const platform = os.platform();
     switch (platform) {
         case "darwin":
-            await InstalTrustedOSX(certPath);
+            await InstallTrustedOSX(certPath);
             break;
         case "win32":
+            await InstallTrustedWindows(certPath);
+            break;
         case "linux":
         default:
             throw new Error(`Unsupported OS platform '${platform}'`)
@@ -198,7 +201,7 @@ export async function InstallTrustedCertificate(certPath: string) {
 
 }
 
-async function InstalTrustedOSX(certPath: string) {
+async function InstallTrustedOSX(certPath: string) {
     // install certificate to system key chain
     await new Promise((resolve, reject) => {
         const options = {
@@ -217,4 +220,8 @@ async function InstalTrustedOSX(certPath: string) {
         });
     });
 
+}
+
+async function InstallTrustedWindows(certPath: string) {
+     child_process.execSync(`certutil -addstore -user root ${certPath}`);
 }
