@@ -7,19 +7,33 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Accept Remote key</title>
     <link rel="stylesheet" href="../style/main.css">
+    <style>
+        p {
+            font-size: 12px;
+            padding-bottom: 4px;
+        }
+    </style>
 </head>
 
 <body>
     <div class="page">
         <div class="content center">
-            <p>Accept Remote Key</p>
+            <p>
+                A web application has requested permission to use your local certificates, keys, and smart cards.
+            </p>
+            <p>
+                Compare this number to the number displayed by the web application:
+            </p>
+            <p>
+                If this number matches what is displayed by the application and you want to provide access choose Approve.
+            </p>
             <div id="pin"></div>
         </div>
         <div class="footer">
             <div class="center">
                 <div>
-                    <button class="btn accept" onclick="btnOkClick()">OK</button>
-                    <button class="btn" onclick="btnCancelClick()">Cancel</button>
+                    <button class="btn accept" onclick="btnOkClick()">Approve</button>
+                    <button class="btn" onclick="btnCancelClick()">Deny</button>
                 </div>
             </div>
         </div>
