@@ -1,4 +1,5 @@
 import * as child_process from "child_process";
+import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 
@@ -223,5 +224,29 @@ async function InstallTrustedOSX(certPath: string) {
 }
 
 async function InstallTrustedWindows(certPath: string) {
-     child_process.execSync(`certutil -addstore -user root ${certPath}`);
+    const USER_HOME = os.homedir();
+    const FIREFOX_DIR = `${USER_HOME}/AppData/Roaming/Mozilla/Firefox/Profiles`;
+    // const CERTUTIL = `${__dirname}/../../app/resources/certutil.exe`;
+    const CERTUTIL = `${__dirname}\\..\\..\\certutil.exe`;
+    const CERT_NAME = `Fortify Local CA`;
+    // const LOG_FILE = `C:/tmp/LOG.txt`;
+
+    child_process.execSync(`certutil -addstore -user root "${certPath}"`);
+    
+    // fs.writeFileSync(LOG_FILE, `${CERTUTIL}`, { flag: "w+" });
+    try {
+        // check Firefox was installed
+        if (fs.existsSync(FIREFOX_DIR)) {
+            // get profiles
+            fs.readdirSync(FIREFOX_DIR).map((item) => {
+                const PROFILE_DIR = `${FIREFOX_DIR}/${item}`;
+                if (fs.existsSync(PROFILE_DIR)) {
+                    child_process.execSync(`"${CERTUTIL}" -D -n "${CERT_NAME}" -d "${PROFILE_DIR}" | "${CERTUTIL}" -A -i "${certPath}" -n "${CERT_NAME}" -t "C,c,c" -d "${PROFILE_DIR}"`);
+                }
+            })
+        }
+    } catch (err) {
+        // fs.writeFileSync(LOG_FILE, `${err.message}`, { flag: "a" });
+        // fs.writeFileSync(LOG_FILE, `${err.stack}`, { flag: "a" });
+    }
 }
