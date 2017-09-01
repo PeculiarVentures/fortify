@@ -256,14 +256,6 @@ async function StartService() {
         winston.info(`SSL certificate is created`);
         sslData = await ssl.generate();
 
-        // Copy cert.pem to old_cert.pem for cert removing from key chain
-        // key chain doesn't allow to rewrite certificates
-        if (fs.existsSync(APP_SSL_CERT)) {
-            winston.info("Copy cert.pem to old_cert.pem");
-            const file = fs.readFileSync(APP_SSL_CERT);
-            fs.writeFileSync(APP_SSL_OLD_CERT, file);
-        }
-
         // write files
         fs.writeFileSync(APP_SSL_CERT_CA, sslData.root);
         fs.writeFileSync(APP_SSL_CERT, sslData.cert);

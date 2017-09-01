@@ -19,13 +19,13 @@
   "devDependencies": {
     "@types/node": "^7.0.28",
     "@types/winston": "^2.3.3",
-    "typescript": "^2.4.1"
+    "typescript": "^2.5.1"
   },
   "dependencies": {
     "asn1js": "^2.0.15",
-    "electron": "^1.7.6",
+    "electron": "^1.7.7",
     "node-webcrypto-ossl": "^1.0.28",
-    "pkijs": "^2.0.60",
+    "pkijs": "^2.0.63",
     "sudo-prompt": "^7.1.1",
     "webcrypto-local": "git+ssh://git@github.com/PeculiarVentures/webcrypto-local.git",
     "winston": "^2.3.1"
