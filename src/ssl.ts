@@ -229,8 +229,6 @@ async function InstallTrustedWindows(certPath: string) {
     const CERTUTIL = `${__dirname}\\..\\..\\certutil.exe`;
     const CERT_NAME = `Fortify Local CA`;
 
-    child_process.execSync(`certutil -addstore -user root "${certPath}"`);
-
     // check Firefox was installed
     if (fs.existsSync(FIREFOX_DIR)) {
         // get profiles
@@ -241,4 +239,6 @@ async function InstallTrustedWindows(certPath: string) {
             }
         })
     }
+
+    child_process.execSync(`certutil -addstore -user root "${certPath}"`);
 }
