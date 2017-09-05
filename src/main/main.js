@@ -363,7 +363,7 @@ async function StartService() {
                         slashes: true
                     }));
 
-                    // (window as any).params = p;
+                    window.params = p;
                     p.accept = false;
 
                     window.on("closed", () => {
@@ -383,14 +383,15 @@ async function StartService() {
                         icon: icons.favicon,
                     });
 
+                    
                     // and load the index.html of the app.
                     window.loadURL(url.format({
                         pathname: htmls.pkcsPin,
                         protocol: 'file:',
                         slashes: true
                     }));
-
-                    // (window as any).params = p;
+                    
+                    window.params = p;
                     p.pin = "";
 
                     window.on("closed", () => {
