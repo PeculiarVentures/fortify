@@ -1,16 +1,14 @@
-import * as electron from "electron";
-import { Tray, BrowserWindow, shell, nativeImage } from "electron";
+import { Tray, BrowserWindow, shell, nativeImage, screen, app, Menu, MenuItem } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 import * as url from "url";
 import * as os from "os";
 import * as winston from "winston";
-
 // PKI
 import * as asn1js from "asn1js";
-const pkijs = require("pkijs");
-
-import * as ssl from "./ssl";
+// @ts-ignore
+import * as pkijs from "pkijs";
+import * as ssl from "./ssl.js";
 
 const TMP_DIR = os.homedir();
 const APP_TMP_DIR = path.join(TMP_DIR, ".fortify");
@@ -24,12 +22,20 @@ const APP_SSL_CERT = path.join(APP_TMP_DIR, `cert.pem`);
 const APP_SSL_OLD_CERT = path.join(APP_TMP_DIR, `old_ca.pem`);
 const APP_SSL_KEY = path.join(APP_TMP_DIR, `key.pem`);
 
-interface IConfigure {
-    logging?: boolean;
-}
+/**
+ * 
+ * @typedef {Object} IConfigure
+ * @property {boolean} [logging]
+ */
 
-function ConfigureRead(path: string) {
-    let res: IConfigure;
+/**
+ * Read config file by path
+ * 
+ * @param {string} path Path to file config
+ * @returns {IConfigure}
+ */
+function ConfigureRead(path) {
+    let res;
     if (!fs.existsSync(path)) {
         // Create config with default data
         res = {};
@@ -40,12 +46,26 @@ function ConfigureRead(path: string) {
     }
     return res;
 }
-function ConfigureWrite(path: string, config: IConfigure) {
+
+/**
+ * Write config data to file
+ * 
+ * @param {string}      path    Path to config file
+ * @param {IConfigure}  config  Config data
+ */
+function ConfigureWrite(path, config) {
     const json = JSON.stringify(config, null, "  ");
     fs.writeFileSync(path, json, { flag: "w+" });
 }
+
 winston.clear();
-function LoggingSwitch(enabled: boolean) {
+
+/**
+ * Turn on/of logger
+ * 
+ * @param {boolean} enabled 
+ */
+function LoggingSwitch(enabled) {
     if (enabled) {
         const options = { flag: "w+" };
         if (!fs.existsSync(APP_LOG_FILE)) {
@@ -58,31 +78,32 @@ function LoggingSwitch(enabled: boolean) {
 }
 
 const configure = ConfigureRead(APP_CONFIG_FILE);
-LoggingSwitch(configure.logging!);
+LoggingSwitch(configure.logging);
 
 winston.info(`Application started at ${new Date()}`);
 
-const { app, Menu, MenuItem } = electron;
+// const { app, Menu, MenuItem } = electron;
 if ("dock" in app) {
     app.dock.hide();
 }
 
-let tray: Electron.Tray;
+let tray;
 
 const icons = {
-    tray: os.platform() === "win32" ? path.join(__dirname, "..", "icons/favicon-32x32.png") : path.join(__dirname, "..", "icons/tray/icon.png"),
-    trayWhite: path.join(__dirname, "..", "icons/tray/icon_pressed.png"),
-    favicon: path.join(__dirname, "..", "icons/favicon-32x32.png"),
+    tray: os.platform() === "win32" ? path.join(__dirname, "..", "src/icons/favicon-32x32.png") : path.join(__dirname, "..", "src/icons/tray/icon.png"),
+    trayWhite: path.join(__dirname, "..", "src/icons/tray/icon_pressed.png"),
+    favicon: path.join(__dirname, "..", "src/icons/favicon-32x32.png"),
 };
 
 const htmls = {
-    index: path.join(__dirname, "..", 'htmls/index.html'),
-    keyPin: path.join(__dirname, "..", 'htmls/2key-pin.html'),
-    pkcsPin: path.join(__dirname, "..", 'htmls/pkcs11-pin.html'),
-    about: path.join(__dirname, "..", 'htmls/about.html'),
-    manage: path.join(__dirname, "..", 'htmls/manage.html'),
-    message_error: path.join(__dirname, "..", 'htmls/message_error.html'),
-    message_warn: path.join(__dirname, "..", 'htmls/message_warn.html'),
+    index: path.join(__dirname, "..", 'src/htmls/index.html'),
+    keyPin: path.join(__dirname, "..", 'src/htmls/2key-pin.html'),
+    pkcsPin: path.join(__dirname, "..", 'src/htmls/pkcs11-pin.html'),
+    about: path.join(__dirname, "..", 'src/htmls/about.html'),
+    manage: path.join(__dirname, "..", 'src/htmls/manage.html'),
+    message_error: path.join(__dirname, "..", 'src/htmls/message_error.html'),
+    message_warn: path.join(__dirname, "..", 'src/htmls/message_warn.html'),
+    keys: path.join(__dirname, "..", 'src/htmls/keys.html'),
 };
 
 const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {
@@ -114,6 +135,13 @@ app.on("ready", () => {
         });
         menuAbout.click = () => {
             CreateAboutWindow();
+        };
+
+        const menuKeys = new MenuItem({
+            label: "Keys"
+        });
+        menuKeys.click = () => {
+            CreateKeysWindow();
         };
 
         const menuLogSubMenu = new Menu();
@@ -163,8 +191,9 @@ app.on("ready", () => {
             app.exit();
         };
 
-        // contextMenu.append(menuManage);
+        contextMenu.append(menuManage);
         contextMenu.append(menuAbout);
+        contextMenu.append(menuKeys);
         contextMenu.append(menuLog);
         contextMenu.append(menuTools);
         contextMenu.append(menuSeparator);
@@ -194,7 +223,7 @@ app.on("ready", () => {
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow: Electron.BrowserWindow;
+let mainWindow;
 
 function CreateWindow() {
     // Create the browser window.
@@ -219,9 +248,10 @@ function CreateWindow() {
     });
 }
 
-let LocalServer: any;
-let server: any;
+let LocalServer;
+let server;
 try {
+    // @ts-ignore
     LocalServer = require("webcrypto-local").LocalServer;
 }
 catch (e) {
@@ -272,8 +302,9 @@ async function StartService() {
                 winston.info("Installing SSL certificate");
                 return ssl.InstallTrustedCertificate(APP_SSL_CERT_CA)
             })
-            .catch((err: Error) => {
-                winston.error(err as any);
+            .catch((err) => {
+
+                // winston.error(err as any);
                 // remove ssl files if installation is fail
                 fs.unlinkSync(APP_SSL_CERT_CA);
                 fs.unlinkSync(APP_SSL_CERT);
@@ -296,17 +327,17 @@ async function StartService() {
     server = new LocalServer(sslData);
 
     server.listen("127.0.0.1:31337")
-        .on("listening", (e: any) => {
+        .on("listening", (e) => {
             winston.info(`Server: Started at ${e}`);
         })
-        .on("info", (message: string) => {
+        .on("info", (message) => {
             winston.info(message);
         })
-        .on("error", (e: Error) => {
+        .on("error", (e) => {
             winston.error(e.stack || e.toString());
         })
-        .on("notify", (p: any) => {
-            const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
+        .on("notify", (p) => {
+            const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
             switch (p.type) {
                 case "2key": {
@@ -332,7 +363,7 @@ async function StartService() {
                         slashes: true
                     }));
 
-                    (window as any).params = p;
+                    // (window as any).params = p;
                     p.accept = false;
 
                     window.on("closed", () => {
@@ -359,7 +390,7 @@ async function StartService() {
                         slashes: true
                     }));
 
-                    (window as any).params = p;
+                    // (window as any).params = p;
                     p.pin = "";
 
                     window.on("closed", () => {
@@ -371,12 +402,12 @@ async function StartService() {
                     throw new Error("Unknown Notify param");
             }
         })
-        .on("disconnect", (e: any) => {
+        .on("disconnect", (e) => {
             winston.info(`Close: ${e}`);
         });
 }
 
-let aboutWindow: Electron.BrowserWindow | null = null;
+let aboutWindow = null;
 function CreateAboutWindow() {
     // Create the browser window.
     if (aboutWindow) {
@@ -390,7 +421,7 @@ function CreateAboutWindow() {
         minimizable: false,
         resizable: false,
         title: "About",
-        icon: icons.favicon,
+        icon: icons.favicon
     });
 
     // and load the index.html of the app.
@@ -409,7 +440,7 @@ function CreateAboutWindow() {
     });
 }
 
-let manageWindow: Electron.BrowserWindow | null = null;
+let manageWindow = null;
 function CreateManageWindow() {
     // Create the browser window.
     if (manageWindow) {
@@ -439,10 +470,19 @@ function CreateManageWindow() {
     manageWindow.on('closed', function () {
         manageWindow = null
     });
+
+
 }
 
-let errorWindow: Electron.BrowserWindow | null = null;
-function CreateErrorWindow(text: string, cb?: Function) {
+let errorWindow = null;
+/**
+ * Creates Error window
+ * 
+ * @param {string}      text    Message text
+ * @param {Function}    [cb]    Callback on message close 
+ * @returns 
+ */
+function CreateErrorWindow(text, cb) {
     // Create the browser window.
     if (errorWindow) {
         errorWindow.show();
@@ -466,22 +506,29 @@ function CreateErrorWindow(text: string, cb?: Function) {
         slashes: true
     }));
 
-    (errorWindow as any).params = {
-        text
-    };
+    // (errorWindow as any).params = {
+    //     text
+    // };
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     errorWindow.on('closed', function () {
-        errorWindow = null
+        errorWindow = null;
         cb && cb();
     });
 }
 
-let warnWindow: Electron.BrowserWindow | null = null;
-function CreateWarningWindow(text: string, cb?: Function) {
+let warnWindow = null;
+/**
+ * Creates Warning window
+ * 
+ * @param {string}      text    Message text
+ * @param {Function}    [cb]    Callback on message close 
+ * @returns 
+ */
+function CreateWarningWindow(text, cb) {
     // Create the browser window.
     if (warnWindow) {
         warnWindow.show();
@@ -505,16 +552,49 @@ function CreateWarningWindow(text: string, cb?: Function) {
         slashes: true
     }));
 
-    (warnWindow as any).params = {
-        text
-    };
+    // (warnWindow as any).params = {
+    //     text
+    // };
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     warnWindow.on('closed', function () {
-        warnWindow = null
+        warnWindow = null;
         cb && cb();
     });
+}
+
+let keysWindow = null;
+function CreateKeysWindow() {
+  // Create the browser window.
+  if (keysWindow) {
+    keysWindow.focus();
+    return;
+  }
+  keysWindow = new BrowserWindow({
+    width: 600,
+    height: 500,
+    autoHideMenuBar: true,
+    minimizable: false,
+    resizable: false,
+    title: "Keys",
+    icon: icons.favicon
+  });
+
+  // and load the index.html of the app.
+  keysWindow.loadURL(url.format({
+    pathname: htmls.keys,
+    protocol: 'file:',
+    slashes: true
+  }));
+
+  // Open the DevTools.
+  // mainWindow.webContents.openDevTools()
+
+  // Emitted when the window is closed.
+  keysWindow.on('closed', function () {
+    keysWindow = null
+  });
 }
