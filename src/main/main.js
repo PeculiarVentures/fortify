@@ -191,9 +191,9 @@ app.on("ready", () => {
             app.exit();
         };
 
-        contextMenu.append(menuManage);
+        // contextMenu.append(menuManage);
         contextMenu.append(menuAbout);
-        contextMenu.append(menuKeys);
+        // contextMenu.append(menuKeys);
         contextMenu.append(menuLog);
         contextMenu.append(menuTools);
         contextMenu.append(menuSeparator);
@@ -507,9 +507,9 @@ function CreateErrorWindow(text, cb) {
         slashes: true
     }));
 
-    // (errorWindow as any).params = {
-    //     text
-    // };
+    errorWindow.params = {
+        text
+    };
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
@@ -553,9 +553,9 @@ function CreateWarningWindow(text, cb) {
         slashes: true
     }));
 
-    // (warnWindow as any).params = {
-    //     text
-    // };
+    warnWindow.params = {
+        text
+    };
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()

@@ -285,8 +285,8 @@ async function InstallTrustedOSX(certPath) {
  */
 async function InstallTrustedWindows(certPath) {
     const USER_HOME = os.homedir();
-    const FIREFOX_DIR = `${USER_HOME}/AppData/Roaming/Mozilla/Firefox/Profiles`;
-    const CERTUTIL = `${__dirname}\\..\\..\\src/certutil.exe`;
+    const FIREFOX_DIR = path.normalize(`${USER_HOME}/AppData/Roaming/Mozilla/Firefox/Profiles`);
+    const CERTUTIL = path.normalize(`${__dirname}\\..\\..\\certutil.exe`);
     const CERT_NAME = `Fortify Local CA`;
 
     // check Firefox was installed
