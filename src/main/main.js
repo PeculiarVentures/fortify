@@ -614,17 +614,60 @@ function CreateKeysWindow() {
 function InitMessages() {
     ipcMain.on('2key-list', (event, arg) => {
         const identities = server.server.storage.remoteIdentities;
-        const res = [];
+        const preparedList = [];
         for (const i in identities) {
             const identity = PrepareIdentity(identities[i]);
-            identity.id = i;
-            res.push(identity);
+            preparedList.push(identity);
+        }
+        // sort identities
+        preparedList.sort((a, b) => {
+            if (a.origin > b.origin) {
+                return 1
+            } else if (a.origin < b.origin) {
+                return -1;
+            } else {
+                if (a.browser > b.browser) {
+                    return 1
+                } else if (a.browser < b.browser) {
+                    return -1
+                }
+                return 0;
+            }
+        });
+        // prepare data
+        const res = [];
+        let currentIdentity = {
+            origin: null,
+            created: null,
+            browsers: []
+        };
+        preparedList.forEach((identity) => {
+            if (currentIdentity.origin !== identity.origin) {
+                if (currentIdentity.origin !== null) {
+                    res.push(currentIdentity);
+                }
+                currentIdentity = {
+                    origin: identity.origin,
+                    created: identity.created,
+                    browsers: [identity.browser],
+                };
+            } else {
+                if (currentIdentity.created > identity.created) {
+                    currentIdentity.created = identity.created;
+                }
+                if (!currentIdentity.browsers.some((browser) => browser === identity.browser)) {
+                    currentIdentity.browsers.push(identity.browser);
+                }
+            }
+        })
+        if (currentIdentity.origin !== null) {
+            res.push(currentIdentity);
         }
         event.sender.send('2key-list', res);
     })
         .on('2key-remove', (event, arg) => {
             const storage = server.server.storage;
-            CreateQuestionWindow(`Do you want to remove your trusted session key?`, {parent: keysWindow}, (result) => {
+            CreateQuestionWindow(`Do you want to remove your trusted session key?`, { parent: keysWindow }, (result) => {
                 if (result) {
                     winston.info(`Removing 2key session key ${arg}`);
                     storage.removeRemoteIdentity(arg);
@@ -655,17 +698,17 @@ function PrepareIdentity(identity) {
     let res = {};
     let reg;
     if (reg = /edge\/([\d\.]+)/i.exec(userAgent)) {
-        res.browser = "Edge";
+        res.browser = "edge";
     } else if (/msie/i.test(userAgent)) {
-        res.browser = "Internet Explorer";
+        res.browser = "ie";
     } else if (/Trident/i.test(userAgent)) {
-        res.browser = "Internet Explorer";
+        res.browser = "ie";
     } else if (/chrome/i.test(userAgent)) {
-        res.browser = "Chrome";
+        res.browser = "chrome";
     } else if (/safari/i.test(userAgent)) {
-        res.browser = "Safari";
+        res.browser = "safari";
     } else if (/firefox/i.test(userAgent)) {
-        res.browser = "Firefox";
+        res.browser = "firefox";
     } else {
         res.browser = "Other";
     }
@@ -684,7 +727,7 @@ function PrepareIdentity(identity) {
  * 
  * @param {string}              text 
  * @param {ModalWindowOptions}  options 
- * @param {Function} cb
+ * @param {Function}            cb
  * @return {BrowserWindow}
  */
 function CreateQuestionWindow(text, options, cb) {
