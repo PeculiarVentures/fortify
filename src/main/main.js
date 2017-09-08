@@ -1,4 +1,8 @@
+/// <reference path="./types.d.ts" />
+// @ts-check
+
 import { Tray, BrowserWindow, shell, nativeImage, screen, app, Menu, MenuItem } from "electron";
+import { ipcMain } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 import * as url from "url";
@@ -193,7 +197,7 @@ app.on("ready", () => {
 
         // contextMenu.append(menuManage);
         contextMenu.append(menuAbout);
-        // contextMenu.append(menuKeys);
+        contextMenu.append(menuKeys);
         contextMenu.append(menuLog);
         contextMenu.append(menuTools);
         contextMenu.append(menuSeparator);
@@ -203,7 +207,8 @@ app.on("ready", () => {
         tray.setContextMenu(contextMenu);
 
         CreateWindow();
-        await StartService();
+        await InitService();
+        InitMessages();
     })()
         .catch((err) => {
             winston.error(err.toString());
@@ -249,6 +254,7 @@ function CreateWindow() {
 }
 
 let LocalServer;
+/** @type {WebCryptoLocal.LocalServer}*/
 let server;
 try {
     // @ts-ignore
@@ -278,7 +284,7 @@ function CheckSSL() {
     return false;
 }
 
-async function StartService() {
+async function InitService() {
 
     let sslData;
 
@@ -294,7 +300,7 @@ async function StartService() {
         // Set cert as trusted
         const warning = new Promise((resolve, reject) => { // wrap callback
             CreateWarningWindow("We need to make the Fortify SSL certificate trusted. When we do this you will be asked for your administrator password.", () => {
-                winston.info("Window closed 1");
+                winston.info("Warning window was closed");
                 resolve();
             });
         })
@@ -363,6 +369,7 @@ async function StartService() {
                         slashes: true
                     }));
 
+                    // @ts-ignore
                     window.params = p;
                     p.accept = false;
 
@@ -383,14 +390,15 @@ async function StartService() {
                         icon: icons.favicon,
                     });
 
-                    
+
                     // and load the index.html of the app.
                     window.loadURL(url.format({
                         pathname: htmls.pkcsPin,
                         protocol: 'file:',
                         slashes: true
                     }));
-                    
+
+                    // @ts-ignore
                     window.params = p;
                     p.pin = "";
 
@@ -403,7 +411,7 @@ async function StartService() {
                     throw new Error("Unknown Notify param");
             }
         })
-        .on("disconnect", (e) => {
+        .on("close", (e) => {
             winston.info(`Close: ${e}`);
         });
 }
@@ -507,6 +515,7 @@ function CreateErrorWindow(text, cb) {
         slashes: true
     }));
 
+    // @ts-ignore
     errorWindow.params = {
         text
     };
@@ -553,6 +562,7 @@ function CreateWarningWindow(text, cb) {
         slashes: true
     }));
 
+    // @ts-ignore
     warnWindow.params = {
         text
     };
@@ -569,33 +579,92 @@ function CreateWarningWindow(text, cb) {
 
 let keysWindow = null;
 function CreateKeysWindow() {
-  // Create the browser window.
-  if (keysWindow) {
-    keysWindow.focus();
-    return;
-  }
-  keysWindow = new BrowserWindow({
-    width: 600,
-    height: 500,
-    autoHideMenuBar: true,
-    minimizable: false,
-    resizable: false,
-    title: "Keys",
-    icon: icons.favicon
-  });
+    // Create the browser window.
+    if (keysWindow) {
+        keysWindow.focus();
+        return;
+    }
+    keysWindow = new BrowserWindow({
+        width: 600,
+        height: 500,
+        autoHideMenuBar: true,
+        minimizable: false,
+        resizable: false,
+        title: "Keys",
+        icon: icons.favicon
+    });
 
-  // and load the index.html of the app.
-  keysWindow.loadURL(url.format({
-    pathname: htmls.keys,
-    protocol: 'file:',
-    slashes: true
-  }));
+    // and load the index.html of the app.
+    keysWindow.loadURL(url.format({
+        pathname: htmls.keys,
+        protocol: 'file:',
+        slashes: true
+    }));
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+    // Open the DevTools.
+    // mainWindow.webContents.openDevTools()
 
-  // Emitted when the window is closed.
-  keysWindow.on('closed', function () {
-    keysWindow = null
-  });
+    // Emitted when the window is closed.
+    keysWindow.on('closed', function () {
+        keysWindow = null
+    });
+}
+
+function InitMessages() {
+    ipcMain.on('2key-list', (event, arg) => {
+        const identities = server.server.storage.remoteIdentities;
+        const res = [];
+        for (const i in identities) {
+            const identity = PrepareIdentity(identities[i]);
+            identity.id = i;
+            res.push(identity);
+        }
+        event.sender.send('2key-list', res);
+    })
+    .on('2key-remove', (event, arg) => {
+        const storage = server.server.storage;
+        storage.removeRemoteIdentity(arg);
+        // TODO: Show question dialog
+        event.sender.send('2key-remove', arg);
+    })
+    .on("error", (error) => {
+        winston.error(error.toString());
+    })
+}
+
+/**
+ * @typedef {Object} Identity
+ * @property {string}   [browser]
+ * @property {Date}     [created]
+ * @property {string}   [id]
+ * @property {string}   [origin]
+ */
+
+/**
+ * 
+ * @param {WebCryptoLocal.RemoteIdentityEx} identity 
+ */
+function PrepareIdentity(identity) {
+    const userAgent = identity.userAgent;
+    /** @type {Identity} */
+    let res = {};
+    let reg;
+    if (reg = /edge\/([\d\.]+)/i.exec(userAgent)) {
+        res.browser = "edge";
+    } else if (/msie/i.test(userAgent)) {
+        res.browser = "ie";
+    } else if (/Trident/i.test(userAgent)) {
+        res.browser = "ie";
+    } else if (/chrome/i.test(userAgent)) {
+        res.browser = "chrome";
+    } else if (/safari/i.test(userAgent)) {
+        res.browser = "safari";
+    } else if (/firefox/i.test(userAgent)) {
+        res.browser = "firefox";
+    } else {
+        res.browser = "other";
+    }
+    res.created = identity.createdAt;
+    res.origin = identity.origin;
+    return res;
 }
