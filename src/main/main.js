@@ -637,7 +637,7 @@ function InitMessages() {
  * @property {string}   [browser]
  * @property {Date}     [created]
  * @property {string}   [id]
- * @property {string}   [origin]
+ * @property {string|'edge'|'ie'|'chrome'|'safari'|'firefox'|'other'}   [origin]
  */
 
 /**
