@@ -63,7 +63,7 @@ export default class Root extends Component {
 
   handleSearchChange = (e) => {
     this.setState({
-      filterValue: e.target.value,
+      filterValue: e.target.value.toLowerCase(),
     });
   };
 
@@ -74,10 +74,8 @@ export default class Root extends Component {
     let filteredKeys = keys;
     if (filterValue) {
       filteredKeys = keys.filter((key) => {
-        if (
-          key.origin.indexOf(filterValue) !== -1 ||
-          key.browser.indexOf(filterValue) !== -1
-        ) {
+        const origin = key.origin.toLowerCase();
+        if (origin.indexOf(filterValue) !== -1) {
           return key;
         }
       })
@@ -104,7 +102,6 @@ export default class Root extends Component {
                     key={i}
                     id={key.id}
                     origin={key.origin}
-                    browser={key.browser}
                     created={key.created}
                     handleAction={this.handleAction}
                   />

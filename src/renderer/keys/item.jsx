@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import s from './styles/item.sass';
 
 const Item = (props) => {
-  const { id, origin, browser, created, handleAction } = props;
+  const { id, origin, created, handleAction } = props;
   const newDate = new Date(created);
   const date = newDate.toLocaleDateString();
-  const time = newDate.toLocaleTimeString();
 
   return (
     <div className={s.item_wrapper}>
@@ -14,11 +13,8 @@ const Item = (props) => {
         <div className={s.origin}>
           { origin }
         </div>
-        <div className={s.browser}>
-          { browser }
-        </div>
         <div className={s.date}>
-          { date }, { time }
+          { date }
         </div>
       </div>
       <div className={s.btns_container}>
@@ -41,7 +37,6 @@ Item.propTypes = {
   id: PropTypes.string,
   origin: PropTypes.string,
   created: PropTypes.string,
-  browser: PropTypes.string,
   handleAction: PropTypes.func
 };
 
