@@ -7,7 +7,6 @@ export default class Root extends Component {
   constructor() {
     super();
 
-    // default state for testing
     this.state = {
       keys: []
     };
@@ -22,8 +21,7 @@ export default class Root extends Component {
     });
   }
 
-  onKeyRemove(event, arg) {
-    const id = arg;
+  onKeyRemove(event, id) {
     const { keys } = this.state;
     const newArray = [];
     keys.map((key) => {
@@ -50,11 +48,10 @@ export default class Root extends Component {
 
   handleAction = (payload) => {
     const { type, id } = payload;
-    const { keys } = this.state;
 
     switch (type) {
       case 'KEY:REMOVE': {
-        ipcRenderer.send('2key-remove', id)
+        ipcRenderer.send('2key-remove', id);
         break;
       }
 
@@ -71,19 +68,19 @@ export default class Root extends Component {
         {keys.length ? (
           keys.map((key) => (
             <Item
-              id={key.id}
               key={key.id}
-              name={key.origin}
+              id={key.id}
+              origin={key.origin}
               browser={key.browser}
               created={key.created}
               handleAction={this.handleAction}
             />
           ))
         ) : (
-            <h3>
-              You don't have keys
+          <h3 className={s.empty_text}>
+            You don't have keys yet
           </h3>
-          )}
+        )}
       </div>
     );
   }

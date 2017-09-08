@@ -1,29 +1,74 @@
-.item
-	padding: 20px 6px
-	border-top: 1px solid rgba(#000, .05)
-	font-size: 0
+.item_wrapper
+	height: 70px
+	border: 1px solid rgba(214,219,222,.3)
+	background: #fff
+	border-radius: 4px
+	position: relative
+	transition: border-color 300ms, background 300ms
+	margin-top: 10px
 	&:first-child
 		margin-top: 0
+	&:before
+		content: ''
+		display: inline-block
+		vertical-align: middle
+		height: 100%
+		width: 0
+	&:hover
+		background: #fafbfb
+		border-color: rgba(214,219,222,.4)
+		.btns_container
+			opacity: 1
 
-.name
+.info
 	display: inline-block
-	vertical-align: top
-	width: calc(100% - 60px - 10px)
-	font-size: 16px
-	color: #000
+	vertical-align: middle
+	width: calc(100% - 100px)
+	padding-right: 9px
+	margin-left: 20px
+
+.origin,
+.browser,
+.date
+	overflow: hidden
+	white-space: nowrap
+	text-overflow: ellipsis
+	letter-spacing: .045em
+
+.origin
+	font-size: 14px
+	line-height: 19px
+	color: #40484f
+	opacity: .8
+
+.browser,
+.date
+	font-size: 11px
+	line-height: 16px
+	color: hsla(205,9%,48%, .8)
+
+.btns_container
+	text-align: right
+	position: absolute
+	top: 20px
+	right: 20px
+	opacity: 0
+	transition: opacity 300ms
 
 .btn_remove
 	display: inline-block
 	vertical-align: top
-	width: 60px
-	height: 30px
-	border: 1px solid rgba(red, .2)
-	border-radius: 2px
+	width: 16px
+	height: 16px
+	margin: 5px 0 0 26px
 	cursor: pointer
-	transition: opacity 200ms
-	background: transparent
-	color: rgba(red, .6)
-	font-size: 12px
-	margin-left: 10px
 	&:hover
-		opacity: .6
+		.icon_remove
+			fill: #707d86
+
+.icon_remove
+	width: 12px
+	margin: 1px 0 0 2px
+	display: block
+	fill: #d6dbde
+	transition: fill 300ms
