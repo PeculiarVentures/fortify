@@ -293,9 +293,16 @@ async function InstallTrustedWindows(certPath) {
     if (fs.existsSync(FIREFOX_DIR)) {
         // get profiles
         fs.readdirSync(FIREFOX_DIR).map((item) => {
-            const PROFILE_DIR = `${FIREFOX_DIR}/${item}`;
+            const PROFILE_DIR = `${FIREFOX_DIR}\\${item}`;
             if (fs.existsSync(PROFILE_DIR)) {
                 child_process.execSync(`"${CERTUTIL}" -D -n "${CERT_NAME}" -d "${PROFILE_DIR}" | "${CERTUTIL}" -A -i "${certPath}" -n "${CERT_NAME}" -t "C,c,c" -d "${PROFILE_DIR}"`);
+                // restart firefox
+                try {
+                    child_process.execSync(`taskkill /F /IM firefox.exe`);
+                    child_process.execSync(`start firefox`);
+                } catch (err) {
+                    // firefox is not running
+                }
             }
         })
     }
