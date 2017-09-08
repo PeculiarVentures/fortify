@@ -105,6 +105,7 @@ const htmls = {
     pkcsPin: path.join(__dirname, "..", 'src/htmls/pkcs11-pin.html'),
     about: path.join(__dirname, "..", 'src/htmls/about.html'),
     manage: path.join(__dirname, "..", 'src/htmls/manage.html'),
+    message_question: path.join(__dirname, "..", 'src/htmls/message_question.html'),
     message_error: path.join(__dirname, "..", 'src/htmls/message_error.html'),
     message_warn: path.join(__dirname, "..", 'src/htmls/message_warn.html'),
     keys: path.join(__dirname, "..", 'src/htmls/keys.html'),
@@ -310,7 +311,7 @@ async function InitService() {
             })
             .catch((err) => {
 
-                // winston.error(err as any);
+                winston.error(err.toString());
                 // remove ssl files if installation is fail
                 fs.unlinkSync(APP_SSL_CERT_CA);
                 fs.unlinkSync(APP_SSL_CERT);
@@ -621,15 +622,19 @@ function InitMessages() {
         }
         event.sender.send('2key-list', res);
     })
-    .on('2key-remove', (event, arg) => {
-        const storage = server.server.storage;
-        storage.removeRemoteIdentity(arg);
-        // TODO: Show question dialog
-        event.sender.send('2key-remove', arg);
-    })
-    .on("error", (error) => {
-        winston.error(error.toString());
-    })
+        .on('2key-remove', (event, arg) => {
+            const storage = server.server.storage;
+            CreateQuestionWindow(`Do you want to remove your trusted session key?`, {parent: keysWindow}, (result) => {
+                if (result) {
+                    winston.info(`Removing 2key session key ${arg}`);
+                    storage.removeRemoteIdentity(arg);
+                    event.sender.send('2key-remove', arg);
+                }
+            });
+        })
+        .on("error", (error) => {
+            winston.error(error.toString());
+        })
 }
 
 /**
@@ -650,21 +655,71 @@ function PrepareIdentity(identity) {
     let res = {};
     let reg;
     if (reg = /edge\/([\d\.]+)/i.exec(userAgent)) {
-        res.browser = "edge";
+        res.browser = "Edge";
     } else if (/msie/i.test(userAgent)) {
-        res.browser = "ie";
+        res.browser = "Internet Explorer";
     } else if (/Trident/i.test(userAgent)) {
-        res.browser = "ie";
+        res.browser = "Internet Explorer";
     } else if (/chrome/i.test(userAgent)) {
-        res.browser = "chrome";
+        res.browser = "Chrome";
     } else if (/safari/i.test(userAgent)) {
-        res.browser = "safari";
+        res.browser = "Safari";
     } else if (/firefox/i.test(userAgent)) {
-        res.browser = "firefox";
+        res.browser = "Firefox";
     } else {
-        res.browser = "other";
+        res.browser = "Other";
     }
     res.created = identity.createdAt;
     res.origin = identity.origin;
     return res;
+}
+
+/**
+ * @typedef {Object} ModalWindowOptions
+ * @property {BrowserWindow}    [parent]
+ * @property {string}           [title]
+ */
+
+/**
+ * 
+ * @param {string}              text 
+ * @param {ModalWindowOptions}  options 
+ * @param {Function} cb
+ * @return {BrowserWindow}
+ */
+function CreateQuestionWindow(text, options, cb) {
+    // Create the browser window.
+    const errorWindow = new BrowserWindow({
+        width: 500,
+        height: 300,
+        autoHideMenuBar: true,
+        minimizable: false,
+        fullscreenable: false,
+        resizable: false,
+        title: "Error",
+        icon: icons.favicon,
+        modal: !!options.parent,
+        parent: options.parent
+    });
+
+    // and load the index.html of the app.
+    errorWindow.loadURL(url.format({
+        pathname: htmls.message_question,
+        protocol: 'file:',
+        slashes: true
+    }));
+
+    // @ts-ignore
+    errorWindow.params = {
+        text,
+        result: 0,
+    };
+
+    // Emitted when the window is closed.
+    errorWindow.on('closed', function () {
+        // @ts-ignore
+        cb && cb(errorWindow.params.result);
+    });
+
+    return errorWindow;
 }
