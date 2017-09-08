@@ -43,6 +43,9 @@ module.exports = {
       async: true
     })
   ],
+  externals: {
+    'electron': 'require("electron")',
+  },
   module: {
     rules: [
       {
