@@ -667,9 +667,19 @@ function InitMessages() {
     })
         .on('2key-remove', (event, arg) => {
             const storage = server.server.storage;
-            CreateQuestionWindow(`Do you want to remove your trusted session key?`, { parent: keysWindow }, (result) => {
+            CreateQuestionWindow(`Do you want to remove ${arg} from trusted list?`, { parent: keysWindow }, (result) => {
                 if (result) {
                     winston.info(`Removing 2key session key ${arg}`);
+                    const remList = [];
+                    for (const i in storage.remoteIdentities) {
+                        const identity = storage.remoteIdentities[i];
+                        if (identity.origin === arg) {
+                            remList.push(i);
+                        }
+                    }
+                    remList.forEach((item) => {
+                        delete storage.remoteIdentities[item];
+                    })
                     storage.removeRemoteIdentity(arg);
                     event.sender.send('2key-remove', arg);
                 }
