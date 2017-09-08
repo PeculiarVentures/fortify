@@ -99,9 +99,9 @@ export default class Root extends Component {
             />
             <div className={s.content}>
               {filteredKeys.length ? (
-                filteredKeys.map((key) => (
+                filteredKeys.map((key, i) => (
                   <Item
-                    key={key.id}
+                    key={i}
                     id={key.id}
                     origin={key.origin}
                     browser={key.browser}

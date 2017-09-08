@@ -1,18 +1,19 @@
 .wrapper
-	overflow: auto
-	padding: 10px
+	padding-top: 10px
 	height: 100%
 	background: #FBFBFB
 
 .empty_text
 	color: rgba(#000, .6)
+	padding: 0 10px
 
 .input
 	font-size: 12px
 	height: 28px
 	padding: 0 10px
 	display: block
-	width: 100%
+	width: calc(100% - 20px)
+	margin: 0 auto
 	border: 1px solid #d6dbde
 	border-radius: 3px
 	color: #40484f
@@ -29,4 +30,7 @@
 		color: #C8CFD4
 
 .content
+	padding: 0 10px 15px
 	margin-top: 15px
+	height: calc(100vh - 10px - 15px - 28px)
+	overflow: auto
