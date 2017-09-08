@@ -8,7 +8,8 @@ export default class Root extends Component {
     super();
 
     this.state = {
-      keys: []
+      keys: [],
+      filterValue: '',
     };
 
     this.onKeyList = this.onKeyList.bind(this);
@@ -60,26 +61,61 @@ export default class Root extends Component {
     }
   };
 
+  handleSearchChange = (e) => {
+    this.setState({
+      filterValue: e.target.value,
+    });
+  };
+
   render() {
-    const { keys } = this.state;
+    const { keys, filterValue } = this.state;
+    const isEmpty = !keys.length;
+
+    let filteredKeys = keys;
+    if (filterValue) {
+      filteredKeys = keys.filter((key) => {
+        if (
+          key.origin.indexOf(filterValue) !== -1 ||
+          key.browser.indexOf(filterValue) !== -1
+        ) {
+          return key;
+        }
+      })
+    }
 
     return (
       <div className={s.wrapper}>
-        {keys.length ? (
-          keys.map((key) => (
-            <Item
-              key={key.id}
-              id={key.id}
-              origin={key.origin}
-              browser={key.browser}
-              created={key.created}
-              handleAction={this.handleAction}
-            />
-          ))
-        ) : (
-          <h3 className={s.empty_text}>
+        {isEmpty ? (
+          <h4 className={s.empty_text}>
             You don't have keys yet
-          </h3>
+          </h4>
+        ) : (
+          <div>
+            <input
+              type="text"
+              placeholder="Search"
+              onChange={this.handleSearchChange}
+              className={s.input}
+            />
+            <div className={s.content}>
+              {filteredKeys.length ? (
+                filteredKeys.map((key) => (
+                  <Item
+                    key={key.id}
+                    id={key.id}
+                    origin={key.origin}
+                    browser={key.browser}
+                    created={key.created}
+                    handleAction={this.handleAction}
+                  />
+                ))
+              ) : (
+                <h4 className={s.empty_text}>
+                  Result not found
+                </h4>
+              )}
+            </div>
+          </div>
         )}
       </div>
     );
