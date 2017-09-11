@@ -7,16 +7,16 @@ module.exports = {
       path.join(
         __dirname,
         './src/renderer/keys/index.jsx'
-      )
-    ]
+      ),
+    ],
   },
   output: {
     path: path.resolve(__dirname, 'out'),
-    filename: '[name].js'
+    filename: '[name].js',
   },
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({
@@ -30,18 +30,18 @@ module.exports = {
         unused: true,
         warnings: false,
         drop_console: true,
-        unsafe: true
-      }
+        unsafe: true,
+      },
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
+        NODE_ENV: JSON.stringify('production'),
+      },
     }),
     new webpack.optimize.CommonsChunkPlugin({
       children: false,
-      async: true
-    })
+      async: true,
+    }),
   ],
   externals: {
     'electron': 'require("electron")',
@@ -51,16 +51,16 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ['babel-loader']
+        use: ['babel-loader'],
       },
       {
         test: /\.sass$/,
         use: [
           'style-loader',
           'css-loader?modules&importLoaders=1&localIdentName=[local]_[hash:base64:5]',
-          'sass-loader'
-        ]
+          'sass-loader',
+        ],
       },
-    ]
-  }
+    ],
+  },
 };
