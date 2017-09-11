@@ -22,11 +22,11 @@ export default class Root extends Component {
     });
   }
 
-  onKeyRemove(event, id) {
+  onKeyRemove(event, origin) {
     const { keys } = this.state;
     const newArray = [];
     keys.map((key) => {
-      if (key.id !== id) {
+      if (key.origin !== origin) {
         newArray.push(key)
       }
       return true;
@@ -39,7 +39,7 @@ export default class Root extends Component {
   componentWillMount() {
     ipcRenderer.on('2key-list', this.onKeyList);
     ipcRenderer.on('2key-remove', this.onKeyRemove);
-    ipcRenderer.send('2key-list')
+    ipcRenderer.send('2key-list');
   }
 
   componentWillUnmount() {
@@ -48,11 +48,11 @@ export default class Root extends Component {
   }
 
   handleAction = (payload) => {
-    const { type, id } = payload;
+    const { type, origin } = payload;
 
     switch (type) {
       case 'KEY:REMOVE': {
-        ipcRenderer.send('2key-remove', id);
+        ipcRenderer.send('2key-remove', origin);
         break;
       }
 
@@ -80,6 +80,7 @@ export default class Root extends Component {
         }
       })
     }
+    window.list = filteredKeys;
 
     return (
       <div className={s.wrapper}>
@@ -100,10 +101,10 @@ export default class Root extends Component {
                 filteredKeys.map((key, i) => (
                   <Item
                     key={i}
-                    id={key.id}
                     origin={key.origin}
                     created={key.created}
                     handleAction={this.handleAction}
+                    browsers={key.browsers}
                   />
                 ))
               ) : (

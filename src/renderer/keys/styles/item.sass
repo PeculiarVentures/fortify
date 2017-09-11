@@ -1,5 +1,5 @@
 .item_wrapper
-	height: 60px
+	height: 70px
 	border: 1px solid rgba(214,219,222,.3)
 	background: #fff
 	border-radius: 4px
@@ -50,7 +50,7 @@
 .btns_container
 	text-align: right
 	position: absolute
-	top: 16px
+	top: 20px
 	right: 20px
 	opacity: 0
 	transition: opacity 300ms
@@ -72,3 +72,16 @@
 	display: block
 	fill: #d6dbde
 	transition: fill 300ms
+
+.browser
+	display: inline-block
+	vertical-align: middle
+	width: 16px
+	margin-left: 7px
+	-webkit-filter: grayscale(100%)
+	opacity: .7
+	&:first-child
+		margin-left: 0
+	&[data-active="true"]
+		-webkit-filter: none
+		opacity: 1

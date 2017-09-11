@@ -2,8 +2,35 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import s from './styles/item.sass';
 
+const browsersList = [
+  {
+    title: 'Firefox',
+    name: 'firefox',
+    src: '../icons/firefox.png',
+  },
+  {
+    title: 'Chrome',
+    name: 'chrome',
+    src: '../icons/chrome.png',
+  },
+  {
+    title: 'Safari',
+    name: 'safari',
+    src: '../icons/safari.png',
+  },{
+    title: 'Edge',
+    name: 'edge',
+    src: '../icons/edge.png',
+  },
+  {
+    title: 'Internet Explorer',
+    name: 'ie',
+    src: '../icons/ie.png',
+  }
+];
+
 const Item = (props) => {
-  const { id, origin, created, handleAction } = props;
+  const { origin, created, handleAction, browsers } = props;
   const newDate = new Date(created);
   const date = newDate.toLocaleDateString();
 
@@ -16,11 +43,23 @@ const Item = (props) => {
         <div className={s.date}>
           { date }
         </div>
+        <div>
+          {browsersList.map((browser) => {
+            return (
+              <img
+                className={s.browser}
+                src={browser.src}
+                title={browser.title}
+                data-active={browsers.indexOf(browser.name) !== -1}
+              />
+            )
+          })}
+        </div>
       </div>
       <div className={s.btns_container}>
         <div
           className={s.btn_remove}
-          onClick={() => handleAction({ type: 'KEY:REMOVE', id })}
+          onClick={() => handleAction({ type: 'KEY:REMOVE', origin })}
         >
           <svg
             viewBox="0 0 12 14"
@@ -34,10 +73,10 @@ const Item = (props) => {
 };
 
 Item.propTypes = {
-  id: PropTypes.string,
   origin: PropTypes.string,
   created: PropTypes.string,
-  handleAction: PropTypes.func
+  handleAction: PropTypes.func,
+  browsers: PropTypes.array,
 };
 
 export default Item;
