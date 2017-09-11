@@ -17,7 +17,8 @@ const browsersList = [
     title: 'Safari',
     name: 'safari',
     src: '../icons/safari.png',
-  },{
+  },
+  {
     title: 'Edge',
     name: 'edge',
     src: '../icons/edge.png',
@@ -26,7 +27,7 @@ const browsersList = [
     title: 'Internet Explorer',
     name: 'ie',
     src: '../icons/ie.png',
-  }
+  },
 ];
 
 const Item = (props) => {
@@ -52,7 +53,7 @@ const Item = (props) => {
                 title={browser.title}
                 data-active={browsers.indexOf(browser.name) !== -1}
               />
-            )
+            );
           })}
         </div>
       </div>
