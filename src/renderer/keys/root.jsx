@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ipcRenderer } from 'electron';
 import Item from './item';
+import Empty from './empty';
 import s from './styles/root.sass';
 
 export default class Root extends Component {
@@ -85,9 +86,7 @@ export default class Root extends Component {
     return (
       <div className={s.wrapper}>
         {isEmpty ? (
-          <h4 className={s.empty_text}>
-            You don't have keys yet
-          </h4>
+          <Empty />
         ) : (
           <div>
             <input
