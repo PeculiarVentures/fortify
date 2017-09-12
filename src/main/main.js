@@ -179,7 +179,7 @@ app.on('ready', () => {
       label: 'Tools',
     });
     menuTools.click = () => {
-      shell.openExternal('https://peculiarventures.github.io/webcrypto-local');
+      shell.openExternal('https://peculiarventures.github.io/fortify-web');
     };
 
     const menuSeparator = new MenuItem({
