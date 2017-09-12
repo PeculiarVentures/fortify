@@ -141,7 +141,7 @@ app.on('ready', () => {
     };
 
     const menuKeys = new MenuItem({
-      label: 'Keys',
+      label: 'Sites',
     });
     menuKeys.click = () => {
       CreateKeysWindow();
@@ -582,7 +582,7 @@ function CreateKeysWindow () {
     autoHideMenuBar: true,
     minimizable: false,
     resizable: false,
-    title: 'Keys',
+    title: 'Sites',
     icon: icons.favicon,
   });
 
@@ -669,7 +669,7 @@ function InitMessages () {
   })
     .on('2key-remove', (event, arg) => {
       const storage = server.server.storage;
-      CreateQuestionWindow(`Do you want to remove ${arg} from trusted list?`, { parent: keysWindow }, (result) => {
+      CreateQuestionWindow(`Do you want to remove ${arg} from the trusted list?`, { parent: keysWindow }, (result) => {
         if (result) {
           winston.info(`Removing 2key session key ${arg}`);
           const remList = [];
@@ -753,7 +753,7 @@ function CreateQuestionWindow (text, options, cb) {
     minimizable: false,
     fullscreenable: false,
     resizable: false,
-    title: 'Error',
+    title: 'Question',
     icon: icons.favicon,
     modal: !!options.parent,
     parent: options.parent,

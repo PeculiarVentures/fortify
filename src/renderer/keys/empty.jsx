@@ -23,7 +23,7 @@ const Empty = () => {
       <div className={s.container}>
         <KeysIcon />
         <div className={s.descr}>
-          You dont have keys yet
+          You do not trust any sites yet.
         </div>
       </div>
     </div>
