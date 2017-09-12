@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        Question
+    </title>
+    <link rel="stylesheet" href="../style/main.css">
+</head>
+
+<body>
+    <div class="page">
+        <div class="content message-box">
+            <div class="message-icon">
+                <img src="../icons/Question.png" width="96px">
+            </div>
+            <div class="message-text">
+                <h3 style="padding-bottom: 32px">Question</h3>
+                <p id="text"></p>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="center">
+                <div>
+                    <button class="btn accept" onclick="btnYesClick()">Yes</button>
+                    <button class="btn" onclick="btnNoClick()">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const electron = require('electron');
+        const currentWindow = electron.remote.getCurrentWindow();
+
+        const $text = document.getElementById("text");
+        $text.textContent = currentWindow.params.text.toString();
+
+        function btnNoClick() {
+            currentWindow.params.result = 0;
+            currentWindow.close();
+        }
+        
+        function btnYesClick() {
+            currentWindow.params.result = 1;
+            currentWindow.close();
+        }
+
+        window.onkeydown = function (args) {
+            switch (args.keyCode) {
+                case 13:
+                    btnYesClick();
+                    break;
+                case 27:
+                    btnNoClick();
+                    break;
+            }
+        }
+    </script>
+</body>
+
+</html>

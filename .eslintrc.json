@@ -1,0 +1,13 @@
+{
+    "extends": "standard",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "rules": {
+        "semi": ["error", "always"],
+        "comma-dangle": ["error", "always-multiline"],
+        "no-cond-assign": 0
+    }
+}
