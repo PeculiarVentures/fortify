@@ -12,52 +12,11 @@ import * as asn1js from 'asn1js';
 // @ts-ignore
 import * as pkijs from 'pkijs';
 import * as ssl from './ssl.js';
+import { APP_TMP_DIR, APP_LOG_FILE, APP_CONFIG_FILE, APP_SSL_CERT, APP_SSL_KEY, APP_SSL_CERT_CA, ICON_DIR, HTML_DIR } from './const';
+import { ConfigureRead, ConfigureWrite } from './config';
 
-const TMP_DIR = os.homedir();
-const APP_TMP_DIR = path.join(TMP_DIR, '.fortify');
 if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
-}
-const APP_LOG_FILE = path.join(APP_TMP_DIR, `LOG.log`);
-const APP_CONFIG_FILE = path.join(APP_TMP_DIR, `config.json`);
-const APP_SSL_CERT_CA = path.join(APP_TMP_DIR, `ca.pem`);
-const APP_SSL_CERT = path.join(APP_TMP_DIR, `cert.pem`);
-const APP_SSL_KEY = path.join(APP_TMP_DIR, `key.pem`);
-
-/**
- * 
- * @typedef {Object} IConfigure
- * @property {boolean} [logging]
- */
-
-/**
- * Read config file by path
- * 
- * @param {string} path Path to file config
- * @returns {IConfigure}
- */
-function ConfigureRead(path) {
-  let res;
-  if (!fs.existsSync(path)) {
-    // Create config with default data
-    res = {};
-    ConfigureWrite(APP_CONFIG_FILE, res);
-  } else {
-    const json = fs.readFileSync(APP_CONFIG_FILE, 'utf8');
-    res = JSON.parse(json);
-  }
-  return res;
-}
-
-/**
- * Write config data to file
- * 
- * @param {string}      path    Path to config file
- * @param {IConfigure}  config  Config data
- */
-function ConfigureWrite(path, config) {
-  const json = JSON.stringify(config, null, '  ');
-  fs.writeFileSync(path, json, { flag: 'w+' });
 }
 
 winston.clear();
@@ -91,26 +50,22 @@ if ('dock' in app) {
 
 let tray;
 
-const DIR_SRC = path.join(__dirname, '..', 'src');
-const DIR_HTMLS = path.join(DIR_SRC, 'htmls');
-const DIR_ICONS = path.join(DIR_SRC, 'icons');
-
 const icons = {
-  tray: os.platform() === 'win32' ? path.join(DIR_ICONS, 'favicon-32x32.png') : path.join(DIR_ICONS, 'tray', 'icon.png'),
-  trayWhite: path.join(DIR_ICONS, 'tray', 'icon_pressed.png'),
-  favicon: path.join(DIR_ICONS, 'favicon-32x32.png'),
+  tray: os.platform() === 'win32' ? path.join(ICON_DIR, 'favicon-32x32.png') : path.join(ICON_DIR, 'tray', 'icon.png'),
+  trayWhite: path.join(ICON_DIR, 'tray', 'icon_pressed.png'),
+  favicon: path.join(ICON_DIR, 'favicon-32x32.png'),
 };
 
 const htmls = {
-  index: path.join(DIR_HTMLS, 'index.html'),
-  keyPin: path.join(DIR_HTMLS, '2key-pin.html'),
-  pkcsPin: path.join(DIR_HTMLS, 'pkcs11-pin.html'),
-  about: path.join(DIR_HTMLS, 'about.html'),
-  manage: path.join(DIR_HTMLS, 'manage.html'),
-  message_question: path.join(DIR_HTMLS, 'message_question.html'),
-  message_error: path.join(DIR_HTMLS, 'message_error.html'),
-  message_warn: path.join(DIR_HTMLS, 'message_warn.html'),
-  keys: path.join(DIR_HTMLS, 'keys.html'),
+  index: path.join(HTML_DIR, 'index.html'),
+  keyPin: path.join(HTML_DIR, '2key-pin.html'),
+  pkcsPin: path.join(HTML_DIR, 'pkcs11-pin.html'),
+  about: path.join(HTML_DIR, 'about.html'),
+  manage: path.join(HTML_DIR, 'manage.html'),
+  message_question: path.join(HTML_DIR, 'message_question.html'),
+  message_error: path.join(HTML_DIR, 'message_error.html'),
+  message_warn: path.join(HTML_DIR, 'message_warn.html'),
+  keys: path.join(HTML_DIR, 'keys.html'),
 };
 
 const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {

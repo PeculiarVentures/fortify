@@ -20,20 +20,20 @@ module.exports = {
     extensions: ['.js', '.jsx'],
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      beautify: false,
-      comments: false,
-      sourceMap: true,
-      compress: {
-        sequences: true,
-        booleans: true,
-        loops: true,
-        unused: true,
-        warnings: false,
-        drop_console: true,
-        unsafe: true,
-      },
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   beautify: false,
+    //   comments: false,
+    //   sourceMap: true,
+    //   compress: {
+    //     sequences: true,
+    //     booleans: true,
+    //     loops: true,
+    //     unused: true,
+    //     warnings: false,
+    //     drop_console: true,
+    //     unsafe: true,
+    //   },
+    // }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
@@ -52,10 +52,12 @@ module.exports = {
     'child_process': 'require("child_process")',
     'electron': 'require("electron")',
     'fs': 'require("fs")',
+    'jose-jwe': 'require("jose-jwe")',
     'node-webcrypto-ossl': 'require("node-webcrypto-ossl")',
     'os': 'require("os")',
     'path': 'require("path")',
     'pkijs': 'require("pkijs")',
+    'request': 'require("request")',
     'sudo-prompt': 'require("sudo-prompt")',
     'url': 'require("url")',
     'webcrypto-local': 'require("webcrypto-local")',

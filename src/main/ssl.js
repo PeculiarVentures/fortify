@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as asn1js from 'asn1js';
 import * as sudo from 'sudo-prompt';
 import * as pkijs from 'pkijs';
+import { SRC_DIR } from './const';
 const CryptoOpenSSL = require('node-webcrypto-ossl');
 
 const crypto = new CryptoOpenSSL();
@@ -25,7 +26,7 @@ const hashAlg = 'SHA-256';
  * @param {CryptoKey}       caKey       Issuer's private key for cert TBS signing 
  * @returns 
  */
-async function GenerateCertificate (keyPair, caKey) {
+async function GenerateCertificate(keyPair, caKey) {
   const certificate = new pkijs.Certificate();
 
   // region Put a static values 
@@ -107,7 +108,7 @@ async function GenerateCertificate (keyPair, caKey) {
  * @param {CryptoKeyPair}   keyPair     Key pair of CA cert
  * @returns 
  */
-async function GenerateCertificateCA (keyPair) {
+async function GenerateCertificateCA(keyPair) {
   const certificate = new pkijs.Certificate();
 
   // region Put a static values 
@@ -155,7 +156,7 @@ async function GenerateCertificateCA (keyPair) {
  * 
  * @returns {Promise<CryptoKeyPair>} 
  */
-async function GenerateKey () {
+async function GenerateKey() {
   return crypto.subtle.generateKey(alg, true, ['sign', 'verify']);
 }
 
@@ -165,7 +166,7 @@ async function GenerateKey () {
  * @param {CryptoKey} key 
  * @returns {Promise<string>}
  */
-async function ConvertKeyToPEM (key) {
+async function ConvertKeyToPEM(key) {
   const format = key.type === 'public' ? 'spki' : 'pkcs8';
   const der = await crypto.subtle.exportKey(format, key);
   return ConvertToPEM(der, `RSA ${key.type.toUpperCase()} KEY`);
@@ -178,7 +179,7 @@ async function ConvertKeyToPEM (key) {
  * @param {string}          tag     tag name for BEGIN/END block
  * @returns {string}
  */
-function ConvertToPEM (der, tag) {
+function ConvertToPEM(der, tag) {
   const derBuffer = Buffer.from(der);
   const b64 = derBuffer.toString('base64');
   const stringLength = b64.length;
@@ -212,7 +213,7 @@ function ConvertToPEM (der, tag) {
  * @export
  * @returns {Promise<ISslGenerateResult>}
  */
-export async function generate () {
+export async function generate() {
   const rootKeys = await GenerateKey();
   const rootCert = await GenerateCertificateCA(rootKeys);
   const localhostKeys = await GenerateKey();
@@ -235,7 +236,7 @@ export async function generate () {
  * @export
  * @param {string}  certPath    Path to cert which must be installed to trusted store
  */
-export async function InstallTrustedCertificate (certPath) {
+export async function InstallTrustedCertificate(certPath) {
   const platform = os.platform();
   switch (platform) {
     case 'darwin':
@@ -255,7 +256,7 @@ export async function InstallTrustedCertificate (certPath) {
  * 
  * @param {string}  certPath Path to cert
  */
-async function InstallTrustedOSX (certPath) {
+async function InstallTrustedOSX(certPath) {
   // install certificate to system key chain
   await new Promise((resolve, reject) => {
     const options = {
@@ -264,7 +265,7 @@ async function InstallTrustedOSX (certPath) {
     };
     const appPath = path.dirname(certPath);
     const username = os.userInfo().username;
-    sudo.exec(`appPath=${appPath} userDir=${os.homedir()} USER=${username} bash ${__dirname}/../src/resources/osx-ssl.sh`, options, (err, stdout) => {
+    sudo.exec(`appPath=${appPath} userDir=${os.homedir()} USER=${username} bash ${SRC_DIR}/resources/osx-ssl.sh`, options, (err, stdout) => {
       // console.log(stdout.toString());
       if (err) {
         reject(err);
@@ -280,7 +281,7 @@ async function InstallTrustedOSX (certPath) {
  * 
  * @param {string}  certPath Path to cert
  */
-async function InstallTrustedWindows (certPath) {
+async function InstallTrustedWindows(certPath) {
   const USER_HOME = os.homedir();
   const FIREFOX_DIR = path.normalize(`${USER_HOME}/AppData/Roaming/Mozilla/Firefox/Profiles`);
   const CERTUTIL = path.normalize(`${__dirname}\\..\\..\\certutil.exe`);
