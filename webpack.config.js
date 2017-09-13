@@ -9,6 +9,7 @@ module.exports = {
         './src/renderer/keys/index.jsx'
       ),
     ],
+    main: path.join(__dirname, './src/main/main.js'),
   },
   output: {
     path: path.resolve(__dirname, 'out'),
@@ -43,8 +44,22 @@ module.exports = {
       async: true,
     }),
   ],
+  node: {
+    __dirname: false,
+  },
   externals: {
+    'asn1js': 'require("asn1js")',
+    'child_process': 'require("child_process")',
     'electron': 'require("electron")',
+    'fs': 'require("fs")',
+    'node-webcrypto-ossl': 'require("node-webcrypto-ossl")',
+    'os': 'require("os")',
+    'path': 'require("path")',
+    'pkijs': 'require("pkijs")',
+    'sudo-prompt': 'require("sudo-prompt")',
+    'url': 'require("url")',
+    'webcrypto-local': 'require("webcrypto-local")',
+    'winston': 'require("winston")',
   },
   module: {
     rules: [

@@ -36,7 +36,7 @@ const APP_SSL_KEY = path.join(APP_TMP_DIR, `key.pem`);
  * @param {string} path Path to file config
  * @returns {IConfigure}
  */
-function ConfigureRead (path) {
+function ConfigureRead(path) {
   let res;
   if (!fs.existsSync(path)) {
     // Create config with default data
@@ -55,7 +55,7 @@ function ConfigureRead (path) {
  * @param {string}      path    Path to config file
  * @param {IConfigure}  config  Config data
  */
-function ConfigureWrite (path, config) {
+function ConfigureWrite(path, config) {
   const json = JSON.stringify(config, null, '  ');
   fs.writeFileSync(path, json, { flag: 'w+' });
 }
@@ -67,7 +67,7 @@ winston.clear();
  * 
  * @param {boolean} enabled 
  */
-function LoggingSwitch (enabled) {
+function LoggingSwitch(enabled) {
   if (enabled) {
     const options = { flag: 'w+' };
     if (!fs.existsSync(APP_LOG_FILE)) {
@@ -91,22 +91,26 @@ if ('dock' in app) {
 
 let tray;
 
+const DIR_SRC = path.join(__dirname, '..', 'src');
+const DIR_HTMLS = path.join(DIR_SRC, 'htmls');
+const DIR_ICONS = path.join(DIR_SRC, 'icons');
+
 const icons = {
-  tray: os.platform() === 'win32' ? path.join(__dirname, '..', 'src/icons/favicon-32x32.png') : path.join(__dirname, '..', 'src/icons/tray/icon.png'),
-  trayWhite: path.join(__dirname, '..', 'src/icons/tray/icon_pressed.png'),
-  favicon: path.join(__dirname, '..', 'src/icons/favicon-32x32.png'),
+  tray: os.platform() === 'win32' ? path.join(DIR_ICONS, 'favicon-32x32.png') : path.join(DIR_ICONS, 'tray', 'icon.png'),
+  trayWhite: path.join(DIR_ICONS, 'tray', 'icon_pressed.png'),
+  favicon: path.join(DIR_ICONS, 'favicon-32x32.png'),
 };
 
 const htmls = {
-  index: path.join(__dirname, '..', 'src/htmls/index.html'),
-  keyPin: path.join(__dirname, '..', 'src/htmls/2key-pin.html'),
-  pkcsPin: path.join(__dirname, '..', 'src/htmls/pkcs11-pin.html'),
-  about: path.join(__dirname, '..', 'src/htmls/about.html'),
-  manage: path.join(__dirname, '..', 'src/htmls/manage.html'),
-  message_question: path.join(__dirname, '..', 'src/htmls/message_question.html'),
-  message_error: path.join(__dirname, '..', 'src/htmls/message_error.html'),
-  message_warn: path.join(__dirname, '..', 'src/htmls/message_warn.html'),
-  keys: path.join(__dirname, '..', 'src/htmls/keys.html'),
+  index: path.join(DIR_HTMLS, 'index.html'),
+  keyPin: path.join(DIR_HTMLS, '2key-pin.html'),
+  pkcsPin: path.join(DIR_HTMLS, 'pkcs11-pin.html'),
+  about: path.join(DIR_HTMLS, 'about.html'),
+  manage: path.join(DIR_HTMLS, 'manage.html'),
+  message_question: path.join(DIR_HTMLS, 'message_question.html'),
+  message_error: path.join(DIR_HTMLS, 'message_error.html'),
+  message_warn: path.join(DIR_HTMLS, 'message_warn.html'),
+  keys: path.join(DIR_HTMLS, 'keys.html'),
 };
 
 const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {
@@ -228,7 +232,7 @@ app.on('ready', () => {
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
-function CreateWindow () {
+function CreateWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 800, height: 600, show: false });
 
@@ -261,7 +265,7 @@ try {
   winston.error(e.toString());
 }
 
-function CheckSSL () {
+function CheckSSL() {
   if (fs.existsSync(APP_SSL_CERT) && fs.existsSync(APP_SSL_KEY)) {
     const sslCert = fs.readFileSync(APP_SSL_CERT, 'utf8').replace(/-{5}[\w\s]+-{5}/ig, '').replace(/\r/g, '').replace(/\n/g, '');
 
@@ -281,7 +285,7 @@ function CheckSSL () {
   return false;
 }
 
-async function InitService () {
+async function InitService() {
   let sslData;
 
   if (!CheckSSL()) {
@@ -411,7 +415,7 @@ async function InitService () {
 }
 
 let aboutWindow = null;
-function CreateAboutWindow () {
+function CreateAboutWindow() {
   // Create the browser window.
   if (aboutWindow) {
     aboutWindow.focus();
@@ -444,7 +448,7 @@ function CreateAboutWindow () {
 }
 
 let manageWindow = null;
-function CreateManageWindow () {
+function CreateManageWindow() {
   // Create the browser window.
   if (manageWindow) {
     return;
@@ -483,7 +487,7 @@ let errorWindow = null;
  * @param {Function}    [cb]    Callback on message close 
  * @returns 
  */
-function CreateErrorWindow (text, cb) {
+function CreateErrorWindow(text, cb) {
   // Create the browser window.
   if (errorWindow) {
     errorWindow.show();
@@ -530,7 +534,7 @@ let warnWindow = null;
  * @param {Function}    [cb]    Callback on message close 
  * @returns 
  */
-function CreateWarningWindow (text, cb) {
+function CreateWarningWindow(text, cb) {
   // Create the browser window.
   if (warnWindow) {
     warnWindow.show();
@@ -570,7 +574,7 @@ function CreateWarningWindow (text, cb) {
 }
 
 let keysWindow = null;
-function CreateKeysWindow () {
+function CreateKeysWindow() {
   // Create the browser window.
   if (keysWindow) {
     keysWindow.focus();
@@ -602,7 +606,7 @@ function CreateKeysWindow () {
   });
 }
 
-function InitMessages () {
+function InitMessages() {
   ipcMain.on('2key-list', (event, arg) => {
     Promise.resolve()
       .then(() => {
@@ -704,7 +708,7 @@ function InitMessages () {
  * 
  * @param {WebCryptoLocal.RemoteIdentityEx} identity 
  */
-function PrepareIdentity (identity) {
+function PrepareIdentity(identity) {
   const userAgent = identity.userAgent;
   /** @type {Identity} */
   let res = {};
@@ -744,7 +748,7 @@ function PrepareIdentity (identity) {
  * @param {Function}            cb
  * @return {BrowserWindow}
  */
-function CreateQuestionWindow (text, options, cb) {
+function CreateQuestionWindow(text, options, cb) {
   // Create the browser window.
   const errorWindow = new BrowserWindow({
     width: 500,

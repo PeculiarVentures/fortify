@@ -14,7 +14,7 @@ const alg = {
   name: 'RSASSA-PKCS1-v1_5',
   publicExponent: new Uint8Array([1, 0, 1]),
   modulusLength: 2048,
-  hash: 'SHA-256'
+  hash: 'SHA-256',
 };
 const hashAlg = 'SHA-256';
 
@@ -36,13 +36,13 @@ async function GenerateCertificate (keyPair, caKey) {
 
   const commonName = new pkijs.AttributeTypeAndValue({
     type: '2.5.4.3', // Common name
-    value: new asn1js.PrintableString({ value: 'fortifyapp.com' })
+    value: new asn1js.PrintableString({ value: 'fortifyapp.com' }),
   });
 
   certificate.subject.typesAndValues.push(commonName);
   certificate.issuer.typesAndValues.push(new pkijs.AttributeTypeAndValue({
     type: '2.5.4.3', // Common name
-    value: new asn1js.PrintableString({ value: 'Fortify Local CA' })
+    value: new asn1js.PrintableString({ value: 'Fortify Local CA' }),
   }));
 
   // Valid period is 1 year
@@ -55,13 +55,13 @@ async function GenerateCertificate (keyPair, caKey) {
 
   // Extended key usage
   const extKeyUsage = new pkijs.ExtKeyUsage({
-    keyPurposes: ['1.3.6.1.5.5.7.3.1']
+    keyPurposes: ['1.3.6.1.5.5.7.3.1'],
   });
   certificate.extensions.push(new pkijs.Extension({
     extnID: '2.5.29.37',
     critical: true,
     extnValue: extKeyUsage.toSchema().toBER(false),
-    parsedValue: extKeyUsage
+    parsedValue: extKeyUsage,
   }));
 
   // Subject alternative name
@@ -69,30 +69,30 @@ async function GenerateCertificate (keyPair, caKey) {
     altNames: [
       new pkijs.GeneralName({
         type: 2,
-        value: 'localhost'
+        value: 'localhost',
       }),
       new pkijs.GeneralName({
         type: 7,
-        value: new asn1js.OctetString({ valueHex: new Uint8Array(Buffer.from('7F000001', 'hex')).buffer })
-      })
-    ]
+        value: new asn1js.OctetString({ valueHex: new Uint8Array(Buffer.from('7F000001', 'hex')).buffer }),
+      }),
+    ],
   });
   certificate.extensions.push(new pkijs.Extension({
     extnID: '2.5.29.17',
     critical: false,
     extnValue: subjectAlternativeName.toSchema().toBER(false),
-    parsedValue: subjectAlternativeName
+    parsedValue: subjectAlternativeName,
   }));
 
   // Basic constraints
   const basicConstraints = new pkijs.BasicConstraints({
-    cA: false
+    cA: false,
   });
   certificate.extensions.push(new pkijs.Extension({
     extnID: '2.5.29.19',
     critical: false,
     extnValue: basicConstraints.toSchema().toBER(false),
-    parsedValue: basicConstraints
+    parsedValue: basicConstraints,
   }));
 
   await certificate.subjectPublicKeyInfo.importKey(keyPair.publicKey);
@@ -118,7 +118,7 @@ async function GenerateCertificateCA (keyPair) {
 
   const commonName = new pkijs.AttributeTypeAndValue({
     type: '2.5.4.3', // Common name
-    value: new asn1js.PrintableString({ value: 'Fortify Local CA' })
+    value: new asn1js.PrintableString({ value: 'Fortify Local CA' }),
   });
 
   certificate.issuer.typesAndValues.push(commonName);
@@ -135,13 +135,13 @@ async function GenerateCertificateCA (keyPair) {
   // Basic constraints
   const basicConstraints = new pkijs.BasicConstraints({
     cA: true,
-    pathLenConstraint: 2
+    pathLenConstraint: 2,
   });
   certificate.extensions.push(new pkijs.Extension({
     extnID: '2.5.29.19',
     critical: false,
     extnValue: basicConstraints.toSchema().toBER(false),
-    parsedValue: basicConstraints
+    parsedValue: basicConstraints,
   }));
 
   await certificate.subjectPublicKeyInfo.importKey(keyPair.publicKey);
@@ -225,7 +225,7 @@ export async function generate () {
   return {
     root: Buffer.from(rootCertPem),
     cert: Buffer.from(localhostCertPem),
-    key: Buffer.from(keyPem)
+    key: Buffer.from(keyPem),
   };
 }
 
@@ -260,7 +260,7 @@ async function InstallTrustedOSX (certPath) {
   await new Promise((resolve, reject) => {
     const options = {
       name: 'Fortify application',
-      icons: '/Applications/Fortify.app/Contents/Resources/icons/icon.icns'
+      icons: '/Applications/Fortify.app/Contents/Resources/icons/icon.icns',
     };
     const appPath = path.dirname(certPath);
     const username = os.userInfo().username;

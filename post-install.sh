@@ -11,6 +11,9 @@ DIR_APP=$HOME/.fortify
 if [ ! -f $HOME ]; then
     mkdir $DIR_APP
     chown -R $USER $DIR_APP
+else
+    # remove 2key-ratchet
+    rm -r $DIR_APP/2key-ratchet
 fi
 TMPDIR=$DIR_APP open /Applications/Fortify.app
 # launchctl start com.peculiarventures.fortify

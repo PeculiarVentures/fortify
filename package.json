@@ -8,10 +8,8 @@
     "clear": "node scripts/build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build": "npm run build:main && npm run build:renderer && npm run clear && npm run build:package",
+    "build:src": "webpack --config webpack.config.js",
     "build:package": "electron-packager . --arch=x64 --out=build --icon=src/icons/icon.icns --overwrite=true --electron-version=1.7.6 --app-bundle-id=com.peculiarventures.fortify --no-prune",
-    "build:main": "babel src/main --out-dir out",
-    "build:renderer": "webpack --config webpack.config.js",
     "build:dmg": "electron-installer-dmg build/Fortify-darwin-x64/Fortify.app fortify-mac-x64 --out=build --overwrite --icon=src/icons/favicon-32x32.png"
   },
   "keywords": [],
