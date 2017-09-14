@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as asn1js from 'asn1js';
 import * as sudo from 'sudo-prompt';
 import * as pkijs from 'pkijs';
+import * as winston from 'winston';
 import { SRC_DIR } from './const';
 const CryptoOpenSSL = require('node-webcrypto-ossl');
 
@@ -289,16 +290,20 @@ async function InstallTrustedWindows(certPath) {
 
   // check Firefox was installed
   if (fs.existsSync(FIREFOX_DIR)) {
+    winston.info(`SSL: Firefox default folder is found '${FIREFOX_DIR}'`);
     // get profiles
     fs.readdirSync(FIREFOX_DIR).map((item) => {
       const PROFILE_DIR = `${FIREFOX_DIR}\\${item}`;
       if (fs.existsSync(PROFILE_DIR)) {
         childProcess.execSync(`"${CERTUTIL}" -D -n "${CERT_NAME}" -d "${PROFILE_DIR}" | "${CERTUTIL}" -A -i "${certPath}" -n "${CERT_NAME}" -t "C,c,c" -d "${PROFILE_DIR}"`);
+        winston.info(`SSL: Firefox certificate was installed`);
         // restart firefox
         try {
+          winston.info(`SSL: Restart Firefox`);
           childProcess.execSync(`taskkill /F /IM firefox.exe`);
           childProcess.execSync(`start firefox`);
         } catch (err) {
+          winston.info(`SSL:Error: Cannot restart Firefox ${err.toString()}`);
           // firefox is not running
         }
       }
@@ -306,4 +311,5 @@ async function InstallTrustedWindows(certPath) {
   }
 
   childProcess.execSync(`certutil -addstore -user root "${certPath}"`);
+  winston.info(`SSL: Certificate was installed to System store`);
 }
