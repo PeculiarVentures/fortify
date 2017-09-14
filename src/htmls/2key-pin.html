@@ -19,7 +19,7 @@
     <div class="page">
         <div class="content center">
             <p>
-                A web application has requested permission to use your local certificates, keys, and smart cards.
+                <span id="origin" style="color: #4286f4"></span> has requested permission to use your local certificates, keys, and smart cards.
             </p>
             <p>
                 Compare this number to the number displayed by the web application:
@@ -44,6 +44,10 @@
 
         const $pin = document.getElementById("pin");
         const pin = currentWindow.params.pin.toString();
+        
+        const $origin = document.getElementById("origin");
+        const origin = currentWindow.params.origin;
+        $origin.textContent = origin;
 
         for (let i = 0; i < pin.length; i++) {
             const $num = document.createElement("div");
