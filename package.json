@@ -17,6 +17,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^7.0.28",
+    "@types/semver": "^5.4.0",
     "@types/winston": "^2.3.3",
     "babel-loader": "^7.1.2",
     "babel-plugin-react-transform": "^2.0.2",
@@ -44,8 +45,11 @@
   },
   "dependencies": {
     "asn1js": "^2.0.15",
+    "jose-jwe-jws": "github:microshine/js-jose",
     "node-webcrypto-ossl": "^1.0.31",
     "pkijs": "^2.0.66",
+    "request": "^2.81.0",
+    "semver": "^5.4.1",
     "sudo-prompt": "^7.1.1",
     "webcrypto-local": "git+ssh://git@github.com/PeculiarVentures/webcrypto-local.git",
     "winston": "^2.3.1"

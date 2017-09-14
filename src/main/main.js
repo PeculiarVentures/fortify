@@ -1,19 +1,25 @@
 /// <reference path="./types.d.ts" />
 // @ts-check
 
+// @ts-ignore
 import { Tray, BrowserWindow, shell, nativeImage, screen, app, Menu, MenuItem, ipcMain } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
 import * as os from 'os';
+import * as semver from 'semver';
 import * as winston from 'winston';
 // PKI
 import * as asn1js from 'asn1js';
 // @ts-ignore
 import * as pkijs from 'pkijs';
 import * as ssl from './ssl.js';
-import { APP_TMP_DIR, APP_LOG_FILE, APP_CONFIG_FILE, APP_SSL_CERT, APP_SSL_KEY, APP_SSL_CERT_CA, ICON_DIR, HTML_DIR } from './const';
+import {
+  APP_TMP_DIR, APP_LOG_FILE, APP_CONFIG_FILE, APP_SSL_CERT, APP_SSL_KEY, APP_SSL_CERT_CA,
+  ICON_DIR, HTML_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL, APP_DIR, DOWNLOAD_LINK,
+} from './const';
 import { ConfigureRead, ConfigureWrite } from './config';
+import { GetUpdateInfo } from './update';
 
 if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
@@ -165,6 +171,12 @@ app.on('ready', () => {
     tray.setContextMenu(contextMenu);
 
     CreateWindow();
+    if (CHECK_UPDATE) {
+      await CheckUpdate();
+      setInterval(() => {
+        CheckUpdate();
+      }, CHECK_UPDATE_INTERVAL);
+    }
     await InitService();
     InitMessages();
   })()
@@ -343,6 +355,8 @@ async function InitService() {
             minimizable: false,
             icon: icons.favicon,
           });
+
+          console.log(p);
 
           // and load the index.html of the app.
           window.loadURL(url.format({
@@ -738,4 +752,45 @@ function CreateQuestionWindow(text, options, cb) {
   });
 
   return errorWindow;
+}
+
+async function CheckUpdate() {
+  try {
+    const update = await GetUpdateInfo();
+    // get current version
+    const packageJson = fs.readFileSync(path.join(APP_DIR, 'package.json')).toString();
+    const curVersion = JSON.parse(packageJson).version;
+
+    // compare versions
+    if (semver.lt(curVersion, update.version)) {
+      await new Promise((resolve, reject) => {
+        CreateQuestionWindow(`New update is available. Do you want to download version ${update.version} now?`, {}, (res) => {
+          if (res) {
+            // yes
+            winston.info(`User agreed to download new version ${update.version}`);
+            shell.openExternal(DOWNLOAD_LINK);
+          } else {
+            // no
+            winston.info(`User refused to download new version ${update.version}`);
+          }
+          if (update.min && semver.lt(curVersion, update.min)) {
+            winston.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
+            CreateErrorWindow(`Application cannot be started until new update will be applied`, () => {
+              winston.info(`Close application`);
+              app.quit();
+            });
+          } else {
+            resolve();
+          }
+        });
+      });
+    }
+  } catch (e) {
+    winston.error(e.toString());
+    await new Promise((resolve, reject) => {
+      CreateErrorWindow(e.toString(), () => {
+        app.quit();
+      });
+    });
+  }
 }
