@@ -15,8 +15,8 @@ export const APP_SSL_CERT_CA = path.join(APP_TMP_DIR, `ca.pem`);
 export const APP_SSL_CERT = path.join(APP_TMP_DIR, `cert.pem`);
 export const APP_SSL_KEY = path.join(APP_TMP_DIR, `key.pem`);
 
-// export const JWK_LINK = 'https://fortifyapp.com/update.jws';
-export const JWS_LINK = 'http://127.0.0.1:8080/update.jws';
+export const JWS_LINK = 'https://fortifyapp.com/packages/update.jws';
+// export const JWS_LINK = 'http://127.0.0.1:8080/update.jws';
 export const DOWNLOAD_LINK = 'https://fortifyapp.com/#download_app';
 export const CHECK_UPDATE = true;
 export const CHECK_UPDATE_INTERVAL = 24 * 60 * 60e3; // 24h

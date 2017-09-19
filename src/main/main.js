@@ -20,6 +20,7 @@ import {
 } from './const';
 import { ConfigureRead, ConfigureWrite } from './config';
 import { GetUpdateInfo } from './update';
+import { UpdateError } from './update_error';
 
 if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
@@ -764,7 +765,7 @@ async function CheckUpdate() {
     // compare versions
     if (semver.lt(curVersion, update.version)) {
       await new Promise((resolve, reject) => {
-        CreateQuestionWindow(`New update is available. Do you want to download version ${update.version} now?`, {}, (res) => {
+        CreateQuestionWindow(`A new update is available. Do you want to download version ${update.version} now?`, {}, (res) => {
           if (res) {
             // yes
             winston.info(`User agreed to download new version ${update.version}`);
@@ -787,10 +788,18 @@ async function CheckUpdate() {
     }
   } catch (e) {
     winston.error(e.toString());
-    await new Promise((resolve, reject) => {
-      CreateErrorWindow(e.toString(), () => {
-        app.quit();
+    if (e.type === 'UpdateError' && !e.critical) {
+      // await new Promise((resolve, reject) => {
+      //   CreateWarningWindow(``, () => {
+      //     resolve();
+      //   });
+      // });
+    } else {
+      await new Promise((resolve, reject) => {
+        CreateErrorWindow(e.toString(), () => {
+          app.quit();
+        });
       });
-    });
+    }
   }
 }

@@ -4,6 +4,7 @@ import * as jose from 'jose-jwe-jws';
 import * as winston from 'winston';
 
 import { JWS_LINK } from './const';
+import { UpdateError } from './update_error';
 
 const CryptoOssl = require('node-webcrypto-ossl');
 // @ts-ignore
@@ -17,11 +18,9 @@ function GetJWS() {
       encoding: 'utf8',
     }, (error, response, body) => {
       if (error) {
-        if (error.code === 'ECONNREFUSED') {
-          reject(new Error('Unable to connect to update server'));
-        } else {
-          reject(error);
-        }
+        winston.warn(`Cannot GET ${JWS_LINK}`);
+        winston.error(error.toString());
+        reject(new UpdateError('Unable to connect to update server', false));
       } else {
         resolve(body);
       }
@@ -64,20 +63,20 @@ export async function GetUpdateInfo() {
     verifier = new jose.JoseJWS.Verifier(joseCrypto, jws);
   } catch (e) {
     winston.error(`GetUpdateInfo: ${e.toString()}`);
-    throw new Error('Unable to check for updated version. Malformed update metadata.');
+    throw new UpdateError('Unable to check for updated version. Malformed update metadata.', true);
   }
   await verifier.addRecipient(joseKey.key, joseKey.kid);
   try {
     verifyRes = await verifier.verify();
   } catch (e) {
     winston.error(`GetUpdateInfo: ${e.toString()}`);
-    throw new Error('Unable to check for updated version. Malformed update metadata.');
+    throw new UpdateError('Unable to check for updated version. Malformed update metadata.', true);
   }
   if (verifyRes && verifyRes.length === 1 && verifyRes[0].verified) {
     const payload = verifyRes[0].payload;
     const updateInfo = JSON.parse(payload);
     return updateInfo;
   } else {
-    throw new Error('Unable to check for updated version. Invalid signature on metadata.');
+    throw new UpdateError('Unable to check for updated version. Invalid signature on metadata.', true);
   }
 }
