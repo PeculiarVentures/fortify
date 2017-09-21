@@ -357,8 +357,6 @@ async function InitService() {
             icon: icons.favicon,
           });
 
-          console.log(p);
-
           // and load the index.html of the app.
           window.loadURL(url.format({
             pathname: htmls.pkcsPin,
@@ -371,7 +369,11 @@ async function InitService() {
           p.pin = '';
 
           window.on('closed', () => {
-            p.resolve(p.pin);
+            if (p.pin) {
+              p.resolve(p.pin);
+            } else {
+              p.reject(new Error('Incorrect PIN value. It cannot be empty.'));
+            }
           });
           break;
         }
