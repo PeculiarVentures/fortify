@@ -29,6 +29,6 @@
       "id": "6",
       "question": "Why doesn't Fortify see my certificates?",
       "answer": "It is hard to say, there is a chance Fortify is having a problem reading your smart card or token, possibly because there is no PKCS#11 library loaded for it. Another possibility is that maybe the application that uses Fortify is filtering the certificate from the list that it is displaying. Please file a bug in the Github repository with the Fortify log file and detailed information about your environment and problem and we will try to help."
-    },
+    }
   ]
 }
