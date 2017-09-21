@@ -7,6 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Fortify Security</title>
     <link rel="stylesheet" href="../style/main.css">
+    <style>
+        p {
+            font-size: 14px;
+            padding: 5px 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -15,12 +21,15 @@
             <div>
                 <h3>Smart card or Token</h3>
                 <p>
-                    A website has requested access to your certificates and cryptographic keys.
+                    <span id="origin">A website</span> has requested permission to use your local certificates and keys.
+                </p>
+                <p>
+                    To provide it access you will need to provide the PIN or password protecting them.
                 </p>
                 <table>
                     <tbody>
                         <tr>
-                            <td style="padding: 32px 32px 32px 0">
+                            <td style="padding: 16px 16px 32px 0">
                                 <img src="../icons/smart_card.png" alt="Smart Card" width="96px">
                             </td>
                             <td>
@@ -46,6 +55,12 @@
     <script>
         var electron = require('electron');
         var currentWindow = electron.remote.getCurrentWindow();
+
+        var $origin = document.getElementById("origin");
+        if (currentWindow.params.origin) {
+            $origin.textContent = currentWindow.params.origin;
+            $origin.setAttribute("style", "color: #4286f4");
+        }
 
         function btnOkClick() {
             currentWindow.params.pin = document.getElementById("input_pin").value || "";
