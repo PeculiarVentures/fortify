@@ -1,0 +1,5 @@
+node_modules
+.idea
+.gulp
+.DS_Store
+build

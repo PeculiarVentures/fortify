@@ -1,0 +1,247 @@
+{
+  "$schema": "./card.schema.json",
+  "cards": [
+    {
+      "atr": "3b9813400aa503010101ad1311",
+      "name": "Belgian eID",
+      "driver": "89648ea52ed24a799aff9f9ff363eef4"
+    },
+    {
+      "atr": "3BFE1800008131FE458031815448534D31738021408107FA",
+      "name": "Nitrokey Nitrokey HSM",
+      "driver": "993988460d8f49a2ac519a2935f11533"
+    },
+    {
+      "atr": "3B7D18000000487970734944205333079000",
+      "name": "Safran Morpho YpsID S3",
+      "driver": "fea007cafe404e4fb56a8be39f60dc8f"
+    },
+    {
+      "atr": "3B7A18000000487970734944205333",
+      "name": "Safran Morpho YpsID S3 - French Customs",
+      "driver": "fea007cafe404e4fb56a8be39f60dc8f"
+    },
+    {
+      "atr": "3B941881B1807D1F0319C80050DC",
+      "name": "GoldKey Security PIV Token",
+      "driver": "993988460d8f49a2ac519a2935f00533"
+    },
+    {
+      "atr": "3bff0000008131004380318065b000000000120ffe82900000",
+      "name": "Gemalto IDPrime v2+ .NET",
+      "driver": "993988460d8f49a2ac519a5555f00533"
+    },
+    {
+      "atr": "3B8980014A434F5032343252324A",
+      "name": "NXP JCOP J3D",
+      "driver": "993988460d8f49a2ac519a2935f11533"
+    },
+    {
+      "atr": "3BD518008131FE7D8073C82110F4",
+      "name": "Aladdin eToken PRO USB 72K Java",
+      "driver": "39b3d7a3662c4b48bb120d008dd18648"
+    },
+    {
+      "atr": "3BD518008131FE7D8073C82110F4",
+      "name": "SafeNet eToken 5100",
+      "driver": "39b3d7a3662c4b48bb120d008dd18648"
+    },
+    {
+      "atr": "3bff1100008131fe4d8025a00000005657444b3333300600d0",
+      "name": "Datakey 32K PKI Smart Card Model 330",
+      "driver": "39b3d7a3662c4b48bb120d008dd18648"
+    },
+    {
+      "atr": "3BFC1300008131FE15597562696B65794E454F7233E1",
+      "name": "Yubico Yubikey NEO OTP+U2F+CCID",
+      "driver": "993988460d8f49a2ac519a2935f00533"
+    },
+    {
+      "atr": "3BF81300008131FE15597562696B657934D4",
+      "name": "Yubico Yubikey 4 OTP+U2F+CCID",
+      "driver": "993988460d8f49a2ac519a2935f00533"
+    },
+    {
+      "atr": "3BFE9400FF80B1FA451F0345737445494420",
+      "name": "Broken EstEID 1.1 warm",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3BFE9400FF80B1FA451F034573744549442076657220312E3043",
+      "name": "EstEID 1.0 cold",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3B6E00FF4573744549442076657220312E30",
+      "name": "EstEID 1.0 cold",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3BDE18FFC080B1FE451F034573744549442076657220312E302B",
+      "name": "EstEID 1.0 cold 2006",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3B5E11FF4573744549442076657220312E30",
+      "name": "EstEID 1.0 warm 2006",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3b6e00004573744549442076657220312e30",
+      "name": "EstEID 1.1 cold",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3BFE1800008031FE454573744549442076657220312E30A8",
+      "name": "EstEID 3.0 (dev1) cold",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3BFE1800008031FE45803180664090A4561B168301900086",
+      "name": "EstEID 3.0 (dev1) warm",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3BFE1800008031FE45803180664090A4162A0083019000E1",
+      "name": "EstEID 3.0 (dev2) warm",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3BFE1800008031FE45803180664090A4162A00830F9000EF",
+      "name": "EstEID 3.0 (18.01.2011) warm",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3BFA1800008031FE45FE654944202F20504B4903",
+      "name": "EstEID 3.5 cold",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3BF81800008031FE45FE415A452044495433",
+      "name": "AzeDIT 3.5 cold",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3b8b015275746f6b656e20445320c1",
+      "name": "Rutoken ECP (DS)",
+      "driver": "7d3a38d2d8294234a53d5845d6d116c4"
+    },
+    {
+      "atr": "3BFC180000813180459067464A00642D70C172FEE0FE",
+      "name": "PivKey T800",
+      "readOnly": true,
+      "driver": "993988460d8f49a2ac519a2935f11533"
+    },
+    {
+      "atr": "3B9F958131FE9F006646530510001171DF000000000002",
+      "name": "PivKey T600",
+      "readOnly": true,
+      "driver": "993988460d8f49a2ac519a2935f11533"
+    },
+    {
+      "atr": "3bf99600008131fe45535049564b4559373028",
+      "name": "PIVKey SLE78 (28)",
+      "readOnly": true,
+      "driver": "993988460d8f49a2ac519a2935f11533"
+    },
+    {
+      "atr": "3BDF960081B1FE451F838073CC91CBF9A0000003080000100079",
+      "name": "USG:Executive Office of the President",
+      "driver": "993988460d8f49a2ac519a2935f11533"
+    },
+    {
+      "atr": "3BDB9600801F030031C064B0F310000F900088",
+      "name": "USG:Department of Veterans Affairs",
+      "driver": "993988460d8f49a2ac519a2935f11533"
+    },
+    {
+      "atr": "3BDF960081B1FE451F838073CC91CBF9A0000003080000100079",
+      "name": "USG:State Department",
+      "driver": "993988460d8f49a2ac519a2935f11533"
+    },
+    {
+      "atr": "3B7F96000080318065B0850300EF120FFE829000",
+      "name": "Gemalto IDPrime MD 840 (PKI)",
+      "readOnly": true,
+      "driver": "993988460d8f49a2ac519a5555f00533"
+    }
+  ],
+  "drivers": [
+    {
+      "id": "fea007cafe404e4fb56a8be39f60dc8f",
+      "name": "Safran Morpho",
+      "file": {
+        "windows": "/Windows/SysWOW64/CnfPkcs11v220.dll",
+        "osx": "/usr/local/lib/libCnfPkcs11.dylib "
+      }
+    },
+    {
+      "id": "39b3d7a3662c4b48bb120d008dd18648",
+      "name": "SafeNet Authentication Client",
+      "file": {
+        "windows": "/Windows/System32/eTPKCS11.dll",
+        "osx": "/usr/local/lib/libeTPkcs11.dylib",
+        "linux": "/usr/lib/libeTPkcs11.so"
+      }
+    },
+    {
+      "id": "c4e60449442848c48af7b3fcf6a6f4a1",
+      "name": "Estonian ID",
+      "file": {
+        "osx": "/Library/EstonianIDCard/lib/esteid-pkcs11-onepin.so"
+      }
+    },
+    {
+      "id": "993988460d8f49a2ac519a2935f00533",
+      "name": "YubiKey",
+      "file": {
+        "osx": "/usr/local/lib/libykcs11.dylib",
+        "linux": "/usr/local/lib/libykcs11.so",
+        "windows": "/Windows/System32/libykcs11-1.dll"
+      }
+    },
+    {
+      "id": "7d3a38d2d8294234a53d5845d6d116c4",
+      "name": "Rutoken",
+      "file": {
+        "windows": "/Windows/System32/rtPKCS11ECP.dll"
+      }
+    },
+    {
+      "id": "993988460d8f49a2ac519a2935f11533",
+      "name": "OpenSC PIV driver",
+      "file": {
+        "osx": "/Library/OpenSC/lib/pkcs11/opensc-pkcs11.so"
+      }
+    },
+    {
+      "id": "993988460d8f49a2ac519a5555f00533",
+      "name": "Gemalto IDPrime MD 840 (PKI)",
+      "file": {
+        "osx": "/usr/lib/pkcs11/libidprimepkcs11.dylib",
+        "windows": "/Program Files/Gemalto/DotNet PKCS11/gtop11dotnet64.dll"
+      }
+    },
+    {
+      "id": "89648ea52ed24a799aff9f9ff363eef4",
+      "name": "Belgian eID",
+      "file": {
+        "osx": "/usr/local/lib/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.dylib",
+        "linux": "/usr/lib/libbeidpkcs11.so",
+        "windows": "libbeidpkcs11.dll"
+      }
+    }
+  ]
+}

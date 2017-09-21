@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "id": "1",
+      "question": "How does Fortify work?",
+      "answer": "Fortify is a locally installed application that listens on a known TCP port. Web applications use the Fortify WebCrypto polyfill to communicate with this application which enables the web application to use smart cards, security tokens and locally installed certificates. "
+    },
+    {
+      "id": "2",
+      "question": "What smart cards do you support?",
+      "answer": "Generally Fortify should work with any PKCS#11 enabled smart card. For it to work though it needs to know which driver to load for a given smart card. At this time these are the smart cards that are currently supported:"
+    },
+    {
+      "id": "5",
+      "question": "Fortify is running but the web application says the server is offline, what do I do?",
+      "answer": "Web applications communicate with fortifying over a special network address known as 127.0.0.1 or localhost. Sometimes host based firewalls or proxy configurations will prevent this communication from taking place.\n\nIf you have either of these configured you can try to disable them temporarily and see if it enables the session to be established. Alternatively, you can just add exceptions to allow communications to 127.0.0.1 and try again."
+    },
+    {
+      "id": "3",
+      "question": "What Browsers does Fortify support?",
+      "answer": "IE 11, Edge, Safari, Firefox, and Chrome"
+    },
+    {
+      "id": "4",
+      "question": "What Operating Systems does Fortify support?",
+      "answer": "maxOS 10.12 or greater, Windows 7 and later"
+    },
+    {
+      "id": "6",
+      "question": "Why doesn't Fortify see my certificates?",
+      "answer": "It is hard to say, there is a chance Fortify is having a problem reading your smart card or token, possibly because there is no PKCS#11 library loaded for it. Another possibility is that maybe the application that uses Fortify is filtering the certificate from the list that it is displaying. Please file a bug in the Github repository with the Fortify log file and detailed information about your environment and problem and we will try to help."
+    },
+  ]
+}
