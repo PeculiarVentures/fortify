@@ -313,7 +313,7 @@ async function InitService() {
       CreateQuestionWindow(MESSAGE, {}, (res) => {
         if (res) {
           try {
-            const title = `Add support for '${card.reader}' token`;
+            const title = `Add support for '${card.atr.toString('hex')}' token`;
             const body = fs.readFileSync(TEMPLATE_NEW_CARD_FILE, { encoding: 'utf8' })
               .replace(/\$\{reader\}/g, card.reader)
               .replace(/\$\{atr\}/g, card.atr.toString('hex').toUpperCase())
