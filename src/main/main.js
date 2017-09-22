@@ -3,10 +3,12 @@
 
 // @ts-ignore
 import { Tray, BrowserWindow, shell, nativeImage, screen, app, Menu, MenuItem, ipcMain } from 'electron';
+import * as crypto from 'crypto';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
 import * as os from 'os';
+import * as querystring from 'querystring';
 import * as semver from 'semver';
 import * as winston from 'winston';
 // PKI
@@ -16,11 +18,10 @@ import * as pkijs from 'pkijs';
 import * as ssl from './ssl.js';
 import {
   APP_TMP_DIR, APP_LOG_FILE, APP_CONFIG_FILE, APP_SSL_CERT, APP_SSL_KEY, APP_SSL_CERT_CA,
-  ICON_DIR, HTML_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL, APP_DIR, DOWNLOAD_LINK,
+  ICON_DIR, HTML_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL, APP_DIR, DOWNLOAD_LINK, TEMPLATE_NEW_CARD_FILE,
 } from './const';
 import { ConfigureRead, ConfigureWrite } from './config';
 import { GetUpdateInfo } from './update';
-import { UpdateError } from './update_error';
 
 if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
@@ -305,6 +306,28 @@ async function InitService() {
     })
     .on('info', (message) => {
       winston.info(message);
+    })
+    .on('token_new', (card) => {
+      winston.info(`New token was found reader: '${card.reader}' ATR: ${card.atr.toString('hex')}`);
+      const MESSAGE = `We detected a unsupported smart card or token.\n\nWould you like to request support be added for this token?`;
+      CreateQuestionWindow(MESSAGE, {}, (res) => {
+        if (res) {
+          try {
+            const title = `Add support for '${card.reader}' token`;
+            const body = fs.readFileSync(TEMPLATE_NEW_CARD_FILE, { encoding: 'utf8' })
+              .replace(/\$\{reader\}/g, card.reader)
+              .replace(/\$\{atr\}/g, card.atr.toString('hex').toUpperCase())
+              .replace(/\$\{driver\}/g, crypto.randomBytes(20).toString('hex').toUpperCase());
+            const url = `https://github.com/PeculiarVentures/fortify/issues/new?` + querystring.stringify({
+              title,
+              body,
+            });
+            shell.openExternal(url);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      });
     })
     .on('error', (e) => {
       winston.error(e.stack || e.toString());

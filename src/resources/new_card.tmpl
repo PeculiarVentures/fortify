@@ -1,0 +1,20 @@
+Reader name: ${reader}
+ATR: ${atr}
+
+```js
+{
+   "cards": [{
+   	"atr": "${atr}",
+   	"name": "Token name",
+   	"driver": "${driver}"
+   }],
+   "drivers": [{
+   	"id": "${driver}",
+   	"name": "Driver name",
+   	"file": {
+   		"windows": "path/to/pkcs11.dll",
+   		"osx": "path/to/pkcs11.dylib"
+   	}
+   }]
+}
+```

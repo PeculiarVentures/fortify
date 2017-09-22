@@ -55,6 +55,7 @@ module.exports = {
     'jose-jwe-jws': 'require("jose-jwe-jws")',
     'node-webcrypto-ossl': 'require("node-webcrypto-ossl")',
     'os': 'require("os")',
+    'crypto': 'require("crypto")',
     'path': 'require("path")',
     'pkijs': 'require("pkijs")',
     'request': 'require("request")',
