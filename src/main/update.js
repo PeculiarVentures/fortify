@@ -22,7 +22,7 @@ function GetJWS() {
         winston.error(error.toString());
         reject(new UpdateError('Unable to connect to update server', false));
       } else {
-        resolve(body);
+        resolve(body.replace(/[\n\r]/g, ''));
       }
     });
   });
