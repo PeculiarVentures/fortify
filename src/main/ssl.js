@@ -10,7 +10,7 @@ import { SRC_DIR } from './const';
 const CryptoOpenSSL = require('node-webcrypto-ossl');
 
 const crypto = new CryptoOpenSSL();
-pkijs.setEngine('OpenSSL', crypto, crypto.subtle);
+pkijs.setEngine('OpenSSL', crypto, new pkijs.CryptoEngine({ name: 'OpenSSL', crypto, subtle: crypto.subtle }));
 
 const alg = {
   name: 'RSASSA-PKCS1-v1_5',
