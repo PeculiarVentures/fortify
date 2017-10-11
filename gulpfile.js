@@ -69,7 +69,7 @@ gulp.task('image', () =>
 gulp.task('imageProd', () =>
 	gulp.src(['./src/img/*.png', './src/img/*.jpeg', './src/img/*.jpg'])
 		.pipe(plumber())
-		.pipe(tinypng('qo8K-ctRnzbtw3tuMxEQ7ONvX0nm50mS'))
+		// .pipe(tinypng('qo8K-ctRnzbtw3tuMxEQ7ONvX0nm50mS'))
 		.pipe(gulp.dest('./build/img'))
 );
 
