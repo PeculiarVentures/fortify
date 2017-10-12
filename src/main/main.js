@@ -268,7 +268,7 @@ async function InitService() {
 
     // Set cert as trusted
     const warning = new Promise((resolve, reject) => { // wrap callback
-      CreateWarningWindow('We need to make the Fortify SSL certificate trusted. When we do this you will be asked for your administrator password.', () => {
+      CreateWarningWindow('We need to make the Fortify SSL certificate trusted. When we do this you will be asked for your administrator password.', { alwaysOnTop: true }, () => {
         winston.info('Warning window was closed');
         resolve();
       });
@@ -306,6 +306,10 @@ async function InitService() {
     })
     .on('info', (message) => {
       winston.info(message);
+    })
+    .on('token_error', (message) => {
+      winston.error(`Token: ${message}`);
+      CreateWarningWindow(message, { alwaysOnTop: true });
     })
     .on('token_new', (card) => {
       winston.info(`New token was found reader: '${card.reader}' ATR: ${card.atr.toString('hex')}`);
@@ -525,11 +529,13 @@ let warnWindow = null;
 /**
  * Creates Warning window
  * 
- * @param {string}      text    Message text
- * @param {Function}    [cb]    Callback on message close 
+ * @param {string}              text    Message text
+ * @param {ModalWindowOptions}  options modal dialog parameters  
+ * @param {Function}            [cb]    Callback on message close 
  * @returns 
  */
-function CreateWarningWindow(text, cb) {
+function CreateWarningWindow(text, options, cb) {
+  options = options || {};
   // Create the browser window.
   if (warnWindow) {
     warnWindow.show();
@@ -542,8 +548,12 @@ function CreateWarningWindow(text, cb) {
     minimizable: false,
     fullscreenable: false,
     resizable: false,
-    title: 'Warning',
+    title: options.title || 'Warning',
+    center: true,
     icon: icons.favicon,
+    alwaysOnTop: !!options.alwaysOnTop,
+    modal: !!options.parent,
+    parent: options.parent,
   });
 
   // and load the index.html of the app.
@@ -734,6 +744,7 @@ function PrepareIdentity(identity) {
  * @typedef {Object} ModalWindowOptions
  * @property {BrowserWindow}    [parent]
  * @property {string}           [title]
+ * @property {boolean}          [alwaysOnTop]
  */
 
 /**
