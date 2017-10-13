@@ -10,7 +10,8 @@
     "build:src": "webpack --config webpack.config.js",
     "build:package": "electron-packager . --arch=x64 --out=build --icon=src/icons/icon.icns --overwrite=true --electron-version=1.7.6 --app-bundle-id=com.peculiarventures.fortify --no-prune",
     "build:dmg": "electron-installer-dmg build/Fortify-darwin-x64/Fortify.app fortify-mac-x64 --out=build --overwrite --icon=src/icons/favicon-32x32.png",
-    "build:pkg": "npm run build:src && fortify-prepare && electron-packager /tmp/fortify-prod --arch=x64 --out=build --icon=src/icons/icon.icns --overwrite=true --electron-version=1.7.6 --app-bundle-id=com.peculiarventures.fortify --no-prune"
+    "build:pkg": "npm run build:src && fortify-prepare && electron-packager /tmp/fortify-prod --arch=x64 --out=build --icon=src/icons/icon.icns --overwrite=true --electron-version=1.7.6 --app-bundle-id=com.peculiarventures.fortify --no-prune",
+    "build:msi": "npm run build:src && fortify-prepare && asar pack /tmp/fortify-prod ../app/resources/app.asar"
   },
   "keywords": [],
   "author": "",
