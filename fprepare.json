@@ -1,5 +1,4 @@
 {
-    "srcDir": "/users/microshine/github/pv/fortify", // source directory
     "outDir": "/tmp/fortify-prod",
     "include": [
         // node_modules
