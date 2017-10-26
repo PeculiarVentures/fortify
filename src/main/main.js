@@ -9,6 +9,7 @@ import * as fs from 'fs';
 import * as url from 'url';
 import * as os from 'os';
 import * as querystring from 'querystring';
+import * as request from 'request';
 import * as semver from 'semver';
 import * as winston from 'winston';
 // PKI
@@ -18,7 +19,7 @@ import * as pkijs from 'pkijs';
 import * as ssl from './ssl.js';
 import {
   APP_TMP_DIR, APP_LOG_FILE, APP_CONFIG_FILE, APP_SSL_CERT, APP_SSL_KEY, APP_SSL_CERT_CA,
-  ICON_DIR, HTML_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL, APP_DIR, DOWNLOAD_LINK, TEMPLATE_NEW_CARD_FILE,
+  ICON_DIR, HTML_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL, APP_DIR, DOWNLOAD_LINK, TEMPLATE_NEW_CARD_FILE, APP_CARD_JSON, APP_CARD_JSON_LINK,
 } from './const';
 import { ConfigureRead, ConfigureWrite } from './config';
 import { GetUpdateInfo } from './update';
@@ -298,6 +299,11 @@ async function InitService() {
     winston.info(`SSL certificate is loaded`);
   }
 
+  const config = {};
+  await PrepareConfig(config);
+  // @ts-ignore
+  sslData.config = config;
+
   server = new LocalServer(sslData);
 
   server.listen('127.0.0.1:31337')
@@ -411,6 +417,74 @@ async function InitService() {
     .on('close', (e) => {
       winston.info(`Close: ${e}`);
     });
+}
+
+async function PrepareConfig(config) {
+  await PrepareCardJson(config);
+  PrepareProviders(config);
+}
+
+function PrepareProviders(config) {
+  try {
+    if (fs.existsSync(APP_CONFIG_FILE)) {
+      const json = JSON.parse(fs.readFileSync(APP_CONFIG_FILE).toString());
+      if (json.providers) {
+        config.providers = json.providers;
+      }
+    }
+  } catch (err) {
+    winston.error(`Cannot prepare config data. ${err.stack}`);
+  }
+}
+
+async function PrepareCardJson(config) {
+  config.cards = APP_CARD_JSON;
+
+  try {
+    if (!fs.existsSync(APP_CARD_JSON)) {
+      // try to get the latest card.json from git
+      try {
+        let message = '';
+        await new Promise((resolve, reject) => {
+
+          request.get(APP_CARD_JSON_LINK, {
+            encoding: 'utf8',
+          }, (error, response, body) => {
+            if (error) {
+              reject(error);
+            } else {
+              message = body.replace(/[\n\r]/g, '');
+              resolve();
+            }
+          });
+        });
+
+        // try to parse
+        JSON.parse(message);
+
+        // copy card.json to .fortify
+        fs.writeFileSync(APP_CARD_JSON, message, { flag: 'w+' });
+        winston.info(`card.json was copied to .fortify from ${APP_CARD_JSON_LINK}`);
+
+        return;
+      } catch (err) {
+        winston.error(`Cannot get card.json from ${APP_CARD_JSON_LINK}. ${err.stack}`);
+      }
+
+      // get original card.json from webcrypto-local
+      const originalPath = path.join(APP_DIR, 'node_modules', 'webcrypto-local', 'json', 'card.json');
+      if (fs.existsSync(originalPath)) {
+        // copy card.json to .fortify
+        const buf = fs.readFileSync(originalPath);
+        fs.writeFileSync(APP_CARD_JSON, buf, { flag: 'w+' });
+        winston.info(`card.json was copied to .fortify from ${originalPath}`);
+      } else {
+        throw new Error(`Cannot find original card.json by path ${originalPath}`);
+      }
+    }
+  } catch (err) {
+    winston.error(`Cannot prepare config.json data. ${err.stack}`);
+  }
 }
 
 let aboutWindow = null;
