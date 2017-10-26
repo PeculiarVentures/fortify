@@ -29,6 +29,7 @@
         "node_modules/extend/**/{*.js,*.json,*.node}",
         "node_modules/extsprintf/**/{*.js,*.json,*.node}",
         "node_modules/fast-deep-equal/**/{*.js,*.json,*.node}",
+        "node_modules/fast-json-stable-stringify/**/{*.js,*.json,*.node}",
         "node_modules/forever-agent/**/{*.js,*.json,*.node}",
         "node_modules/form-data/**/{*.js,*.json,*.node}",
         "node_modules/graphene-pk11/**/{*.js,*.json,*.node}",
