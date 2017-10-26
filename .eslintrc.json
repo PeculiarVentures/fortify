@@ -9,6 +9,7 @@
         "semi": ["error", "always"],
         "comma-dangle": ["error", "always-multiline"],
         "no-cond-assign": 0,
-        "space-before-function-paren": 0
+        "space-before-function-paren": 0,
+        "padded-blocks": 0
     }
 }
