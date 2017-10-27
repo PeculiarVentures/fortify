@@ -444,23 +444,10 @@ async function PrepareCardJson(config) {
     if (!fs.existsSync(APP_CARD_JSON)) {
       // try to get the latest card.json from git
       try {
-        let message = '';
-        await new Promise((resolve, reject) => {
-
-          request.get(APP_CARD_JSON_LINK, {
-            encoding: 'utf8',
-          }, (error, response, body) => {
-            if (error) {
-              reject(error);
-            } else {
-              message = body.replace(/[\n\r]/g, '');
-              resolve();
-            }
-          });
-        });
+        let message = await GetRemoteFile(APP_CARD_JSON_LINK);
 
         // try to parse
-        JSON.parse(message);
+        const cards = JSON.parse(message);
 
         // copy card.json to .fortify
         fs.writeFileSync(APP_CARD_JSON, message, { flag: 'w+' });
@@ -481,10 +468,50 @@ async function PrepareCardJson(config) {
       } else {
         throw new Error(`Cannot find original card.json by path ${originalPath}`);
       }
+    } else {
+      // compare existing card.json version with remote
+      // if remote version is higher then upload and remove local file
+      winston.info(`Comparing current version of card.json file with remote`);
+
+      var remote, local;
+
+      try {
+        const json = await GetRemoteFile(APP_CARD_JSON_LINK);
+        remote = JSON.parse(json);
+      } catch (e) {
+        winston.error(`Cannot get get file ${APP_CARD_JSON_LINK}. ${e.message}`);
+      }
+
+      local = JSON.parse(
+        fs.readFileSync(APP_CARD_JSON, { encoding: "utf8" })
+      );
+
+      if (remote && semver.lt(local.version || "0.0.0", remote.version || "0.0.0")) {
+        // copy card.json to .fortify
+        fs.writeFileSync(APP_CARD_JSON, JSON.stringify(remote, null, '  '), { flag: 'w+' });
+        winston.info(`card.json was copied to .fortify from ${APP_CARD_JSON_LINK}`);
+      } else {
+        winston.info(`card.json has the latest version`);
+      }
     }
   } catch (err) {
-    winston.error(`Cannot prepare config.json data. ${err.stack}`);
+    winston.error(`Cannot prepare card.json data. ${err.stack}`);
   }
+}
+
+async function GetRemoteFile(link, encoding = "utf8") {
+  return new Promise((resolve, reject) => {
+    request.get(APP_CARD_JSON_LINK, {
+      encoding,
+    }, (error, response, body) => {
+      if (error) {
+        reject(error);
+      }
+      else {
+        resolve(body);
+      }
+    });
+  });
 }
 
 let aboutWindow = null;
