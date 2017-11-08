@@ -1,5 +1,5 @@
 {
-    "outDir": "/tmp/fortify-prod",
+    "outDir": "/tmp/fortify-prod/x86",
     "include": [
         // node_modules
         "node_modules/2key-ratchet/**/{*.js,*.json,*.node}",
