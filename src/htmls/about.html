@@ -40,7 +40,7 @@
                         By: Peculiar Ventures
                     </p>
                     <p>
-                        Version: 1.0.8
+                        Version: <span id="version"></span>
                     </p>
                     <br/>
                     <p>
@@ -56,6 +56,12 @@
                 </div>
             </div>
         </div>
+        <script>
+            const path = require("path");
+            const package = require(path.join(__dirname, "..", "..", "package.json"));
+
+            document.getElementById("version").textContent = package.version;
+        </script>
     </body>
 
 </html>
