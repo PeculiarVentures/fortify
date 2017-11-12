@@ -16,7 +16,7 @@ export const APP_SSL_CERT_CA = path.join(APP_TMP_DIR, `ca.pem`);
 export const APP_SSL_CERT = path.join(APP_TMP_DIR, `cert.pem`);
 export const APP_SSL_KEY = path.join(APP_TMP_DIR, `key.pem`);
 export const APP_CARD_JSON = path.join(APP_TMP_DIR, `card.json`);
-export const APP_CARD_JSON_LINK = 'https://fortifyapp.com/packages/card.json';
+export const APP_CARD_JSON_LINK = 'https://fortifyapp.com/packages/card.jws';
 
 export const TEMPLATE_NEW_CARD_FILE = path.join(RESOURCES_DIR, `new_card.tmpl`);
 

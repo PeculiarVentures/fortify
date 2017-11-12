@@ -23,6 +23,7 @@ import {
 } from './const';
 import { ConfigureRead, ConfigureWrite } from './config';
 import { GetUpdateInfo } from './update';
+import * as jws from './jws';
 
 if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
@@ -420,7 +421,9 @@ async function InitService() {
 }
 
 async function PrepareConfig(config) {
-  await PrepareCardJson(config);
+  if (config.disableCardUpdate) {
+    await PrepareCardJson(config);
+  }
   PrepareProviders(config);
 }
 
@@ -447,10 +450,10 @@ async function PrepareCardJson(config) {
         let message = await GetRemoteFile(APP_CARD_JSON_LINK);
 
         // try to parse
-        const cards = JSON.parse(message);
+        const card = jws.GetContent(message);
 
         // copy card.json to .fortify
-        fs.writeFileSync(APP_CARD_JSON, message, { flag: 'w+' });
+        fs.writeFileSync(APP_CARD_JSON, JSON.stringify(card, null, '  '), { flag: 'w+' });
         winston.info(`card.json was copied to .fortify from ${APP_CARD_JSON_LINK}`);
 
         return;
@@ -476,17 +479,17 @@ async function PrepareCardJson(config) {
       var remote, local;
 
       try {
-        const json = await GetRemoteFile(APP_CARD_JSON_LINK);
-        remote = JSON.parse(json);
+        const jwsString = await GetRemoteFile(APP_CARD_JSON_LINK);
+        remote = await jws.GetContent(jwsString);
       } catch (e) {
         winston.error(`Cannot get get file ${APP_CARD_JSON_LINK}. ${e.message}`);
       }
 
       local = JSON.parse(
-        fs.readFileSync(APP_CARD_JSON, { encoding: "utf8" })
+        fs.readFileSync(APP_CARD_JSON, { encoding: 'utf8' })
       );
 
-      if (remote && semver.lt(local.version || "0.0.0", remote.version || "0.0.0")) {
+      if (remote && semver.lt(local.version || '0.0.0', remote.version || '0.0.0')) {
         // copy card.json to .fortify
         fs.writeFileSync(APP_CARD_JSON, JSON.stringify(remote, null, '  '), { flag: 'w+' });
         winston.info(`card.json was copied to .fortify from ${APP_CARD_JSON_LINK}`);
@@ -499,15 +502,14 @@ async function PrepareCardJson(config) {
   }
 }
 
-async function GetRemoteFile(link, encoding = "utf8") {
+async function GetRemoteFile(link, encoding = 'utf8') {
   return new Promise((resolve, reject) => {
-    request.get(APP_CARD_JSON_LINK, {
+    request.get(link, {
       encoding,
     }, (error, response, body) => {
       if (error) {
         reject(error);
-      }
-      else {
+      } else {
         resolve(body);
       }
     });
@@ -894,6 +896,7 @@ function CreateQuestionWindow(text, options, cb) {
 
 async function CheckUpdate() {
   try {
+    winston.info('Update: Check for new update');
     const update = await GetUpdateInfo();
     // get current version
     const packageJson = fs.readFileSync(path.join(APP_DIR, 'package.json')).toString();
@@ -901,6 +904,7 @@ async function CheckUpdate() {
 
     // compare versions
     if (semver.lt(curVersion, update.version)) {
+      winston.info('Update: New version was found');
       await new Promise((resolve, reject) => {
         CreateQuestionWindow(`A new update is available. Do you want to download version ${update.version} now?`, {}, (res) => {
           if (res) {
@@ -922,6 +926,8 @@ async function CheckUpdate() {
           }
         });
       });
+    } else {
+      winston.info('Update: New version wasn\'t found');
     }
   } catch (e) {
     winston.error(e.toString());

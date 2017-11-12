@@ -2,9 +2,14 @@ import * as fs from 'fs';
 import { APP_CONFIG_FILE } from './const';
 
 /**
+ * @typedef {Object} IProvider
+ * @property {string} lib
+ * @property {number} [slot]
  * 
  * @typedef {Object} IConfigure
  * @property {boolean} [logging]
+ * @property {boolean} [disableCardUpdate]
+ * @property {IProvider[]} [providers]
  */
 
 /**
