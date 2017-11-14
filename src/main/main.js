@@ -300,7 +300,9 @@ async function InitService() {
     winston.info(`SSL certificate is loaded`);
   }
 
-  const config = {};
+  const config = {
+    disableCardUpdate: configure.disableCardUpdate,
+  };
   await PrepareConfig(config);
   // @ts-ignore
   sslData.config = config;
@@ -421,7 +423,9 @@ async function InitService() {
 }
 
 async function PrepareConfig(config) {
-  if (config.disableCardUpdate) {
+  config.cards = APP_CARD_JSON;
+
+  if (!config.disableCardUpdate) {
     await PrepareCardJson(config);
   }
   PrepareProviders(config);
@@ -441,8 +445,6 @@ function PrepareProviders(config) {
 }
 
 async function PrepareCardJson(config) {
-  config.cards = APP_CARD_JSON;
-
   try {
     if (!fs.existsSync(APP_CARD_JSON)) {
       // try to get the latest card.json from git
