@@ -452,7 +452,7 @@ async function PrepareCardJson(config) {
         let message = await GetRemoteFile(APP_CARD_JSON_LINK);
 
         // try to parse
-        const card = jws.GetContent(message);
+        const card = await jws.GetContent(message);
 
         // copy card.json to .fortify
         fs.writeFileSync(APP_CARD_JSON, JSON.stringify(card, null, '  '), { flag: 'w+' });
