@@ -19,3 +19,6 @@ npm run build
 > NOTE: Put compiled `pvpkcs11.dylib` to project folder
 
 > NOTE: PKIjs has [issuer](https://github.com/PeculiarVentures/PKI.js/issues/113). Use [instruction](https://github.com/PeculiarVentures/webcrypto-local#build--server) to fix it
+
+## Thanks
+Thanks to the [CA Security Council](https://casecurity.org/) for their support of this project and the many individuals from [Twitter](https://twitter.com/rmhrisk) who provided feedback and testing.
