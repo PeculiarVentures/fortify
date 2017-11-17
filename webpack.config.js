@@ -1,23 +1,20 @@
-var path = require('path');
-var webpack = require('webpack');
+const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   entry: {
-    keys: [
-      path.join(
-        __dirname,
-        './src/renderer/keys/index.jsx'
-      ),
-    ],
-    main: path.join(__dirname, './src/main/main.js'),
+    keys: path.join(__dirname, './src/renderer/keys/index.tsx'),
+    // main: path.join(__dirname, './src/main/main.js'),
   },
   output: {
     path: path.resolve(__dirname, 'out'),
     filename: '[name].js',
   },
+  // Enable sourcemaps for debugging webpack's output.
+  devtool: "source-map",
   resolve: {
-    modules: ['node_modules'],
-    extensions: ['.js', '.jsx'],
+    // Add '.ts' and '.tsx' as resolvable extensions.
+    extensions: [".ts", ".tsx", ".js", ".json"]
   },
   plugins: [
     // new webpack.optimize.UglifyJsPlugin({
@@ -48,6 +45,8 @@ module.exports = {
     __dirname: false,
   },
   externals: {
+    "react": "React",
+    "react-dom": "ReactDOM",
     'asn1js': 'require("asn1js")',
     'child_process': 'require("child_process")',
     'electron': 'require("electron")',
@@ -67,11 +66,11 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader'],
-      },
+      // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
+      { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+
+      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
       {
         test: /\.sass$/,
         use: [
