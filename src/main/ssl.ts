@@ -43,7 +43,7 @@ async function GenerateCertificate(keyPair: CryptoKeyPair, caKey: CryptoKey) {
 
   const commonName = new pkijs.AttributeTypeAndValue({
     type: "2.5.4.3", // Common name
-    value: new asn1js.PrintableString({ value: "fortifyapp.com" }),
+    value: new asn1js.PrintableString({ value: process.env.FORTIFY_SSL_CN || "fortifyapp.com" }),
   });
 
   certificate.subject.typesAndValues.push(commonName);
