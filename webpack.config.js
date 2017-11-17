@@ -4,7 +4,7 @@ const webpack = require('webpack');
 module.exports = {
   entry: {
     keys: path.join(__dirname, './src/renderer/keys/index.tsx'),
-    // main: path.join(__dirname, './src/main/main.js'),
+    main: path.join(__dirname, './src/main/main.ts'),
   },
   output: {
     path: path.resolve(__dirname, 'out'),

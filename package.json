@@ -19,7 +19,9 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/asn1js": "0.0.1",
     "@types/node": "^7.0.28",
+    "@types/request": "^2.0.8",
     "@types/semver": "^5.4.0",
     "@types/winston": "^2.3.6",
     "awesome-typescript-loader": "^3.3.0",
@@ -54,7 +56,6 @@
     "@types/react-dom": "^16.0.3",
     "@types/websocket": "0.0.34",
     "asn1js": "^2.0.15",
-    "electron": "^1.7.6",
     "jose-jwe-jws": "github:microshine/js-jose",
     "node-webcrypto-ossl": "^1.0.31",
     "pkijs": "^2.1.5",

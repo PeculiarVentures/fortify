@@ -1,29 +1,31 @@
-/// <reference path="./types.d.ts" />
-// @ts-check
+import { app, BrowserWindow, ipcMain, Menu, MenuItem, nativeImage, screen, shell, Tray } from "electron";
 
-// @ts-ignore
-import { Tray, BrowserWindow, shell, nativeImage, screen, app, Menu, MenuItem, ipcMain } from 'electron';
-import * as crypto from 'crypto';
-import * as path from 'path';
-import * as fs from 'fs';
-import * as url from 'url';
-import * as os from 'os';
-import * as querystring from 'querystring';
-import * as request from 'request';
-import * as semver from 'semver';
-import * as winston from 'winston';
+import * as crypto from "crypto";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
+import * as querystring from "querystring";
+import * as url from "url";
+
+import * as request from "request";
+import * as semver from "semver";
+import * as winston from "winston";
+
+import * as WebCryptoLocal from "webcrypto-local";
+
 // PKI
-import * as asn1js from 'asn1js';
-// @ts-ignore
-import * as pkijs from 'pkijs';
-import * as ssl from './ssl.js';
+import * as asn1js from "asn1js";
+const pkijs = require("pkijs");
+
+import { ConfigureRead, ConfigureWrite } from "./config";
 import {
-  APP_TMP_DIR, APP_LOG_FILE, APP_CONFIG_FILE, APP_SSL_CERT, APP_SSL_KEY, APP_SSL_CERT_CA,
-  ICON_DIR, HTML_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL, APP_DIR, DOWNLOAD_LINK, TEMPLATE_NEW_CARD_FILE, APP_CARD_JSON, APP_CARD_JSON_LINK,
-} from './const';
-import { ConfigureRead, ConfigureWrite } from './config';
-import { GetUpdateInfo } from './update';
-import * as jws from './jws';
+  APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_LOG_FILE, APP_SSL_CERT,
+  APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
+  DOWNLOAD_LINK, HTML_DIR, ICON_DIR, TEMPLATE_NEW_CARD_FILE,
+} from "./const";
+import * as jws from "./jws";
+import * as ssl from "./ssl";
+import { GetUpdateInfo } from "./update";
 
 if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
@@ -33,49 +35,49 @@ winston.clear();
 
 /**
  * Turn on/of logger
- * 
- * @param {boolean} enabled 
+ *
+ * @param enabled
  */
-function LoggingSwitch(enabled) {
+function LoggingSwitch(enabled: boolean) {
   if (enabled) {
-    const options = { flag: 'w+' };
+    const options = { flag: "w+" };
     if (!fs.existsSync(APP_LOG_FILE)) {
-      fs.writeFileSync(APP_LOG_FILE, '', options);
+      fs.writeFileSync(APP_LOG_FILE, "", options);
     }
-    winston.add(winston.transports.File, { filename: APP_LOG_FILE, options: options });
+    winston.add(winston.transports.File, { filename: APP_LOG_FILE, options });
   } else {
     winston.clear();
   }
 }
 
 const configure = ConfigureRead(APP_CONFIG_FILE);
-LoggingSwitch(configure.logging);
+LoggingSwitch(!!configure.logging);
 
 winston.info(`Application started at ${new Date()}`);
 
 // const { app, Menu, MenuItem } = electron;
-if ('dock' in app) {
+if ("dock" in app) {
   app.dock.hide();
 }
 
 let tray;
 
 const icons = {
-  tray: os.platform() === 'win32' ? path.join(ICON_DIR, 'favicon-32x32.png') : path.join(ICON_DIR, 'tray', 'icon.png'),
-  trayWhite: path.join(ICON_DIR, 'tray', 'icon_pressed.png'),
-  favicon: path.join(ICON_DIR, 'favicon-32x32.png'),
+  tray: os.platform() === "win32" ? path.join(ICON_DIR, "favicon-32x32.png") : path.join(ICON_DIR, "tray", "icon.png"),
+  trayWhite: path.join(ICON_DIR, "tray", "icon_pressed.png"),
+  favicon: path.join(ICON_DIR, "favicon-32x32.png"),
 };
 
 const htmls = {
-  index: path.join(HTML_DIR, 'index.html'),
-  keyPin: path.join(HTML_DIR, '2key-pin.html'),
-  pkcsPin: path.join(HTML_DIR, 'pkcs11-pin.html'),
-  about: path.join(HTML_DIR, 'about.html'),
-  manage: path.join(HTML_DIR, 'manage.html'),
-  message_question: path.join(HTML_DIR, 'message_question.html'),
-  message_error: path.join(HTML_DIR, 'message_error.html'),
-  message_warn: path.join(HTML_DIR, 'message_warn.html'),
-  keys: path.join(HTML_DIR, 'keys.html'),
+  index: path.join(HTML_DIR, "index.html"),
+  keyPin: path.join(HTML_DIR, "2key-pin.html"),
+  pkcsPin: path.join(HTML_DIR, "pkcs11-pin.html"),
+  about: path.join(HTML_DIR, "about.html"),
+  manage: path.join(HTML_DIR, "manage.html"),
+  message_question: path.join(HTML_DIR, "message_question.html"),
+  message_error: path.join(HTML_DIR, "message_error.html"),
+  message_warn: path.join(HTML_DIR, "message_warn.html"),
+  keys: path.join(HTML_DIR, "keys.html"),
 };
 
 const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {
@@ -87,7 +89,7 @@ if (isSecondInstance) {
   app.quit();
 }
 
-app.on('ready', () => {
+app.on("ready", () => {
   (async () => {
     tray = new Tray(icons.tray);
     const trayIconPressed = nativeImage.createFromPath(icons.trayWhite);
@@ -96,21 +98,21 @@ app.on('ready', () => {
     const contextMenu = new Menu();
 
     const menuManage = new MenuItem({
-      label: 'Manage',
+      label: "Manage",
     });
     menuManage.click = () => {
       CreateManageWindow();
     };
 
     const menuAbout = new MenuItem({
-      label: 'About',
+      label: "About",
     });
     menuAbout.click = () => {
       CreateAboutWindow();
     };
 
     const menuKeys = new MenuItem({
-      label: 'Sites',
+      label: "Sites",
     });
     menuKeys.click = () => {
       CreateKeysWindow();
@@ -118,15 +120,15 @@ app.on('ready', () => {
 
     const menuLogSubMenu = new Menu();
     const menuLogView = new MenuItem({
-      label: 'View log',
+      label: "View log",
       enabled: !!configure.logging,
     });
     menuLogView.click = () => {
       shell.openItem(APP_LOG_FILE);
     };
     const menuLogDisable = new MenuItem({
-      label: 'Enable/Disable',
-      type: 'checkbox',
+      label: "Enable/Disable",
+      type: "checkbox",
       checked: !!configure.logging,
     });
 
@@ -140,23 +142,23 @@ app.on('ready', () => {
     menuLogSubMenu.append(menuLogView);
     menuLogSubMenu.append(menuLogDisable);
     const menuLog = new MenuItem({
-      label: 'Logging',
+      label: "Logging",
       submenu: menuLogSubMenu,
     });
 
     const menuTools = new MenuItem({
-      label: 'Tools',
+      label: "Tools",
     });
     menuTools.click = () => {
-      shell.openExternal('https://peculiarventures.github.io/fortify-web');
+      shell.openExternal("https://peculiarventures.github.io/fortify-web");
     };
 
     const menuSeparator = new MenuItem({
-      type: 'separator',
+      type: "separator",
     });
 
     const menuExit = new MenuItem({
-      label: 'Exit',
+      label: "Exit",
     });
 
     menuExit.click = () => {
@@ -186,7 +188,7 @@ app.on('ready', () => {
   })()
     .catch((err) => {
       winston.error(err.toString());
-      app.emit('error', err);
+      app.emit("error", err);
     });
 });
 
@@ -210,7 +212,7 @@ function CreateWindow() {
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
     pathname: htmls.index,
-    protocol: 'file:',
+    protocol: "file:",
     slashes: true,
   }));
 
@@ -218,7 +220,7 @@ function CreateWindow() {
   // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
+  mainWindow.on("closed", () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
@@ -226,23 +228,22 @@ function CreateWindow() {
   });
 }
 
-let LocalServer;
-/** @type {WebCryptoLocal.LocalServer} */
-let server;
+let LocalServer: typeof WebCryptoLocal.LocalServer | undefined;
+let server: WebCryptoLocal.LocalServer;
 try {
   // @ts-ignore
-  LocalServer = require('webcrypto-local').LocalServer;
+  LocalServer = require("webcrypto-local").LocalServer;
 } catch (e) {
   winston.error(e.toString());
 }
 
 function CheckSSL() {
   if (fs.existsSync(APP_SSL_CERT) && fs.existsSync(APP_SSL_KEY)) {
-    const sslCert = fs.readFileSync(APP_SSL_CERT, 'utf8').replace(/-{5}[\w\s]+-{5}/ig, '').replace(/\r/g, '').replace(/\n/g, '');
+    const sslCert = fs.readFileSync(APP_SSL_CERT, "utf8").replace(/-{5}[\w\s]+-{5}/ig, "").replace(/\r/g, "").replace(/\n/g, "");
 
     // Parse cert
 
-    const asn1 = asn1js.fromBER(new Uint8Array(Buffer.from(sslCert, 'base64')).buffer);
+    const asn1 = asn1js.fromBER(new Uint8Array(Buffer.from(sslCert, "base64")).buffer);
     const cert = new pkijs.Certificate({ schema: asn1.result });
 
     // Check date
@@ -257,26 +258,26 @@ function CheckSSL() {
 }
 
 async function InitService() {
-  let sslData;
+  let sslData: WebCryptoLocal.IServerOptions;
 
   if (!CheckSSL()) {
     winston.info(`SSL certificate is created`);
-    sslData = await ssl.generate();
+    sslData = await ssl.generate() as any;
 
     // write files
-    fs.writeFileSync(APP_SSL_CERT_CA, sslData.root);
+    // fs.writeFileSync(APP_SSL_CERT_CA, sslData.root);
     fs.writeFileSync(APP_SSL_CERT, sslData.cert);
     fs.writeFileSync(APP_SSL_KEY, sslData.key);
 
     // Set cert as trusted
     const warning = new Promise((resolve, reject) => { // wrap callback
-      CreateWarningWindow('We need to make the Fortify SSL certificate trusted. When we do this you will be asked for your administrator password.', { alwaysOnTop: true }, () => {
-        winston.info('Warning window was closed');
+      CreateWarningWindow("We need to make the Fortify SSL certificate trusted. When we do this you will be asked for your administrator password.", { alwaysOnTop: true }, () => {
+        winston.info("Warning window was closed");
         resolve();
       });
     })
       .then(() => {
-        winston.info('Installing SSL certificate');
+        winston.info("Installing SSL certificate");
         return ssl.InstallTrustedCertificate(APP_SSL_CERT_CA);
       })
       .catch((err) => {
@@ -286,7 +287,7 @@ async function InitService() {
         fs.unlinkSync(APP_SSL_CERT);
         fs.unlinkSync(APP_SSL_KEY);
 
-        CreateErrorWindow('Unable to install the SSL certificate for Fortify as a trusted root certificate. The application will not work until this is resolved.', () => {
+        CreateErrorWindow("Unable to install the SSL certificate for Fortify as a trusted root certificate. The application will not work until this is resolved.", () => {
           app.quit();
         });
       });
@@ -296,60 +297,65 @@ async function InitService() {
     sslData = {
       cert: fs.readFileSync(APP_SSL_CERT),
       key: fs.readFileSync(APP_SSL_KEY),
-    };
+    } as any;
     winston.info(`SSL certificate is loaded`);
   }
 
-  const config = {
+  const config: IConfigure = {
     disableCardUpdate: configure.disableCardUpdate,
   };
   await PrepareConfig(config);
   // @ts-ignore
   sslData.config = config;
 
+  if (!LocalServer) {
+    winston.error("LocalServer is empty. webcrypto-local module wasn't loaded");
+    return;
+  }
+
   server = new LocalServer(sslData);
 
-  server.listen('127.0.0.1:31337')
-    .on('listening', (e) => {
+  server.listen("127.0.0.1:31337")
+    .on("listening", (e: any) => {
       winston.info(`Server: Started at ${e}`);
     })
-    .on('info', (message) => {
+    .on("info", (message) => {
       winston.info(message);
     })
-    .on('token_error', (message) => {
+    .on("token_error", (message) => {
       winston.error(`Token: ${message}`);
       CreateWarningWindow(message, { alwaysOnTop: true });
     })
-    .on('token_new', (card) => {
-      winston.info(`New token was found reader: '${card.reader}' ATR: ${card.atr.toString('hex')}`);
+    .on("token_new", (card) => {
+      winston.info(`New token was found reader: '${card.reader}' ATR: ${card.atr.toString("hex")}`);
       const MESSAGE = `We detected a unsupported smart card or token.\n\nWould you like to request support be added for this token?`;
       CreateQuestionWindow(MESSAGE, {}, (res) => {
         if (res) {
           try {
-            const title = `Add support for '${card.atr.toString('hex')}' token`;
-            const body = fs.readFileSync(TEMPLATE_NEW_CARD_FILE, { encoding: 'utf8' })
+            const title = `Add support for '${card.atr.toString("hex")}' token`;
+            const body = fs.readFileSync(TEMPLATE_NEW_CARD_FILE, { encoding: "utf8" })
               .replace(/\$\{reader\}/g, card.reader)
-              .replace(/\$\{atr\}/g, card.atr.toString('hex').toUpperCase())
-              .replace(/\$\{driver\}/g, crypto.randomBytes(20).toString('hex').toUpperCase());
-            const url = `https://github.com/PeculiarVentures/fortify/issues/new?` + querystring.stringify({
+              .replace(/\$\{atr\}/g, card.atr.toString("hex").toUpperCase())
+              .replace(/\$\{driver\}/g, crypto.randomBytes(20).toString("hex").toUpperCase());
+            const url1 = `https://github.com/PeculiarVentures/fortify/issues/new?` + querystring.stringify({
               title,
               body,
             });
-            shell.openExternal(url);
+            shell.openExternal(url1);
           } catch (e) {
-            console.error(e);
+            winston.error(e.message);
           }
         }
       });
     })
-    .on('error', (e) => {
+    .on("error", (e: Error) => {
       winston.error(e.stack || e.toString());
     })
-    .on('notify', (p) => {
+    .on("notify", (p: any) => {
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
       switch (p.type) {
-        case '2key': {
+        case "2key": {
           // Create the browser window.
           const window = new BrowserWindow({
             width: 400,
@@ -368,7 +374,7 @@ async function InitService() {
           // and load the index.html of the app.
           window.loadURL(url.format({
             pathname: htmls.keyPin,
-            protocol: 'file:',
+            protocol: "file:",
             slashes: true,
           }));
 
@@ -376,12 +382,12 @@ async function InitService() {
           window.params = p;
           p.accept = false;
 
-          window.on('closed', () => {
+          window.on("closed", () => {
             p.resolve(p.accept);
           });
           break;
         }
-        case 'pin': {
+        case "pin": {
           // Create the browser window.
           const window = new BrowserWindow({
             width: 500,
@@ -396,33 +402,33 @@ async function InitService() {
           // and load the index.html of the app.
           window.loadURL(url.format({
             pathname: htmls.pkcsPin,
-            protocol: 'file:',
+            protocol: "file:",
             slashes: true,
           }));
 
           // @ts-ignore
           window.params = p;
-          p.pin = '';
+          p.pin = "";
 
-          window.on('closed', () => {
+          window.on("closed", () => {
             if (p.pin) {
               p.resolve(p.pin);
             } else {
-              p.reject(new Error('Incorrect PIN value. It cannot be empty.'));
+              p.reject(new Error("Incorrect PIN value. It cannot be empty."));
             }
           });
           break;
         }
         default:
-          throw new Error('Unknown Notify param');
+          throw new Error("Unknown Notify param");
       }
     })
-    .on('close', (e) => {
+    .on("close", (e: any) => {
       winston.info(`Close: ${e}`);
     });
 }
 
-async function PrepareConfig(config) {
+async function PrepareConfig(config: IConfigure) {
   config.cards = APP_CARD_JSON;
 
   if (!config.disableCardUpdate) {
@@ -431,7 +437,7 @@ async function PrepareConfig(config) {
   PrepareProviders(config);
 }
 
-function PrepareProviders(config) {
+function PrepareProviders(config: IConfigure) {
   try {
     if (fs.existsSync(APP_CONFIG_FILE)) {
       const json = JSON.parse(fs.readFileSync(APP_CONFIG_FILE).toString());
@@ -444,18 +450,18 @@ function PrepareProviders(config) {
   }
 }
 
-async function PrepareCardJson(config) {
+async function PrepareCardJson(config: IConfigure) {
   try {
     if (!fs.existsSync(APP_CARD_JSON)) {
       // try to get the latest card.json from git
       try {
-        let message = await GetRemoteFile(APP_CARD_JSON_LINK);
+        const message = await GetRemoteFile(APP_CARD_JSON_LINK);
 
         // try to parse
         const card = await jws.GetContent(message);
 
         // copy card.json to .fortify
-        fs.writeFileSync(APP_CARD_JSON, JSON.stringify(card, null, '  '), { flag: 'w+' });
+        fs.writeFileSync(APP_CARD_JSON, JSON.stringify(card, null, "  "), { flag: "w+" });
         winston.info(`card.json was copied to .fortify from ${APP_CARD_JSON_LINK}`);
 
         return;
@@ -464,11 +470,11 @@ async function PrepareCardJson(config) {
       }
 
       // get original card.json from webcrypto-local
-      const originalPath = path.join(APP_DIR, 'node_modules', 'webcrypto-local', 'json', 'card.json');
+      const originalPath = path.join(APP_DIR, "node_modules", "webcrypto-local", "json", "card.json");
       if (fs.existsSync(originalPath)) {
         // copy card.json to .fortify
         const buf = fs.readFileSync(originalPath);
-        fs.writeFileSync(APP_CARD_JSON, buf, { flag: 'w+' });
+        fs.writeFileSync(APP_CARD_JSON, buf, { flag: "w+" });
         winston.info(`card.json was copied to .fortify from ${originalPath}`);
       } else {
         throw new Error(`Cannot find original card.json by path ${originalPath}`);
@@ -478,7 +484,8 @@ async function PrepareCardJson(config) {
       // if remote version is higher then upload and remove local file
       winston.info(`Comparing current version of card.json file with remote`);
 
-      var remote, local;
+      let remote: any;
+      let local: any;
 
       try {
         const jwsString = await GetRemoteFile(APP_CARD_JSON_LINK);
@@ -488,12 +495,12 @@ async function PrepareCardJson(config) {
       }
 
       local = JSON.parse(
-        fs.readFileSync(APP_CARD_JSON, { encoding: 'utf8' })
+        fs.readFileSync(APP_CARD_JSON, { encoding: "utf8" }),
       );
 
-      if (remote && semver.lt(local.version || '0.0.0', remote.version || '0.0.0')) {
+      if (remote && semver.lt(local.version || "0.0.0", remote.version || "0.0.0")) {
         // copy card.json to .fortify
-        fs.writeFileSync(APP_CARD_JSON, JSON.stringify(remote, null, '  '), { flag: 'w+' });
+        fs.writeFileSync(APP_CARD_JSON, JSON.stringify(remote, null, "  "), { flag: "w+" });
         winston.info(`card.json was copied to .fortify from ${APP_CARD_JSON_LINK}`);
       } else {
         winston.info(`card.json has the latest version`);
@@ -504,8 +511,8 @@ async function PrepareCardJson(config) {
   }
 }
 
-async function GetRemoteFile(link, encoding = 'utf8') {
-  return new Promise((resolve, reject) => {
+async function GetRemoteFile(link: string, encoding = "utf8") {
+  return new Promise<string>((resolve, reject) => {
     request.get(link, {
       encoding,
     }, (error, response, body) => {
@@ -518,7 +525,7 @@ async function GetRemoteFile(link, encoding = 'utf8') {
   });
 }
 
-let aboutWindow = null;
+let aboutWindow: Electron.BrowserWindow | null = null;
 function CreateAboutWindow() {
   // Create the browser window.
   if (aboutWindow) {
@@ -531,14 +538,14 @@ function CreateAboutWindow() {
     autoHideMenuBar: true,
     minimizable: false,
     resizable: false,
-    title: 'About',
+    title: "About",
     icon: icons.favicon,
   });
 
   // and load the index.html of the app.
   aboutWindow.loadURL(url.format({
     pathname: htmls.about,
-    protocol: 'file:',
+    protocol: "file:",
     slashes: true,
   }));
 
@@ -546,12 +553,12 @@ function CreateAboutWindow() {
   // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
-  aboutWindow.on('closed', function () {
+  aboutWindow.on("closed", () => {
     aboutWindow = null;
   });
 }
 
-let manageWindow = null;
+let manageWindow: Electron.BrowserWindow | null = null;
 function CreateManageWindow() {
   // Create the browser window.
   if (manageWindow) {
@@ -563,14 +570,14 @@ function CreateManageWindow() {
     autoHideMenuBar: true,
     minimizable: false,
     resizable: false,
-    title: 'Manage',
+    title: "Manage",
     icon: icons.favicon,
   });
 
   // and load the index.html of the app.
   manageWindow.loadURL(url.format({
     pathname: htmls.manage,
-    protocol: 'file:',
+    protocol: "file:",
     slashes: true,
   }));
 
@@ -578,20 +585,20 @@ function CreateManageWindow() {
   // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
-  manageWindow.on('closed', function () {
+  manageWindow.on("closed", () => {
     manageWindow = null;
   });
 }
 
-let errorWindow = null;
+let errorWindow: Electron.BrowserWindow | null = null;
 /**
  * Creates Error window
- * 
- * @param {string}      text    Message text
- * @param {Function}    [cb]    Callback on message close 
- * @returns 
+ *
+ * @param text    Message text
+ * @param cb    Callback on message close
+ * @returns
  */
-function CreateErrorWindow(text, cb) {
+function CreateErrorWindow(text: string, cb: () => void) {
   // Create the browser window.
   if (errorWindow) {
     errorWindow.show();
@@ -604,14 +611,14 @@ function CreateErrorWindow(text, cb) {
     minimizable: false,
     fullscreenable: false,
     resizable: false,
-    title: 'Error',
+    title: "Error",
     icon: icons.favicon,
   });
 
   // and load the index.html of the app.
   errorWindow.loadURL(url.format({
     pathname: htmls.message_error,
-    protocol: 'file:',
+    protocol: "file:",
     slashes: true,
   }));
 
@@ -624,22 +631,24 @@ function CreateErrorWindow(text, cb) {
   // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
-  errorWindow.on('closed', function () {
+  errorWindow.on("closed", () => {
     errorWindow = null;
-    cb && cb();
+    if (cb) {
+      cb();
+    }
   });
 }
 
-let warnWindow = null;
+let warnWindow: Electron.BrowserWindow | null = null;
 /**
  * Creates Warning window
- * 
- * @param {string}              text    Message text
- * @param {ModalWindowOptions}  options modal dialog parameters  
- * @param {Function}            [cb]    Callback on message close 
- * @returns 
+ *
+ * @param text    Message text
+ * @param options modal dialog parameters
+ * @param cb    Callback on message close
+ * @returns
  */
-function CreateWarningWindow(text, options, cb) {
+function CreateWarningWindow(text: string, options: ICreateWindowOptions, cb?: () => void) {
   options = options || {};
   // Create the browser window.
   if (warnWindow) {
@@ -653,7 +662,7 @@ function CreateWarningWindow(text, options, cb) {
     minimizable: false,
     fullscreenable: false,
     resizable: false,
-    title: options.title || 'Warning',
+    title: options.title || "Warning",
     center: true,
     icon: icons.favicon,
     alwaysOnTop: !!options.alwaysOnTop,
@@ -664,7 +673,7 @@ function CreateWarningWindow(text, options, cb) {
   // and load the index.html of the app.
   warnWindow.loadURL(url.format({
     pathname: htmls.message_warn,
-    protocol: 'file:',
+    protocol: "file:",
     slashes: true,
   }));
 
@@ -677,13 +686,15 @@ function CreateWarningWindow(text, options, cb) {
   // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
-  warnWindow.on('closed', function () {
+  warnWindow.on("closed", () => {
     warnWindow = null;
-    cb && cb();
+    if (cb) {
+      cb();
+    }
   });
 }
 
-let keysWindow = null;
+let keysWindow: Electron.BrowserWindow | null = null;
 function CreateKeysWindow() {
   // Create the browser window.
   if (keysWindow) {
@@ -696,14 +707,14 @@ function CreateKeysWindow() {
     autoHideMenuBar: true,
     minimizable: false,
     resizable: false,
-    title: 'Sites',
+    title: "Sites",
     icon: icons.favicon,
   });
 
   // and load the index.html of the app.
   keysWindow.loadURL(url.format({
     pathname: htmls.keys,
-    protocol: 'file:',
+    protocol: "file:",
     slashes: true,
   }));
 
@@ -711,13 +722,19 @@ function CreateKeysWindow() {
   // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
-  keysWindow.on('closed', function () {
+  keysWindow.on("closed", () => {
     keysWindow = null;
   });
 }
 
+interface CurrentIdentity {
+  origin: string | null;
+  created: Date | null;
+  browsers: string[];
+}
+
 function InitMessages() {
-  ipcMain.on('2key-list', (event, arg) => {
+  ipcMain.on("2key-list", (event: any, arg: any) => {
     Promise.resolve()
       .then(() => {
         const storage = server.server.storage;
@@ -750,8 +767,8 @@ function InitMessages() {
           }
         });
         // prepare data
-        const res = [];
-        let currentIdentity = {
+        const res: CurrentIdentity[] = [];
+        let currentIdentity: CurrentIdentity = {
           origin: null,
           created: null,
           browsers: [],
@@ -767,7 +784,7 @@ function InitMessages() {
               browsers: [identity.browser],
             };
           } else {
-            if (currentIdentity.created > identity.created) {
+            if (currentIdentity.created! > identity.created) {
               currentIdentity.created = identity.created;
             }
             if (!currentIdentity.browsers.some((browser) => browser === identity.browser)) {
@@ -778,10 +795,10 @@ function InitMessages() {
         if (currentIdentity.origin !== null) {
           res.push(currentIdentity);
         }
-        event.sender.send('2key-list', res);
+        event.sender.send("2key-list", res);
       });
   })
-    .on('2key-remove', (event, arg) => {
+    .on("2key-remove", (event: any, arg: any) => {
       const storage = server.server.storage;
       CreateQuestionWindow(`Do you want to remove ${arg} from the trusted list?`, { parent: keysWindow }, (result) => {
         if (result) {
@@ -797,116 +814,111 @@ function InitMessages() {
             delete storage.remoteIdentities[item];
           });
           storage.removeRemoteIdentity(arg);
-          event.sender.send('2key-remove', arg);
+          event.sender.send("2key-remove", arg);
         }
       });
     })
-    .on('error', (error) => {
+    .on("error", (error: Error) => {
       winston.error(error.toString());
     });
 }
 
-/**
- * @typedef {Object} Identity
- * @property {string}   [browser]
- * @property {Date}     [created]
- * @property {string}   [id]
- * @property {string|'edge'|'ie'|'chrome'|'safari'|'firefox'|'other'}   [origin]
- */
+interface Identity {
+  browser: string;
+  userAgent: string;
+  created: Date;
+  id: string;
+  origin: string | "edge" | "ie" | "chrome" | "safari" | "firefox" | "other";
+}
 
 /**
- * 
- * @param {WebCryptoLocal.RemoteIdentityEx} identity 
+ *
+ * @param {WebCryptoLocal.RemoteIdentityEx} identity
  */
-function PrepareIdentity(identity) {
-  const userAgent = identity.userAgent;
+function PrepareIdentity(identity: WebCryptoLocal.RemoteIdentityEx) {
+  const userAgent = identity.userAgent!;
   /** @type {Identity} */
-  let res = {};
+  const res: Identity = {} as any;
   // eslint-disable-next-line
-  let reg;
+  let reg: RegExpExecArray | null;
   // eslint-disable-next-line
   if (reg = /edge\/([\d\.]+)/i.exec(userAgent)) {
-    res.browser = 'edge';
+    res.browser = "edge";
   } else if (/msie/i.test(userAgent)) {
-    res.browser = 'ie';
+    res.browser = "ie";
   } else if (/Trident/i.test(userAgent)) {
-    res.browser = 'ie';
+    res.browser = "ie";
   } else if (/chrome/i.test(userAgent)) {
-    res.browser = 'chrome';
+    res.browser = "chrome";
   } else if (/safari/i.test(userAgent)) {
-    res.browser = 'safari';
+    res.browser = "safari";
   } else if (/firefox/i.test(userAgent)) {
-    res.browser = 'firefox';
+    res.browser = "firefox";
   } else {
-    res.browser = 'Other';
+    res.browser = "Other";
   }
   res.created = identity.createdAt;
-  res.origin = identity.origin;
+  res.origin = identity.origin!;
   return res;
 }
 
 /**
- * @typedef {Object} ModalWindowOptions
- * @property {BrowserWindow}    [parent]
- * @property {string}           [title]
- * @property {boolean}          [alwaysOnTop]
- */
-
-/**
- * 
- * @param {string}              text 
- * @param {ModalWindowOptions}  options 
- * @param {Function}            cb
+ *
+ * @param text
+ * @param options
+ * @param cb
  * @return {BrowserWindow}
  */
-function CreateQuestionWindow(text, options, cb) {
+function CreateQuestionWindow(text: string, options: ICreateWindowOptions, cb?: (result: number) => void) {
   // Create the browser window.
-  const errorWindow = new BrowserWindow({
+  const window = new BrowserWindow({
     width: 500,
     height: 300,
     autoHideMenuBar: true,
     minimizable: false,
     fullscreenable: false,
     resizable: false,
-    title: 'Question',
+    title: "Question",
     icon: icons.favicon,
     modal: !!options.parent,
     parent: options.parent,
   });
 
   // and load the index.html of the app.
-  errorWindow.loadURL(url.format({
+  window.loadURL(url.format({
     pathname: htmls.message_question,
-    protocol: 'file:',
+    protocol: "file:",
     slashes: true,
   }));
 
   // @ts-ignore
-  errorWindow.params = {
+  window.params = {
     text,
     result: 0,
   };
 
   // Emitted when the window is closed.
-  errorWindow.on('closed', function () {
+  window.on("closed", () => {
     // @ts-ignore
-    cb && cb(errorWindow.params.result);
+    if (cb) {
+      cb((window as any).params.result);
+    }
   });
 
-  return errorWindow;
+  return window;
 }
 
 async function CheckUpdate() {
   try {
-    winston.info('Update: Check for new update');
+    winston.info("Update: Check for new update");
     const update = await GetUpdateInfo();
     // get current version
-    const packageJson = fs.readFileSync(path.join(APP_DIR, 'package.json')).toString();
+    const packageJson = fs.readFileSync(path.join(APP_DIR, "package.json")).toString();
     const curVersion = JSON.parse(packageJson).version;
 
     // compare versions
     if (semver.lt(curVersion, update.version)) {
-      winston.info('Update: New version was found');
+      winston.info("Update: New version was found");
       await new Promise((resolve, reject) => {
         CreateQuestionWindow(`A new update is available. Do you want to download version ${update.version} now?`, {}, (res) => {
           if (res) {
@@ -929,11 +941,11 @@ async function CheckUpdate() {
         });
       });
     } else {
-      winston.info('Update: New version wasn\'t found');
+      winston.info("Update: New version wasn't found");
     }
   } catch (e) {
     winston.error(e.toString());
-    if (e.type === 'UpdateError' && !e.critical) {
+    if (e.type === "UpdateError" && !e.critical) {
       // await new Promise((resolve, reject) => {
       //   CreateWarningWindow(``, () => {
       //     resolve();
