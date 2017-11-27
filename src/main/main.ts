@@ -30,7 +30,7 @@ import * as ssl from "./ssl";
 import * as tray from "./tray";
 import { GetUpdateInfo } from "./update";
 import { CreateWindow } from "./window";
-import { CreateQuestionWindow, CreateErrorWindow, CreateWarningWindow } from "./windows/message";
+import { CreateErrorWindow, CreateQuestionWindow, CreateWarningWindow } from "./windows/message";
 
 if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
@@ -157,7 +157,7 @@ async function InitService() {
 
     // Set cert as trusted
     const warning = new Promise((resolve, reject) => { // wrap callback
-      CreateWarningWindow("We need to make the Fortify SSL certificate trusted. When we do this you will be asked for your administrator password.", { alwaysOnTop: true }, () => {
+      CreateWarningWindow("warn.ssl.install", { alwaysOnTop: true }, () => {
         winston.info("Warning window was closed");
         resolve();
       });
@@ -412,7 +412,7 @@ async function CheckUpdate() {
     if (semver.lt(curVersion, update.version)) {
       winston.info("Update: New version was found");
       await new Promise((resolve, reject) => {
-        CreateQuestionWindow(`A new update is available. Do you want to download version ${update.version} now?`, {}, (res) => {
+        CreateQuestionWindow(t("question.update.new", update.version), {}, (res) => {
           if (res) {
             // yes
             winston.info(`User agreed to download new version ${update.version}`);
@@ -526,7 +526,7 @@ function InitMessages() {
   })
     .on("2key-remove", (event: any, arg: any) => {
       const storage = application.server.server.storage;
-      CreateQuestionWindow(`Do you want to remove ${arg} from the trusted list?`, { parent: application.windows.keys }, (result) => {
+      CreateQuestionWindow(t("question.2key.remove", arg), { parent: application.windows.keys }, (result) => {
         if (result) {
           winston.info(`Removing 2key session key ${arg}`);
           const remList = [];

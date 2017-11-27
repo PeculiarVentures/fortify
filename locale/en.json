@@ -12,6 +12,7 @@
     "enable.disable": "Enable/Disable",
     "tools": "Tools",
     "sites": "Sites",
+    "search": "Search",
     "by": "By",
     "close": "Close",
     "version": "Version",
@@ -19,5 +20,8 @@
     "all.rights": "All rights reserved",
     "error.critical.update": "Application cannot be started until new update will be applied",
     "error.ssl.install": "Unable to install the SSL certificate for Fortify as a trusted root certificate. The application will not work until this is resolved.",
-    "question.new.token": "We detected a unsupported smart card or token.\n\nWould you like to request support be added for this token?"
+    "question.new.token": "We detected a unsupported smart card or token.\n\nWould you like to request support be added for this token?",
+    "question.2key.remove": "Do you want to remove %1 from the trusted list?",
+    "question.update.new": "A new update is available. Do you want to download version %1 now?",
+    "warn.ssl.install": "We need to make the Fortify SSL certificate trusted. When we do this you will be asked for your administrator password."
 }

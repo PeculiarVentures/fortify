@@ -1,6 +1,8 @@
 // import { ipcRenderer } from "electron";
 import * as React from "react";
 
+import { t } from "../../main/locale";
+import { WindowComponent } from "../window";
 import { Empty } from "./empty";
 import { Item } from "./item";
 
@@ -15,7 +17,7 @@ export interface IRootState {
   filterValue?: string;
 }
 
-export class Root extends React.Component<IRootProps, IRootState> {
+export class Root extends WindowComponent<IRootProps, IRootState> {
 
   constructor(props: IRootProps) {
     super(props);
@@ -97,7 +99,7 @@ export class Root extends React.Component<IRootProps, IRootState> {
             <div>
               <input
                 type="text"
-                placeholder="Search"
+                placeholder={t("search")}
                 onChange={this.handleSearchChange}
                 className={s.input}
               />

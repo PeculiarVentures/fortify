@@ -4,9 +4,41 @@ import * as fs from "fs";
 import * as path from "path";
 import * as winston from "winston";
 
-const LANG_DIR = path.join(__dirname, typeof navigator === "undefined" ? "" : "..",  "..", "locale");
+const LANG_DIR = path.join(__dirname, typeof navigator === "undefined" ? "" : "..", "..", "locale");
 
 export type LocaleChangeHandle = () => void;
+
+/**
+ * Print formatted data
+ *
+ * Example:
+ * printf("Some text %1 must be %2", 1, "here")
+ * @param text string template
+ * @param args arguments
+ */
+function printf(text: string, ...args: any[]) {
+    let msg: string = text;
+    const regFind = /[^%](%\d+)/g;
+    let match: RegExpExecArray | null;
+    const matches: Array<{ arg: string, index: number }> = [];
+    // tslint:disable-next-line:no-conditional-assignment
+    while (match = regFind.exec(msg)) {
+        matches.push({ arg: match[1], index: match.index });
+    }
+
+    // replace matches
+    for (let i = matches.length - 1; i >= 0; i--) {
+        const item = matches[i];
+        const arg = item.arg.substring(1);
+        const index = item.index + 1;
+        msg = msg.substring(0, index) + arguments[+arg] + msg.substring(index + 1 + arg.length);
+    }
+
+    // convert %% -> %
+    msg = msg.replace("%%", "%");
+
+    return msg;
+}
 
 export class Locale extends EventEmitter {
 
@@ -52,8 +84,9 @@ export class Locale extends EventEmitter {
     }
     //#endregion
 
-    public get(key: string): string {
-        return this.data[key] || `{${key}}`;
+    public get(key: string, ...args: any[]): string {
+        const text = this.data[key];
+        return text ? printf(text, args) : `{${key}}`;
     }
 
     public setLang(lang: string) {

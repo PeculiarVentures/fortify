@@ -103,7 +103,7 @@ export function create() {
     contextMenu.append(new MenuItem({
         label: "Test",
         click: () => {
-            CreateQuestionWindow(t("question.new.token"), {}, () => { });
+            CreateQuestionWindow(t("question.2key.remove", "Wow"), {}, () => { });
         },
     }));
 
