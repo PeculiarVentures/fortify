@@ -7,6 +7,7 @@ interface IConfigureProvider {
 
 interface IConfigure {
     logging?: boolean;
+    locale?: string;
     disableCardUpdate?: boolean;
     cards?: string;
     providers?: IConfigureProvider[];

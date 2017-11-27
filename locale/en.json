@@ -1,0 +1,23 @@
+{
+    "language": "Language",
+    "yes": "Yes",
+    "no": "No",
+    "error": "Error",
+    "question": "Question",
+    "warning": "Warning",
+    "about": "About",
+    "exit": "Exit",
+    "logging": "Logging",
+    "view.log": "View log",
+    "enable.disable": "Enable/Disable",
+    "tools": "Tools",
+    "sites": "Sites",
+    "by": "By",
+    "close": "Close",
+    "version": "Version",
+    "copyright": "Copyright (c) 2017, Peculiar Ventures",
+    "all.rights": "All rights reserved",
+    "error.critical.update": "Application cannot be started until new update will be applied",
+    "error.ssl.install": "Unable to install the SSL certificate for Fortify as a trusted root certificate. The application will not work until this is resolved.",
+    "question.new.token": "We detected a unsupported smart card or token.\n\nWould you like to request support be added for this token?"
+}

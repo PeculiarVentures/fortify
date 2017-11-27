@@ -24,3 +24,9 @@ export const JWS_LINK = "https://fortifyapp.com/packages/update.jws";
 export const DOWNLOAD_LINK = "https://fortifyapp.com/#download_app";
 export const CHECK_UPDATE = true;
 export const CHECK_UPDATE_INTERVAL = 24 * 60 * 60e3; // 24h
+
+export const icons = {
+    tray: os.platform() === "win32" ? path.join(ICON_DIR, "favicon-32x32.png") : path.join(ICON_DIR, "tray", "icon.png"),
+    trayWhite: path.join(ICON_DIR, "tray", "icon_pressed.png"),
+    favicon: path.join(ICON_DIR, "favicon-32x32.png"),
+};

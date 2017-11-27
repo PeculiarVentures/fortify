@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu, MenuItem, nativeImage, screen, shell, Tray } from "electron";
+import { app, ipcMain, Menu, MenuItem, nativeImage, screen, shell, Tray } from "electron";
 
 import * as crypto from "crypto";
 import * as fs from "fs";
@@ -17,15 +17,20 @@ import * as WebCryptoLocal from "webcrypto-local";
 import * as asn1js from "asn1js";
 const pkijs = require("pkijs");
 
+import * as application from "./application";
 import { ConfigureRead, ConfigureWrite } from "./config";
 import {
   APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_LOG_FILE, APP_SSL_CERT,
   APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
-  DOWNLOAD_LINK, HTML_DIR, ICON_DIR, TEMPLATE_NEW_CARD_FILE,
+  DOWNLOAD_LINK, HTML_DIR, ICON_DIR, icons, TEMPLATE_NEW_CARD_FILE,
 } from "./const";
 import * as jws from "./jws";
+import { Locale, locale, t } from "./locale";
 import * as ssl from "./ssl";
+import * as tray from "./tray";
 import { GetUpdateInfo } from "./update";
+import { CreateWindow } from "./window";
+import { CreateQuestionWindow, CreateErrorWindow, CreateWarningWindow } from "./windows/message";
 
 if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
@@ -33,52 +38,12 @@ if (!fs.existsSync(APP_TMP_DIR)) {
 
 winston.clear();
 
-/**
- * Turn on/of logger
- *
- * @param enabled
- */
-function LoggingSwitch(enabled: boolean) {
-  if (enabled) {
-    const options = { flag: "w+" };
-    if (!fs.existsSync(APP_LOG_FILE)) {
-      fs.writeFileSync(APP_LOG_FILE, "", options);
-    }
-    winston.add(winston.transports.File, { filename: APP_LOG_FILE, options });
-  } else {
-    winston.clear();
-  }
-}
-
-const configure = ConfigureRead(APP_CONFIG_FILE);
-LoggingSwitch(!!configure.logging);
-
 winston.info(`Application started at ${new Date()}`);
 
 // const { app, Menu, MenuItem } = electron;
 if ("dock" in app) {
   app.dock.hide();
 }
-
-let tray;
-
-const icons = {
-  tray: os.platform() === "win32" ? path.join(ICON_DIR, "favicon-32x32.png") : path.join(ICON_DIR, "tray", "icon.png"),
-  trayWhite: path.join(ICON_DIR, "tray", "icon_pressed.png"),
-  favicon: path.join(ICON_DIR, "favicon-32x32.png"),
-};
-
-const htmls = {
-  index: path.join(HTML_DIR, "index.html"),
-  keyPin: path.join(HTML_DIR, "2key-pin.html"),
-  pkcsPin: path.join(HTML_DIR, "pkcs11-pin.html"),
-  about: path.join(HTML_DIR, "about.html"),
-  manage: path.join(HTML_DIR, "manage.html"),
-  message_question: path.join(HTML_DIR, "message_question.html"),
-  message_error: path.join(HTML_DIR, "message_error.html"),
-  message_warn: path.join(HTML_DIR, "message_warn.html"),
-  keys: path.join(HTML_DIR, "keys.html"),
-};
 
 const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {
   winston.info(`Someone tried to run a second instance`);
@@ -91,92 +56,27 @@ if (isSecondInstance) {
 
 app.on("ready", () => {
   (async () => {
-    tray = new Tray(icons.tray);
-    const trayIconPressed = nativeImage.createFromPath(icons.trayWhite);
-    tray.setPressedImage(trayIconPressed);
 
-    const contextMenu = new Menu();
+    //#region Load locale
 
-    const menuManage = new MenuItem({
-      label: "Manage",
+    if (!application.configure.locale) {
+      const localeList = Locale.getLangList();
+      const lang = app.getLocale().split("-")[0];
+      application.configure.locale = (localeList.indexOf(lang) === -1) ? "en" : lang;
+      // save configure
+      ConfigureWrite(APP_CONFIG_FILE, application.configure);
+    }
+    locale.setLang(application.configure.locale);
+
+    locale.on("change", () => {
+      application.configure.locale = locale.lang;
+      ConfigureWrite(APP_CONFIG_FILE, application.configure);
     });
-    menuManage.click = () => {
-      CreateManageWindow();
-    };
+    //#endregion
 
-    const menuAbout = new MenuItem({
-      label: "About",
-    });
-    menuAbout.click = () => {
-      CreateAboutWindow();
-    };
+    tray.create();
 
-    const menuKeys = new MenuItem({
-      label: "Sites",
-    });
-    menuKeys.click = () => {
-      CreateKeysWindow();
-    };
-
-    const menuLogSubMenu = new Menu();
-    const menuLogView = new MenuItem({
-      label: "View log",
-      enabled: !!configure.logging,
-    });
-    menuLogView.click = () => {
-      shell.openItem(APP_LOG_FILE);
-    };
-    const menuLogDisable = new MenuItem({
-      label: "Enable/Disable",
-      type: "checkbox",
-      checked: !!configure.logging,
-    });
-
-    menuLogDisable.click = () => {
-      configure.logging = !configure.logging;
-      menuLogDisable.checked = configure.logging;
-      menuLogView.enabled = configure.logging;
-      ConfigureWrite(APP_CONFIG_FILE, configure);
-      LoggingSwitch(configure.logging);
-    };
-    menuLogSubMenu.append(menuLogView);
-    menuLogSubMenu.append(menuLogDisable);
-    const menuLog = new MenuItem({
-      label: "Logging",
-      submenu: menuLogSubMenu,
-    });
-
-    const menuTools = new MenuItem({
-      label: "Tools",
-    });
-    menuTools.click = () => {
-      shell.openExternal("https://peculiarventures.github.io/fortify-web");
-    };
-
-    const menuSeparator = new MenuItem({
-      type: "separator",
-    });
-
-    const menuExit = new MenuItem({
-      label: "Exit",
-    });
-
-    menuExit.click = () => {
-      app.exit();
-    };
-
-    // contextMenu.append(menuManage);
-    contextMenu.append(menuAbout);
-    contextMenu.append(menuKeys);
-    contextMenu.append(menuLog);
-    contextMenu.append(menuTools);
-    contextMenu.append(menuSeparator);
-    contextMenu.append(menuExit);
-
-    tray.setToolTip(`Fortify`);
-    tray.setContextMenu(contextMenu);
-
-    CreateWindow();
+    CreateMainWindow();
     if (CHECK_UPDATE) {
       await CheckUpdate();
       setInterval(() => {
@@ -205,19 +105,14 @@ app.on("ready", () => {
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
-function CreateWindow() {
+function CreateMainWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 800, height: 600, show: false });
-
-  // and load the index.html of the app.
-  mainWindow.loadURL(url.format({
-    pathname: htmls.index,
-    protocol: "file:",
-    slashes: true,
-  }));
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow = CreateWindow({
+    app: "index",
+    width: 800,
+    height: 600,
+    show: false,
+  });
 
   // Emitted when the window is closed.
   mainWindow.on("closed", () => {
@@ -226,15 +121,6 @@ function CreateWindow() {
     // when you should delete the corresponding element.
     // mainWindow = null
   });
-}
-
-let LocalServer: typeof WebCryptoLocal.LocalServer | undefined;
-let server: WebCryptoLocal.LocalServer;
-try {
-  // @ts-ignore
-  LocalServer = require("webcrypto-local").LocalServer;
-} catch (e) {
-  winston.error(e.toString());
 }
 
 function CheckSSL() {
@@ -287,7 +173,7 @@ async function InitService() {
         fs.unlinkSync(APP_SSL_CERT);
         fs.unlinkSync(APP_SSL_KEY);
 
-        CreateErrorWindow("Unable to install the SSL certificate for Fortify as a trusted root certificate. The application will not work until this is resolved.", () => {
+        CreateErrorWindow(t("error.ssl.install"), () => {
           app.quit();
         });
       });
@@ -302,18 +188,21 @@ async function InitService() {
   }
 
   const config: IConfigure = {
-    disableCardUpdate: configure.disableCardUpdate,
+    disableCardUpdate: application.configure.disableCardUpdate,
   };
   await PrepareConfig(config);
   // @ts-ignore
   sslData.config = config;
 
-  if (!LocalServer) {
+  try {
+    application.load(sslData);
+  } catch (e) {
+    winston.error(e.message);
     winston.error("LocalServer is empty. webcrypto-local module wasn't loaded");
     return;
   }
 
-  server = new LocalServer(sslData);
+  const server = application.server;
 
   server.listen("127.0.0.1:31337")
     .on("listening", (e: any) => {
@@ -328,8 +217,7 @@ async function InitService() {
     })
     .on("token_new", (card) => {
       winston.info(`New token was found reader: '${card.reader}' ATR: ${card.atr.toString("hex")}`);
-      const MESSAGE = `We detected a unsupported smart card or token.\n\nWould you like to request support be added for this token?`;
-      CreateQuestionWindow(MESSAGE, {}, (res) => {
+      CreateQuestionWindow(t("question.new.token"), {}, (res) => {
         if (res) {
           try {
             const title = `Add support for '${card.atr.toString("hex")}' token`;
@@ -356,8 +244,11 @@ async function InitService() {
 
       switch (p.type) {
         case "2key": {
+          p.accept = false;
+
           // Create the browser window.
-          const window = new BrowserWindow({
+          const window = CreateWindow({
+            app: "key-pin",
             width: 400,
             height: 300,
             x: width - 400,
@@ -369,18 +260,9 @@ async function InitService() {
             modal: true,
             alwaysOnTop: true,
             icon: icons.favicon,
+            params: p,
           });
 
-          // and load the index.html of the app.
-          window.loadURL(url.format({
-            pathname: htmls.keyPin,
-            protocol: "file:",
-            slashes: true,
-          }));
-
-          // @ts-ignore
-          window.params = p;
-          p.accept = false;
 
           window.on("closed", () => {
             p.resolve(p.accept);
@@ -389,7 +271,8 @@ async function InitService() {
         }
         case "pin": {
           // Create the browser window.
-          const window = new BrowserWindow({
+          const window = CreateWindow({
+            app: "pin",
             width: 500,
             height: 400,
             alwaysOnTop: true,
@@ -399,14 +282,6 @@ async function InitService() {
             icon: icons.favicon,
           });
 
-          // and load the index.html of the app.
-          window.loadURL(url.format({
-            pathname: htmls.pkcsPin,
-            protocol: "file:",
-            slashes: true,
-          }));
-
-          // @ts-ignore
           window.params = p;
           p.pin = "";
 
@@ -525,206 +400,57 @@ async function GetRemoteFile(link: string, encoding = "utf8") {
   });
 }
 
-let aboutWindow: Electron.BrowserWindow | null = null;
-function CreateAboutWindow() {
-  // Create the browser window.
-  if (aboutWindow) {
-    aboutWindow.focus();
-    return;
-  }
-  aboutWindow = new BrowserWindow({
-    width: 400,
-    height: 300,
-    autoHideMenuBar: true,
-    minimizable: false,
-    resizable: false,
-    title: "About",
-    icon: icons.favicon,
-  });
+async function CheckUpdate() {
+  try {
+    winston.info("Update: Check for new update");
+    const update = await GetUpdateInfo();
+    // get current version
+    const packageJson = fs.readFileSync(path.join(APP_DIR, "package.json")).toString();
+    const curVersion = JSON.parse(packageJson).version;
 
-  // and load the index.html of the app.
-  aboutWindow.loadURL(url.format({
-    pathname: htmls.about,
-    protocol: "file:",
-    slashes: true,
-  }));
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-
-  // Emitted when the window is closed.
-  aboutWindow.on("closed", () => {
-    aboutWindow = null;
-  });
-}
-
-let manageWindow: Electron.BrowserWindow | null = null;
-function CreateManageWindow() {
-  // Create the browser window.
-  if (manageWindow) {
-    return;
-  }
-  manageWindow = new BrowserWindow({
-    width: 600,
-    height: 500,
-    autoHideMenuBar: true,
-    minimizable: false,
-    resizable: false,
-    title: "Manage",
-    icon: icons.favicon,
-  });
-
-  // and load the index.html of the app.
-  manageWindow.loadURL(url.format({
-    pathname: htmls.manage,
-    protocol: "file:",
-    slashes: true,
-  }));
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-
-  // Emitted when the window is closed.
-  manageWindow.on("closed", () => {
-    manageWindow = null;
-  });
-}
-
-let errorWindow: Electron.BrowserWindow | null = null;
-/**
- * Creates Error window
- *
- * @param text    Message text
- * @param cb    Callback on message close
- * @returns
- */
-function CreateErrorWindow(text: string, cb: () => void) {
-  // Create the browser window.
-  if (errorWindow) {
-    errorWindow.show();
-    return;
-  }
-  errorWindow = new BrowserWindow({
-    width: 500,
-    height: 300,
-    autoHideMenuBar: true,
-    minimizable: false,
-    fullscreenable: false,
-    resizable: false,
-    title: "Error",
-    icon: icons.favicon,
-  });
-
-  // and load the index.html of the app.
-  errorWindow.loadURL(url.format({
-    pathname: htmls.message_error,
-    protocol: "file:",
-    slashes: true,
-  }));
-
-  // @ts-ignore
-  errorWindow.params = {
-    text,
-  };
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-
-  // Emitted when the window is closed.
-  errorWindow.on("closed", () => {
-    errorWindow = null;
-    if (cb) {
-      cb();
+    // compare versions
+    if (semver.lt(curVersion, update.version)) {
+      winston.info("Update: New version was found");
+      await new Promise((resolve, reject) => {
+        CreateQuestionWindow(`A new update is available. Do you want to download version ${update.version} now?`, {}, (res) => {
+          if (res) {
+            // yes
+            winston.info(`User agreed to download new version ${update.version}`);
+            shell.openExternal(DOWNLOAD_LINK);
+          } else {
+            // no
+            winston.info(`User refused to download new version ${update.version}`);
+          }
+          if (update.min && semver.lt(curVersion, update.min)) {
+            winston.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
+            CreateErrorWindow(t("error.critical.update"), () => {
+              winston.info(`Close application`);
+              app.quit();
+            });
+          } else {
+            resolve();
+          }
+        });
+      });
+    } else {
+      winston.info("Update: New version wasn't found");
     }
-  });
-}
-
-let warnWindow: Electron.BrowserWindow | null = null;
-/**
- * Creates Warning window
- *
- * @param text    Message text
- * @param options modal dialog parameters
- * @param cb    Callback on message close
- * @returns
- */
-function CreateWarningWindow(text: string, options: ICreateWindowOptions, cb?: () => void) {
-  options = options || {};
-  // Create the browser window.
-  if (warnWindow) {
-    warnWindow.show();
-    return;
-  }
-  warnWindow = new BrowserWindow({
-    width: 500,
-    height: 300,
-    autoHideMenuBar: true,
-    minimizable: false,
-    fullscreenable: false,
-    resizable: false,
-    title: options.title || "Warning",
-    center: true,
-    icon: icons.favicon,
-    alwaysOnTop: !!options.alwaysOnTop,
-    modal: !!options.parent,
-    parent: options.parent,
-  });
-
-  // and load the index.html of the app.
-  warnWindow.loadURL(url.format({
-    pathname: htmls.message_warn,
-    protocol: "file:",
-    slashes: true,
-  }));
-
-  // @ts-ignore
-  warnWindow.params = {
-    text,
-  };
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-
-  // Emitted when the window is closed.
-  warnWindow.on("closed", () => {
-    warnWindow = null;
-    if (cb) {
-      cb();
+  } catch (e) {
+    winston.error(e.toString());
+    if (e.type === "UpdateError" && !e.critical) {
+      // await new Promise((resolve, reject) => {
+      //   CreateWarningWindow(``, () => {
+      //     resolve();
+      //   });
+      // });
+    } else {
+      await new Promise((resolve, reject) => {
+        CreateErrorWindow(e.toString(), () => {
+          app.quit();
+        });
+      });
     }
-  });
-}
-
-let keysWindow: Electron.BrowserWindow | null = null;
-function CreateKeysWindow() {
-  // Create the browser window.
-  if (keysWindow) {
-    keysWindow.focus();
-    return;
   }
-  keysWindow = new BrowserWindow({
-    width: 600,
-    height: 500,
-    autoHideMenuBar: true,
-    minimizable: false,
-    resizable: false,
-    title: "Sites",
-    icon: icons.favicon,
-  });
-
-  // and load the index.html of the app.
-  keysWindow.loadURL(url.format({
-    pathname: htmls.keys,
-    protocol: "file:",
-    slashes: true,
-  }));
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-
-  // Emitted when the window is closed.
-  keysWindow.on("closed", () => {
-    keysWindow = null;
-  });
 }
 
 interface CurrentIdentity {
@@ -737,7 +463,7 @@ function InitMessages() {
   ipcMain.on("2key-list", (event: any, arg: any) => {
     Promise.resolve()
       .then(() => {
-        const storage = server.server.storage;
+        const storage = application.server.server.storage;
         if (!Object.keys(storage.remoteIdentities).length) {
           // NOTE: call protected method of the storage
           // @ts-ignore
@@ -745,7 +471,7 @@ function InitMessages() {
         }
       })
       .then(() => {
-        const identities = server.server.storage.remoteIdentities;
+        const identities = application.server.server.storage.remoteIdentities;
         const preparedList = [];
         for (const i in identities) {
           const identity = PrepareIdentity(identities[i]);
@@ -799,8 +525,8 @@ function InitMessages() {
       });
   })
     .on("2key-remove", (event: any, arg: any) => {
-      const storage = server.server.storage;
-      CreateQuestionWindow(`Do you want to remove ${arg} from the trusted list?`, { parent: keysWindow }, (result) => {
+      const storage = application.server.server.storage;
+      CreateQuestionWindow(`Do you want to remove ${arg} from the trusted list?`, { parent: application.windows.keys }, (result) => {
         if (result) {
           winston.info(`Removing 2key session key ${arg}`);
           const remList = [];
@@ -860,103 +586,4 @@ function PrepareIdentity(identity: WebCryptoLocal.RemoteIdentityEx) {
   res.created = identity.createdAt;
   res.origin = identity.origin!;
   return res;
-}
-
-/**
- *
- * @param text
- * @param options
- * @param cb
- * @return {BrowserWindow}
- */
-function CreateQuestionWindow(text: string, options: ICreateWindowOptions, cb?: (result: number) => void) {
-  // Create the browser window.
-  const window = new BrowserWindow({
-    width: 500,
-    height: 300,
-    autoHideMenuBar: true,
-    minimizable: false,
-    fullscreenable: false,
-    resizable: false,
-    title: "Question",
-    icon: icons.favicon,
-    modal: !!options.parent,
-    parent: options.parent,
-  });
-
-  // and load the index.html of the app.
-  window.loadURL(url.format({
-    pathname: htmls.message_question,
-    protocol: "file:",
-    slashes: true,
-  }));
-
-  // @ts-ignore
-  window.params = {
-    text,
-    result: 0,
-  };
-
-  // Emitted when the window is closed.
-  window.on("closed", () => {
-    // @ts-ignore
-    if (cb) {
-      cb((window as any).params.result);
-    }
-  });
-
-  return window;
-}
-
-async function CheckUpdate() {
-  try {
-    winston.info("Update: Check for new update");
-    const update = await GetUpdateInfo();
-    // get current version
-    const packageJson = fs.readFileSync(path.join(APP_DIR, "package.json")).toString();
-    const curVersion = JSON.parse(packageJson).version;
-
-    // compare versions
-    if (semver.lt(curVersion, update.version)) {
-      winston.info("Update: New version was found");
-      await new Promise((resolve, reject) => {
-        CreateQuestionWindow(`A new update is available. Do you want to download version ${update.version} now?`, {}, (res) => {
-          if (res) {
-            // yes
-            winston.info(`User agreed to download new version ${update.version}`);
-            shell.openExternal(DOWNLOAD_LINK);
-          } else {
-            // no
-            winston.info(`User refused to download new version ${update.version}`);
-          }
-          if (update.min && semver.lt(curVersion, update.min)) {
-            winston.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
-            CreateErrorWindow(`Application cannot be started until new update will be applied`, () => {
-              winston.info(`Close application`);
-              app.quit();
-            });
-          } else {
-            resolve();
-          }
-        });
-      });
-    } else {
-      winston.info("Update: New version wasn't found");
-    }
-  } catch (e) {
-    winston.error(e.toString());
-    if (e.type === "UpdateError" && !e.critical) {
-      // await new Promise((resolve, reject) => {
-      //   CreateWarningWindow(``, () => {
-      //     resolve();
-      //   });
-      // });
-    } else {
-      await new Promise((resolve, reject) => {
-        CreateErrorWindow(e.toString(), () => {
-          app.quit();
-        });
-      });
-    }
-  }
 }

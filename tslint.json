@@ -11,7 +11,8 @@
         "max-classes-per-file": false,
         "forin": false,
         "no-conditional-assignment": false,
-        "interface-name": false
+        "interface-name": false,
+        "no-empty-interface": false
     },
     "rulesDirectory": []
 }

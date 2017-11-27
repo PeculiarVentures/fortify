@@ -1,5 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title></title>
+		<!-- Dependencies -->
+        <script src="../../node_modules/react/umd/react.production.min.js"></script>
+        <script src="../../node_modules/react-dom/umd/react-dom.production.min.js"></script>
+	</head>
+	<body>
+        <div id="root"></div>
+        <script>
+            const electron = require("electron");
+            const currentWindow = electron.remote.getCurrentWindow();
+
+            if (!currentWindow.app) {
+                throw new Error("app parameter is empty");
+            }
+
+            const $script = document.createElement("script");
+            $script.setAttribute("src", `../../out/${currentWindow.app}.js`);
+            document.body.appendChild($script);
+        </script>
+	</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
 
     <head>
         <meta charset="UTF-8">
@@ -15,6 +43,7 @@
         <script>
             const { shell } = require('electron');
             const electron = require('electron');
+            const electron = require('../../out/main');
             const currentWindow = electron.remote.getCurrentWindow();
 
             function btnCloseClick() {
@@ -64,4 +93,4 @@
         </script>
     </body>
 
-</html>
+</html> -->

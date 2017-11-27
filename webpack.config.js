@@ -3,18 +3,21 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: {
-    keys: path.join(__dirname, './src/renderer/keys/index.tsx'),
     main: path.join(__dirname, './src/main/main.ts'),
+    // windows
+    keys: path.join(__dirname, './src/renderer/keys/index.tsx'),
+    about: path.join(__dirname, './src/renderer/forms/about/index.tsx'),
+    message: path.join(__dirname, './src/renderer/forms/message/index.tsx'),
   },
   output: {
     path: path.resolve(__dirname, 'out'),
     filename: '[name].js',
   },
   // Enable sourcemaps for debugging webpack's output.
-  devtool: "source-map",
+  devtool: 'source-map',
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: [".ts", ".tsx", ".js", ".json"]
+    extensions: ['.ts', '.tsx', '.js', '.json'],
   },
   plugins: [
     // new webpack.optimize.UglifyJsPlugin({
@@ -45,8 +48,8 @@ module.exports = {
     __dirname: false,
   },
   externals: {
-    "react": "React",
-    "react-dom": "ReactDOM",
+    'react': 'React',
+    'react-dom': 'ReactDOM',
     'asn1js': 'require("asn1js")',
     'child_process': 'require("child_process")',
     'electron': 'require("electron")',
@@ -67,10 +70,10 @@ module.exports = {
   module: {
     rules: [
       // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-      { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
 
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+      { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
       {
         test: /\.sass$/,
         use: [
