@@ -90,7 +90,6 @@ body
   display: table
   clear: both
 
-
 .m_width,
 .m_width_wide
   width: calc(100% - 134px)
@@ -244,12 +243,15 @@ body
     line-height: 25px
 
 .b_download_app
+  text-align: center
   .title
     font-size: 28px
     color: $c_mako
     letter-spacing: 0.09px
     line-height: 43px
+    text-align: left
   .button
+    text-align: left
     @include selectNome
     width: calc(50% - 10px)
     margin-top: 63px
@@ -262,8 +264,8 @@ body
     cursor: pointer
     white-space: nowrap
     transition: background-color $t_transition
-    &:last-child
-      margin-right: 0
+    &:nth-child(3)
+      margin-right: 0 !important
     &:hover
       background: rgba(#0097FC, 0.028)
   .icon
@@ -440,6 +442,17 @@ body
     background: #D8D8D8
     &.swiper-pagination-bullet-active
       background: $c_blue
+
+.m_hidden
+  display: none !important
+
+.show_btns
+  margin: 30px auto 0
+  padding: 5px 15px
+  display: block
+  font-size: 15px
+  &:hover
+    cursor: pointer
 
 @media (min-width: 1174px)
   .l_section
