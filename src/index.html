@@ -89,7 +89,7 @@
     <div class="m_width">
         <div class="b_download_app" id="download_app">
             <div class="title">Download App</div>
-            <a class="button" href="https://github.com/PeculiarVentures/fortify-web/releases/download/v1.0.7/fortify-mac-x64-v1_0_7.pkg">
+            <a class="button" href="https://github.com/PeculiarVentures/fortify-web/releases/download/v1.0.9/fortify-mac-x64-v1_0_9.pkg" id="download_mac">
                 <svg class="icon" viewBox="0 0 50 50">
                     <use xlink:href="#osx_icon" />
                 </svg>
@@ -98,7 +98,7 @@
                     <div class="os_version">macOS 10.12 and later</div>
                 </div>
             </a>
-            <a class="button" href="https://github.com/PeculiarVentures/fortify-web/releases/download/v1.0.7/fortify-win32-x64-v1_0_7.exe">
+            <a class="button" href="https://github.com/PeculiarVentures/fortify-web/releases/download/v1.0.9/fortify-win32-x64-v1_0_9.msi" id="download_64">
                 <svg class="icon" viewBox="0 0 50 50">
                     <use xlink:href="#win_icon" />
                 </svg>
@@ -107,14 +107,24 @@
                     <div class="os_version">Windows 7 and later</div>
                 </div>
             </a>
+            <a class="button" href="https://github.com/PeculiarVentures/fortify-web/releases/download/v1.0.9/fortify-win32-x86-v1_0_9.msi" id="download_86">
+                <svg class="icon" viewBox="0 0 50 50">
+                    <use xlink:href="#win_icon" />
+                </svg>
+                <div class="info">
+                    <div class="os_name">Download for Windows (x86)</div>
+                    <div class="os_version">Windows 7 and later</div>
+                </div>
+            </a>
+            <button class="show_btns m_hidden" id="show_all"> Download manually</button>
         </div>
         <div class="b_questions" id="app_faq">
             <div class="title">Frequently asked questions</div>
             <table class="table">
                 <tbody id="faq_table">
                 <!--<tr class="row">-->
-                    <!--<td class="cell m_question">How does Fortify work?</td>-->
-                    <!--<td class="cell">Fortify is a locally installed application that listens on a known TCP port. Web applications use the Fortify WebCrypto polyfill to communicate with this application which enables the web application to use smart cards, security tokens and locally installed certificates. </td>-->
+                <!--<td class="cell m_question">How does Fortify work?</td>-->
+                <!--<td class="cell">Fortify is a locally installed application that listens on a known TCP port. Web applications use the Fortify WebCrypto polyfill to communicate with this application which enables the web application to use smart cards, security tokens and locally installed certificates. </td>-->
                 <!--</tr>-->
                 </tbody>
             </table>
@@ -694,12 +704,12 @@
 </div>
 
 <script src="js/build.js"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109693148-1"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-109693148-1"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
- gtag('config', 'UA-109693148-1');
+  gtag('config', 'UA-109693148-1');
 </script>
 </body>
 </html>

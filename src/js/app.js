@@ -188,6 +188,44 @@ function insertFAQData(data) {
   }
 }
 
+function showAll() {
+  document.getElementById(`download_mac`).classList.remove('m_hidden');
+  document.getElementById(`download_64`).classList.remove('m_hidden');
+  document.getElementById(`download_86`).classList.remove('m_hidden');
+  document.getElementById('show_all').classList.add('m_hidden');
+}
+
+function detectOS() {
+  const platform = navigator.platform;
+  const userAgent = navigator.userAgent;
+  const downloadMac = document.getElementById(`download_mac`);
+  const download32 = document.getElementById(`download_86`);
+  const download64 = document.getElementById(`download_64`);
+  const showBtn = document.getElementById('show_all');
+
+  if (platform.indexOf('Mac') !== -1) {
+    download32.classList.add('m_hidden');
+    download64.classList.add('m_hidden');
+    showBtn.classList.remove('m_hidden');
+
+  } else if (platform.indexOf('Win') !== -1 && (userAgent.indexOf('WOW64') !== -1 || userAgent.indexOf('Win64') !== -1 )) {
+
+    download32.classList.add('m_hidden');
+    downloadMac.classList.add('m_hidden');
+    showBtn.classList.remove('m_hidden');
+
+  } else if (platform.indexOf('Win') !== -1) {
+
+    downloadMac.classList.add('m_hidden');
+    download64.classList.add('m_hidden');
+    showBtn.classList.remove('m_hidden');
+
+  }
+
+  showBtn.addEventListener('click', showAll, false);
+}
+
+detectOS();
 initSlider();
 listenFortify();
 const cards = getCardsData()
@@ -196,7 +234,7 @@ const FAQ = getFAQData()
   .then(insertFAQData);
 
 Promise.all([FAQ, cards])
-.then(([faq, cardsData]) => insertTableData(cardsData))
+  .then(([faq, cardsData]) => insertTableData(cardsData))
   .catch(err => {
     console.warn(err);
   });
