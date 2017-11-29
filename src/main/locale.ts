@@ -2,7 +2,6 @@ import * as electron from "electron";
 import { EventEmitter } from "events";
 import * as fs from "fs";
 import * as path from "path";
-import * as winston from "winston";
 
 const LANG_DIR = path.join(__dirname, typeof navigator === "undefined" ? "" : "..", "..", "locale");
 
@@ -18,7 +17,7 @@ export type LocaleChangeHandle = () => void;
  */
 function printf(text: string, ...args: any[]) {
     let msg: string = text;
-    const regFind = /[^%](%\d+)/g;
+    const regFind = /(%\d+)/g;
     let match: RegExpExecArray | null;
     const matches: Array<{ arg: string, index: number }> = [];
     // tslint:disable-next-line:no-conditional-assignment
@@ -30,12 +29,12 @@ function printf(text: string, ...args: any[]) {
     for (let i = matches.length - 1; i >= 0; i--) {
         const item = matches[i];
         const arg = item.arg.substring(1);
-        const index = item.index + 1;
+        const index = item.index;
         msg = msg.substring(0, index) + arguments[+arg] + msg.substring(index + 1 + arg.length);
     }
 
     // convert %% -> %
-    msg = msg.replace("%%", "%");
+    // msg = msg.replace("%%", "%");
 
     return msg;
 }

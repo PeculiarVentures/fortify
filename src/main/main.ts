@@ -36,8 +36,6 @@ if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
 }
 
-winston.clear();
-
 winston.info(`Application started at ${new Date()}`);
 
 // const { app, Menu, MenuItem } = electron;
@@ -263,7 +261,6 @@ async function InitService() {
             params: p,
           });
 
-
           window.on("closed", () => {
             p.resolve(p.accept);
           });
@@ -272,9 +269,10 @@ async function InitService() {
         case "pin": {
           // Create the browser window.
           const window = CreateWindow({
-            app: "pin",
+            app: "p11-pin",
+            title: t("p11-pin"),
             width: 500,
-            height: 400,
+            height: 300,
             alwaysOnTop: true,
             autoHideMenuBar: true,
             resizable: false,
@@ -437,18 +435,18 @@ async function CheckUpdate() {
     }
   } catch (e) {
     winston.error(e.toString());
-    if (e.type === "UpdateError" && !e.critical) {
-      // await new Promise((resolve, reject) => {
-      //   CreateWarningWindow(``, () => {
-      //     resolve();
-      //   });
-      // });
-    } else {
+    if (e.type === "UpdateError" && e.critical) {
       await new Promise((resolve, reject) => {
         CreateErrorWindow(e.toString(), () => {
           app.quit();
         });
       });
+    } else {
+        // await new Promise((resolve, reject) => {
+        //   CreateWarningWindow(``, () => {
+        //     resolve();
+        //   });
+        // });
     }
   }
 }

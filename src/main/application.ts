@@ -18,9 +18,9 @@ export const windows: Assoc<BrowserWindowEx> = {};
 export function LoggingSwitch(enabled: boolean) {
     if (enabled) {
         const options = { flag: "w+" };
-        if (!fs.existsSync(APP_LOG_FILE)) {
-            fs.writeFileSync(APP_LOG_FILE, "", options);
-        }
+        // if (!fs.existsSync(APP_LOG_FILE)) {
+        //     fs.writeFileSync(APP_LOG_FILE, "", options);
+        // }
         winston.add(winston.transports.File, { filename: APP_LOG_FILE, options });
     } else {
         winston.clear();

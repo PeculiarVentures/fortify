@@ -100,12 +100,12 @@ export function create() {
         menuLanguage.label = t("language");
     });
 
-    contextMenu.append(new MenuItem({
-        label: "Test",
-        click: () => {
-            CreateQuestionWindow(t("question.2key.remove", "Wow"), {}, () => { });
-        },
-    }));
+    // contextMenu.append(new MenuItem({
+    //     label: "Test",
+    //     click: () => {
+    //         CreateQuestionWindow(t("question.2key.remove", "Wow"), {}, () => { });
+    //     },
+    // }));
 
     contextMenu.append(menuAbout);
     contextMenu.append(menuKeys);
