@@ -120,6 +120,6 @@
         "src/main/**/*",
         "src/renderer/**/*",
         // Map files
-        "out/**/*.map.js"
+        "**/*.js.map"
     ]
 }

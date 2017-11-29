@@ -149,13 +149,13 @@ async function InitService() {
     sslData = await ssl.generate() as any;
 
     // write files
-    // fs.writeFileSync(APP_SSL_CERT_CA, sslData.root);
+    fs.writeFileSync(APP_SSL_CERT_CA, (sslData as any).root);
     fs.writeFileSync(APP_SSL_CERT, sslData.cert);
     fs.writeFileSync(APP_SSL_KEY, sslData.key);
 
     // Set cert as trusted
     const warning = new Promise((resolve, reject) => { // wrap callback
-      CreateWarningWindow("warn.ssl.install", { alwaysOnTop: true }, () => {
+      CreateWarningWindow(t("warn.ssl.install"), { alwaysOnTop: true }, () => {
         winston.info("Warning window was closed");
         resolve();
       });

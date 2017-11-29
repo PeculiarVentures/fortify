@@ -3,8 +3,12 @@ import * as WebCryptoLocal from "webcrypto-local";
 import * as winston from "winston";
 
 import { ConfigureRead } from "./config";
-import { APP_CONFIG_FILE, APP_LOG_FILE } from "./const";
+import { APP_CONFIG_FILE, APP_LOG_FILE, APP_TMP_DIR } from "./const";
 import { BrowserWindowEx } from "./window";
+
+if (!fs.existsSync(APP_TMP_DIR)) {
+    fs.mkdirSync(APP_TMP_DIR);
+}
 
 export let server: WebCryptoLocal.LocalServer;
 export let configure = ConfigureRead(APP_CONFIG_FILE);
