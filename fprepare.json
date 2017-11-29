@@ -1,5 +1,5 @@
 {
-    "outDir": "/tmp/fortify-prod/x86",
+    "outDir": "/tmp/fortify-prod/x64",
     "include": [
         // node_modules
         "node_modules/2key-ratchet/**/{*.js,*.json,*.node}",
@@ -63,6 +63,10 @@
         "node_modules/pvutils/**/{*.js,*.json,*.node}",
         "node_modules/qs/**/{*.js,*.json,*.node}",
         "node_modules/request/**/{*.js,*.json,*.node}",
+        "node_modules/react/*.json",
+        "node_modules/react/umd/react.production.min.js",
+        "node_modules/react-dom/*.json",
+        "node_modules/react-dom/umd/react-dom.production.min.js",
         "node_modules/safe-buffer/**/{*.js,*.json,*.node}",
         "node_modules/semver/**/{*.js,*.json,*.node}",
         "node_modules/sntp/**/{*.js,*.json,*.node}",
@@ -83,6 +87,7 @@
         "node_modules/winston/**/{*.js,*.json,*.node}",
         "node_modules/yaeti/**/{*.js,*.json,*.node}",
         // Fortiy files
+        "locale/**/*",
         "src/**/*",
         "out/**/*",
         "libpvpkcs11.dylib",
@@ -113,6 +118,8 @@
         "node_modules/**/gulpfile.js",
         // Fortify source files
         "src/main/**/*",
-        "src/renderer/**/*"
+        "src/renderer/**/*",
+        // Map files
+        "out/**/*.map.js"
     ]
 }
