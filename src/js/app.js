@@ -189,9 +189,9 @@ function insertFAQData(data) {
 }
 
 function showAll() {
-  document.getElementById(`download_mac`).classList.remove('m_hidden');
-  document.getElementById(`download_64`).classList.remove('m_hidden');
-  document.getElementById(`download_86`).classList.remove('m_hidden');
+  document.getElementById(`download_mac`).classList.remove('m_hidden', 'm_full_width');
+  document.getElementById(`download_64`).classList.remove('m_hidden', 'm_full_width');
+  document.getElementById(`download_86`).classList.remove('m_hidden', 'm_full_width');
   document.getElementById('show_all').classList.add('m_hidden');
 }
 
@@ -206,18 +206,22 @@ function detectOS() {
   if (platform.indexOf('Mac') !== -1) {
     download32.classList.add('m_hidden');
     download64.classList.add('m_hidden');
+    downloadMac.classList.add('m_full_width');
     showBtn.classList.remove('m_hidden');
 
-  } else if (platform.indexOf('Win') !== -1 && (userAgent.indexOf('WOW64') !== -1 || userAgent.indexOf('Win64') !== -1 )) {
+  } else if (platform.indexOf('Win') !== -1 &&
+    (userAgent.indexOf('WOW64') !== -1 || userAgent.indexOf('Win64') !== -1 )) {
 
     download32.classList.add('m_hidden');
     downloadMac.classList.add('m_hidden');
+    download64.classList.add('m_full_width');
     showBtn.classList.remove('m_hidden');
 
   } else if (platform.indexOf('Win') !== -1) {
 
     downloadMac.classList.add('m_hidden');
     download64.classList.add('m_hidden');
+    download32.classList.add('m_full_width');
     showBtn.classList.remove('m_hidden');
 
   }
