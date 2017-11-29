@@ -1,6 +1,9 @@
 import initSlider from './slider';
 
 const FORTIFY_POOLING_DELAY = 5000;
+const downloadForMac = document.getElementById(`download_mac`);
+const downloadForWin32 = document.getElementById(`download_86`);
+const downloadForWin64 = document.getElementById(`download_64`);
 
 function createElement(tag = 'div', className = '', id, content = '', options = {}) {
   const element = document.createElement(tag);
@@ -189,45 +192,68 @@ function insertFAQData(data) {
 }
 
 function showAll() {
-  document.getElementById(`download_mac`).classList.remove('m_hidden', 'm_full_width');
-  document.getElementById(`download_64`).classList.remove('m_hidden', 'm_full_width');
-  document.getElementById(`download_86`).classList.remove('m_hidden', 'm_full_width');
+  downloadForMac.classList.remove('m_hidden', 'm_full_width');
+  downloadForWin64.classList.remove('m_hidden', 'm_full_width');
+  downloadForWin32.classList.remove('m_hidden', 'm_full_width');
   document.getElementById('show_all').classList.add('m_hidden');
 }
 
 function detectOS() {
   const platform = navigator.platform;
   const userAgent = navigator.userAgent;
-  const downloadMac = document.getElementById(`download_mac`);
-  const download32 = document.getElementById(`download_86`);
-  const download64 = document.getElementById(`download_64`);
   const showBtn = document.getElementById('show_all');
 
   if (platform.indexOf('Mac') !== -1) {
-    download32.classList.add('m_hidden');
-    download64.classList.add('m_hidden');
-    downloadMac.classList.add('m_full_width');
+    downloadForWin32.classList.add('m_hidden');
+    downloadForWin64.classList.add('m_hidden');
+    downloadForMac.classList.add('m_full_width');
     showBtn.classList.remove('m_hidden');
 
   } else if (platform.indexOf('Win') !== -1 &&
     (userAgent.indexOf('WOW64') !== -1 || userAgent.indexOf('Win64') !== -1 )) {
 
-    download32.classList.add('m_hidden');
-    downloadMac.classList.add('m_hidden');
-    download64.classList.add('m_full_width');
+    downloadForWin32.classList.add('m_hidden');
+    downloadForMac.classList.add('m_hidden');
+    downloadForWin64.classList.add('m_full_width');
     showBtn.classList.remove('m_hidden');
 
   } else if (platform.indexOf('Win') !== -1) {
 
-    downloadMac.classList.add('m_hidden');
-    download64.classList.add('m_hidden');
-    download32.classList.add('m_full_width');
+    downloadForMac.classList.add('m_hidden');
+    downloadForWin64.classList.add('m_hidden');
+    downloadForWin32.classList.add('m_full_width');
     showBtn.classList.remove('m_hidden');
 
   }
 
   showBtn.addEventListener('click', showAll, false);
 }
+
+function addLinks(assets) {
+
+  for (let i = 0; i < assets.length; i += 1) {
+    if (assets[i].name.indexOf('win32-x86') !== -1) {
+      downloadForWin32.href = assets[i].browser_download_url;
+      continue;
+    }
+    if (assets[i].name.indexOf('win32-x64') !== -1) {
+      downloadForWin64.href = assets[i].browser_download_url;
+      continue;
+    }
+    if (assets[i].name.indexOf('mac') !== -1) {
+      downloadForMac.href = assets[i].browser_download_url;
+    }
+  }
+}
+
+fetch('https://api.github.com/repos/PeculiarVentures/fortify-web/releases/latest', {
+  method: 'GET'
+}).then((response) => { return response.json() })
+  .then((res) => addLinks(res.assets))
+  .catch(err => {
+    console.warn(err);
+  });
+
 
 detectOS();
 initSlider();

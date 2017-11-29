@@ -1,0 +1,12 @@
+dependencies:
+    pre:
+      - npm install
+      - npm install gulp
+    post:
+      - gulp prod
+
+deployment:
+  production:
+    branch: [landing-page]
+    commands:
+      - ./deploy-ghpages.sh
