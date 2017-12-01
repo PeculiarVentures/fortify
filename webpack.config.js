@@ -5,10 +5,10 @@ module.exports = {
   entry: {
     main: path.join(__dirname, './src/main/main.ts'),
     // windows
-    keys: path.join(__dirname, './src/renderer/keys/index.tsx'),
+    keys: path.join(__dirname, './src/renderer/forms/keys/index.tsx'),
     about: path.join(__dirname, './src/renderer/forms/about/index.tsx'),
-    "key-pin": path.join(__dirname, './src/renderer/forms/key-pin/index.tsx'),
-    "p11-pin": path.join(__dirname, './src/renderer/forms/p11-pin/index.tsx'),
+    'key-pin': path.join(__dirname, './src/renderer/forms/key-pin/index.tsx'),
+    'p11-pin': path.join(__dirname, './src/renderer/forms/p11-pin/index.tsx'),
     message: path.join(__dirname, './src/renderer/forms/message/index.tsx'),
   },
   output: {

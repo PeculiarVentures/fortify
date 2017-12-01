@@ -1,4 +1,5 @@
 import * as React from "react";
+import { t } from "../../../main/locale";
 
 const s = require("./styles/empty.sass") as StyleEmpty;
 
@@ -32,8 +33,8 @@ export class Empty extends React.Component<{}, {}> {
         <div className={s.container}>
           <KeysIcon />
           <div className={s.descr}>
-            You do not trust any sites yet.
-        </div>
+            {t("keys.empty")}
+          </div>
         </div>
       </div>
     );

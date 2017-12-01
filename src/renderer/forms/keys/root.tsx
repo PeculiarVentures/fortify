@@ -1,8 +1,8 @@
 // import { ipcRenderer } from "electron";
 import * as React from "react";
 
-import { t } from "../../main/locale";
-import { WindowComponent } from "../window";
+import { t } from "../../../main/locale";
+import { WindowComponent } from "../../window";
 import { Empty } from "./empty";
 import { Item } from "./item";
 
