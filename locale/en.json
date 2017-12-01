@@ -23,6 +23,7 @@
     "copyright": "Copyright (c) 2017, Peculiar Ventures",
     "all.rights": "All rights reserved",
     "pin": "PIN",
+    "keys.empty": "You do not trust any sites yet.",
     "p11-pin": "Smart card or Token",
     "p11-pin.1": "A website has requested permission to use your local certificates and keys.",
     "p11-pin.2": "To provide it access you will need to provide the PIN or password protecting them.",
