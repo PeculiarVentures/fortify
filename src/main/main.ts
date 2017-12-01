@@ -536,6 +536,7 @@ function PrepareIdentity(identity: WebCryptoLocal.RemoteIdentityEx) {
 function printInfo() {
   winston.info(`Application started at ${new Date()}`);
   winston.info(`OS ${os.platform()} ${os.arch()} `);
+  winston.info(`System locale is '${app.getLocale()}'`);
   try {
     const json = fs.readFileSync(path.join(APP_DIR, "package.json"), "utf8");
     const pkg = JSON.parse(json);

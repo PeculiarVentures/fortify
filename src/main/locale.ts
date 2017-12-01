@@ -1,4 +1,3 @@
-import * as electron from "electron";
 import { EventEmitter } from "events";
 import * as fs from "fs";
 import * as path from "path";
