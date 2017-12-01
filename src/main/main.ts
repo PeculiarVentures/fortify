@@ -22,7 +22,7 @@ import { ConfigureRead, ConfigureWrite } from "./config";
 import {
   APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_LOG_FILE, APP_SSL_CERT,
   APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
-  DOWNLOAD_LINK, HTML_DIR, ICON_DIR, icons, TEMPLATE_NEW_CARD_FILE,
+  DOWNLOAD_LINK, HTML_DIR, ICON_DIR, icons, TEMPLATE_NEW_CARD_FILE, SUPPORT_NEW_TOKEN_LINK,
 } from "./const";
 import * as jws from "./jws";
 import { Locale, locale, t } from "./locale";
@@ -223,7 +223,7 @@ async function InitService() {
               .replace(/\$\{reader\}/g, card.reader)
               .replace(/\$\{atr\}/g, card.atr.toString("hex").toUpperCase())
               .replace(/\$\{driver\}/g, crypto.randomBytes(20).toString("hex").toUpperCase());
-            const url1 = `https://github.com/PeculiarVentures/fortify/issues/new?` + querystring.stringify({
+            const url1 = `${SUPPORT_NEW_TOKEN_LINK}/issues/new?` + querystring.stringify({
               title,
               body,
             });
