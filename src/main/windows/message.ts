@@ -6,7 +6,7 @@ let errorWindow: Electron.BrowserWindow | null = null;
 /**
  * Creates Error window
  *
- * @param text    Message text
+ * @param text  Message text
  * @param cb    Callback on message close
  * @returns
  */

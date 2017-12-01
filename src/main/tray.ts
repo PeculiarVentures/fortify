@@ -7,7 +7,6 @@ import { APP_CONFIG_FILE, APP_LOG_FILE, icons } from "./const";
 import { Locale, locale, t } from "./locale";
 import { CreateAboutWindow } from "./windows/about";
 import { CreateKeysWindow } from "./windows/keys";
-import { CreateQuestionWindow } from "./windows/message";
 
 let tray: Electron.Tray;
 
