@@ -36,7 +36,7 @@ if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
 }
 
-winston.info(`Application started at ${new Date()}`);
+printInfo();
 
 // const { app, Menu, MenuItem } = electron;
 if ("dock" in app) {
@@ -531,4 +531,16 @@ function PrepareIdentity(identity: WebCryptoLocal.RemoteIdentityEx) {
   res.created = identity.createdAt;
   res.origin = identity.origin!;
   return res;
+}
+
+function printInfo() {
+  winston.info(`Application started at ${new Date()}`);
+  winston.info(`OS ${os.platform()} ${os.arch()} `);
+  try {
+    const json = fs.readFileSync(path.join(APP_DIR, "package.json"), "utf8");
+    const pkg = JSON.parse(json);
+    winston.info(`Fortify v${pkg.version}`);
+  } catch {
+    //
+  }
 }

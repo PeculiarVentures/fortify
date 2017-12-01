@@ -2,6 +2,7 @@ import * as electron from "electron";
 import { EventEmitter } from "events";
 import * as fs from "fs";
 import * as path from "path";
+import * as winston from "winston";
 
 const LANG_DIR = path.join(__dirname, typeof navigator === "undefined" ? "" : "..", "..", "locale");
 
@@ -89,6 +90,7 @@ export class Locale extends EventEmitter {
     }
 
     public setLang(lang: string) {
+        winston.info(`Locale: Set language to '${lang}'`);
         const data = this.loadLang(lang);
 
         this.lang = lang;
