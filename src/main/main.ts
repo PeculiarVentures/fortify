@@ -28,7 +28,7 @@ import * as jws from "./jws";
 import { Locale, locale, t } from "./locale";
 import * as ssl from "./ssl";
 import * as tray from "./tray";
-import { GetUpdateInfo } from "./update";
+import { CheckUpdate, GetUpdateInfo } from "./update";
 import { CreateWindow } from "./window";
 import { CreateErrorWindow, CreateQuestionWindow, CreateWarningWindow } from "./windows/message";
 
@@ -396,59 +396,6 @@ async function GetRemoteFile(link: string, encoding = "utf8") {
       }
     });
   });
-}
-
-async function CheckUpdate() {
-  try {
-    winston.info("Update: Check for new update");
-    const update = await GetUpdateInfo();
-    // get current version
-    const packageJson = fs.readFileSync(path.join(APP_DIR, "package.json")).toString();
-    const curVersion = JSON.parse(packageJson).version;
-
-    // compare versions
-    if (semver.lt(curVersion, update.version)) {
-      winston.info("Update: New version was found");
-      await new Promise((resolve, reject) => {
-        CreateQuestionWindow(t("question.update.new", update.version), {}, (res) => {
-          if (res) {
-            // yes
-            winston.info(`User agreed to download new version ${update.version}`);
-            shell.openExternal(DOWNLOAD_LINK);
-          } else {
-            // no
-            winston.info(`User refused to download new version ${update.version}`);
-          }
-          if (update.min && semver.lt(curVersion, update.min)) {
-            winston.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
-            CreateErrorWindow(t("error.critical.update"), () => {
-              winston.info(`Close application`);
-              app.quit();
-            });
-          } else {
-            resolve();
-          }
-        });
-      });
-    } else {
-      winston.info("Update: New version wasn't found");
-    }
-  } catch (e) {
-    winston.error(e.toString());
-    if (e.type === "UpdateError" && e.critical) {
-      await new Promise((resolve, reject) => {
-        CreateErrorWindow(e.toString(), () => {
-          app.quit();
-        });
-      });
-    } else {
-        // await new Promise((resolve, reject) => {
-        //   CreateWarningWindow(``, () => {
-        //     resolve();
-        //   });
-        // });
-    }
-  }
 }
 
 interface CurrentIdentity {

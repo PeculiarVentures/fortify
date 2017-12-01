@@ -32,6 +32,8 @@
     "key-pin.2": "If this number matches what is displayed by the application and you want to provide access choose %1.",
     "error.critical.update": "Application cannot be started until new update will be applied",
     "error.ssl.install": "Unable to install the SSL certificate for Fortify as a trusted root certificate. The application will not work until this is resolved.",
+    "error.update.server": "Unable to connect to update server",
+    "error.update.check": "Unable to check updated version.",
     "question.new.token": "We detected a unsupported smart card or token.\n\nWould you like to request support be added for this token?",
     "question.2key.remove": "Do you want to remove %1 from the trusted list?",
     "question.update.new": "A new update is available. Do you want to download version %1 now?",
