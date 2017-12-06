@@ -1,5 +1,6 @@
 {
-    "outDir": "/tmp/fortify-prod/x64",
+    "outDir": "/tmp/fortify-prod",
+    // "clear": true,
     "include": [
         // node_modules
         "node_modules/2key-ratchet/**/{*.js,*.json,*.node}",
@@ -38,6 +39,7 @@
         "node_modules/hawk/**/{*.js,*.json,*.node}",
         "node_modules/hoek/**/{*.js,*.json,*.node}",
         "node_modules/http-signature/**/{*.js,*.json,*.node}",
+        "node_modules/int64-buffer/**/{*.js,*.json,*.node}",
         "node_modules/is-typedarray/**/{*.js,*.json,*.node}",
         "node_modules/isstream/**/{*.js,*.json,*.node}",
         "node_modules/jose-jwe-jws/**/{*.js,*.json,*.node}",
