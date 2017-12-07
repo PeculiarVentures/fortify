@@ -75,7 +75,7 @@ export function create() {
     });
 
     menuExit.click = () => {
-        app.quit();
+        app.exit(0);
     };
 
     const menuLanguageSubmenu = new Menu();
