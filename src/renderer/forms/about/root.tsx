@@ -15,6 +15,8 @@ const s = require("./style.sass") as Style;
 interface Style {
     text: string;
     icon: string;
+    info: string;
+    copyright: string;
 }
 
 const PACKAGE_PATH = path.join(__dirname, "..", "..", "package.json");
@@ -49,24 +51,27 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
                 <WindowEvent event="keydown" onCall={this.onKeyDown.bind(this)} />
                 <Content>
                     <div className={s.text}>
-                        <p>
-                            <Link href="http://fortifyapp.com">Fortify</Link>
-                        </p>
-                        <p>
-                            {t("by")}: Peculiar Ventures
-                        </p>
-                        <p>
-                            {t("version")}: {this.version}
-                        </p>
-                        <br />
-                        <br />
-                        <br />
-                        <p>
+                        <div className={s.info}>
+                            <div>
+                                <p>
+                                    <Link href="http://fortifyapp.com">Fortify</Link>
+                                </p>
+                                <p>
+                                    {t("by")}: Peculiar Ventures
+                                </p>
+                                <p>
+                                    {t("version")}: {this.version}
+                                </p>
+                            </div>
+                            <div>
+                                <img className={s.icon} src="../icons/icon.svg" />
+                            </div>
+                        </div>
+                        <p className={s.copyright}>
                             {t("copyright")}.<br />
                             {t("all.rights")}.
                         </p>
                     </div>
-                    <img className={s.icon} src="../icons/icon.svg" />
                 </Content>
                 <Footer>
                     <Align type="center">
