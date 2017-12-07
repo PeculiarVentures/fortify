@@ -31,6 +31,7 @@ import * as tray from "./tray";
 import { CheckUpdate, GetUpdateInfo } from "./update";
 import { CreateWindow } from "./window";
 import { CreateErrorWindow, CreateQuestionWindow, CreateWarningWindow } from "./windows/message";
+import { WebCryptoLocalError } from "webcrypto-local";
 
 if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
@@ -208,10 +209,6 @@ async function InitService() {
     .on("info", (message) => {
       winston.info(message);
     })
-    .on("token_error", (message) => {
-      winston.error(`Token: ${message}`);
-      CreateWarningWindow(message, { alwaysOnTop: true });
-    })
     .on("token_new", (card) => {
       winston.info(`New token was found reader: '${card.reader}' ATR: ${card.atr.toString("hex")}`);
       CreateQuestionWindow(t("question.new.token"), {}, (res) => {
@@ -235,6 +232,25 @@ async function InitService() {
     })
     .on("error", (e: Error) => {
       winston.error(e.stack || e.toString());
+      if (e.hasOwnProperty("code") && e.hasOwnProperty("type")) {
+        const err = e as WebCryptoLocalError;
+        const CODE = WebCryptoLocalError.CODE;
+        switch (err.code) {
+          case CODE.PROVIDER_CRYPTO_NOT_FOUND:
+            CreateWarningWindow(t("warn.token.crypto_not_found", err.message), {
+              alwaysOnTop: true,
+              title: t("warning.title.oh_no"),
+            });
+            break;
+          case CODE.PROVIDER_CRYPTO_WRONG:
+          case CODE.PROVIDER_WRONG_LIBRARY:
+            CreateWarningWindow(t("warn.token.crypto_wrong", err.message), {
+              alwaysOnTop: true,
+              title: t("warning.title.oh_no"),
+            });
+            break;
+        }
+      }
     })
     .on("notify", (p: any) => {
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
@@ -262,8 +278,8 @@ async function InitService() {
 
           window
             .on("ready-to-show", () => {
-                // window.show();
-                window.focus();
+              // window.show();
+              window.focus();
             })
             .on("closed", () => {
               p.resolve(p.accept);
@@ -289,7 +305,7 @@ async function InitService() {
 
           window
             .on("ready-to-show", () => {
-                window.focus();
+              window.focus();
             })
             .on("closed", () => {
               if (p.pin) {

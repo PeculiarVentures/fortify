@@ -30,6 +30,7 @@ export function CreateErrorWindow(text: string, cb: () => void) {
         alwaysOnTop: true,
         params: {
             type: "error",
+            title: t("error"),
             text,
         },
     });
@@ -76,6 +77,7 @@ export function CreateWarningWindow(text: string, options: ICreateWindowOptions,
         dock: options.parent ? false : options.dock,
         params: {
             type: "warning",
+            title: options.title || t("warning"),
             text,
         },
     });
@@ -116,6 +118,7 @@ export function CreateQuestionWindow(text: string, options: ICreateWindowOptions
         dock: options.parent ? false : options.dock,
         params: {
             type: "question",
+            title: options.title || t("question"),
             text,
             result: 0,
         },

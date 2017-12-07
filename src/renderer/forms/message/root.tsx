@@ -55,8 +55,12 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
                             <img src={`../icons/${this.params.type}.png`} width="96px" />
                         </div>
                         <div className={s.text}>
-                            <h3>{t(this.params.type)}</h3>
-                            <p>{this.params.text}</p>
+                            <h3>{this.params.title}</h3>
+                            {
+                                this.params.text.split("\n").map((item: string, index: number) =>
+                                    <p key={index}>{item}</p>,
+                                )
+                            }
                         </div>
                     </div>
                 </Content>
