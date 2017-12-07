@@ -5,6 +5,7 @@ import * as request from "request";
 import * as semver from "semver";
 import * as winston from "winston";
 
+import { quit } from "./application";
 import { APP_DIR, DOWNLOAD_LINK, JWS_LINK } from "./const";
 import * as jws from "./jws";
 import { t } from "./locale";
@@ -69,7 +70,7 @@ export async function CheckUpdate() {
             winston.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
             CreateErrorWindow(t("error.critical.update"), () => {
               winston.info(`Close application`);
-              app.quit();
+              quit();
             });
           } else {
             resolve();
@@ -84,7 +85,7 @@ export async function CheckUpdate() {
     if (e.type === "UpdateError" && e.critical) {
       await new Promise((resolve, reject) => {
         CreateErrorWindow(e.toString(), () => {
-          app.quit();
+          quit();
         });
       });
     } else {

@@ -49,7 +49,7 @@ const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) 
 
 if (isSecondInstance) {
   winston.info(`Close second instance`);
-  app.quit();
+  application.quit();
 }
 
 app.on("ready", () => {
@@ -172,7 +172,7 @@ async function InitService() {
         fs.unlinkSync(APP_SSL_KEY);
 
         CreateErrorWindow(t("error.ssl.install"), () => {
-          app.quit();
+          application.quit();
         });
       });
     await warning;

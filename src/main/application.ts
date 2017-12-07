@@ -1,3 +1,4 @@
+import * as electron from "electron";
 import * as fs from "fs";
 import * as WebCryptoLocal from "webcrypto-local";
 import * as winston from "winston";
@@ -36,4 +37,10 @@ LoggingSwitch(!!configure.logging);
 export function load(options: WebCryptoLocal.IServerOptions) {
     const LocalServer = require("webcrypto-local").LocalServer as typeof WebCryptoLocal.LocalServer;
     server = new LocalServer(options);
+}
+
+export function quit() {
+    server.close(() => {
+        electron.app.quit();
+    });
 }
