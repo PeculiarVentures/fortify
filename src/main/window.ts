@@ -2,7 +2,7 @@ import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import * as url from "url";
 
-import { HTML_DIR, APP_DIR } from "./const";
+import { APP_DIR, HTML_DIR } from "./const";
 import { locale } from "./locale";
 
 let counter = 0;
