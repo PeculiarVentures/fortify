@@ -17,6 +17,7 @@ import * as WebCryptoLocal from "webcrypto-local";
 import * as asn1js from "asn1js";
 const pkijs = require("pkijs");
 
+import { WebCryptoLocalError } from "webcrypto-local";
 import * as application from "./application";
 import { ConfigureRead, ConfigureWrite } from "./config";
 import {
@@ -31,7 +32,6 @@ import * as tray from "./tray";
 import { CheckUpdate, GetUpdateInfo } from "./update";
 import { CreateWindow } from "./window";
 import { CreateErrorWindow, CreateQuestionWindow, CreateWarningWindow } from "./windows/message";
-import { WebCryptoLocalError } from "webcrypto-local";
 
 if (!fs.existsSync(APP_TMP_DIR)) {
   fs.mkdirSync(APP_TMP_DIR);
@@ -311,7 +311,7 @@ async function InitService() {
               if (p.pin) {
                 p.resolve(p.pin);
               } else {
-                p.reject(new Error("Incorrect PIN value. It cannot be empty."));
+                p.reject(new WebCryptoLocalError(10001, "Incorrect PIN value. It cannot be empty."));
               }
             });
           break;
