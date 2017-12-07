@@ -22,7 +22,7 @@ import { ConfigureRead, ConfigureWrite } from "./config";
 import {
   APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_LOG_FILE, APP_SSL_CERT,
   APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
-  DOWNLOAD_LINK, HTML_DIR, ICON_DIR, icons, TEMPLATE_NEW_CARD_FILE, SUPPORT_NEW_TOKEN_LINK,
+  DOWNLOAD_LINK, HTML_DIR, ICON_DIR, icons, SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE,
 } from "./const";
 import * as jws from "./jws";
 import { Locale, locale, t } from "./locale";
@@ -38,7 +38,6 @@ if (!fs.existsSync(APP_TMP_DIR)) {
 
 printInfo();
 
-// const { app, Menu, MenuItem } = electron;
 if ("dock" in app) {
   app.dock.hide();
 }
@@ -261,9 +260,14 @@ async function InitService() {
             params: p,
           });
 
-          window.on("closed", () => {
-            p.resolve(p.accept);
-          });
+          window
+            .on("ready-to-show", () => {
+                // window.show();
+                window.focus();
+            })
+            .on("closed", () => {
+              p.resolve(p.accept);
+            });
           break;
         }
         case "pin": {
@@ -283,13 +287,17 @@ async function InitService() {
           window.params = p;
           p.pin = "";
 
-          window.on("closed", () => {
-            if (p.pin) {
-              p.resolve(p.pin);
-            } else {
-              p.reject(new Error("Incorrect PIN value. It cannot be empty."));
-            }
-          });
+          window
+            .on("ready-to-show", () => {
+                window.focus();
+            })
+            .on("closed", () => {
+              if (p.pin) {
+                p.resolve(p.pin);
+              } else {
+                p.reject(new Error("Incorrect PIN value. It cannot be empty."));
+              }
+            });
           break;
         }
         default:

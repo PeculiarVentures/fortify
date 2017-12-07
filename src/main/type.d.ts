@@ -21,4 +21,5 @@ interface ICreateWindowOptions {
     title?: string;
     alwaysOnTop?: boolean;
     parent?: any;
+    dock?: boolean;
 }

@@ -1,3 +1,5 @@
+import { app } from "electron";
+
 import { icons } from "../const";
 import { t } from "../locale";
 import { CreateWindow } from "../window";
@@ -20,6 +22,7 @@ export function CreateAboutWindow() {
     resizable: false,
     title: t("about"),
     icon: icons.favicon,
+    dock: true,
   });
 
   // Emitted when the window is closed.

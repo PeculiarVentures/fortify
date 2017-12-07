@@ -1,3 +1,5 @@
+import { app } from "electron";
+
 import * as application from "../application";
 import { icons } from "../const";
 import { t } from "../locale";
@@ -18,6 +20,7 @@ export function CreateKeysWindow() {
     resizable: false,
     title: t("sites"),
     icon: icons.favicon,
+    dock: true,
   });
 
   // Open the DevTools.

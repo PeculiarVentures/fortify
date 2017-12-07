@@ -27,6 +27,7 @@ export function CreateErrorWindow(text: string, cb: () => void) {
         resizable: false,
         title: t("error"),
         icon: icons.favicon,
+        alwaysOnTop: true,
         params: {
             type: "error",
             text,
@@ -72,6 +73,7 @@ export function CreateWarningWindow(text: string, options: ICreateWindowOptions,
         alwaysOnTop: !!options.alwaysOnTop,
         modal: !!options.parent,
         parent: options.parent,
+        dock: options.parent ? false : options.dock,
         params: {
             type: "warning",
             text,
@@ -111,6 +113,7 @@ export function CreateQuestionWindow(text: string, options: ICreateWindowOptions
         icon: icons.favicon,
         modal: !!options.parent,
         parent: options.parent,
+        dock: options.parent ? false : options.dock,
         params: {
             type: "question",
             text,
@@ -120,9 +123,8 @@ export function CreateQuestionWindow(text: string, options: ICreateWindowOptions
 
     // Emitted when the window is closed.
     window.on("closed", () => {
-        // @ts-ignore
         if (cb) {
-            cb((window as any).params.result);
+            cb(window.params.result);
         }
     });
 
