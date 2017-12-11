@@ -295,7 +295,15 @@ async function InstallTrustedWindows(certPath: string) {
       fs.readdirSync(FIREFOX_DIR).map((item) => {
         const PROFILE_DIR = `${FIREFOX_DIR}\\${item}`;
         if (fs.existsSync(PROFILE_DIR)) {
-          childProcess.execSync(`"${CERTUTIL}" -D -n "${CERT_NAME}" -d "${PROFILE_DIR}" | "${CERTUTIL}" -A -i "${certPath}" -n "${CERT_NAME}" -t "C,c,c" -d "${PROFILE_DIR}"`);
+          try {
+            while (true) {
+              childProcess.execSync(`"${CERTUTIL}" -D -n "${CERT_NAME}" -d "${PROFILE_DIR}"`);
+              winston.info(`SSL: Firefox old SSL certificate was removed`);
+            }
+          } catch {
+            // nothing
+          }
+          childProcess.execSync(`"${CERTUTIL}" -A -i "${certPath}" -n "${CERT_NAME}" -t "C,c,c" -d "${PROFILE_DIR}"`);
           winston.info(`SSL: Firefox certificate was installed`);
           // restart firefox
           try {
