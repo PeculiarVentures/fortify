@@ -13,12 +13,15 @@ firefoxDefaultProfile="${firefoxProfiles[0]}"
 
 if [ ! -z "${firefoxDefaultProfile}" ]
 then
-    echo "Firfox is not installed"
+    echo "Firfox was found"
     CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     echo -e "Delete old cert"
     # Delete old cert
     # /usr/local/Cellar/nss/3.31/bin/certutil -D -n "${certificateName}" -d "${firefoxDefaultProfile}"
-    ${CUR_DIR}/certutil -D -n "${certificateName}" -d "${firefoxDefaultProfile}"
+    until ! ${CUR_DIR}/certutil -D -n "Fortify Local CA" -d "${firefoxDefaultProfile}"
+    do
+        echo "Fortify certificate was removed"
+    done
     ${CUR_DIR}/certutil -A -i "${certPath}" -n "${certificateName}" -t "C,c,c" -d "${firefoxDefaultProfile}"
     ${CUR_DIR}/certutil -L -d "${firefoxDefaultProfile}"
 
