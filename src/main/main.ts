@@ -1,5 +1,13 @@
 import { app, ipcMain, Menu, MenuItem, nativeImage, screen, shell, Tray } from "electron";
 
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+  // nothing
+});
+
+if (shouldQuit) {
+  app.quit();
+}
+
 import * as crypto from "crypto";
 import * as fs from "fs";
 import * as os from "os";
