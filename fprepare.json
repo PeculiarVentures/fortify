@@ -1,6 +1,6 @@
 {
     "outDir": "/tmp/fortify-prod",
-    // "clear": true,
+    "clear": true,
     "include": [
         // node_modules
         "node_modules/2key-ratchet/**/{*.js,*.json,*.node}",
@@ -104,7 +104,7 @@
         "node_modules/**/examples/**/*",
         "node_modules/**/asn1js/src/**/*",
         "node_modules/**/pkijs/src/**/*",
-        "node_modules/**/webcrypto-local/dist/**/*",
+        "node_modules/**/webcrypto-local/dist/webcrypto-socket.*",
         // protobufjs
         "node_modules/**/protobufjs/bench/**/*",
         "node_modules/**/protobufjs/cli/**/*",
