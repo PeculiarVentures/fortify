@@ -1,7 +1,7 @@
 {
   "name": "fortify",
   "productName": "Fortify",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "",
   "main": "out/main.js",
   "scripts": {
@@ -63,7 +63,7 @@
     "request": "^2.83.0",
     "semver": "^5.4.1",
     "sudo-prompt": "^7.1.1",
-    "webcrypto-local": "github:PeculiarVentures/webcrypto-local#update_1_0_11",
+    "webcrypto-local": "github:PeculiarVentures/webcrypto-local",
     "winston": "^2.4.0"
   }
 }
