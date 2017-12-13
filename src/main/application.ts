@@ -42,9 +42,9 @@ export function load(options: WebCryptoLocal.IServerOptions) {
 export function quit() {
     if (server) {
         server.close(() => {
-            electron.app.quit();
+            electron.app.exit();
         });
     } else {
-        electron.app.quit();
+        electron.app.exit();
     }
 }

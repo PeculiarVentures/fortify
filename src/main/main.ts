@@ -60,9 +60,8 @@ if (isSecondInstance) {
   application.quit();
 }
 
-app.on("ready", () => {
+app.once("ready", () => {
   (async () => {
-
     //#region Load locale
     winston.info(`System locale is '${app.getLocale()}'`);
     if (!application.configure.locale) {
@@ -209,8 +208,7 @@ async function InitService() {
   }
 
   const server = application.server;
-
-  server.listen("127.0.0.1:31337")
+  server
     .on("listening", (e: any) => {
       winston.info(`Server: Started at ${e}`);
     })
@@ -244,6 +242,14 @@ async function InitService() {
         const err = e as WebCryptoLocalError;
         const CODE = WebCryptoLocalError.CODE;
         switch (err.code) {
+          case CODE.PCSC_CANNOT_START:
+            CreateWarningWindow(t("warn.pcsc.cannot_start"), {
+              alwaysOnTop: true,
+              title: t("warning.title.oh_no"),
+            }, () => {
+              app.exit();
+            });
+            break;
           case CODE.PROVIDER_CRYPTO_NOT_FOUND:
             CreateWarningWindow(t("warn.token.crypto_not_found", err.message), {
               alwaysOnTop: true,
@@ -331,6 +337,8 @@ async function InitService() {
     .on("close", (e: any) => {
       winston.info(`Close: ${e}`);
     });
+
+  server.listen("127.0.0.1:31337");
 }
 
 async function PrepareConfig(config: IConfigure) {
