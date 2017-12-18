@@ -1,5 +1,5 @@
-# Fortify
-Desktop application
+# Fortify Desktop Application
+Fortify enables web applications to use smart cards, local certificate stores and do certificate enrollment. This repository contains everything you need to build the desktop application and installers for the Fortify application.
 
 ## Install dependencies
 
