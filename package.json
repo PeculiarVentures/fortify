@@ -1,7 +1,7 @@
 {
   "name": "fortify",
   "productName": "Fortify",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "",
   "main": "out/main.js",
   "scripts": {
@@ -35,7 +35,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-preset-stage-3": "^6.24.1",
     "css-loader": "^0.28.7",
-    "electron-builder": "^19.47.1",
+    "electron-builder": "^19.49.1",
     "electron-packager": "^9.1.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",
