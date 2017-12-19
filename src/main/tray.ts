@@ -63,7 +63,7 @@ export function create() {
         label: t("tools"),
     });
     menuTools.click = () => {
-        shell.openExternal("https://peculiarventures.github.io/fortify-web");
+        shell.openExternal("https://tools.fortifyapp.com/");
     };
 
     const menuSeparator = new MenuItem({
