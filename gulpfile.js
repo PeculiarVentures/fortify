@@ -135,7 +135,7 @@ gulp.task('jsLibs', function () {
 });
 
 gulp.task('static', function () {
-  gulp.src('./src/static/**')
+  gulp.src('./src/static/*')
     .pipe(plumber())
     .pipe(gulp.dest('./build/'))
 });
