@@ -1,5 +1,6 @@
 {
   "$schema": "./card.schema.json",
+  "version": "1.0.17",
   "cards": [
     {
       "atr": "3b9813400aa503010101ad1311",
@@ -29,7 +30,7 @@
     {
       "atr": "3bff0000008131004380318065b000000000120ffe82900000",
       "name": "Gemalto IDPrime v2+ .NET",
-      "driver": "993988460d8f49a2ac519a5555f00533"
+      "driver": "39b3d7a3662c4b48bb120d008dd18648"
     },
     {
       "atr": "3B8980014A434F5032343252324A",
@@ -38,12 +39,12 @@
     },
     {
       "atr": "3BD518008131FE7D8073C82110F4",
-      "name": "Aladdin eToken PRO USB 72K Java",
+      "name": "SafeNet eToken 5100",
       "driver": "39b3d7a3662c4b48bb120d008dd18648"
     },
     {
-      "atr": "3BD518008131FE7D8073C82110F4",
-      "name": "SafeNet eToken 5100",
+      "atr": "3BD5180081313A7D8073C8211030",
+      "name": "SafeNet eToken 5110",
       "driver": "39b3d7a3662c4b48bb120d008dd18648"
     },
     {
@@ -54,11 +55,13 @@
     {
       "atr": "3BFC1300008131FE15597562696B65794E454F7233E1",
       "name": "Yubico Yubikey NEO OTP+U2F+CCID",
+      "readOnly": true,
       "driver": "993988460d8f49a2ac519a2935f00533"
     },
     {
       "atr": "3BF81300008131FE15597562696B657934D4",
       "name": "Yubico Yubikey 4 OTP+U2F+CCID",
+      "readOnly": true,
       "driver": "993988460d8f49a2ac519a2935f00533"
     },
     {
@@ -122,6 +125,18 @@
       "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
     },
     {
+      "atr": "3BF9180000C00A31FE4553462D3443432D303181",
+      "name": "Estonian ID card",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
+      "atr": "3BF81300008131FE454A434F5076323431B7",
+      "name": "Estonian ID card",
+      "readOnly": true,
+      "driver": "c4e60449442848c48af7b3fcf6a6f4a1"
+    },
+    {
       "atr": "3BFA1800008031FE45FE654944202F20504B4903",
       "name": "EstEID 3.5 cold",
       "readOnly": true,
@@ -137,6 +152,11 @@
       "atr": "3b8b015275746f6b656e20445320c1",
       "name": "Rutoken ECP (DS)",
       "driver": "7d3a38d2d8294234a53d5845d6d116c4"
+    },
+    {
+      "atr": "3b9f958131fe9f006646530501001171df000003900080",
+      "name": "FT ePass2003Auto",
+      "driver": "993988460d8f49a2ac519a2935f11533"
     },
     {
       "atr": "3BFC180000813180459067464A00642D70C172FEE0FE",
@@ -159,31 +179,124 @@
     {
       "atr": "3BDF960081B1FE451F838073CC91CBF9A0000003080000100079",
       "name": "USG:Executive Office of the President",
+      "readOnly": true,
       "driver": "993988460d8f49a2ac519a2935f11533"
     },
     {
       "atr": "3BDB9600801F030031C064B0F310000F900088",
       "name": "USG:Department of Veterans Affairs",
+      "readOnly": true,
       "driver": "993988460d8f49a2ac519a2935f11533"
     },
     {
       "atr": "3BDF960081B1FE451F838073CC91CBF9A0000003080000100079",
       "name": "USG:State Department",
+      "readOnly": true,
       "driver": "993988460d8f49a2ac519a2935f11533"
+    },
+    {
+      "atr": "3BF81800FF8131FE454A434F507632343143",
+      "name": "AET Smartcard",
+      "driver": "3bcf3e1d4952cfa3e486934887f45a0f"
+    },
+    {
+      "atr": "3B7F96000080318065B084413DF6120FFE829000",
+      "name": "Gemalto IDPrime MD",
+      "driver": "0ca280b5af17d6aa91af084f2d39d2a3"
     },
     {
       "atr": "3B7F96000080318065B0850300EF120FFE829000",
       "name": "Gemalto IDPrime MD 840 (PKI)",
+      "driver": "0ca280b5af17d6aa91af084f2d39d2a3"
+    },
+    {
+      "atr": "3BD21802C10A31FE58C80D51",
+      "name": "Siemens Card CardOS M4.4",
+      "driver": "25fb0440047947539fd871831ac8477c",
+      "readOnly": true
+    },
+    {
+      "atr": "3B7D94000080318065B0831100C883009000",
+      "name": "Personal identity card (ID card) of Republic of Lithuania",
       "readOnly": true,
-      "driver": "993988460d8f49a2ac519a5555f00533"
+      "driver": "71789068c5ff4891aeeaf7fb9608a22f"
+    },
+    {
+      "atr": "3BDF18008131FE580031B964050E010073B401D300000022",
+      "name": "Slovak eID",
+      "readOnly": true,
+      "driver": "39798896FC5DD6E2A96989718F694334275E0EAC"
+    },
+    {
+      "atr": "3BF21800FFC10A31FE55C8068A",
+      "name": "Aladdin Knowledge Systems eToken Pro 64k (4.2)",
+      "driver": "11A4BEA85E4C5D7EC6CDE452A70448A73EBE191B"
+    },
+    {
+      "atr": "3B7F960000006A444E4965200101550410039000",
+      "name": "DNI (National Identity Document), Spanish ID Card",
+      "readOnly": true,
+      "driver": "993988460d8f49a2ac519a2935f11533"
+    },
+    {
+      "atr": "3BDC18FF8191FE1FC38073C8211366010B0352000538",
+      "name": "Athena IDProtect Smart Card Logon Card",
+      "driver": "29a2bd60c4b841c686be68d2874c0c02"
     }
   ],
   "drivers": [
     {
+      "id": "29a2bd60c4b841c686be68d2874c0c02",
+      "name": "Athena IDProtect",
+      "file": {
+        "linux": {
+          "x86": "/usr/lib/x86-athena/libASEP11.so",
+          "x64": "/usr/lib/x64-athena/libASEP11.so"
+        },
+        "osx": "/Library/Application Support/Athena/libASEP11.dylib",
+        "windows": "%WINDIR/System32/asepkcs.dll"
+      }
+    },
+    {
+      "id": "11A4BEA85E4C5D7EC6CDE452A70448A73EBE191B",
+      "name": "Siemens CardOS M 4.2 (SLE66CX642P)",
+      "file": {
+        "windows": "%WINDIR/System32/eTPKCS11.dll",
+        "linux": "/usr/lib/libeTPkcs11.so",
+        "osx": "/usr/local/lib/libeTPkcs11.dylib"
+      }
+    },
+    {
+      "id": "39798896FC5DD6E2A96989718F694334275E0EAC",
+      "name": "Slovak eID",
+      "file": {
+        "windows": {
+          "x86": "%PROGRAMFILES(X86)/eID klient/pkcs11_x64.dll",
+          "x64": "%PROGRAMFILES(X86)/eID klient/pkcs11_x86.dll"
+        },
+        "linux": {
+          "x86": "/usr/lib/eidklient/libpkcs11_sig_x64.so",
+          "x64": "/usr/lib/eidklient/libpkcs11_sig_x86.so"
+        },
+        "osx": "/Applications/eIDklient.app/Contents/Pkcs11/libPkcs11.dylib"
+      }
+    },
+    {
+      "id": "25fb0440047947539fd871831ac8477c",
+      "name": "Siemens Card CardOS M4.4",
+      "file": {
+        "osx": "/usr/local/lib/libcardos11.dylib",
+        "windows": {
+          "x86": "%WINDIR/System32/cardos11.dll",
+          "x64": "%WINDIR/System32/cardos11_64.dll"
+        }
+      }
+    },
+    {
       "id": "fea007cafe404e4fb56a8be39f60dc8f",
       "name": "Safran Morpho",
       "file": {
-        "windows": "/Windows/SysWOW64/CnfPkcs11v220.dll",
+        "windows": "%WINDIR/SysWOW64/CnfPkcs11v220.dll",
         "osx": "/usr/local/lib/libCnfPkcs11.dylib "
       }
     },
@@ -191,15 +304,23 @@
       "id": "39b3d7a3662c4b48bb120d008dd18648",
       "name": "SafeNet Authentication Client",
       "file": {
-        "windows": "/Windows/System32/eTPKCS11.dll",
+        "windows": "%WINDIR/System32/eTPKCS11.dll",
         "osx": "/usr/local/lib/libeTPkcs11.dylib",
         "linux": "/usr/lib/libeTPkcs11.so"
+      }
+    },
+    {
+      "id": "3e3d68d231b442d381f856cc80d57f18",
+      "name": "SafeNet eToken",
+      "file": {
+        "windows": "%WINDIR/System32/eToken.dll"
       }
     },
     {
       "id": "c4e60449442848c48af7b3fcf6a6f4a1",
       "name": "Estonian ID",
       "file": {
+        "windows": "%WINDIR/System32/onepin-opensc-pkcs11.dll",
         "osx": "/Library/EstonianIDCard/lib/esteid-pkcs11-onepin.so"
       }
     },
@@ -209,29 +330,25 @@
       "file": {
         "osx": "/usr/local/lib/libykcs11.dylib",
         "linux": "/usr/local/lib/libykcs11.so",
-        "windows": "/Windows/System32/libykcs11-1.dll"
+        "windows": "%WINDIR/System32/libykcs11-1.dll"
       }
     },
     {
       "id": "7d3a38d2d8294234a53d5845d6d116c4",
-      "name": "Rutoken",
+      "name": "Aktiv Rutoken ECP",
       "file": {
-        "windows": "/Windows/System32/rtPKCS11ECP.dll"
+        "windows": "%WINDIR/System32/rtPKCS11ECP.dll",
+        "osx": "/usr/local/lib/librtpkcs11ecp.dylib",
+        "linux": "/usr/local/lib/librtpkcs11ecp.so"
       }
     },
     {
       "id": "993988460d8f49a2ac519a2935f11533",
-      "name": "OpenSC PIV driver",
+      "name": "OpenSC driver",
       "file": {
-        "osx": "/Library/OpenSC/lib/pkcs11/opensc-pkcs11.so"
-      }
-    },
-    {
-      "id": "993988460d8f49a2ac519a5555f00533",
-      "name": "Gemalto IDPrime MD 840 (PKI)",
-      "file": {
-        "osx": "/usr/lib/pkcs11/libidprimepkcs11.dylib",
-        "windows": "/Program Files/Gemalto/DotNet PKCS11/gtop11dotnet64.dll"
+        "osx": "/Library/OpenSC/lib/pkcs11/opensc-pkcs11.so",
+        "linux": "/usr/lib/opensc-pkcs11.so",
+        "windows": "%WINDIR/System32/opensc-pkcs11.dll"
       }
     },
     {
@@ -241,6 +358,34 @@
         "osx": "/usr/local/lib/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.dylib",
         "linux": "/usr/lib/libbeidpkcs11.so",
         "windows": "libbeidpkcs11.dll"
+      }
+    },
+    {
+      "id": "0ca280b5af17d6aa91af084f2d39d2a3",
+      "name": "Gemalto IDPrime MD",
+      "file": {
+        "osx": "/usr/local/lib/libidprimepkcs11.0.dylib",
+        "windows": {
+          "x86": "%WINDIR/System32/eTPKCS11.dll",
+          "x64": "%WINDIR/SysWOW64/eTPKCS11.dll"
+        }
+      }
+    },
+    {
+      "id": "3bcf3e1d4952cfa3e486934887f45a0f",
+      "name": "AET",
+      "file": {
+        "windows": "%WINDIR/System32/aetpkss1.dll"
+      }
+    },
+    {
+      "id": "71789068c5ff4891aeeaf7fb9608a22f",
+      "name": "Gemalto Classic",
+      "file": {
+        "windows": {
+          "x86": "%PROGRAMFILES(X86)/Gemalto/Classic Client/BIN/gclib.dll",
+          "x64": "%PROGRAMFILES/Gemalto/Classic Client/BIN/gclib.dll"
+        }
       }
     }
   ]
