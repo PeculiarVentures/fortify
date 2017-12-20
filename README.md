@@ -1,12 +1,24 @@
+# Landing page for Fortify
+
 #### Prepare
-`npm install`
-`npm install -g gulp`
+- Clone latest version this repository
+```bash
+npm i
+```
 
-#### Start Dev Server
-`gulp dev`
+#### Run development
+```bash
+npm run development
+```
+Visit [http://localhost:3000](http://localhost:3000)
 
-#### Production Build
-`gulp build`
+#### Run build
+```bash
+npm run build
+```
 
-#### Deploy built version
-`./deploy-ghpages.sh`
+#### Run deploy
+```bash
+npm run deploy
+```
+Visit [https://fortifyapp.com](https://fortifyapp.com)

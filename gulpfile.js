@@ -50,52 +50,52 @@ gulp.task('clean', function(){
 gulp.task('browserSync', function() {
 	browserSync.init({
 		server: {
-			baseDir: './build',
+			baseDir: './dist',
 			directory: true
 		},
 		open: true,
 		browser: 'google chrome',
 		port: 3000,
-		files: [ './build/**/*.*' ]
+		files: [ './dist/**/*.*' ]
 	});
 });
 
 gulp.task('image', () =>
 	gulp.src('./src/img/*.*')
 		.pipe(plumber())
-		.pipe(gulp.dest('./build/img'))
+		.pipe(gulp.dest('./dist/img'))
 );
 
 gulp.task('imageProd', () =>
 	gulp.src(['./src/img/*.png', './src/img/*.jpeg', './src/img/*.jpg'])
 		.pipe(plumber())
 		// .pipe(tinypng('qo8K-ctRnzbtw3tuMxEQ7ONvX0nm50mS'))
-		.pipe(gulp.dest('./build/img'))
+		.pipe(gulp.dest('./dist/img'))
 );
 
 gulp.task('svg', () =>
 	gulp.src('./src/img/**/*.svg')
 		.pipe(plumber())
-		.pipe(gulp.dest('./build/img'))
+		.pipe(gulp.dest('./dist/img'))
 );
 
 gulp.task('media', function () {
 	gulp.src('./src/media/**/*.*')
-		.pipe(gulp.dest('./build/media/'))
+		.pipe(gulp.dest('./dist/media/'))
 });
 
 gulp.task('html', function () {
 	gulp.src('./src/*.html')
 		.pipe(plumber())
 		.pipe(rigger())
-		.pipe(gulp.dest('./build/'))	
+		.pipe(gulp.dest('./dist/'))
 });
 
 gulp.task('css', function () {
 	gulp.src('./src/styles/*.css')
 		.pipe(plumber())
 		.pipe(autoprefixer('> 1%', 'last 5 versions', 'Firefox < 20', 'ie 8', 'ie 9'))		
-		.pipe(gulp.dest('./build/styles/'))
+		.pipe(gulp.dest('./dist/styles/'))
 });
 
 gulp.task('sass', function () {
@@ -103,7 +103,7 @@ gulp.task('sass', function () {
 		.pipe(plumber())		
 		.pipe(sass())
 		.pipe(autoprefixer('> 1%', 'last 5 versions', 'Firefox < 20', 'ie 8', 'ie 9'))	
-		.pipe(gulp.dest('./build/styles/'))	
+		.pipe(gulp.dest('./dist/styles/'))
 });
 
 gulp.task('js', function () {
@@ -113,7 +113,7 @@ gulp.task('js', function () {
 		.on('error', error)
 		.pipe(source('build.js'))
 		.pipe(buffer())
-		.pipe(gulp.dest('./build/js'))
+		.pipe(gulp.dest('./dist/js'))
 });
 
 gulp.task('jsProd', function () {
@@ -125,19 +125,19 @@ gulp.task('jsProd', function () {
 		.pipe(source('build.js'))
 		.pipe(buffer())
 		.pipe(uglify())
-		.pipe(gulp.dest('./build/js'))
+		.pipe(gulp.dest('./dist/js'))
 });
 
 gulp.task('jsLibs', function () {
 	gulp.src('./src/js/libs/*.js')
 		.pipe(plumber())
-		.pipe(gulp.dest('./build/js/libs/'))
+		.pipe(gulp.dest('./dist/js/libs/'))
 });
 
 gulp.task('static', function () {
-  gulp.src('./src/static/*')
+  gulp.src('./src/static/**')
     .pipe(plumber())
-    .pipe(gulp.dest('./build/'))
+    .pipe(gulp.dest('./dist/'))
 });
 
 gulp.task('watch', function () {
