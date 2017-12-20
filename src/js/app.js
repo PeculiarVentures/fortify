@@ -69,11 +69,7 @@ function listenFortify() {
 }
 
 function getCardsData() {
-  let pathname = '/';
-  if (/github\.io/.test(window.location.host)) {
-    pahname = window.location.pathname;
-  }
-  return fetch(`${pathname}media/cards.json`)
+  return fetch('https://raw.githubusercontent.com/PeculiarVentures/webcrypto-local/master/json/card.json')
     .then(res => res.json())
 }
 
