@@ -74,25 +74,32 @@ function getCardsData() {
 }
 
 function prepareTableData(data) {
+  console.log(data);
   if (!data) {
     return false;
   }
-  return data.cards.map(card => {
-    const driver = data.drivers.filter(driver => driver.id === card.driver)[0];
+  return data.cards
+    .sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    })
+    .map(card => {
+      const driver = data.drivers.filter(driver => driver.id === card.driver)[0];
 
-    if (driver) {
+      if (driver) {
+        return {
+          name: card.name,
+          mac: !!(driver.file && driver.file.osx),
+          win: !!(driver.file && driver.file.windows),
+        };
+      }
       return {
         name: card.name,
-        mac: !!(driver.file && driver.file.osx),
-        win: !!(driver.file && driver.file.windows),
-      };
-    }
-    return {
-      name: card.name,
-      mac: false,
-      win: false,
-    }
-  });
+        mac: false,
+        win: false,
+      }
+    });
 }
 
 function insertTableData(data) {
