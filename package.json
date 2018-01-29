@@ -1,7 +1,7 @@
 {
   "name": "fortify",
   "productName": "Fortify",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "",
   "main": "out/main.js",
   "scripts": {
@@ -21,8 +21,8 @@
   "license": "MIT",
   "devDependencies": {
     "@types/asn1js": "0.0.1",
-    "@types/node": "^7.0.28",
-    "@types/request": "^2.0.8",
+    "@types/node": "^7.0.52",
+    "@types/request": "^2.0.13",
     "@types/semver": "^5.4.0",
     "@types/winston": "^2.3.6",
     "awesome-typescript-loader": "^3.4.1",
@@ -34,7 +34,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-preset-stage-3": "^6.24.1",
-    "css-loader": "^0.28.7",
+    "css-loader": "^0.28.9",
     "electron-builder": "^19.49.1",
     "electron-packager": "^9.1.0",
     "eslint-config-standard": "^10.2.1",
@@ -53,15 +53,15 @@
     "webpack": "^3.9.1"
   },
   "dependencies": {
-    "@types/react": "^16.0.24",
+    "@types/react": "^16.0.34",
     "@types/react-dom": "^16.0.3",
     "@types/websocket": "0.0.34",
     "asn1js": "^2.0.15",
     "jose-jwe-jws": "github:microshine/js-jose",
-    "node-webcrypto-ossl": "^1.0.31",
-    "pkijs": "^2.1.5",
+    "node-webcrypto-ossl": "^1.0.33",
+    "pkijs": "^2.1.13",
     "request": "^2.83.0",
-    "semver": "^5.4.1",
+    "semver": "^5.5.0",
     "sudo-prompt": "^7.1.1",
     "webcrypto-local": "github:PeculiarVentures/webcrypto-local",
     "winston": "^2.4.0"
