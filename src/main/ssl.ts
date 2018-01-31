@@ -294,27 +294,39 @@ async function InstallTrustedWindows(certPath: string) {
     try {
       fs.readdirSync(FIREFOX_DIR).map((item) => {
         const PROFILE_DIR = `${FIREFOX_DIR}\\${item}`;
-        if (fs.existsSync(PROFILE_DIR)) {
-          try {
-            while (true) {
-              childProcess.execSync(`"${CERTUTIL}" -D -n "${CERT_NAME}" -d "${PROFILE_DIR}"`);
-              winston.info(`SSL: Firefox old SSL certificate was removed`);
+        ["sql", "dbm"].forEach((nssDbVersion) => {
+          if (fs.existsSync(PROFILE_DIR)) {
+            //#region Remove old Fortify SSL certs
+            try {
+              while (true) {
+                childProcess.execSync(`"${CERTUTIL}" -D -n "${CERT_NAME}" -d ${nssDbVersion}:"${PROFILE_DIR}"`);
+                winston.info(`SSL: Firefox old SSL certificate was removed from ${nssDbVersion}:cert.db`);
+              }
+            } catch {
+              // nothing
             }
-          } catch {
-            // nothing
+            //#endregion
+
+            //#region Install Fortify SSL certificate
+            try {
+              childProcess.execSync(`"${CERTUTIL}" -A -i "${certPath}" -n "${CERT_NAME}" -t "C,c,c" -d ${nssDbVersion}:"${PROFILE_DIR}"`);
+              winston.info(`SSL: Firefox certificate was installed to ${nssDbVersion}:cert.db`);
+            } catch (e) {
+              winston.info(`SSL:Error: Cannot install SSL cert to ${nssDbVersion}:cert.db`);
+            }
+            //#endregion
           }
-          childProcess.execSync(`"${CERTUTIL}" -A -i "${certPath}" -n "${CERT_NAME}" -t "C,c,c" -d "${PROFILE_DIR}"`);
-          winston.info(`SSL: Firefox certificate was installed`);
-          // restart firefox
-          try {
-            winston.info(`SSL: Restart Firefox`);
-            childProcess.execSync(`taskkill /F /IM firefox.exe`);
-            childProcess.execSync(`start firefox`);
-          } catch (err) {
-            winston.info(`SSL:Error: Cannot restart Firefox ${err.toString()}`);
-            // firefox is not running
-          }
+        });
+        //#region Restart firefox
+        try {
+          winston.info(`SSL: Restart Firefox`);
+          childProcess.execSync(`taskkill /F /IM firefox.exe`);
+          childProcess.execSync(`start firefox`);
+        } catch (err) {
+          winston.info(`SSL:Error: Cannot restart Firefox ${err.toString()}`);
+          // firefox is not running
         }
+        //#endregion
       });
     } catch (err) {
       winston.info(`SSL:Error Cannot install certificate to Firefox.`, err);
