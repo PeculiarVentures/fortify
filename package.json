@@ -1,7 +1,7 @@
 {
   "name": "fortify",
   "productName": "Fortify",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "",
   "main": "out/main.js",
   "scripts": {
