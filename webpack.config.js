@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
+  mode: "none",
   entry: {
     main: path.join(__dirname, './src/main/main.ts'),
     // windows
@@ -40,10 +41,6 @@ module.exports = {
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
       },
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      children: false,
-      async: true,
     }),
   ],
   node: {

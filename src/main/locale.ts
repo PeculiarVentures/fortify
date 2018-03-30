@@ -63,6 +63,13 @@ export class Locale extends EventEmitter {
     public lang: string;
     public data: Assoc<string>;
 
+    constructor() {
+        super();
+        
+        this.lang = "en";
+        this.data = {};
+    }
+
     //#region Events
     public on(event: "change", cb: LocaleChangeHandle): this;
     public on(event: string, cb: (...args: any[]) => void): this;

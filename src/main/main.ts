@@ -1,3 +1,4 @@
+require("babel-polyfill");
 import { app, ipcMain, Menu, MenuItem, nativeImage, screen, shell, Tray } from "electron";
 
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
