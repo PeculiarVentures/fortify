@@ -27,7 +27,16 @@ export const CHECK_UPDATE = true;
 export const CHECK_UPDATE_INTERVAL = 24 * 60 * 60e3; // 24h
 
 export const icons = {
-    tray: os.platform() === "win32" ? path.join(ICON_DIR, "favicon-32x32.png") : path.join(ICON_DIR, "tray", "icon.png"),
+    tray: path.join(ICON_DIR, "tray", "icon.png"),
     trayWhite: path.join(ICON_DIR, "tray", "icon_pressed.png"),
     favicon: path.join(ICON_DIR, "favicon-32x32.png"),
 };
+
+switch (os.platform()) {
+    case "win32":
+        icons.tray = path.join(ICON_DIR, "favicon-32x32.png");
+        break;
+    case "linux":
+        icons.tray = path.join(ICON_DIR, "tray", "icon_pressed@2x.png");
+        break;
+}
