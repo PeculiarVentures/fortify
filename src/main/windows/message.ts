@@ -45,6 +45,11 @@ export function CreateErrorWindow(text: string, cb: () => void) {
 }
 
 let warnWindow: Electron.BrowserWindow | null = null;
+
+interface ICreateWarningWindowOptions extends ICreateWindowOptions {
+    buttonLabel?: string;
+}
+
 /**
  * Creates Warning window
  *
@@ -53,7 +58,7 @@ let warnWindow: Electron.BrowserWindow | null = null;
  * @param cb    Callback on message close
  * @returns
  */
-export function CreateWarningWindow(text: string, options: ICreateWindowOptions, cb?: () => void) {
+export function CreateWarningWindow(text: string, options: ICreateWarningWindowOptions, cb?: () => void) {
     options = options || {};
     // Create the browser window.
     if (warnWindow) {
@@ -78,6 +83,7 @@ export function CreateWarningWindow(text: string, options: ICreateWindowOptions,
         params: {
             type: "warning",
             title: options.title || t("warning"),
+            buttonLabel: options.buttonLabel || t("close"),
             text,
         },
     });

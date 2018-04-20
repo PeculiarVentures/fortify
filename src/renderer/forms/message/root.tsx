@@ -31,7 +31,7 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
             case "warning":
                 return (
                     [
-                        <Button key="close" accept text={t("close")} onClick={() => this.close()} />,
+                        <Button key="close" accept text={this.params.buttonLabel} onClick={() => this.close()} />,
                     ]
                 );
             case "question":

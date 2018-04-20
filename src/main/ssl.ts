@@ -290,19 +290,30 @@ async function InstallTrustedWindows(certPath: string) {
   const FIREFOX_DIR = path.normalize(`${USER_HOME}/AppData/Roaming/Mozilla/Firefox/Profiles`);
   const CERTUTIL = path.normalize(`${__dirname}\\..\\..\\certutil.exe`);
 
-  const ok = await InstallTrustedNss(CERTUTIL, FIREFOX_DIR, certPath);
-
-  if (ok) {
-    //#region Restart firefox
-    try {
-      winston.info(`SSL: Restart Firefox`);
-      childProcess.execSync(`taskkill /F /IM firefox.exe`);
-      childProcess.execSync(`start firefox`);
-    } catch (err) {
-      winston.info(`SSL:Error: Cannot restart Firefox ${err.toString()}`);
-      // firefox is not running
+  let ok = 0;
+  if (fs.existsSync(FIREFOX_DIR)) {
+    const profiles = fs.readdirSync(FIREFOX_DIR);
+    for (const profile of profiles) {
+      if (/default$/.test(profile)) {
+        const firefoxProfile = path.normalize(path.join(FIREFOX_DIR, profile));
+        winston.info(`SSL: ${firefoxProfile}`);
+        // tslint:disable-next-line:no-bitwise
+        ok |= await InstallTrustedNss(CERTUTIL, firefoxProfile, certPath);
+      }
     }
-    //#endregion
+    winston.info(`SSL: Certificate installation status: ${ok}`);
+    if (ok) {
+      //#region Restart firefox
+      try {
+        winston.info(`SSL: Restart Firefox`);
+        childProcess.execSync(`taskkill /F /IM firefox.exe`);
+        childProcess.execSync(`start firefox`);
+      } catch (err) {
+        winston.info(`SSL:Error: Cannot restart Firefox ${err.toString()}`);
+        // firefox is not running
+      }
+      //#endregion
+    }
   }
 
   // Install cert to System trusted storage
@@ -321,13 +332,13 @@ async function InstallTrustedLinux(certPath: string) {
   const CHROME_DIR = path.normalize(`${USER_HOME}/.pki/nssdb`);
   const CERTUTIL = "certutil";
 
-  winston.info(`SSL: ${FIREFOX_DIR}`);
   let ok = 0;
   if (fs.existsSync(FIREFOX_DIR)) {
     const profiles = fs.readdirSync(FIREFOX_DIR);
     for (const profile of profiles) {
       if (/default$/.test(profile)) {
         const firefoxProfile = path.normalize(path.join(FIREFOX_DIR, profile));
+        winston.info(`SSL: ${firefoxProfile}`);
         // tslint:disable-next-line:no-bitwise
         ok |= await InstallTrustedNss(CERTUTIL, firefoxProfile, certPath);
       }
@@ -356,12 +367,13 @@ async function InstallTrustedLinux(certPath: string) {
 async function InstallTrustedNss(certUtil: string, nssDbFolder: string, certPath: string) {
   // check Firefox was installed
   if (fs.existsSync(nssDbFolder)) {
-    ["sql", "dbm"].forEach((nssDbVersion) => {
+    const nssDbTypes = ["sql", "dbm"];
+    for (const nssDbType of nssDbTypes) {
       //#region Remove old Fortify SSL certs
       try {
         while (true) {
-          childProcess.execSync(`"${certUtil}" -D -n "${CERT_NAME}" -d ${nssDbVersion}:"${nssDbFolder}"`);
-          winston.info(`SSL: NSS old SSL certificate was removed from ${nssDbVersion}:cert.db`);
+          childProcess.execSync(`"${certUtil}" -D -n "${CERT_NAME}" -d ${nssDbType}:"${nssDbFolder}"`);
+          winston.info(`SSL: NSS old SSL certificate was removed from ${nssDbType}:cert.db`);
         }
       } catch {
         // nothing
@@ -370,14 +382,15 @@ async function InstallTrustedNss(certUtil: string, nssDbFolder: string, certPath
 
       //#region Install Fortify SSL certificate
       try {
-        childProcess.execSync(`"${certUtil}" -A -i "${certPath}" -n "${CERT_NAME}" -t "CT,c" -d ${nssDbVersion}:"${nssDbFolder}"`);
-        winston.info(`SSL: NSS certificate was installed to ${nssDbVersion}:cert.db`);
+        childProcess.execSync(`"${certUtil}" -A -i "${certPath}" -n "${CERT_NAME}" -t "CT,c" -d ${nssDbType}:"${nssDbFolder}"`);
+        winston.info(`SSL: NSS certificate was installed to ${nssDbType}:cert.db`);
         return 1;
       } catch (e) {
-        winston.info(`SSL:Error: Cannot install SSL cert to ${nssDbVersion}:cert.db`);
+        winston.error(e.message);
+        winston.info(`SSL:Error: Cannot install SSL cert to ${nssDbType}:cert.db`);
       }
       //#endregion
-    });
+    }
   } else {
     winston.info(`SSL: NSS folder not found '${nssDbFolder}'`);
   }

@@ -163,7 +163,7 @@ async function InitService() {
 
     // Set cert as trusted
     const warning = new Promise((resolve, reject) => { // wrap callback
-      CreateWarningWindow(t("warn.ssl.install"), { alwaysOnTop: true }, () => {
+      CreateWarningWindow(t("warn.ssl.install"), { alwaysOnTop: true, buttonLabel: t("i_understand") }, () => {
         winston.info("Warning window was closed");
         resolve();
       });
@@ -247,8 +247,8 @@ async function InitService() {
             CreateWarningWindow(t("warn.pcsc.cannot_start"), {
               alwaysOnTop: true,
               title: t("warning.title.oh_no"),
+              buttonLabel: t("i_understand"),
             }, () => {
-              app.exit();
             });
             break;
           case CODE.PROVIDER_CRYPTO_NOT_FOUND:
