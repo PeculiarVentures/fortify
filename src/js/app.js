@@ -4,6 +4,7 @@ const FORTIFY_POOLING_DELAY = 5000;
 const downloadForMac = document.getElementById(`download_mac`);
 const downloadForWin32 = document.getElementById(`download_86`);
 const downloadForWin64 = document.getElementById(`download_64`);
+const downloadForLinux64 = document.getElementById(`download_linux_64`);
 
 function createElement(tag = 'div', className = '', id, content = '', options = {}) {
   const element = document.createElement(tag);
@@ -198,6 +199,7 @@ function showAll() {
   downloadForMac.classList.remove('m_hidden', 'm_full_width');
   downloadForWin64.classList.remove('m_hidden', 'm_full_width');
   downloadForWin32.classList.remove('m_hidden', 'm_full_width');
+  downloadForLinux64.classList.remove('m_hidden', 'm_full_width');
   document.getElementById('show_all').classList.add('m_hidden');
 }
 
@@ -209,6 +211,7 @@ function detectOS() {
   if (platform.indexOf('Mac') !== -1) {
     downloadForWin32.classList.add('m_hidden');
     downloadForWin64.classList.add('m_hidden');
+    downloadForLinux64.classList.add('m_hidden');
     downloadForMac.classList.add('m_full_width');
     showBtn.classList.remove('m_hidden');
 
@@ -217,6 +220,7 @@ function detectOS() {
 
     downloadForWin32.classList.add('m_hidden');
     downloadForMac.classList.add('m_hidden');
+    downloadForLinux64.classList.add('m_hidden');
     downloadForWin64.classList.add('m_full_width');
     showBtn.classList.remove('m_hidden');
 
@@ -224,7 +228,16 @@ function detectOS() {
 
     downloadForMac.classList.add('m_hidden');
     downloadForWin64.classList.add('m_hidden');
+    downloadForLinux64.classList.add('m_hidden');
     downloadForWin32.classList.add('m_full_width');
+    showBtn.classList.remove('m_hidden');
+
+  } else if (platform.indexOf('Linux') !== -1) {
+
+    downloadForMac.classList.add('m_hidden');
+    downloadForWin64.classList.add('m_hidden');
+    downloadForWin32.classList.add('m_hidden');
+    downloadForLinux64.classList.add('m_full_width');
     showBtn.classList.remove('m_hidden');
 
   }
@@ -241,6 +254,10 @@ function addLinks(assets) {
     }
     if (assets[i].name.indexOf('win32-x64') !== -1) {
       downloadForWin64.href = assets[i].browser_download_url;
+      continue;
+    }
+    if (assets[i].name.indexOf('linux-x64') !== -1) {
+      downloadForLinux64.href = assets[i].browser_download_url;
       continue;
     }
     if (assets[i].name.indexOf('mac') !== -1) {
