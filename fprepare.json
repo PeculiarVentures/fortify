@@ -1,6 +1,6 @@
 {
-    "outDir": "/tmp/fortify-prod",
-    "clear": true,
+    "outDir": "/tmp/fortify-prod/x64",
+    "clear": false,
     "include": [
         // node_modules
         "node_modules/2key-ratchet/**/{*.js,*.json,*.node}",
@@ -15,6 +15,7 @@
         "node_modules/aws4/**/{*.js,*.json,*.node}",
         "node_modules/babel-polyfill/**/{*.js,*.json,*.node}",
         "node_modules/bindings/**/{*.js,*.json,*.node}",
+        "node_modules/bytestreamjs/**/{*.js,*.json,*.node}",
         "node_modules/boom/**/{*.js,*.json,*.node}",
         "node_modules/buffertools/**/{*.js,*.json,*.node}",
         "node_modules/caseless/**/{*.js,*.json,*.node}",
