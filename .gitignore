@@ -6,3 +6,5 @@ out
 node_modules
 *pvpkcs11*?
 .idea
+
+nss
