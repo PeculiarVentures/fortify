@@ -1,7 +1,7 @@
 {
   "name": "fortify",
   "productName": "Fortify",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "",
   "main": "out/main.js",
   "scripts": {
@@ -12,7 +12,8 @@
     "build:prod": "webpack --config webpack.config.js -p",
     "build:package": "electron-packager . --arch=x64 --out=build --icon=src/icons/icon.icns --overwrite=true --electron-version=1.7.6 --app-bundle-id=com.peculiarventures.fortify --no-prune",
     "build:dmg": "electron-installer-dmg build/Fortify-darwin-x64/Fortify.app fortify-mac-x64 --out=build --overwrite --icon=src/icons/favicon-32x32.png",
-    "build:pkg": "npm run build:prod && fortify-prepare && electron-packager /tmp/fortify-prod --arch=x64 --out=build --icon=src/icons/icon.icns --overwrite=true --electron-version=1.8.4 --app-bundle-id=com.peculiarventures.fortify --no-prune",
+    "build:pkg": "npm run build:prod && fortify-prepare && electron-packager /tmp/fortify-prod/x64 --arch=x64 --out=build --icon=src/icons/icon.icns --overwrite=true --electron-version=1.8.4 --app-bundle-id=com.peculiarventures.fortify --no-prune && npm run build:pkg:copy-nss",
+    "build:pkg:copy-nss": "cp nss/* build/Fortify-darwin-x64/Fortify.app/Contents/MacOS",
     "build:msi_x64": "npm run build:prod && fortify-prepare && asar pack /tmp/fortify-prod/x64 ../fortify-prod/x64/resources/app.asar",
     "build:msi_x86": "npm run build:prod && fortify-prepare && asar pack /tmp/fortify-prod/x86 ../fortify-prod/x86/resources/app.asar"
   },
