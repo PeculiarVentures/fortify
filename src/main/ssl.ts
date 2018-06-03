@@ -261,6 +261,10 @@ export async function InstallTrustedCertificate(certPath: string) {
  * @param certPath Path to cert
  */
 async function InstallTrustedOSX(certPath: string) {
+  const USER_HOME = os.homedir();
+  const FIREFOX_DIR = path.normalize(`${USER_HOME}/Library/Application Support/Firefox/Profiles`);
+  const CERTUTIL = "/Applications/Fortify.app/Contents/MacOS/certutil";
+
   // install certificate to system key chain
   await new Promise((resolve, reject) => {
     const options = {
@@ -269,7 +273,7 @@ async function InstallTrustedOSX(certPath: string) {
     };
     const appPath = path.dirname(certPath);
     const username = os.userInfo().username;
-    sudo.exec(`appPath=${appPath} userDir=${os.homedir()} USER=${username} bash ${SRC_DIR}/resources/osx-ssl.sh`, options, (err, stdout) => {
+    sudo.exec(`appPath=${appPath} userDir=${os.homedir()} USER=${username} CERTUTIL=${process.cwd()} bash ${SRC_DIR}/resources/osx-ssl.sh`, options, (err, stdout) => {
       // console.log(stdout.toString());
       if (err) {
         reject(err);
@@ -278,6 +282,32 @@ async function InstallTrustedOSX(certPath: string) {
       }
     });
   });
+
+  //#region Firefox
+  let ok = 0;
+  if (fs.existsSync(FIREFOX_DIR)) {
+    const profiles = fs.readdirSync(FIREFOX_DIR);
+    for (const profile of profiles) {
+      if (/default$/.test(profile)) {
+        const firefoxProfile = path.normalize(path.join(FIREFOX_DIR, profile));
+        winston.info(`SSL: ${firefoxProfile}`);
+        // tslint:disable-next-line:no-bitwise
+        ok |= await InstallTrustedNss(CERTUTIL, firefoxProfile, certPath);
+      }
+    }
+
+    if (ok) {
+      try {
+        winston.info(`SSL: Restart Firefox`);
+        childProcess.execSync(`pkill firefox`);
+        childProcess.execSync(`open /Applications/Firefox.app`);
+      } catch (err) {
+        winston.info(`SSL:Error: Cannot restart Firefox ${err.toString()}`);
+        // firefox is not running
+      }
+    }
+  }
+  //#endregion
 }
 
 /**
@@ -367,7 +397,7 @@ async function InstallTrustedLinux(certPath: string) {
 async function InstallTrustedNss(certUtil: string, nssDbFolder: string, certPath: string) {
   // check Firefox was installed
   if (fs.existsSync(nssDbFolder)) {
-    const nssDbTypes = ["sql", "dbm"];
+    const nssDbTypes = ["sql"];
     for (const nssDbType of nssDbTypes) {
       //#region Remove old Fortify SSL certs
       try {
