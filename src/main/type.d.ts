@@ -2,7 +2,9 @@ type Assoc<T> = { [key: string]: T };
 
 interface IConfigureProvider {
     lib: string;
-    slot?: number;
+    slots?: number[];
+    libraryParameters?: string;
+    readWrite?: boolean;
 }
 
 interface IConfigure {

@@ -5,12 +5,17 @@ import { APP_CONFIG_FILE } from "./const";
  * Read config file by path
  *
  * @param path Path to file config
+ * @param cb   Callback for configure creation
  */
-export function ConfigureRead(path: string) {
+export function ConfigureRead(path: string, cb?: () => IConfigure) {
   let res: IConfigure;
   if (!fs.existsSync(path)) {
     // Create config with default data
-    res = {};
+    if (cb) {
+      res = cb();
+    } else {
+      res = {};
+    }
     ConfigureWrite(APP_CONFIG_FILE, res);
   } else {
     const json = fs.readFileSync(APP_CONFIG_FILE, "utf8");
