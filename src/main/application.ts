@@ -65,6 +65,7 @@ function createFirefoxProviders() {
     switch (os.platform()) {
         case "win32": {
             firefoxProfilesDir = path.join(os.homedir(), "AppData", "Roaming", "Mozilla", "Firefox", "Profiles");
+            lib = "softokn3.dll";
             break;
         }
         case "linux": {
