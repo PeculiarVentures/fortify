@@ -23,7 +23,7 @@
     {
       "id": "4",
       "question": "What Operating Systems does Fortify support?",
-      "answer": "maxOS 10.12 or greater, Windows 7 and later"
+      "answer": "maxOS 10.12 or greater, Windows 7 and later, Ubuntu 16.04 LTS or greater"
     },
     {
       "id": "6",
