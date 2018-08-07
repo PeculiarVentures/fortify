@@ -30,6 +30,7 @@
     "@types/semver": "^5.5.0",
     "@types/websocket": "^0.0.39",
     "@types/winston": "^2.3.9",
+    "@types/xmldom": "^0.1.29",
     "awesome-typescript-loader": "^5.2.0",
     "css-loader": "^1.0.0",
     "json-parser": "^1.1.5",
@@ -43,7 +44,8 @@
     "style-loader": "^0.21.0",
     "typescript": "^3.0.1",
     "webpack": "^4.16.5",
-    "webpack-cli": "^3.1.0"
+    "webpack-cli": "^3.1.0",
+    "xmldom": "^0.1.27"
   },
   "dependencies": {
     "asn1js": "^2.0.21",
