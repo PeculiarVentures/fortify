@@ -249,6 +249,7 @@ async function InitService() {
               title: t("warning.title.oh_no"),
               buttonLabel: t("i_understand"),
             }, () => {
+              // nothing
             });
             break;
           case CODE.PROVIDER_CRYPTO_NOT_FOUND:

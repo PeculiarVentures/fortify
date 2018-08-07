@@ -70,6 +70,7 @@ function createFirefoxProviders() {
         }
         case "linux": {
             firefoxProfilesDir = path.join(os.homedir(), ".mozilla", "firefox");
+            lib = "/usr/lib/x86_64-linux-gnu/nss/libsoftokn3.so";
             break;
         }
         case "darwin": {
