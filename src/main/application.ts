@@ -44,7 +44,7 @@ export function LoggingSwitch(enabled: boolean) {
         // if (!fs.existsSync(APP_LOG_FILE)) {
         //     fs.writeFileSync(APP_LOG_FILE, "", options);
         // }
-        winston.add(winston.transports.File, { filename: APP_LOG_FILE, options });
+        winston.add(new winston.transports.File({ filename: APP_LOG_FILE, options }));
     } else {
         winston.clear();
     }
@@ -112,6 +112,7 @@ function createFirefoxProviders() {
             lib,
             slots: [1],
             libraryParameters: params[1],
+            name: "Firefox NSS",
         };
 
         providers.push(provider);
