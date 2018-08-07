@@ -5,6 +5,10 @@ interface IConfigureProvider {
     slots?: number[];
     libraryParameters?: string;
     readWrite?: boolean;
+    /**
+     * Name of the provider
+     */
+    name?: string;
 }
 
 interface IConfigure {
