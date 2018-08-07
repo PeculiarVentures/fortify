@@ -35,7 +35,7 @@ export async function run() {
     }
     await spawn("cp", ["-r", path.join(TMP, `${appname}-linux-${arch}`), DEB_FORTIFY], "Copy Electron package to DEB project");
     await spawn("dpkg", ["-b", DEB_DIR], "Create DEB file");
-    await spawn("mv", [`${DEB_DIR}.deb`, path.join("..", `${appname}-linux-${arch}-v${version}.deb`)], "Rename DEB file");
+    await spawn("mv", ["-f", `${DEB_DIR}.deb`, path.join("..", `${appname}-linux-${arch}-v${version}.deb`)], "Rename DEB file");
   } catch (e) {
     removeTmpDir();
     throw e;
