@@ -7,9 +7,11 @@ async function main() {
     case "linux":
       build = require("./linux");
       break;
-    case "win32":
     case "darwin":
-      throw new Error("Not implementd yet");
+      build = require("./osx");
+      break;
+    case "win32":
+      throw new Error("Not implemented yet");
     default:
       throw new Error(`Not supported OS '${platform}'`);
   }

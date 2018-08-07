@@ -23,17 +23,17 @@ export function spawn(command: string, args: string[] = [], message = "") {
 
 export const TMP = path.join(os.tmpdir(), crypto.randomBytes(10).toString("hex"));
 
-export function createTempDir() {
-  if (!fs.existsSync(TMP)) {
-    process.stdout.write(`Create TMP directory ${TMP}\n\n`);
-    fs.mkdirSync(TMP);
+export function createTempDir(dir = TMP) {
+  if (!fs.existsSync(dir)) {
+    process.stdout.write(`Create TMP directory ${dir}\n\n`);
+    fs.mkdirSync(dir);
   }
 }
 
-export function removeTmpDir() {
-  if (fs.existsSync(TMP)) {
-    process.stdout.write(`Remove TMP directory ${TMP}\n\n`);
-    rimraf.sync(TMP);
+export function removeTmpDir(dir = TMP) {
+  if (fs.existsSync(dir)) {
+    process.stdout.write(`Remove TMP directory ${dir}\n\n`);
+    rimraf.sync(dir);
   }
 }
 
