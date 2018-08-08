@@ -11,7 +11,8 @@ async function main() {
       build = require("./osx");
       break;
     case "win32":
-      throw new Error("Not implemented yet");
+      build = require("./win32");
+      break;
     default:
       throw new Error(`Not supported OS '${platform}'`);
   }

@@ -1,3 +1,5 @@
+/// <reference path="types.d.ts" />
+
 import * as childProcess from "child_process";
 import * as crypto from "crypto";
 import * as fs from "fs";
@@ -9,7 +11,12 @@ import * as rimraf from "rimraf";
 export function spawn(command: string, args: string[] = [], message = "") {
   return new Promise((resolve, reject) => {
     process.stdout.write(`\nRun command: ${message}\n  ${command} ${args.join(" ")}\n\n`);
-    const item = childProcess.spawn(command, args, { stdio: "inherit" });
+    let item: childProcess.ChildProcess;
+    if (os.platform() === "win32") {
+      item = childProcess.spawn("cmd", ["/c", command, ...args],{ stdio: "inherit" });
+    } else {
+      item = childProcess.spawn(command, args, { stdio: "inherit" });
+    }
     item
       .on("message", (msg) => {
         process.stdout.write(msg);
