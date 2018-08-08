@@ -35,7 +35,7 @@ export async function run() {
   await spawn("asar", [
     "pack",
     fortifyPrepareConfig.outDir,
-    "../fortify-prod/x64/resources/app.asar",
+    `../fortify-prod/${arch}/resources/app.asar`,
   ], "Create Electron package");
   const aipFile = path.join(os.homedir(), "Documents", `Fortify_${arch}.aip`);
   await spawn(advancedInstaller, ["/edit", aipFile, "/SetVersion", version], `AI set new version v${version}`);
