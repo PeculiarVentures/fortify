@@ -27,8 +27,8 @@ export const CHECK_UPDATE = true;
 export const CHECK_UPDATE_INTERVAL = 24 * 60 * 60e3; // 24h
 
 export const icons = {
-    tray: path.join(ICON_DIR, "tray", "icon.png"),
-    trayWhite: path.join(ICON_DIR, "tray", "icon_pressed.png"),
+    tray: path.join(ICON_DIR, "tray", "iconTemplate.png"),
+    trayWhite: path.join(ICON_DIR, "tray", "iconPressedTemplate.png"),
     favicon: path.join(ICON_DIR, "favicon-32x32.png"),
 };
 
@@ -37,6 +37,6 @@ switch (os.platform()) {
         icons.tray = path.join(ICON_DIR, "favicon-32x32.png");
         break;
     case "linux":
-        icons.tray = path.join(ICON_DIR, "tray", "icon_pressed@2x.png");
+        icons.tray = path.join(ICON_DIR, "tray", "iconPressedTemplate@2x.png");
         break;
 }
