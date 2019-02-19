@@ -4,7 +4,6 @@ import { app, ipcMain, screen, shell } from "electron";
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
-  winston.info(`Someone tried to run a second instance. Close second instance.`);
   app.quit();
 }
 
