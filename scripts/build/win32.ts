@@ -17,7 +17,7 @@ function updatePkgVersion(file: string, version: string) {
 
 export async function run() {
   const advancedInstaller = path.join(process.env["ProgramFiles(x86)"]!, "Caphyon", "Advanced Installer 14.7", "bin", "x86", "AdvancedInstaller.com");
-  if(!fs.existsSync(advancedInstaller)) {
+  if (!fs.existsSync(advancedInstaller)) {
     throw new Error(`Cannot find Advanced Installer by path ${advancedInstaller}`);
   }
   const fortifyPrepareConfig = getFortifyPrepareConfig("fprepare.json");
@@ -39,7 +39,7 @@ export async function run() {
   ], "Create Electron package");
   const aipFile = path.join(os.homedir(), "Documents", `Fortify_${arch}.aip`);
   await spawn(advancedInstaller, ["/edit", aipFile, "/SetVersion", version], `AI set new version v${version}`);
-  const msiName = `fortify-win32-${arch}-v${version.replace(/\./g, '_')}.msi`;
+  const msiName = `fortify-win32-${arch}-v${version.replace(/\./g, "_")}.msi`;
   await spawn(advancedInstaller, ["/edit", aipFile, "/SetPackageName", msiName, "-buildname", "DefaultBuild"], `AI set name for output file to ${msiName}`);
   await spawn(advancedInstaller, ["/build", aipFile], "Build MSI");
 }

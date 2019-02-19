@@ -1,11 +1,10 @@
-require("babel-polyfill");
-import { app, ipcMain, Menu, MenuItem, nativeImage, screen, shell, Tray } from "electron";
+require("@babel/polyfill");
+import { app, ipcMain, screen, shell } from "electron";
 
-const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
-  // nothing
-});
+const gotTheLock = app.requestSingleInstanceLock();
 
-if (shouldQuit) {
+if (!gotTheLock) {
+  winston.info(`Someone tried to run a second instance. Close second instance.`);
   app.quit();
 }
 
@@ -14,7 +13,6 @@ import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import * as querystring from "querystring";
-import * as url from "url";
 
 import * as request from "request";
 import * as semver from "semver";
@@ -25,20 +23,19 @@ import * as WebCryptoLocal from "webcrypto-local";
 // PKI
 import * as asn1js from "asn1js";
 const pkijs = require("pkijs");
-
 import { WebCryptoLocalError } from "webcrypto-local";
 import * as application from "./application";
-import { ConfigureRead, ConfigureWrite } from "./config";
+import { ConfigureWrite } from "./config";
 import {
-  APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_LOG_FILE, APP_SSL_CERT,
+  APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_SSL_CERT,
   APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
-  DOWNLOAD_LINK, HTML_DIR, ICON_DIR, icons, SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE,
+  icons, SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE,
 } from "./const";
 import * as jws from "./jws";
 import { Locale, locale, t } from "./locale";
 import * as ssl from "./ssl";
 import * as tray from "./tray";
-import { CheckUpdate, GetUpdateInfo } from "./update";
+import { CheckUpdate } from "./update";
 import { CreateWindow } from "./window";
 import { CreateErrorWindow, CreateQuestionWindow, CreateWarningWindow } from "./windows/message";
 
@@ -52,17 +49,9 @@ if ("dock" in app) {
   app.dock.hide();
 }
 
-const isSecondInstance = app.makeSingleInstance((commandLine, workingDirectory) => {
-  winston.info(`Someone tried to run a second instance`);
-});
-
-if (isSecondInstance) {
-  winston.info(`Close second instance`);
-  application.quit();
-}
-
 app.once("ready", () => {
   (async () => {
+
     //#region Load locale
     winston.info(`System locale is '${app.getLocale()}'`);
     if (!application.configure.locale) {
@@ -162,7 +151,7 @@ async function InitService() {
     fs.writeFileSync(APP_SSL_KEY, sslData.key);
 
     // Set cert as trusted
-    const warning = new Promise((resolve, reject) => { // wrap callback
+    const warning = new Promise((resolve) => { // wrap callback
       CreateWarningWindow(t("warn.ssl.install"), { alwaysOnTop: true, buttonLabel: t("i_understand") }, () => {
         winston.info("Warning window was closed");
         resolve();
@@ -347,7 +336,7 @@ async function PrepareConfig(config: IConfigure) {
   config.cards = APP_CARD_JSON;
 
   if (!config.disableCardUpdate) {
-    await PrepareCardJson(config);
+    await PrepareCardJson();
   }
   PrepareProviders(config);
 }
@@ -365,7 +354,7 @@ function PrepareProviders(config: IConfigure) {
   }
 }
 
-async function PrepareCardJson(config: IConfigure) {
+async function PrepareCardJson() {
   try {
     if (!fs.existsSync(APP_CARD_JSON)) {
       // try to get the latest card.json from git
@@ -447,7 +436,7 @@ interface CurrentIdentity {
 }
 
 function InitMessages() {
-  ipcMain.on("2key-list", (event: any, arg: any) => {
+  ipcMain.on("2key-list", (event: any) => {
     Promise.resolve()
       .then(() => {
         const storage = application.server.server.storage;
@@ -552,10 +541,7 @@ function PrepareIdentity(identity: WebCryptoLocal.RemoteIdentityEx) {
   const userAgent = identity.userAgent!;
   /** @type {Identity} */
   const res: Identity = {} as any;
-  // eslint-disable-next-line
-  let reg: RegExpExecArray | null;
-  // eslint-disable-next-line
-  if (reg = /edge\/([\d\.]+)/i.exec(userAgent)) {
+  if (/edge\/([\d\.]+)/i.exec(userAgent)) {
     res.browser = "edge";
   } else if (/msie/i.test(userAgent)) {
     res.browser = "ie";

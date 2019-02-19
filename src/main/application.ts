@@ -1,13 +1,15 @@
-import * as crypto from "crypto";
+import { setEngine } from "2key-ratchet";
 import * as electron from "electron";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import * as WebCryptoLocal from "webcrypto-local";
+import { LocalServer } from "webcrypto-local";
 import * as winston from "winston";
 
-import { ConfigureRead, ConfigureWrite } from "./config";
+import { ConfigureRead } from "./config";
 import { APP_CONFIG_FILE, APP_LOG_FILE, APP_TMP_DIR } from "./const";
+import "./crypto";
 import { BrowserWindowEx } from "./window";
 
 const LOG_DEFAULT_PROVIDERS_ADD = "Default:Providers:Add::";
@@ -45,6 +47,7 @@ export function LoggingSwitch(enabled: boolean) {
         //     fs.writeFileSync(APP_LOG_FILE, "", options);
         // }
         winston.add(new winston.transports.File({ filename: APP_LOG_FILE, options }));
+        winston.add(new winston.transports.Console());
     } else {
         winston.clear();
     }
@@ -53,7 +56,7 @@ export function LoggingSwitch(enabled: boolean) {
 LoggingSwitch(!!configure.logging);
 
 export function load(options: WebCryptoLocal.IServerOptions) {
-    const LocalServer = require("webcrypto-local").LocalServer as typeof WebCryptoLocal.LocalServer;
+    setEngine("node-webcrypto-ossl", (global as any).crypto);
     server = new LocalServer(options);
 }
 
