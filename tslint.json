@@ -12,7 +12,8 @@
         "forin": false,
         "no-conditional-assignment": false,
         "interface-name": false,
-        "no-empty-interface": false
+        "no-empty-interface": false,
+        "no-reference": false
     },
     "rulesDirectory": []
 }
