@@ -16,7 +16,7 @@ function updatePkgVersion(file: string, version: string) {
 }
 
 export async function run() {
-  const advancedInstaller = path.join(process.env["ProgramFiles(x86)"]!, "Caphyon", "Advanced Installer 14.7", "bin", "x86", "AdvancedInstaller.com");
+  const advancedInstaller = path.join(process.env["ProgramFiles(x86)"]!, "Caphyon", "Advanced Installer 15.6", "bin", "x86", "AdvancedInstaller.com");
   if(!fs.existsSync(advancedInstaller)) {
     throw new Error(`Cannot find Advanced Installer by path ${advancedInstaller}`);
   }
