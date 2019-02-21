@@ -3,6 +3,10 @@
     "clear": false,
     "include": [
         // node_modules
+        "node_modules/react/**/{*.js,*.json,*.node}",
+        "node_modules/react-dom/**/{*.js,*.json,*.node}", // linux
+        "node_modules/assert-plus/**/{*.js,*.json,*.node}", // linux
+        "node_modules/one-time/**/{*.js,*.json,*.node}", // linux
         "node_modules/@babel/polyfill/**/{*.js,*.json,*.node}",
         "node_modules/regenerator-runtime/**/{*.js,*.json,*.node}",
         "node_modules/asn1js/**/{*.js,*.json,*.node}",
@@ -16,7 +20,7 @@
         "node_modules/pkijs/**/{*.js,*.json,*.node}",
         "node_modules/bytestreamjs/**/{*.js,*.json,*.node}",
         "node_modules/request/**/{*.js,*.json,*.node}",
-        "node_modules/aws-sign/**/{*.js,*.json,*.node}",
+        "node_modules/aws-sign*/**/{*.js,*.json,*.node}",
         "node_modules/aws4/**/{*.js,*.json,*.node}",
         "node_modules/caseless/**/{*.js,*.json,*.node}",
         "node_modules/combined-stream/**/{*.js,*.json,*.node}",
@@ -79,6 +83,16 @@
         "node_modules/tsprotobuf/**/{*.js,*.json,*.node}",
         "node_modules/@types/long/**/{*.js,*.json,*.node}",
         "node_modules/protobufjs/**/{*.js,*.json,*.node}",
+        "node_modules/@protobufjs/aspromise/**/{*.js,*.json,*.node}",
+        "node_modules/@protobufjs/base64/**/{*.js,*.json,*.node}",
+        "node_modules/@protobufjs/codegen/**/{*.js,*.json,*.node}",
+        "node_modules/@protobufjs/eventemitter/**/{*.js,*.json,*.node}",
+        "node_modules/@protobufjs/fetch/**/{*.js,*.json,*.node}",
+        "node_modules/@protobufjs/float/**/{*.js,*.json,*.node}",
+        "node_modules/@protobufjs/inquire/**/{*.js,*.json,*.node}",
+        "node_modules/@protobufjs/path/**/{*.js,*.json,*.node}",
+        "node_modules/@protobufjs/pool/**/{*.js,*.json,*.node}",
+        "node_modules/@protobufjs/utf8/**/{*.js,*.json,*.node}",
         "node_modules/long/**/{*.js,*.json,*.node}",
         "node_modules/websocket/**/{*.js,*.json,*.node}",
         "node_modules/debug/**/{*.js,*.json,*.node}",

@@ -1,4 +1,4 @@
-/// <reference path="types.d.ts" />
+/// <reference path="./types.d.ts" />
 
 import * as childProcess from "child_process";
 import * as crypto from "crypto";

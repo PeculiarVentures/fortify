@@ -32,6 +32,7 @@
     "@types/xmldom": "^0.1.29",
     "awesome-typescript-loader": "^5.2.1",
     "css-loader": "^2.1.0",
+    "electron": "^4.0.5",
     "json-parser": "^1.1.5",
     "node-sass": "^4.11.0",
     "prop-types": "^15.7.2",
