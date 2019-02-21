@@ -10,7 +10,12 @@ import * as rimraf from "rimraf";
 
 export function spawn(command: string, args: string[] = [], message = "") {
   return new Promise((resolve, reject) => {
-    process.stdout.write(`\nRun command: ${message}\n  ${command} ${args.join(" ")}\n\n`);
+    process.stdout.write([
+      "",
+      `\x1b[36mRun command: ${message}\x1b[0m`,
+      `\x1b[33m  ${command} ${args.join(" ")}\x1b[0m`,
+      "",
+      ""].join("\n"));
     let item: childProcess.ChildProcess;
     if (os.platform() === "win32") {
       item = childProcess.spawn("cmd", ["/c", command, ...args], { stdio: "inherit" });
