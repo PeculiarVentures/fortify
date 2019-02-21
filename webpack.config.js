@@ -47,6 +47,7 @@ module.exports = {
     __dirname: false,
   },
   externals: {
+    '2key-ratchet': 'require("2key-ratchet")',
     'react': 'React',
     'react-dom': 'ReactDOM',
     'asn1js': 'require("asn1js")',
@@ -77,7 +78,7 @@ module.exports = {
         test: /\.sass$/,
         use: [
           'style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[local]_[hash:base64:5]',
+          'css-loader?modules&importLoaders=true&localIdentName=[local]_[hash:base64:5]',
           'sass-loader',
         ],
       },

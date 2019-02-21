@@ -2,7 +2,7 @@ import * as React from "react";
 
 export interface IWindowEventProps {
     event: string;
-    onCall: (e: Event) => void;
+    onCall: (e: any) => void;
 }
 export interface IWindowEventState { }
 

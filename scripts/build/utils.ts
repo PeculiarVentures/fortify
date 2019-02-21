@@ -1,4 +1,4 @@
-/// <reference path="types.d.ts" />
+/// <reference path="./types.d.ts" />
 
 import * as childProcess from "child_process";
 import * as crypto from "crypto";
@@ -13,7 +13,7 @@ export function spawn(command: string, args: string[] = [], message = "") {
     process.stdout.write(`\nRun command: ${message}\n  ${command} ${args.join(" ")}\n\n`);
     let item: childProcess.ChildProcess;
     if (os.platform() === "win32") {
-      item = childProcess.spawn("cmd", ["/c", command, ...args],{ stdio: "inherit" });
+      item = childProcess.spawn("cmd", ["/c", command, ...args], { stdio: "inherit" });
     } else {
       item = childProcess.spawn(command, args, { stdio: "inherit" });
     }
