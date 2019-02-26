@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build:src": "webpack --config webpack.config.js",
+    "build:src": "webpack --config webpack.config.js --development",
     "build:prod": "webpack --config webpack.config.js -p",
     "build:package": "electron-packager . --arch=x64 --out=build --icon=src/icons/icon.icns --overwrite=true --electron-version=1.7.6 --app-bundle-id=com.peculiarventures.fortify --no-prune",
     "build:dmg": "electron-installer-dmg build/Fortify-darwin-x64/Fortify.app fortify-mac-x64 --out=build --overwrite --icon=src/icons/favicon-32x32.png",
@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
+    "@webcrypto-local/server": "^1.0.5",
     "asn1js": "^2.0.21",
     "jose-jwe-jws": "github:microshine/js-jose",
     "node-webcrypto-ossl": "^1.0.41",
@@ -57,7 +58,6 @@
     "request": "^2.88.0",
     "semver": "^5.6.0",
     "sudo-prompt": "^8.2.5",
-    "webcrypto-local": "github:PeculiarVentures/webcrypto-local",
     "winston": "^3.2.1"
   }
 }

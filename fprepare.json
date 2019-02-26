@@ -68,7 +68,7 @@
         "node_modules/uuid/**/{*.js,*.json,*.node}",
         "node_modules/semver/**/{*.js,*.json,*.node}",
         "node_modules/sudo-prompt/**/{*.js,*.json,*.node}",
-        "node_modules/webcrypto-local/**/{*.js,*.json,*.node}",
+        "node_modules/@webcrypto-local/**/{*.js,*.json,*.node}",
         "node_modules/2key-ratchet/**/{*.js,*.json,*.node}",
         "node_modules/graphene-pk11/**/{*.js,*.json,*.node}",
         "node_modules/int64-buffer/**/{*.js,*.json,*.node}",
@@ -130,11 +130,12 @@
         "node_modules/stack-trace/**/{*.js,*.json,*.node}",
         "node_modules/stack-trace/**/{*.js,*.json,*.node}",
         "node_modules/winston-transport/**/{*.js,*.json,*.node}",
-        "node_modules/winston-transport/**/{*.js,*.json,*.node}",
         "node_modules/core-util-is/**/{*.js,*.json,*.node}",
         "node_modules/inherits/**/{*.js,*.json,*.node}",
         "node_modules/isarray/**/{*.js,*.json,*.node}",
         "node_modules/process-nextick-args/**/{*.js,*.json,*.node}",
+        "node_modules/ws/**/{*.js,*.json,*.node}",
+        "node_modules/async-limiter/**/{*.js,*.json,*.node}",
         
         // Fortiy files
         "locale/**/*",

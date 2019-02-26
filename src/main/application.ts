@@ -1,10 +1,9 @@
 import { setEngine } from "2key-ratchet";
+import * as wsServer from "@webcrypto-local/server";
 import * as electron from "electron";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import * as WebCryptoLocal from "webcrypto-local";
-import { LocalServer } from "webcrypto-local";
 import * as winston from "winston";
 
 import { ConfigureRead } from "./config";
@@ -18,7 +17,7 @@ if (!fs.existsSync(APP_TMP_DIR)) {
     fs.mkdirSync(APP_TMP_DIR);
 }
 
-export let server: WebCryptoLocal.LocalServer;
+export let server: wsServer.LocalServer;
 export let configure = ConfigureRead(APP_CONFIG_FILE, initConfig);
 export const windows: Assoc<BrowserWindowEx> = {};
 
@@ -55,9 +54,9 @@ export function LoggingSwitch(enabled: boolean) {
 
 LoggingSwitch(!!configure.logging);
 
-export function load(options: WebCryptoLocal.IServerOptions) {
+export function load(options: wsServer.IServerOptions) {
     setEngine("node-webcrypto-ossl", (global as any).crypto);
-    server = new LocalServer(options);
+    server = new wsServer.LocalServer(options);
 }
 
 function createFirefoxProviders() {
