@@ -26,8 +26,12 @@ export function spawn(command: string, args: string[] = [], message = "") {
       .on("message", (msg) => {
         process.stdout.write(msg);
       })
-      .on("close", () => {
-        resolve();
+      .on("close", (code) => {
+        if (code) {
+          reject(new Error(`Command finished with code ${code}`));
+        } else {
+          resolve();
+        }
       })
       .on("error", reject);
   });

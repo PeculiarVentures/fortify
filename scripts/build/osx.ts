@@ -105,8 +105,8 @@ export async function run() {
     updatePkgVersion(pkgprojFile, version);
     await spawn("packagesbuild", [pkgprojFile], `Build PKG file from ${pkgprojFile}`);
   } catch (e) {
-    removeTmpDir(TMP);
     throw e;
+  } finally {
+    removeTmpDir(TMP);
   }
-  removeTmpDir(TMP);
 }
