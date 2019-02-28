@@ -1,6 +1,6 @@
 {
     "outDir": "/tmp/fortify-prod/x64",
-    "clear": false,
+    "clear": true,
     "include": [
         // node_modules
         "node_modules/react/**/{*.js,*.json,*.node}",
