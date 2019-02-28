@@ -56,7 +56,24 @@ LoggingSwitch(!!configure.logging);
 
 export function load(options: wsServer.IServerOptions) {
     setEngine("node-webcrypto-ossl", (global as any).crypto);
+    fillPvPKCS11(options);
     server = new wsServer.LocalServer(options);
+}
+
+function fillPvPKCS11(options: wsServer.IServerOptions) {
+    let libPath = "";
+    switch (os.platform()) {
+        case "win32":
+            libPath = path.join(__dirname, "..", "..", "..", "pvpkcs11.dll");
+            break;
+        case "darwin":
+            libPath = path.join(__dirname, "..", "libpvpkcs11.dylib");
+            break;
+    }
+    const libs = options.config.pvpkcs11 = options.config.pvpkcs11 || [];
+    if (libPath) {
+        libs.push(libPath);
+    }
 }
 
 function createFirefoxProviders() {

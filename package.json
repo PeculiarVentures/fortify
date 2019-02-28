@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
-    "@webcrypto-local/server": "^1.0.5",
+    "@webcrypto-local/server": "^1.0.7",
     "asn1js": "^2.0.21",
     "jose-jwe-jws": "github:microshine/js-jose",
     "node-webcrypto-ossl": "^1.0.41",

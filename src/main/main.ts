@@ -261,7 +261,6 @@ async function InitService() {
     })
     .on("notify", (p: any) => {
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-
       switch (p.type) {
         case "2key": {
           p.accept = false;
@@ -273,7 +272,6 @@ async function InitService() {
             height: 300,
             x: width - 400,
             y: height - 300,
-            // alwaysOnTop: true,
             resizable: false,
             minimizable: false,
             autoHideMenuBar: true,
@@ -542,7 +540,6 @@ interface Identity {
  */
 function PrepareIdentity(identity: wsServer.RemoteIdentity) {
   const userAgent = identity.userAgent!;
-  /** @type {Identity} */
   const res: Identity = {} as any;
   if (/edge\/([\d\.]+)/i.exec(userAgent)) {
     res.browser = "edge";
