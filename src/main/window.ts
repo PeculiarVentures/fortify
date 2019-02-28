@@ -1,8 +1,9 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import * as url from "url";
+import * as winston from "winston";
 
-import { APP_DIR, HTML_DIR } from "./const";
+import { HTML_DIR } from "./const";
 import { locale } from "./locale";
 
 let counter = 0;
@@ -22,6 +23,8 @@ export interface BrowserWindowConstructorOptionsEx extends Electron.BrowserWindo
 
 export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
     const window = new BrowserWindow(options) as BrowserWindowEx;
+
+    winston.info(`Fortify: Create window ${options.app}`);
 
     window.loadURL(url.format({
         pathname: path.join(HTML_DIR, "page.html"),
