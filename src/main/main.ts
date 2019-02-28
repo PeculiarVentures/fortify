@@ -17,12 +17,11 @@ import * as request from "request";
 import * as semver from "semver";
 import * as winston from "winston";
 
-import * as WebCryptoLocal from "webcrypto-local";
+import * as wsServer from "@webcrypto-local/server";
 
 // PKI
 import * as asn1js from "asn1js";
 const pkijs = require("pkijs");
-import { WebCryptoLocalError } from "webcrypto-local";
 import * as application from "./application";
 import { ConfigureWrite } from "./config";
 import {
@@ -30,6 +29,7 @@ import {
   APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
   icons, SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE,
 } from "./const";
+import * as appCrypto from "./crypto";
 import * as jws from "./jws";
 import { Locale, locale, t } from "./locale";
 import * as ssl from "./ssl";
@@ -138,7 +138,8 @@ function CheckSSL() {
 }
 
 async function InitService() {
-  let sslData: WebCryptoLocal.IServerOptions;
+  let sslData: wsServer.IServerOptions;
+  wsServer.setEngine("node-webcrypto-ossl", appCrypto.crypto);
 
   if (!CheckSSL()) {
     winston.info(`SSL certificate is created`);
@@ -188,6 +189,8 @@ async function InitService() {
   // @ts-ignore
   sslData.config = config;
 
+  sslData.storage = await wsServer.FileStorage.create();
+
   try {
     application.load(sslData);
   } catch (e) {
@@ -228,8 +231,8 @@ async function InitService() {
     .on("error", (e: Error) => {
       winston.error(e.stack || e.toString());
       if (e.hasOwnProperty("code") && e.hasOwnProperty("type")) {
-        const err = e as WebCryptoLocalError;
-        const CODE = WebCryptoLocalError.CODE;
+        const err = e as wsServer.WebCryptoLocalError;
+        const CODE = wsServer.WebCryptoLocalError.CODE;
         switch (err.code) {
           case CODE.PCSC_CANNOT_START:
             CreateWarningWindow(t("warn.pcsc.cannot_start"), {
@@ -258,7 +261,6 @@ async function InitService() {
     })
     .on("notify", (p: any) => {
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-
       switch (p.type) {
         case "2key": {
           p.accept = false;
@@ -270,7 +272,6 @@ async function InitService() {
             height: 300,
             x: width - 400,
             y: height - 300,
-            // alwaysOnTop: true,
             resizable: false,
             minimizable: false,
             autoHideMenuBar: true,
@@ -315,7 +316,7 @@ async function InitService() {
               if (p.pin) {
                 p.resolve(p.pin);
               } else {
-                p.reject(new WebCryptoLocalError(10001, "Incorrect PIN value. It cannot be empty."));
+                p.reject(new wsServer.WebCryptoLocalError(10001, "Incorrect PIN value. It cannot be empty."));
               }
             });
           break;
@@ -373,7 +374,7 @@ async function PrepareCardJson() {
       }
 
       // get original card.json from webcrypto-local
-      const originalPath = path.join(APP_DIR, "node_modules", "webcrypto-local", "json", "card.json");
+      const originalPath = path.join(APP_DIR, "node_modules", "@webcrypto-local", "cards", "lib", "card.json");
       if (fs.existsSync(originalPath)) {
         // copy card.json to .fortify
         const buf = fs.readFileSync(originalPath);
@@ -436,9 +437,10 @@ interface CurrentIdentity {
 
 function InitMessages() {
   ipcMain.on("2key-list", (event: any) => {
+    let storage: wsServer.FileStorage;
     Promise.resolve()
       .then(() => {
-        const storage = application.server.server.storage;
+        storage = application.server.server.storage as wsServer.FileStorage;
         if (!Object.keys(storage.remoteIdentities).length) {
           // NOTE: call protected method of the storage
           // @ts-ignore
@@ -446,7 +448,7 @@ function InitMessages() {
         }
       })
       .then(() => {
-        const identities = application.server.server.storage.remoteIdentities;
+        const identities = storage.remoteIdentities;
         const preparedList = [];
         for (const i in identities) {
           const identity = PrepareIdentity(identities[i]);
@@ -500,7 +502,7 @@ function InitMessages() {
       });
   })
     .on("2key-remove", (event: any, arg: any) => {
-      const storage = application.server.server.storage;
+      const storage = application.server.server.storage as wsServer.FileStorage;
       CreateQuestionWindow(t("question.2key.remove", arg), { parent: application.windows.keys }, (result) => {
         if (result) {
           winston.info(`Removing 2key session key ${arg}`);
@@ -536,9 +538,8 @@ interface Identity {
  *
  * @param {WebCryptoLocal.RemoteIdentityEx} identity
  */
-function PrepareIdentity(identity: WebCryptoLocal.RemoteIdentityEx) {
+function PrepareIdentity(identity: wsServer.RemoteIdentity) {
   const userAgent = identity.userAgent!;
-  /** @type {Identity} */
   const res: Identity = {} as any;
   if (/edge\/([\d\.]+)/i.exec(userAgent)) {
     res.browser = "edge";

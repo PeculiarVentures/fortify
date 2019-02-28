@@ -48,6 +48,7 @@ module.exports = {
   },
   externals: {
     '2key-ratchet': 'require("2key-ratchet")',
+    '@webcrypto-local/server': 'require("@webcrypto-local/server")',
     'react': 'React',
     'react-dom': 'ReactDOM',
     'asn1js': 'require("asn1js")',
@@ -56,6 +57,9 @@ module.exports = {
     'fs': 'require("fs")',
     'jose-jwe-jws': 'require("jose-jwe-jws")',
     'node-webcrypto-ossl': 'require("node-webcrypto-ossl")',
+    'pkcs11js': 'require("pkcs11js")',
+    'pcsclite': 'require("pcsclite")',
+    'buffertools': 'require("buffertools")',
     'os': 'require("os")',
     'crypto': 'require("crypto")',
     'path': 'require("path")',
@@ -64,7 +68,6 @@ module.exports = {
     'semver': 'require("semver")',
     'sudo-prompt': 'require("sudo-prompt")',
     'url': 'require("url")',
-    'webcrypto-local': 'require("webcrypto-local")',
     'winston': 'require("winston")',
   },
   module: {
