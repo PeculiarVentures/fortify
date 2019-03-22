@@ -1,7 +1,7 @@
 {
   "name": "fortify",
   "productName": "Fortify",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "",
   "main": "out/main.js",
   "scripts": {
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
-    "@webcrypto-local/server": "^1.0.7",
+    "@webcrypto-local/server": "^1.0.9",
     "asn1js": "^2.0.21",
     "jose-jwe-jws": "github:microshine/js-jose",
     "node-webcrypto-ossl": "^1.0.41",
