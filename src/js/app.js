@@ -70,7 +70,7 @@ function listenFortify() {
 }
 
 function getCardsData() {
-  return fetch('https://raw.githubusercontent.com/PeculiarVentures/webcrypto-local/master/json/card.json')
+  return fetch('https://raw.githubusercontent.com/PeculiarVentures/webcrypto-local/master/packages/cards/lib/card.json')
     .then(res => res.json())
 }
 
