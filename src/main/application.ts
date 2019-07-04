@@ -22,7 +22,7 @@ export let configure = ConfigureRead(APP_CONFIG_FILE, initConfig);
 export const windows: Assoc<BrowserWindowEx> = {};
 
 function initConfig() {
-    const config: IConfigure = { providers: [] };
+    const config: IConfigure = { providers: [], cards: [] };
 
     try {
         const firefoxProviders = createFirefoxProviders();
@@ -55,7 +55,7 @@ export function LoggingSwitch(enabled: boolean) {
 LoggingSwitch(!!configure.logging);
 
 export function load(options: wsServer.IServerOptions) {
-    setEngine("node-webcrypto-ossl", (global as any).crypto);
+    setEngine("@peculiar/webcrypto", (global as any).crypto);
     fillPvPKCS11(options);
     server = new wsServer.LocalServer(options);
 }

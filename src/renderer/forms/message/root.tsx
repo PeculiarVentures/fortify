@@ -12,17 +12,22 @@ interface Style {
     box: string;
     icon: string;
     text: string;
+    showDialog: string;
 }
 
 export interface IRootProps { }
-export interface IRootState { }
+export interface IRootState {
+    showAgain?: boolean;
+}
 
 export class Root extends WindowComponent<IRootProps, IRootState> {
 
     constructor(props: IRootProps) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            showAgain: false,
+        };
     }
 
     public renderButtons() {
@@ -45,7 +50,6 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
     }
 
     public render() {
-
         return (
             <Page>
                 <WindowEvent event="keydown" onCall={this.onWindowKeyDown.bind(this)} />
@@ -64,6 +68,14 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
                         </div>
                     </div>
                 </Content>
+                {
+                    this.hasShowAgain()
+                        ? <div className={s.showDialog}>
+                            <input ref="show-dialog" type="checkbox" id="show-dialog" />
+                            <label htmlFor="show-dialog">{t("show.again")}</label>
+                        </div>
+                        : null
+                }
                 <Footer>
                     <Align type="center">
                         <div>
@@ -73,6 +85,10 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
                 </Footer>
             </Page >
         );
+    }
+
+    public hasShowAgain() {
+        return this.params.id && this.params.showAgain;
     }
 
     protected onYesClick() {
@@ -90,6 +106,12 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
             case 27: // esc
                 this.close();
                 break;
+        }
+    }
+
+    protected onClose() {
+        if (this.hasShowAgain()) {
+            this.params.showAgainValue = (this.refs["show-dialog"] as any).checked;
         }
     }
 }

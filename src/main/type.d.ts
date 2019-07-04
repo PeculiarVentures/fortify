@@ -11,12 +11,22 @@ interface IConfigureProvider {
     name?: string;
 }
 
+interface ICard {
+    reader?: string;
+    name: string;
+    atr?: Buffer;
+    mask?: Buffer;
+    readOnly: boolean;
+    libraries: string[];
+}
+
 interface IConfigure {
     logging?: boolean;
     locale?: string;
     disableCardUpdate?: boolean;
-    cards?: string;
+    cardConfigPath?: string;
     providers?: IConfigureProvider[];
+    cards: ICard[];
 }
 
 declare module "sudo-prompt" {
@@ -28,4 +38,6 @@ interface ICreateWindowOptions {
     alwaysOnTop?: boolean;
     parent?: any;
     dock?: boolean;
+    id?: string;
+    showAgain?: boolean; 
 }

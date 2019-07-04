@@ -12,6 +12,7 @@ export const ICON_DIR = path.join(SRC_DIR, "icons");
 
 export const APP_LOG_FILE = path.join(APP_TMP_DIR, `fortify.log`);
 export const APP_CONFIG_FILE = path.join(APP_TMP_DIR, `config.json`);
+export const APP_DIALOG_FILE = path.join(APP_TMP_DIR, `dialog.json`);
 export const APP_SSL_CERT_CA = path.join(APP_TMP_DIR, `ca.pem`);
 export const APP_SSL_CERT = path.join(APP_TMP_DIR, `cert.pem`);
 export const APP_SSL_KEY = path.join(APP_TMP_DIR, `key.pem`);

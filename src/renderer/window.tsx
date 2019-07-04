@@ -1,5 +1,8 @@
 import * as electron from "electron";
 import * as React from "react";
+import * as winston from "winston";
+
+winston.add(new winston.transports.Console());
 
 import { locale } from "../main/locale";
 
@@ -20,7 +23,12 @@ export class WindowComponent<P, S> extends React.Component<P, S> {
     }
 
     public close() {
+        this.onClose();
         electron.remote.getCurrentWindow().close();
+    }
+
+    protected onClose() {
+        // nothing
     }
 
 }

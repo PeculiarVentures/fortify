@@ -22,7 +22,12 @@ export interface BrowserWindowConstructorOptionsEx extends Electron.BrowserWindo
 }
 
 export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
-    const window = new BrowserWindow(options) as BrowserWindowEx;
+    const window = new BrowserWindow({
+        ...options,
+        webPreferences: {
+            nodeIntegration: true,
+        },
+    }) as BrowserWindowEx;
 
     winston.info(`Fortify: Create window ${options.app}`);
 

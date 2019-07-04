@@ -57,7 +57,7 @@ export async function CheckUpdate() {
     if (semver.lt(curVersion, update.version)) {
       winston.info("Update: New version was found");
       await new Promise((resolve, reject) => {
-        CreateQuestionWindow(t("question.update.new", update.version), {}, (res) => {
+        CreateQuestionWindow(t("question.update.new", update.version), { id: "question.update.new", showAgain: true }, (res) => {
           if (res) {
             // yes
             winston.info(`User agreed to download new version ${update.version}`);

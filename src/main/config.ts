@@ -14,7 +14,10 @@ export function ConfigureRead(path: string, cb?: () => IConfigure) {
     if (cb) {
       res = cb();
     } else {
-      res = {};
+      res = {
+        providers: [],
+        cards: [],
+      };
     }
     ConfigureWrite(APP_CONFIG_FILE, res);
   } else {

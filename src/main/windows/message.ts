@@ -1,6 +1,8 @@
-import { icons } from "../const";
+import * as fs from "fs";
+import * as winston from "winston";
+import { APP_DIALOG_FILE, icons } from "../const";
 import { t } from "../locale";
-import { CreateWindow } from "../window";
+import { BrowserWindowEx, CreateWindow } from "../window";
 
 let errorWindow: Electron.BrowserWindow | null = null;
 /**
@@ -44,7 +46,7 @@ export function CreateErrorWindow(text: string, cb: () => void) {
     });
 }
 
-let warnWindow: Electron.BrowserWindow | null = null;
+let warnWindow: BrowserWindowEx | null = null;
 
 interface ICreateWarningWindowOptions extends ICreateWindowOptions {
     buttonLabel?: string;
@@ -59,6 +61,12 @@ interface ICreateWarningWindowOptions extends ICreateWindowOptions {
  * @returns
  */
 export function CreateWarningWindow(text: string, options: ICreateWarningWindowOptions, cb?: () => void) {
+
+    if (options.id && options.showAgain && hasDialog(options.id)) {
+        winston.info(`Don't show dialog '${options.id}'. It's disabled`);
+        return null;
+    }
+
     options = options || {};
     // Create the browser window.
     if (warnWindow) {
@@ -85,6 +93,9 @@ export function CreateWarningWindow(text: string, options: ICreateWarningWindowO
             title: options.title || t("warning"),
             buttonLabel: options.buttonLabel || t("close"),
             text,
+            id: options.id,
+            showAgain: options.showAgain,
+            showAgainValue: false,
         },
     });
 
@@ -93,6 +104,9 @@ export function CreateWarningWindow(text: string, options: ICreateWarningWindowO
 
     // Emitted when the window is closed.
     warnWindow.on("closed", () => {
+        if (warnWindow) {
+            onDialogClose(warnWindow);
+        }
         warnWindow = null;
         if (cb) {
             cb();
@@ -108,6 +122,11 @@ export function CreateWarningWindow(text: string, options: ICreateWarningWindowO
  * @return {BrowserWindow}
  */
 export function CreateQuestionWindow(text: string, options: ICreateWindowOptions, cb?: (result: number) => void) {
+    if (options.id && options.showAgain && hasDialog(options.id)) {
+        winston.info(`Don't show dialog '${options.id}'. It's disabled`);
+        return null;
+    }
+
     // Create the browser window.
     const window = CreateWindow({
         app: "message",
@@ -127,15 +146,53 @@ export function CreateQuestionWindow(text: string, options: ICreateWindowOptions
             title: options.title || t("question"),
             text,
             result: 0,
+            id: options.id,
+            showAgain: options.showAgain,
+            showAgainValue: false,
         },
     });
 
     // Emitted when the window is closed.
     window.on("closed", () => {
+        onDialogClose(window);
+
         if (cb) {
             cb(window.params.result);
         }
     });
 
     return window;
+}
+function onDialogClose(window: BrowserWindowEx) {
+    if (window.params && window.params.id && window.params.showAgainValue) {
+        const dialogs = getDialogs();
+        dialogs.push(window.params.id);
+        saveDialogs(dialogs);
+        winston.info(`Disable dialog ${window.params.id}`);
+    }
+}
+
+function saveDialogs(dialogs: string[]) {
+    fs.writeFileSync(APP_DIALOG_FILE, JSON.stringify(dialogs, null, "  "), { flag: "w+" });
+}
+
+function getDialogs() {
+    let dialogs: string[] = [];
+    if (fs.existsSync(APP_DIALOG_FILE)) {
+        try {
+            const json = fs.readFileSync(APP_DIALOG_FILE).toString();
+            dialogs = JSON.parse(json);
+            if (!Array.isArray(dialogs)) {
+                throw new TypeError("Bad JSON format. Must be Array of strings");
+            }
+        } catch (e) {
+            winston.error(`Cannot parse JSON file ${APP_DIALOG_FILE}`);
+            winston.error(e);
+        }
+    }
+    return dialogs;
+}
+
+function hasDialog(name: string) {
+    return getDialogs().includes(name);
 }

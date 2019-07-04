@@ -97,7 +97,7 @@ export async function run() {
       `--out=${TMP}`,
       "--icon=src/icons/icon.icns",
       "--overwrite=true",
-      "--electron-version=4.0.5",
+      "--electron-version=5.0.6",
       "--app-bundle-id=com.peculiarventures.fortify",
       "--no-prune",
     ], "Create Electron package");

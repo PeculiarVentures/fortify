@@ -139,7 +139,7 @@ function CheckSSL() {
 
 async function InitService() {
   let sslData: wsServer.IServerOptions;
-  wsServer.setEngine("node-webcrypto-ossl", appCrypto.crypto);
+  wsServer.setEngine("@peculiar/webcrypto", appCrypto.crypto);
 
   if (!CheckSSL()) {
     winston.info(`SSL certificate is created`);
@@ -184,8 +184,11 @@ async function InitService() {
 
   const config: IConfigure = {
     disableCardUpdate: application.configure.disableCardUpdate,
+    cards: [],
+    providers: [],
   };
   await PrepareConfig(config);
+  // console.log(JSON.stringify(config, null, "  "));
   // @ts-ignore
   sslData.config = config;
 
@@ -208,14 +211,15 @@ async function InitService() {
       winston.info(message);
     })
     .on("token_new", (card) => {
-      winston.info(`New token was found reader: '${card.reader}' ATR: ${card.atr.toString("hex")}`);
-      CreateQuestionWindow(t("question.new.token"), {}, (res) => {
+      const atr = card.atr.toString("hex");
+      winston.info(`New token was found reader: '${card.reader}' ATR: ${atr}`);
+      CreateQuestionWindow(t("question.new.token"), { id: "question.new.token", showAgain: true }, (res) => {
         if (res) {
           try {
-            const title = `Add support for '${card.atr.toString("hex")}' token`;
+            const title = `Add support for '${atr}' token`;
             const body = fs.readFileSync(TEMPLATE_NEW_CARD_FILE, { encoding: "utf8" })
               .replace(/\$\{reader\}/g, card.reader)
-              .replace(/\$\{atr\}/g, card.atr.toString("hex").toUpperCase())
+              .replace(/\$\{atr\}/g, atr.toUpperCase())
               .replace(/\$\{driver\}/g, crypto.randomBytes(20).toString("hex").toUpperCase());
             const url1 = `${SUPPORT_NEW_TOKEN_LINK}/issues/new?` + querystring.stringify({
               title,
@@ -239,6 +243,8 @@ async function InitService() {
               alwaysOnTop: true,
               title: t("warning.title.oh_no"),
               buttonLabel: t("i_understand"),
+              id: "warn.pcsc.cannot_start",
+              showAgain: true,
             }, () => {
               // nothing
             });
@@ -247,6 +253,8 @@ async function InitService() {
             CreateWarningWindow(t("warn.token.crypto_not_found", err.message), {
               alwaysOnTop: true,
               title: t("warning.title.oh_no"),
+              id: "warn.token.crypto_not_found",
+              showAgain: true,
             });
             break;
           case CODE.PROVIDER_CRYPTO_WRONG:
@@ -254,6 +262,8 @@ async function InitService() {
             CreateWarningWindow(t("warn.token.crypto_wrong", err.message), {
               alwaysOnTop: true,
               title: t("warning.title.oh_no"),
+              id: "warn.token.crypto_wrong",
+              showAgain: true,
             });
             break;
         }
@@ -333,12 +343,13 @@ async function InitService() {
 }
 
 async function PrepareConfig(config: IConfigure) {
-  config.cards = APP_CARD_JSON;
+  config.cardConfigPath = APP_CARD_JSON;
 
   if (!config.disableCardUpdate) {
     await PrepareCardJson();
   }
   PrepareProviders(config);
+  PrepareCards(config);
 }
 
 function PrepareProviders(config: IConfigure) {
@@ -347,6 +358,25 @@ function PrepareProviders(config: IConfigure) {
       const json = JSON.parse(fs.readFileSync(APP_CONFIG_FILE).toString());
       if (json.providers) {
         config.providers = json.providers;
+      }
+    }
+  } catch (err) {
+    winston.error(`Cannot prepare config data. ${err.stack}`);
+  }
+}
+function PrepareCards(config: IConfigure) {
+  try {
+    if (fs.existsSync(APP_CONFIG_FILE)) {
+      const json = JSON.parse(fs.readFileSync(APP_CONFIG_FILE).toString());
+      if (json.cards) {
+        config.cards = json.cards.map((card: any) => {
+          return {
+            name: card.name,
+            atr: Buffer.from(card.atr, "hex"),
+            readOnly: card.readOnly,
+            libraries: card.libraries,
+          };
+        });
       }
     }
   } catch (err) {

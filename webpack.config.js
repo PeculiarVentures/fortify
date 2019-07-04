@@ -45,6 +45,7 @@ module.exports = {
   ],
   node: {
     __dirname: false,
+    Buffer: false,
   },
   externals: {
     '2key-ratchet': 'require("2key-ratchet")',
@@ -56,7 +57,7 @@ module.exports = {
     'electron': 'require("electron")',
     'fs': 'require("fs")',
     'jose-jwe-jws': 'require("jose-jwe-jws")',
-    'node-webcrypto-ossl': 'require("node-webcrypto-ossl")',
+    '@peculiar/webcrypto': 'require("@peculiar/webcrypto")',
     'pkcs11js': 'require("pkcs11js")',
     'pcsclite': 'require("pcsclite")',
     'buffertools': 'require("buffertools")',
@@ -81,7 +82,14 @@ module.exports = {
         test: /\.sass$/,
         use: [
           'style-loader',
-          'css-loader?modules&importLoaders=true&localIdentName=[local]_[hash:base64:5]',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              importLoaders: 1,
+              localsConvention: "camelCase",
+            }
+          },
           'sass-loader',
         ],
       },
