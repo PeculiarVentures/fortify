@@ -52,7 +52,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
     "@peculiar/webcrypto": "^1.0.21",
-    "@webcrypto-local/server": "^1.0.13-next.0",
+    "@webcrypto-local/server": "^1.0.13",
     "asn1js": "^2.0.26",
     "jose-jwe-jws": "github:microshine/js-jose",
     "pkijs": "^2.1.82",
