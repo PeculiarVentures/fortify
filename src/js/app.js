@@ -32,21 +32,6 @@ function createSVG(data) {
         <use xlink:href="#${data.id}"></use>
     </svg>
   `;
-  const element = createElement('svg', data.className);
-  const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-
-  use.setAttribute('xlink:href', `#${data.id}`);
-  element.setAttribute('viewBox', data.viewBox);
-
-  element.appendChild(use);
-
-  return element;
-}
-
-function findFortify() {
-  return fetch('https://127.0.0.1:31337/.well-known/webcrypto-socket')
-    .then(res => res.status === 200)
-    .catch(err => false);
 }
 
 function defineMyCertificates() {
@@ -69,8 +54,24 @@ function listenFortify() {
   setTimeout(listenFortify, FORTIFY_POOLING_DELAY);
 }
 
+function findFortify() {
+  return fetch('https://127.0.0.1:31337/.well-known/webcrypto-socket')
+    .then(res => res.status === 200)
+    .catch(() => false);
+}
+
 function getCardsData() {
   return fetch('https://raw.githubusercontent.com/PeculiarVentures/webcrypto-local/master/packages/cards/lib/card.json')
+    .then(res => res.json())
+}
+
+function getLatestReleaseData() {
+  return fetch('https://api.github.com/repos/PeculiarVentures/fortify-web/releases/latest')
+    .then(res => res.json())
+}
+
+function getFAQData() {
+  return fetch('/media/faq.json')
     .then(res => res.json())
 }
 
@@ -86,20 +87,22 @@ function prepareTableData(data) {
       return 0;
     })
     .map(card => {
-      const driver = data.drivers.filter(driver => driver.id === card.driver)[0];
+      const driver = data.drivers
+        .find(driver => driver.id === card.driver);
 
       if (driver) {
         return {
-          name: card.name,
+          name: card.name || card.description,
           mac: !!(driver.file && driver.file.osx),
           win: !!(driver.file && driver.file.windows),
         };
       }
+
       return {
-        name: card.name,
+        name: card.name || card.description,
         mac: false,
         win: false,
-      }
+      };
     });
 }
 
@@ -169,15 +172,6 @@ function insertTableData(data) {
   }
 }
 
-function getFAQData() {
-  let pathname = '/';
-  if (/github\.io/.test(window.location.host)) {
-    pahname = window.location.pathname;
-  }
-  return fetch(`${pathname}media/faq.json`)
-    .then(res => res.json())
-}
-
 function insertFAQData(data) {
   const tableContainer = document.getElementById('faq_table');
 
@@ -245,8 +239,7 @@ function detectOS() {
   showBtn.addEventListener('click', showAll, false);
 }
 
-function addLinks(assets) {
-
+function insertDownloadLinks(assets) {
   for (let i = 0; i < assets.length; i += 1) {
     if (assets[i].name.indexOf('win32-x86') !== -1) {
       downloadForWin32.href = assets[i].browser_download_url;
@@ -266,25 +259,26 @@ function addLinks(assets) {
   }
 }
 
-fetch('https://api.github.com/repos/PeculiarVentures/fortify-web/releases/latest', {
-  method: 'GET'
-}).then((response) => { return response.json() })
-  .then((res) => addLinks(res.assets))
-  .catch(err => {
-    console.warn(err);
-  });
-
-
 detectOS();
 initSlider();
 listenFortify();
-const cards = getCardsData()
-  .then(prepareTableData);
-const FAQ = getFAQData()
-  .then(insertFAQData);
 
-Promise.all([FAQ, cards])
-  .then(([faq, cardsData]) => insertTableData(cardsData))
+Promise.all([
+  getCardsData(),
+  getFAQData(),
+  getLatestReleaseData(),
+])
+  .then(([
+    cardsData,
+    fagData,
+    latestReleaseData,
+  ]) => {
+    const preparedTableData = prepareTableData(cardsData);
+
+    insertFAQData(fagData);
+    insertTableData(preparedTableData);
+    insertDownloadLinks(latestReleaseData.assets);
+  })
   .catch(err => {
     console.warn(err);
   });
