@@ -3,22 +3,16 @@
 #### Prepare
 - Clone latest version this repository
 ```bash
-npm i
+npm install
 ```
 
-#### Run development
+#### Development
 ```bash
-npm run development
+npm run start
 ```
 Visit [http://localhost:3000](http://localhost:3000)
 
-#### Run build
+#### Production
 ```bash
 npm run build
 ```
-
-#### Run deploy
-```bash
-npm run deploy
-```
-Visit [https://fortifyapp.com](https://fortifyapp.com)
