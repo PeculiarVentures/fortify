@@ -41,6 +41,6 @@ export async function run() {
   } catch (e) {
     throw e;
   } finally {
-    // removeTmpDir();
+    removeTmpDir();
   }
 }
