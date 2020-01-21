@@ -2,19 +2,19 @@
 
 import * as childProcess from "child_process";
 import * as crypto from "crypto";
+import * as extractZip from "extract-zip";
 import * as fs from "fs";
-import * as request from "request";
 import * as json from "json-parser";
 import * as os from "os";
 import * as path from "path";
+import * as request from "request";
 import * as rimraf from "rimraf";
-import * as extractZip from "extract-zip";
 
 /**
  * Calls commands and print message about it to console
- * @param command 
- * @param args 
- * @param message 
+ * @param command
+ * @param args
+ * @param message
  */
 export function spawn(command: string, args: string[] = [], message = "") {
   return new Promise((resolve, reject) => {
@@ -52,7 +52,7 @@ export const TMP = path.join(os.tmpdir(), crypto.randomBytes(10).toString("hex")
 
 /**
  * Creates TMP directory
- * @param dir 
+ * @param dir
  */
 export function createTempDir(dir = TMP) {
   if (!fs.existsSync(dir)) {
@@ -63,7 +63,7 @@ export function createTempDir(dir = TMP) {
 
 /**
  * Removes TMP directory
- * @param dir 
+ * @param dir
  */
 export function removeTmpDir(dir = TMP) {
   if (fs.existsSync(dir)) {
@@ -74,7 +74,7 @@ export function removeTmpDir(dir = TMP) {
 
 /**
  * Returns fprepare.json parsed file
- * @param file 
+ * @param file
  */
 export function getFortifyPrepareConfig(file: string) {
   const text = fs.readFileSync(file, { encoding: "utf8" });
@@ -100,17 +100,17 @@ export async function downloadAsync(uri: string, file: string) {
     ""].join("\n"));
 
   return new Promise((resolve, reject) => {
-    let fileStream = fs.createWriteStream(file);
+    const fileStream = fs.createWriteStream(file);
     request({
       uri,
     })
       .pipe(fileStream)
-      .on('finish', () => {
+      .on("finish", () => {
         resolve();
       })
-      .on('error', (error) => {
+      .on("error", (error) => {
         reject(error);
-      })
+      });
   });
 }
 
@@ -129,5 +129,5 @@ export async function extractAsync(file: string, directory: string) {
         resolve();
       }
     });
-  })
+  });
 }
