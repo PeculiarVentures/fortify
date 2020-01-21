@@ -23,7 +23,7 @@ export async function run() {
 
 
     await spawn("npm", ["run", "build:prod"], "Compile source code");
-    await spawn("fortify-prepare", [], "Copy required files to tmp dir");
+    await spawn("node_modules/.bin/fortify-prepare", [], "Copy required files to tmp dir");
     await spawn("electron-packager", [
       fortifyPrepareConfig.outDir,
       appname,
