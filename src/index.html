@@ -2,14 +2,17 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles/app.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        Fortify - Enabling cross-browser usage of local certificates and smart cards
+    </title>
+    <meta name="keywords" content="x509, smartcard, pkcs11, cryptography, cryptoapi, keychain, minidriver, webcrypto"> 
+
     <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
-    <title>Fortify - Enabling cross-browser usage of local certificates and smart cards</title>
+
+    <link rel="stylesheet" href="styles/app.sass">
     <link rel="stylesheet" href="styles/swiper.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js"></script>
 </head>
 <body>
 
@@ -70,7 +73,7 @@
         <div class="b_what_it_do" id="what_it_do">
             <div class="title">What does <span class="name">Fortify</span> do?</div>
             <div class="section">
-                <svg viewBox="0 0 320 201" class="illustration">
+                <svg viewBox="0 0 320 201" class="illustration" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <use xlink:href="#illustration1"></use>
                 </svg>
                 <div class="description">
@@ -78,13 +81,13 @@
                 </div>
             </div>
             <div class="section">
-                <svg viewBox="0 0 320 201" class="illustration">
+                <svg viewBox="0 0 320 201" class="illustration" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <use xlink:href="#illustration2"></use>
                 </svg>
                 <div class="description">Enroll for a new certificate or renew an existing one.</div>
             </div>
             <div class="section">
-                <svg viewBox="0 0 320 201" class="illustration">
+                <svg viewBox="0 0 320 201" class="illustration" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <use xlink:href="#illustration3"></use>
                 </svg>
                 <div class="description">Build applications that can sign/verify or encrypt/decrypt using locally installed certificates, smart cards or security tokens.</div>
@@ -98,7 +101,7 @@
 
             <div class="title">Download App</div>
             <a class="button" href="https://github.com/PeculiarVentures/fortify-web/releases/latest" id="download_mac">
-                <svg class="icon" viewBox="0 0 50 50">
+                <svg class="icon" viewBox="0 0 50 50" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <use xlink:href="#osx_icon" />
                 </svg>
                 <div class="info">
@@ -107,7 +110,7 @@
                 </div>
             </a>
             <a class="button" href="https://github.com/PeculiarVentures/fortify-web/releases/latest" id="download_64">
-                <svg class="icon" viewBox="0 0 50 50">
+                <svg class="icon" viewBox="0 0 50 50" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <use xlink:href="#win_icon" />
                 </svg>
                 <div class="info">
@@ -116,7 +119,7 @@
                 </div>
             </a>
             <a class="button m_margin" href="https://github.com/PeculiarVentures/fortify-web/releases/latest" id="download_86">
-                <svg class="icon" viewBox="0 0 50 50">
+                <svg class="icon" viewBox="0 0 50 50" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <use xlink:href="#win_icon" />
                 </svg>
                 <div class="info">
@@ -125,7 +128,7 @@
                 </div>
             </a>
             <a class="button m_margin" href="https://github.com/PeculiarVentures/fortify-web/releases/latest" id="download_linux_64">
-                <svg class="icon" viewBox="0 0 304.998 304.998">
+                <svg class="icon" viewBox="0 0 304.998 304.998" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <use xlink:href="#linux_icon" />
                 </svg>3
                 <div class="info">
@@ -153,7 +156,6 @@
         <div class="b_footer">
             <div class="info">
                 <div class="copyright">© Peculiar Ventures, Inc. All rights reserved.</div>
-                <div class="terms">Terms and Services</div>
                 <div class="nav">
                     <a href="#what_it_do" class="nav_item">What does it do</a>
                     <a href="https://github.com/PeculiarVentures" class="nav_item">GitHub</a>
@@ -725,7 +727,9 @@
     </svg>
 </div>
 
-<script src="js/build.js"></script>
+<script defer nomodule src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
+<script defer nomodule src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js"></script>
+<script defer src="js/app.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109693148-1"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

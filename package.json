@@ -1,41 +1,37 @@
 {
-  "name": "family",
+  "name": "fortify-landing",
   "version": "1.0.0",
-  "description": "",
+  "description": "Fortify enables web applications to use smart cards, local certificate stores and do certificate enrollment.",
   "main": "index.js",
   "scripts": {
-    "clean": "rimraf build",
-    "build": "npm run clean && gulp prod",
-    "development": "gulp",
+    "clean": "rimraf dist",
     "deploy": "gh-pages -d dist",
-    "predeploy": "npm run build"
+    "start": "npm run clean && parcel src/index.html --port 3000",
+    "build": "npm run clean && parcel build src/index.html"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "https://github.com/PeculiarVentures",
+  "license": "MIT",
   "devDependencies": {
-    "autosize": "^3.0.15",
-    "babel-preset-es2015": "^6.9.0",
-    "babelify": "^7.3.0",
-    "browser-sync": "^2.13.0",
-    "browserify": "^13.0.1",
-    "chalk": "^1.1.3",
-    "del": "^2.2.0",
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.0",
-    "gulp-babel": "^6.1.2",
-    "gulp-plumber": "^1.1.0",
-    "gulp-rigger": "^0.5.8",
-    "gulp-sass": "^2.3.2",
-    "gulp-tinypng": "^1.0.2",
-    "gulp-uglify": "^1.5.3",
-    "gulp-util": "^3.0.7",
-    "run-sequence": "^1.2.1",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "gh-pages": "^2.2.0",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-static-files-copy": "^2.2.2",
+    "rimraf": "^3.0.0",
+    "sass": "^1.25.0"
   },
-  "dependencies": {
-    "gh-pages": "^1.1.0",
-    "gulp-cli": "^1.3.0",
-    "rimraf": "^2.6.2"
+  "staticFiles": {
+    "staticPath": [
+      {
+        "staticPath": "src/static",
+        "staticOutDir": "/"
+      },
+      {
+        "staticPath": "src/media",
+        "staticOutDir": "/media"
+      },
+      {
+        "staticPath": "src/img",
+        "staticOutDir": "/img"
+      }
+    ]
   }
 }
