@@ -1,22 +1,27 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as rimraf from "rimraf";
-import { createTempDir, getFortifyPrepareConfig, getVersion, removeTmpDir, spawn, TMP } from "./utils";
+import { createTempDir, getFortifyPrepareConfig, getVersion, removeTmpDir, spawn, TMP, downloadAsync, extractAsync } from "./utils";
 
-const DEB_DIR = path.join("..", "fortify_x64");
-const DEB_FORTIFY = path.join(DEB_DIR, "opt", "fortify");
 
 export async function run() {
   try {
+    const DEB_URL = "https://github.com/PeculiarVentures/fortify/releases/download/v2-binaries/linux-x64-debian.zip";
+    const DEB_ZIP_FILE = path.join(TMP, "debian.zip");
+    const DEB_DIR = path.join(TMP, "debian");
+    const DEB_FORTIFY = path.join(DEB_DIR, "opt", "fortify");
+    
+    createTempDir();
     if (!fs.existsSync(DEB_DIR)) {
-      throw new Error(`Cannot find DEB project folder ${DEB_DIR}`);
+      await downloadAsync(DEB_URL, DEB_ZIP_FILE);
+      await extractAsync(DEB_ZIP_FILE, DEB_DIR);
     }
     const fortifyPrepareConfig = getFortifyPrepareConfig("fprepare.json");
     const appname = "fortify";
     const arch = "x64";
     const version = getVersion().replace(/\./g, "_");
 
-    createTempDir();
+
     await spawn("npm", ["run", "build:prod"], "Compile source code");
     await spawn("fortify-prepare", [], "Copy required files to tmp dir");
     await spawn("electron-packager", [
