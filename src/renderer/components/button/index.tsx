@@ -1,19 +1,14 @@
 import * as React from "react";
 
-interface Style {
-    btn: string;
-    accept: string;
-}
-const s = require("./style.sass") as Style;
+const s = require("./style.sass");
 
 export interface IButtonProps {
     text: string;
     accept?: boolean;
     onClick?: React.MouseEventHandler<HTMLElement>;
 }
-export interface IButtonState { }
 
-export class Button extends React.Component<IButtonProps, IButtonState> {
+export class Button extends React.Component<IButtonProps> {
 
     constructor(props: IButtonProps) {
         super(props);

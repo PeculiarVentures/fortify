@@ -1,17 +1,12 @@
 import * as React from "react";
 
-const s = require("./style.sass") as Style;
-interface Style {
-    left: string;
-    center: string;
-    right: string;
-}
+const s = require("./style.sass");
 
 export interface IAlignProps {
     type: "left" | "center" | "right";
 }
 
-export class Align extends React.Component<IAlignProps, {}> {
+export class Align extends React.Component<IAlignProps> {
 
     public render() {
         let cls = s.left;

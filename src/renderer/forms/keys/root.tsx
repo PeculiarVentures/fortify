@@ -1,17 +1,13 @@
-// import { ipcRenderer } from "electron";
 import * as React from "react";
-
 import { t } from "../../../main/locale";
 import { WindowComponent } from "../../window";
 import { Empty } from "./empty";
 import { Item } from "./item";
+import { ipcRenderer }  from "electron";
 
-const { ipcRenderer } = require("electron");
-const s = require("./styles/root.sass") as StyleRoot;
+const s = require("./styles/root.sass");
 
-export interface IRootProps {
-}
-
+export interface IRootProps {}
 export interface IRootState {
   keys?: IKey[];
   filterValue?: string;

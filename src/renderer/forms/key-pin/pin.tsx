@@ -1,9 +1,6 @@
 import * as React from "react";
 
-const s = require("./style.sass") as Style;
-interface Style {
-    pin: string;
-}
+const s = require("./style.sass");
 
 export interface IPinProps {
     value: string;

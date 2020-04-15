@@ -95,7 +95,7 @@ export async function run() {
       fortifyPrepareConfig.outDir,
       `--arch=${arch}`,
       `--out=${TMP}`,
-      "--icon=src/icons/icon.icns",
+      "--icon=src/static/icons/icon.icns",
       "--overwrite=true",
       "--electron-version=5.0.6",
       "--app-bundle-id=com.peculiarventures.fortify",

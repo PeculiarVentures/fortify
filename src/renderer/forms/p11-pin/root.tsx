@@ -1,21 +1,12 @@
-import * as electron from "electron";
 import * as React from "react";
-
 import { t } from "../../../main/locale";
 import { Align } from "../../components/align/index";
 import { Button } from "../../components/button/index";
-import { Link } from "../../components/link/index";
 import { Content, Footer, Page } from "../../components/page/index";
 import { WindowEvent } from "../../components/window_event";
 import { WindowComponent } from "../../window";
 
-const s = require("./style.sass") as Style;
-interface Style {
-    cellImage: string;
-    content: string;
-    input: string;
-    label: string;
-}
+const s = require("./style.sass");
 
 export interface IRootProps { }
 export interface IRootState {
@@ -49,7 +40,7 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
                             <tbody>
                                 <tr>
                                     <td className={s.cellImage}>
-                                        <img src="../icons/smart_card.png" alt={t("smart.card")} width="64px" />
+                                        <img src="../static/icons/smart_card.png" alt={t("smart.card")} width="64px" />
                                     </td>
                                     <td>
                                         <div className={s.label}>PIN</div>

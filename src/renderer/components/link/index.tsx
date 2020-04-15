@@ -5,7 +5,7 @@ export interface ILinkProps {
     href: string;
 }
 
-export class Link extends React.Component<ILinkProps, {}> {
+export class Link extends React.Component<ILinkProps> {
 
     public render() {
         const { href, children } = this.props;

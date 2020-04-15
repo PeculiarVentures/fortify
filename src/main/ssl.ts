@@ -269,7 +269,7 @@ async function InstallTrustedOSX(certPath: string) {
   await new Promise((resolve, reject) => {
     const options = {
       name: "Fortify application",
-      icons: "/Applications/Fortify.app/Contents/Resources/icons/icon.icns",
+      icons: "/Applications/Fortify.app/Contents/Resources/static/icons/icon.icns",
     };
     const appPath = path.dirname(certPath);
     const username = os.userInfo().username;

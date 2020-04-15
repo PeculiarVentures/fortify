@@ -1,4 +1,3 @@
-import * as electron from "electron";
 import * as fs from "fs";
 import * as path from "path";
 import * as React from "react";
@@ -11,13 +10,7 @@ import { Content, Footer, Page } from "../../components/page/index";
 import { WindowEvent } from "../../components/window_event";
 import { WindowComponent } from "../../window";
 
-const s = require("./style.sass") as Style;
-interface Style {
-    text: string;
-    icon: string;
-    info: string;
-    copyright: string;
-}
+const s = require("./style.sass");
 
 const PACKAGE_PATH = path.join(__dirname, "..", "..", "package.json");
 
@@ -64,7 +57,7 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
                                 </p>
                             </div>
                             <div>
-                                <img className={s.icon} src="../icons/icon.svg" />
+                                <img className={s.icon} src="../static/icons/icon.svg" />
                             </div>
                         </div>
                         <p className={s.copyright}>

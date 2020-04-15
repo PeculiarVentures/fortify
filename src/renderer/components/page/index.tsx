@@ -1,11 +1,6 @@
 import * as React from "react";
 
-const s = require("./style.sass") as Style;
-interface Style {
-    page: string;
-    content: string;
-    footer: string;
-}
+const s = require("./style.sass");
 
 export interface IPageProps { }
 export interface IPageState { }

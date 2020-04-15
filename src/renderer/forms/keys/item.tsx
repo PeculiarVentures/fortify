@@ -1,32 +1,32 @@
 import * as React from "react";
 
-const s = require("./styles/item.sass") as StyleItem;
+const s = require("./styles/item.sass");
 
 const browsersList = [
   {
     title: "Firefox",
     name: "firefox",
-    src: "../icons/firefox.png",
+    src: "../static/icons/firefox.png",
   },
   {
     title: "Chrome",
     name: "chrome",
-    src: "../icons/chrome.png",
+    src: "../static/icons/chrome.png",
   },
   {
     title: "Safari",
     name: "safari",
-    src: "../icons/safari.png",
+    src: "../static/icons/safari.png",
   },
   {
     title: "Edge",
     name: "edge",
-    src: "../icons/edge.png",
+    src: "../static/icons/edge.png",
   },
   {
     title: "Internet Explorer",
     name: "ie",
-    src: "../icons/ie.png",
+    src: "../static/icons/ie.png",
   },
 ];
 

@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { t } from "../../../main/locale";
 import { Align } from "../../components/align/index";
 import { Button } from "../../components/button/index";
@@ -7,13 +6,7 @@ import { Content, Footer, Page } from "../../components/page/index";
 import { WindowEvent } from "../../components/window_event";
 import { WindowComponent } from "../../window";
 
-const s = require("./style.sass") as Style;
-interface Style {
-    box: string;
-    icon: string;
-    text: string;
-    showDialog: string;
-}
+const s = require("./style.sass");
 
 export interface IRootProps { }
 export interface IRootState {
@@ -56,7 +49,7 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
                 <Content>
                     <div className={s.box}>
                         <div className={s.icon}>
-                            <img src={`../icons/${this.params.type}.png`} width="96px" />
+                            <img src={`../static/icons/${this.params.type}.png`} width="96px" />
                         </div>
                         <div className={s.text}>
                             <h3>{this.params.title}</h3>

@@ -1,9 +1,8 @@
 import { app, BrowserWindow } from "electron";
-import * as path from "path";
 import * as url from "url";
 import * as winston from "winston";
 
-import { HTML_DIR } from "./const";
+import { HTML_PATH } from "./const";
 import { locale } from "./locale";
 
 let counter = 0;
@@ -32,7 +31,7 @@ export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
     winston.info(`Fortify: Create window ${options.app}`);
 
     window.loadURL(url.format({
-        pathname: path.join(HTML_DIR, "page.html"),
+        pathname: HTML_PATH,
         protocol: "file:",
         slashes: true,
     }));

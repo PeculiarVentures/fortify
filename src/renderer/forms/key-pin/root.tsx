@@ -1,10 +1,8 @@
-import * as electron from "electron";
 import * as React from "react";
 
 import { t } from "../../../main/locale";
 import { Align } from "../../components/align/index";
 import { Button } from "../../components/button/index";
-import { Link } from "../../components/link/index";
 import { Content, Footer, Page } from "../../components/page/index";
 import { WindowEvent } from "../../components/window_event";
 import { WindowComponent } from "../../window";

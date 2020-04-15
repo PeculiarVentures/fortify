@@ -1,5 +1,3 @@
-import { app } from "electron";
-
 import { icons } from "../const";
 import { t } from "../locale";
 import { CreateWindow } from "../window";
@@ -11,6 +9,7 @@ export function CreateAboutWindow() {
     aboutWindow.focus();
     return;
   }
+  
   aboutWindow = CreateWindow({
     app: "about",
     width: 400,

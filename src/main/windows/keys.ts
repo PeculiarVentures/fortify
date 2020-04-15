@@ -1,9 +1,7 @@
-import { app } from "electron";
-
 import * as application from "../application";
 import { icons } from "../const";
 import { t } from "../locale";
-import { BrowserWindowEx, CreateWindow } from "../window";
+import { CreateWindow } from "../window";
 
 export function CreateKeysWindow() {
   // Create the browser window.

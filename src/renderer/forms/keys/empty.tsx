@@ -1,7 +1,7 @@
 import * as React from "react";
 import { t } from "../../../main/locale";
 
-const s = require("./styles/empty.sass") as StyleEmpty;
+const s = require("./styles/empty.sass");
 
 export class KeysIcon extends React.Component<{}, {}> {
 
