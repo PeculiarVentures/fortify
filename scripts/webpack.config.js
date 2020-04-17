@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  mode: "none",
+  mode: 'none',
   entry: {
     main: path.join(__dirname, './src/main/main.ts'),
     // windows
@@ -50,26 +50,26 @@ module.exports = {
   externals: {
     '2key-ratchet': 'require("2key-ratchet")',
     '@webcrypto-local/server': 'require("@webcrypto-local/server")',
-    'react': 'React',
+    react: 'React',
     'react-dom': 'ReactDOM',
-    'asn1js': 'require("asn1js")',
-    'child_process': 'require("child_process")',
-    'electron': 'require("electron")',
-    'fs': 'require("fs")',
+    asn1js: 'require("asn1js")',
+    child_process: 'require("child_process")',
+    electron: 'require("electron")',
+    fs: 'require("fs")',
     'jose-jwe-jws': 'require("jose-jwe-jws")',
     '@peculiar/webcrypto': 'require("@peculiar/webcrypto")',
-    'pkcs11js': 'require("pkcs11js")',
-    'pcsclite': 'require("pcsclite")',
-    'buffertools': 'require("buffertools")',
-    'os': 'require("os")',
-    'crypto': 'require("crypto")',
-    'path': 'require("path")',
-    'pkijs': 'require("pkijs")',
-    'request': 'require("request")',
-    'semver': 'require("semver")',
+    pkcs11js: 'require("pkcs11js")',
+    pcsclite: 'require("pcsclite")',
+    buffertools: 'require("buffertools")',
+    os: 'require("os")',
+    crypto: 'require("crypto")',
+    path: 'require("path")',
+    pkijs: 'require("pkijs")',
+    request: 'require("request")',
+    semver: 'require("semver")',
     'sudo-prompt': 'require("sudo-prompt")',
-    'url': 'require("url")',
-    'winston': 'require("winston")',
+    url: 'require("url")',
+    winston: 'require("winston")',
   },
   module: {
     rules: [
@@ -87,8 +87,8 @@ module.exports = {
             options: {
               modules: true,
               importLoaders: 1,
-              localsConvention: "camelCase",
-            }
+              localsConvention: 'camelCase',
+            },
           },
           'sass-loader',
         ],
