@@ -1,27 +1,33 @@
-import * as React from "react";
+import * as React from 'react';
 
-const s = require("./style.sass");
+const s = require('./style.sass');
 
 export interface IAlignProps {
-    type: "left" | "center" | "right";
+  type: 'left' | 'center' | 'right';
+  children: React.ReactNode;
 }
 
-export class Align extends React.Component<IAlignProps> {
+const Align: React.SFC<IAlignProps> = (props) => {
+  const { type, children } = props;
 
-    public render() {
-        let cls = s.left;
-        switch (this.props.type) {
-            case "center":
-                cls = s.center;
-                break;
-            case "right":
-                cls = s.center;
-                break;
-        }
-        return (
-            <div className={cls}>
-                {this.props.children}
-            </div>
-        );
-    }
-}
+  let cls: string;
+
+  switch (type) {
+    case 'center':
+      cls = s.center;
+      break;
+    case 'right':
+      cls = s.center;
+      break;
+    default:
+      cls = s.left;
+  }
+
+  return (
+    <div className={cls}>
+      {children}
+    </div>
+  );
+};
+
+export default Align;

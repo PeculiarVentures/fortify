@@ -1,3 +1,3 @@
-declare module "json-parser" {
+declare module 'json-parser' {
   function parse(data: string): any;
 }

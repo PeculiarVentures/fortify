@@ -1,30 +1,29 @@
-import * as React from "react";
+import * as React from 'react';
 
-const s = require("./style.sass");
+const s = require('./style.sass');
 
 export interface IPinProps {
-    value: string;
+  value: string;
 }
 
-export class Pin extends React.Component<IPinProps, {}> {
+const Pin: React.SFC<IPinProps> = (props) => {
+  const { value } = props;
+  const symbols: string[] = [];
 
-    public render() {
-        const { value } = this.props;
+  for (let i = 0; i < value.length; i += 1) {
+    const symbol = value.charAt(i);
+    symbols.push(symbol);
+  }
 
-        const symbols: string[] = [];
-        for (let i = 0; i < value.length; i++) {
-            const symbol = value.charAt(i);
-            symbols.push(symbol);
-        }
-        return (
-            <div className={s.pin}>
-                {
-                    symbols.map((symbol, index) =>
-                        <div key={index}>{symbol}</div>,
-                    )
-                }
-            </div>
-        );
-    }
+  return (
+    <div className={s.pin}>
+      {symbols.map((symbol, index) => (
+        <div key={index}>
+          {symbol}
+        </div>
+      ))}
+    </div>
+  );
+};
 
-}
+export default Pin;

@@ -1,17 +1,17 @@
-import { shell } from "electron";
-import * as React from "react";
+import { shell } from 'electron';
+import * as React from 'react';
 
 export interface ILinkProps {
-    href: string;
+  href: string;
+  children: React.ReactNode;
 }
 
-export class Link extends React.Component<ILinkProps> {
+const Link: React.SFC<ILinkProps> = (props) => {
+  const { href, children } = props;
 
-    public render() {
-        const { href, children } = this.props;
+  return (
+    <a href="#" onClick={() => shell.openExternal(href)}>{children}</a>
+  );
+};
 
-        return (
-            <a href="#" onClick={() => shell.openExternal(href)}>{children}</a>
-        );
-    }
-}
+export default Link;

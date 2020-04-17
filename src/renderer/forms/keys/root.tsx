@@ -1,11 +1,11 @@
-import * as React from "react";
-import { t } from "../../../main/locale";
-import { WindowComponent } from "../../window";
-import { Empty } from "./empty";
-import { Item } from "./item";
-import { ipcRenderer }  from "electron";
+import * as React from 'react';
+import { ipcRenderer } from 'electron';
+import { t } from '../../../main/locale';
+import WindowComponent from '../../window';
+import { Empty } from './empty';
+import { Item } from './item';
 
-const s = require("./styles/root.sass");
+const s = require('./styles/root.sass');
 
 export interface IRootProps {}
 export interface IRootState {
@@ -14,13 +14,12 @@ export interface IRootState {
 }
 
 export class Root extends WindowComponent<IRootProps, IRootState> {
-
   constructor(props: IRootProps) {
     super(props);
 
     this.state = {
       keys: [],
-      filterValue: "",
+      filterValue: '',
     };
 
     this.onKeyList = this.onKeyList.bind(this);
@@ -42,22 +41,22 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
   }
 
   public componentWillMount() {
-    ipcRenderer.on("2key-list", this.onKeyList);
-    ipcRenderer.on("2key-remove", this.onKeyRemove);
-    ipcRenderer.send("2key-list");
+    ipcRenderer.on('2key-list', this.onKeyList);
+    ipcRenderer.on('2key-remove', this.onKeyRemove);
+    ipcRenderer.send('2key-list');
   }
 
   public componentWillUnmount() {
-    ipcRenderer.removeListener(`2key-list`, this.onKeyList);
-    ipcRenderer.removeListener(`2key-remove`, this.onKeyRemove);
+    ipcRenderer.removeListener('2key-list', this.onKeyList);
+    ipcRenderer.removeListener('2key-remove', this.onKeyRemove);
   }
 
   public handleAction(payload: IPayload) {
     const { type, origin } = payload;
 
     switch (type) {
-      case "KEY:REMOVE": {
-        ipcRenderer.send("2key-remove", origin);
+      case 'KEY:REMOVE': {
+        ipcRenderer.send('2key-remove', origin);
         break;
       }
 
@@ -70,7 +69,7 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
     this.setState({
       filterValue: e.currentTarget.value.toLowerCase(),
     });
-  }
+  };
 
   public render() {
     const { filterValue } = this.state;
@@ -92,32 +91,32 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
         {isEmpty ? (
           <Empty />
         ) : (
-            <div>
-              <input
-                type="text"
-                placeholder={t("search")}
-                onChange={this.handleSearchChange}
-                className={s.input}
-              />
-              <div className={s.content}>
-                {filteredKeys.length ? (
-                  filteredKeys.map((key, i) => (
-                    <Item
-                      key={i}
-                      origin={key.origin}
-                      created={key.created}
-                      handleAction={this.handleAction}
-                      browsers={key.browsers}
-                    />
-                  ))
-                ) : (
-                    <h4 className={s.empty_text}>
-                      Result not found
+          <div>
+            <input
+              type="text"
+              placeholder={t('search')}
+              onChange={this.handleSearchChange}
+              className={s.input}
+            />
+            <div className={s.content}>
+              {filteredKeys.length ? (
+                filteredKeys.map((key, i) => (
+                  <Item
+                    key={i}
+                    origin={key.origin}
+                    created={key.created}
+                    handleAction={this.handleAction}
+                    browsers={key.browsers}
+                  />
+                ))
+              ) : (
+                <h4 className={s.empty_text}>
+                  Result not found
                 </h4>
-                  )}
-              </div>
+              )}
             </div>
-          )}
+          </div>
+        )}
       </div>
     );
   }

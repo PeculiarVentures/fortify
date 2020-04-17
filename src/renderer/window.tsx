@@ -1,34 +1,32 @@
-import * as electron from "electron";
-import * as React from "react";
-import * as winston from "winston";
+import * as electron from 'electron';
+import * as React from 'react';
+import * as winston from 'winston';
+
+import { locale } from '../main/locale';
 
 winston.add(new winston.transports.Console());
 
-import { locale } from "../main/locale";
+export default class WindowComponent<P, S> extends React.Component<P, S> {
+  public params: Assoc<any>;
 
-export class WindowComponent<P, S> extends React.Component<P, S> {
+  constructor(props: P) {
+    super(props);
 
-    public params: Assoc<any>;
-
-    constructor(props: P) {
-        super(props);
-
-        const $window = electron.remote.getCurrentWindow() as any;
-        if (!$window.lang) {
-            $window.lang = "en";
-        }
-        locale.setLang($window.lang);
-
-        this.params = $window.params || {};
+    const $window = electron.remote.getCurrentWindow() as any;
+    if (!$window.lang) {
+      $window.lang = 'en';
     }
+    locale.setLang($window.lang);
 
-    public close() {
-        this.onClose();
-        electron.remote.getCurrentWindow().close();
-    }
+    this.params = $window.params || {};
+  }
 
-    protected onClose() {
-        // nothing
-    }
+  public close() {
+    this.onClose();
+    electron.remote.getCurrentWindow().close();
+  }
 
+  protected onClose() {
+    // nothing
+  }
 }
