@@ -59,7 +59,7 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
                 </p>
               </div>
               <div>
-                <img className={s.icon} src="../static/icons/icon.svg" />
+                <img className={s.icon} src="../static/icons/logo.svg" />
               </div>
             </div>
             <p className={s.copyright}>

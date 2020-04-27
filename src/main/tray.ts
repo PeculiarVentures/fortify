@@ -18,8 +18,6 @@ let tray: Electron.Tray;
 
 export function create() {
   tray = new Tray(icons.tray);
-  const trayIconPressed = nativeImage.createFromPath(icons.trayWhite);
-  tray.setPressedImage(trayIconPressed);
 
   const contextMenu = new Menu();
 
