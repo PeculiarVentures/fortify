@@ -22,7 +22,17 @@ export interface BrowserWindowConstructorOptionsEx
 }
 
 export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
+  if (process.env.NODE_ENV === 'development') {
+    Object.assign(options, {
+      resizable: true,
+    });
+  }
+
   const window = new BrowserWindow({
+    minimizable: false,
+    fullscreen: false,
+    fullscreenable: false,
+    resizable: false,
     ...options,
     webPreferences: {
       nodeIntegration: true,

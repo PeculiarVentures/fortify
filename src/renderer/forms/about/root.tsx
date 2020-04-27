@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as React from 'react';
+import { Button } from 'lib-react-components';
 
 import { t } from '../../../main/locale';
 import Align from '../../components/align';
-import Button from '../../components/button';
 import Link from '../../components/link';
 import { Content, Footer, Page } from '../../components/page';
 import { WindowEvent } from '../../components/window_event';
@@ -24,13 +24,12 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
     super(props);
 
     this.state = {};
-
-    this.version = this.getVersion();
+    this.version = Root.getVersion();
 
     document.title = t('about');
   }
 
-  public getVersion() {
+  static getVersion() {
     const json = fs.readFileSync(PACKAGE_PATH, { encoding: 'utf8' });
     const data = JSON.parse(json);
 
@@ -40,7 +39,7 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
   public render() {
     return (
       <Page>
-        <WindowEvent event="keydown" onCall={this.onKeyDown.bind(this)} />
+        <WindowEvent event="keydown" onCall={this.onKeyDown} />
         <Content>
           <div className={s.text}>
             <div className={s.info}>
@@ -59,7 +58,7 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
                 </p>
               </div>
               <div>
-                <img className={s.icon} src="../static/icons/logo.svg" />
+                <img className={s.icon} src="../static/icons/logo.svg" alt="Fortify logo" />
               </div>
             </div>
             <p className={s.copyright}>
@@ -73,14 +72,19 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
         </Content>
         <Footer>
           <Align type="center">
-            <Button accept text={t('close')} onClick={() => this.close()} />
+            <Button
+              size="large"
+              onClick={() => this.close()}
+            >
+              {t('close')}
+            </Button>
           </Align>
         </Footer>
       </Page>
     );
   }
 
-  protected onKeyDown(e: KeyboardEvent) {
+  onKeyDown = (e: KeyboardEvent) => {
     switch (e.keyCode) {
       case 13: // enter
       case 27: // esc
@@ -89,5 +93,5 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
       default:
         // nothing
     }
-  }
+  };
 }

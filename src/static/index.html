@@ -4,13 +4,102 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title></title>
+    <title></title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap&subset=cyrillic,greek" rel="stylesheet">
+
 		<!-- Dependencies -->
-    <script defer src="../../node_modules/react/umd/react.production.min.js"></script>
-    <script defer src="../../node_modules/react-dom/umd/react-dom.production.min.js"></script>
+    <link rel="stylesheet" href="../../node_modules/lib-react-components/lib/themes/default.css">
+
+    <!-- Basic styles -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        border: 0;
+        border-radius: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-size-adjust: none;
+        -webkit-text-size-adjust: none;
+        -webkit-tap-highlight-color: transparent;
+        word-break: break-word;
+      }
+
+      *:after, *:before {
+        box-sizing: border-box;
+      }
+
+      input:focus, textarea:focus, *:active, *:hover {
+        outline: none !important;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      textarea {
+        resize: none;
+      }
+
+      input, textarea {
+        -webkit-appearance: none !important;
+        -moz-appearance: none;
+        -ms-appearance: none;
+        appearance: none !important;
+        font-family: inherit;
+      }
+
+      button {
+        font-family: inherit;
+      }
+
+      table {
+        cellspacing: 0 !important;
+        border-spacing: 0 !important;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        min-width: 320px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
+      }
+
+      #root {
+        height: 100%;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+      }
+    </style>
 	</head>
 	<body>
-    <div id="root"></div>
+    <div id="root">
+      <style>
+        .container_with_loading {
+          position: absolute;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          left: 50%;
+        }
+      </style>
+      <div class="container_with_loading">
+        <div data-component="circular-progress" class="circle_progress" style="width: 24px; height: 24px;">
+          <svg class="circle_progress_svg" viewBox="0 0 50 50">
+            <circle class="circle_progress_stroke_light_grey" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+            <circle class="circle_progress_circle circle_progress_stroke_primary" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
     <script>
       const electron = require("electron");
       const currentWindow = electron.remote.getCurrentWindow();

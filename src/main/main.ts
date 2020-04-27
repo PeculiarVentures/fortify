@@ -296,8 +296,6 @@ async function InitService() {
             app: 'key-pin',
             x: width - windowSizes.small.width,
             y: height - windowSizes.small.height,
-            resizable: false,
-            minimizable: false,
             autoHideMenuBar: true,
             modal: true,
             alwaysOnTop: true,
@@ -323,8 +321,6 @@ async function InitService() {
             title: t('p11-pin'),
             alwaysOnTop: true,
             autoHideMenuBar: true,
-            resizable: false,
-            minimizable: false,
             icon: icons.favicon,
           });
 

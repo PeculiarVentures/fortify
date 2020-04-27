@@ -15,8 +15,6 @@ export function CreateKeysWindow() {
     ...windowSizes.default,
     app: 'keys',
     autoHideMenuBar: true,
-    minimizable: false,
-    resizable: false,
     title: t('sites'),
     icon: icons.favicon,
     dock: true,
