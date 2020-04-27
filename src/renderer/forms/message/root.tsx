@@ -38,6 +38,8 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
             <Button text={t('no')} onClick={() => this.close()} />,
           ]
         );
+      default:
+        // nothing
     }
   }
 
@@ -95,11 +97,13 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
       case 13: // enter
         if (this.params.type === 'question') {
           this.onYesClick();
-          break;
         }
+        break;
       case 27: // esc
         this.close();
         break;
+      default:
+        // nothing
     }
   }
 

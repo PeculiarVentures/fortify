@@ -1,4 +1,4 @@
-// / <reference path="./types.d.ts" />
+/// <reference path="./types.d.ts" />
 
 import * as childProcess from 'child_process';
 import * as crypto from 'crypto';
@@ -78,6 +78,7 @@ export function removeTmpDir(dir = TMP) {
  */
 export function getFortifyPrepareConfig(file: string) {
   const text = fs.readFileSync(file, { encoding: 'utf8' });
+
   return json.parse(text) as {
     outDir: string;
   };
@@ -88,6 +89,7 @@ export function getFortifyPrepareConfig(file: string) {
  */
 export function getVersion() {
   const text = fs.readFileSync('package.json', { encoding: 'utf8' });
+
   return json.parse(text).version as string;
 }
 
@@ -121,6 +123,7 @@ export async function extractAsync(file: string, directory: string) {
     `\x1b[33m  ${directory}\x1b[0m`,
     '',
     ''].join('\n'));
+
   return new Promise((resolve, reject) => {
     extractZip(file, { dir: directory }, (err) => {
       if (err) {

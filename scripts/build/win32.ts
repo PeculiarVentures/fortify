@@ -17,7 +17,7 @@ export function updatePkgVersion(file: string) {
   fs.writeFileSync(file, new xmldom.XMLSerializer().serializeToString(xml));
 }
 
-export default async function run() {
+export async function run() {
   const advancedInstaller = path.join(process.env['ProgramFiles(x86)']!, 'Caphyon', 'Advanced Installer 15.6', 'bin', 'x86', 'AdvancedInstaller.com');
   if (!fs.existsSync(advancedInstaller)) {
     throw new Error(`Cannot find Advanced Installer by path ${advancedInstaller}`);

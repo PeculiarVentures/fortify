@@ -22,8 +22,10 @@ function getNextSiblingElement(xml: Node): Node | null {
     if (isElement(next)) {
       return next;
     }
+
     return getNextSiblingElement(next);
   }
+
   return null;
 }
 
@@ -36,6 +38,7 @@ function getKey(xml: Element, value: string) {
       return key;
     }
   }
+
   return null;
 }
 
@@ -44,6 +47,7 @@ function getDict(xml: Node, keyName: string) {
   if (!key) {
     throw new Error(`Cannot get ${keyName}`);
   }
+
   return getNextSiblingElement(key);
 }
 
@@ -85,7 +89,7 @@ function updatePkgVersion(file: string, version: string) {
   }
 }
 
-export default async function run() {
+export async function run() {
   try {
     const fortifyPrepareConfig = getFortifyPrepareConfig('fprepare.json');
     const arch = 'x64';

@@ -77,6 +77,8 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
       case 27: // esc
         this.cancel();
         break;
+      default:
+        // nothing
     }
   }
 }

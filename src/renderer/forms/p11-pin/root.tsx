@@ -43,8 +43,8 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
                   <td>
                     <div className={s.label}>PIN</div>
                     <div>
-                          <input ref="pin" type="password" id="input_pin" onChange={this.onPinChange.bind(this)} />
-                        </div>
+                      <input ref="pin" type="password" id="input_pin" onChange={this.onPinChange.bind(this)} />
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -95,6 +95,8 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
       case 27: // esc
         this.cancel();
         break;
+      default:
+        // nothing
     }
   }
 }

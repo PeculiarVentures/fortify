@@ -1,31 +1,32 @@
 // NodeJS
-import * as childProcess from "child_process";
-import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
+import * as childProcess from 'child_process';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 
-import * as sudo from "sudo-prompt";
-import * as winston from "winston";
+import * as sudo from 'sudo-prompt';
+import * as winston from 'winston';
 
 // PKI
-import * as asn1js from "asn1js";
-const pkijs = require("pkijs");
+import * as asn1js from 'asn1js';
 
-import { SRC_DIR } from "./const";
-import { crypto } from "./crypto";
+import { SRC_DIR } from './const';
+import { crypto } from './crypto';
 
-const CERT_NAME = `Fortify Local CA`;
+const pkijs = require('pkijs');
+
+const CERT_NAME = 'Fortify Local CA';
 
 // Set PKI engine
-pkijs.setEngine("OpenSSL", crypto, new pkijs.CryptoEngine({ name: "OpenSSL", crypto, subtle: crypto.subtle }));
+pkijs.setEngine('OpenSSL', crypto, new pkijs.CryptoEngine({ name: 'OpenSSL', crypto, subtle: crypto.subtle }));
 
 const alg = {
-  name: "RSASSA-PKCS1-v1_5",
+  name: 'RSASSA-PKCS1-v1_5',
   publicExponent: new Uint8Array([1, 0, 1]),
   modulusLength: 2048,
-  hash: "SHA-256",
+  hash: 'SHA-256',
 };
-const hashAlg = "SHA-256";
+const hashAlg = 'SHA-256';
 
 /**
  * Creates new certificate
@@ -44,14 +45,14 @@ async function GenerateCertificate(keyPair: CryptoKeyPair, caKey: CryptoKey) {
   certificate.serialNumber.valueBlock.valueHex = serialNumber.buffer;
 
   const commonName = new pkijs.AttributeTypeAndValue({
-    type: "2.5.4.3", // Common name
-    value: new asn1js.PrintableString({ value: process.env.FORTIFY_SSL_CN || "127.0.0.1" }),
+    type: '2.5.4.3', // Common name
+    value: new asn1js.PrintableString({ value: process.env.FORTIFY_SSL_CN || '127.0.0.1' }),
   });
 
   certificate.subject.typesAndValues.push(commonName);
   certificate.issuer.typesAndValues.push(new pkijs.AttributeTypeAndValue({
-    type: "2.5.4.3", // Common name
-    value: new asn1js.PrintableString({ value: "Fortify Local CA" }),
+    type: '2.5.4.3', // Common name
+    value: new asn1js.PrintableString({ value: 'Fortify Local CA' }),
   }));
 
   // Valid period is 1 year
@@ -60,14 +61,15 @@ async function GenerateCertificate(keyPair: CryptoKeyPair, caKey: CryptoKey) {
   notAfter.setFullYear(notAfter.getFullYear() + 1);
   certificate.notAfter.value = notAfter;
 
-  certificate.extensions = []; // Extensions are not a part of certificate by default, it's an optional array
+  // Extensions are not a part of certificate by default, it's an optional array
+  certificate.extensions = [];
 
   // Extended key usage
   const extKeyUsage = new pkijs.ExtKeyUsage({
-    keyPurposes: ["1.3.6.1.5.5.7.3.1"],
+    keyPurposes: ['1.3.6.1.5.5.7.3.1'],
   });
   certificate.extensions.push(new pkijs.Extension({
-    extnID: "2.5.29.37",
+    extnID: '2.5.29.37',
     critical: true,
     extnValue: extKeyUsage.toSchema().toBER(false),
     parsedValue: extKeyUsage,
@@ -78,16 +80,16 @@ async function GenerateCertificate(keyPair: CryptoKeyPair, caKey: CryptoKey) {
     altNames: [
       new pkijs.GeneralName({
         type: 2,
-        value: "localhost",
+        value: 'localhost',
       }),
       new pkijs.GeneralName({
         type: 7,
-        value: new asn1js.OctetString({ valueHex: new Uint8Array(Buffer.from("7F000001", "hex")).buffer }),
+        value: new asn1js.OctetString({ valueHex: new Uint8Array(Buffer.from('7F000001', 'hex')).buffer }),
       }),
     ],
   });
   certificate.extensions.push(new pkijs.Extension({
-    extnID: "2.5.29.17",
+    extnID: '2.5.29.17',
     critical: false,
     extnValue: subjectAlternativeName.toSchema().toBER(false),
     parsedValue: subjectAlternativeName,
@@ -98,7 +100,7 @@ async function GenerateCertificate(keyPair: CryptoKeyPair, caKey: CryptoKey) {
     cA: false,
   });
   certificate.extensions.push(new pkijs.Extension({
-    extnID: "2.5.29.19",
+    extnID: '2.5.29.19',
     critical: false,
     extnValue: basicConstraints.toSchema().toBER(false),
     parsedValue: basicConstraints,
@@ -126,8 +128,8 @@ async function GenerateCertificateCA(keyPair: CryptoKeyPair) {
   certificate.serialNumber.valueBlock.valueHex = serialNumber.buffer;
 
   const commonName = new pkijs.AttributeTypeAndValue({
-    type: "2.5.4.3", // Common name
-    value: new asn1js.PrintableString({ value: "Fortify Local CA" }),
+    type: '2.5.4.3', // Common name
+    value: new asn1js.PrintableString({ value: 'Fortify Local CA' }),
   });
 
   certificate.issuer.typesAndValues.push(commonName);
@@ -139,7 +141,8 @@ async function GenerateCertificateCA(keyPair: CryptoKeyPair) {
   notAfter.setFullYear(notAfter.getFullYear() + 1);
   certificate.notAfter.value = notAfter;
 
-  certificate.extensions = []; // Extensions are not a part of certificate by default, it's an optional array
+  // Extensions are not a part of certificate by default, it's an optional array
+  certificate.extensions = [];
 
   // Basic constraints
   const basicConstraints = new pkijs.BasicConstraints({
@@ -147,7 +150,7 @@ async function GenerateCertificateCA(keyPair: CryptoKeyPair) {
     pathLenConstraint: 2,
   });
   certificate.extensions.push(new pkijs.Extension({
-    extnID: "2.5.29.19",
+    extnID: '2.5.29.19',
     critical: false,
     extnValue: basicConstraints.toSchema().toBER(false),
     parsedValue: basicConstraints,
@@ -163,7 +166,7 @@ async function GenerateCertificateCA(keyPair: CryptoKeyPair) {
  * Generates key pair for sign/verify
  */
 async function GenerateKey() {
-  return crypto.subtle.generateKey(alg, true, ["sign", "verify"]);
+  return crypto.subtle.generateKey(alg, true, ['sign', 'verify']);
 }
 
 /**
@@ -172,8 +175,9 @@ async function GenerateKey() {
  * @param   key
  */
 async function ConvertKeyToPEM(key: CryptoKey) {
-  const format = key.type === "public" ? "spki" : "pkcs8";
+  const format = key.type === 'public' ? 'spki' : 'pkcs8';
   const der = await crypto.subtle.exportKey(format, key);
+
   return ConvertToPEM(der, `RSA ${key.type.toUpperCase()} KEY`);
 }
 
@@ -185,11 +189,11 @@ async function ConvertKeyToPEM(key: CryptoKey) {
  */
 function ConvertToPEM(der: ArrayBuffer, tag: string) {
   const derBuffer = Buffer.from(der);
-  const b64 = derBuffer.toString("base64");
+  const b64 = derBuffer.toString('base64');
   const stringLength = b64.length;
-  let pem = "";
+  let pem = '';
 
-  for (let i = 0, count = 0; i < stringLength; i++ , count++) {
+  for (let i = 0, count = 0; i < stringLength; i += 1, count += 1) {
     if (count > 63) {
       pem = `${pem}\r\n`;
       count = 0;
@@ -198,7 +202,8 @@ function ConvertToPEM(der: ArrayBuffer, tag: string) {
   }
 
   tag = tag.toUpperCase();
-  const pad = "-----";
+  const pad = '-----';
+
   return `${pad}BEGIN ${tag}${pad}\r\n${pem}\r\n${pad}END ${tag}${pad}\r\n`;
 }
 
@@ -223,8 +228,8 @@ export async function generate() {
   const localhostCert = await GenerateCertificate(localhostKeys, rootKeys.privateKey);
   const keyPem = await ConvertKeyToPEM(localhostKeys.privateKey);
 
-  const rootCertPem = ConvertToPEM(rootCert.toSchema(true).toBER(false), "CERTIFICATE");
-  const localhostCertPem = ConvertToPEM(localhostCert.toSchema(true).toBER(false), "CERTIFICATE");
+  const rootCertPem = ConvertToPEM(rootCert.toSchema(true).toBER(false), 'CERTIFICATE');
+  const localhostCertPem = ConvertToPEM(localhostCert.toSchema(true).toBER(false), 'CERTIFICATE');
 
   return {
     root: Buffer.from(rootCertPem),
@@ -241,13 +246,13 @@ export async function generate() {
 export async function InstallTrustedCertificate(certPath: string) {
   const platform = os.platform();
   switch (platform) {
-    case "darwin":
+    case 'darwin':
       await InstallTrustedOSX(certPath);
       break;
-    case "win32":
+    case 'win32':
       await InstallTrustedWindows(certPath);
       break;
-    case "linux":
+    case 'linux':
       await InstallTrustedLinux(certPath);
       break;
     default:
@@ -263,16 +268,16 @@ export async function InstallTrustedCertificate(certPath: string) {
 async function InstallTrustedOSX(certPath: string) {
   const USER_HOME = os.homedir();
   const FIREFOX_DIR = path.normalize(`${USER_HOME}/Library/Application Support/Firefox/Profiles`);
-  const CERTUTIL = "/Applications/Fortify.app/Contents/MacOS/certutil";
+  const CERTUTIL = '/Applications/Fortify.app/Contents/MacOS/certutil';
 
   // install certificate to system key chain
   await new Promise((resolve, reject) => {
     const options = {
-      name: "Fortify application",
-      icons: "/Applications/Fortify.app/Contents/Resources/static/icons/icon.icns",
+      name: 'Fortify application',
+      icons: '/Applications/Fortify.app/Contents/Resources/static/icons/icon.icns',
     };
     const appPath = path.dirname(certPath);
-    const username = os.userInfo().username;
+    const { username } = os.userInfo();
     sudo.exec(`appPath=${appPath} userDir=${os.homedir()} USER=${username} CERTUTIL=${process.cwd()} bash ${SRC_DIR}/resources/osx-ssl.sh`, options, (err, stdout) => {
       // console.log(stdout.toString());
       if (err) {
@@ -283,10 +288,12 @@ async function InstallTrustedOSX(certPath: string) {
     });
   });
 
-  //#region Firefox
+  // #region Firefox
   let ok = 0;
   if (fs.existsSync(FIREFOX_DIR)) {
     const profiles = fs.readdirSync(FIREFOX_DIR);
+
+    // eslint-disable-next-line
     for (const profile of profiles) {
       if (/default$/.test(profile)) {
         const firefoxProfile = path.normalize(path.join(FIREFOX_DIR, profile));
@@ -298,16 +305,16 @@ async function InstallTrustedOSX(certPath: string) {
 
     if (ok) {
       try {
-        winston.info(`SSL: Restart Firefox`);
-        childProcess.execSync(`pkill firefox`);
-        childProcess.execSync(`open /Applications/Firefox.app`);
+        winston.info('SSL: Restart Firefox');
+        childProcess.execSync('pkill firefox');
+        childProcess.execSync('open /Applications/Firefox.app');
       } catch (err) {
         winston.info(`SSL:Error: Cannot restart Firefox ${err.toString()}`);
         // firefox is not running
       }
     }
   }
-  //#endregion
+  // #endregion
 }
 
 /**
@@ -323,6 +330,7 @@ async function InstallTrustedWindows(certPath: string) {
   let ok = 0;
   if (fs.existsSync(FIREFOX_DIR)) {
     const profiles = fs.readdirSync(FIREFOX_DIR);
+    // eslint-disable-next-line
     for (const profile of profiles) {
       if (/default$/.test(profile)) {
         const firefoxProfile = path.normalize(path.join(FIREFOX_DIR, profile));
@@ -333,22 +341,22 @@ async function InstallTrustedWindows(certPath: string) {
     }
     winston.info(`SSL: Certificate installation status: ${ok}`);
     if (ok) {
-      //#region Restart firefox
+      // #region Restart firefox
       try {
-        winston.info(`SSL: Restart Firefox`);
-        childProcess.execSync(`taskkill /F /IM firefox.exe`);
-        childProcess.execSync(`start firefox`);
+        winston.info('SSL: Restart Firefox');
+        childProcess.execSync('taskkill /F /IM firefox.exe');
+        childProcess.execSync('start firefox');
       } catch (err) {
         winston.info(`SSL:Error: Cannot restart Firefox ${err.toString()}`);
         // firefox is not running
       }
-      //#endregion
+      // #endregion
     }
   }
 
   // Install cert to System trusted storage
   childProcess.execSync(`certutil -addstore -user root "${certPath}"`);
-  winston.info(`SSL: Certificate was installed to System store`);
+  winston.info('SSL: Certificate was installed to System store');
 }
 
 /**
@@ -360,11 +368,12 @@ async function InstallTrustedLinux(certPath: string) {
   const USER_HOME = os.homedir();
   const FIREFOX_DIR = path.normalize(`${USER_HOME}/.mozilla/firefox`);
   const CHROME_DIR = path.normalize(`${USER_HOME}/.pki/nssdb`);
-  const CERTUTIL = "certutil";
+  const CERTUTIL = 'certutil';
 
   let ok = 0;
   if (fs.existsSync(FIREFOX_DIR)) {
     const profiles = fs.readdirSync(FIREFOX_DIR);
+    // eslint-disable-next-line
     for (const profile of profiles) {
       if (/default$/.test(profile)) {
         const firefoxProfile = path.normalize(path.join(FIREFOX_DIR, profile));
@@ -376,9 +385,9 @@ async function InstallTrustedLinux(certPath: string) {
 
     if (ok) {
       try {
-        winston.info(`SSL: Restart Firefox`);
-        childProcess.execSync(`pkill firefox`);
-        childProcess.execSync(`firefox&`);
+        winston.info('SSL: Restart Firefox');
+        childProcess.execSync('pkill firefox');
+        childProcess.execSync('firefox&');
       } catch (err) {
         winston.info(`SSL:Error: Cannot restart Firefox ${err.toString()}`);
         // firefox is not running
@@ -391,15 +400,15 @@ async function InstallTrustedLinux(certPath: string) {
   if (ok) {
     // TODO: restart Chrome
   }
-
 }
 
 async function InstallTrustedNss(certUtil: string, nssDbFolder: string, certPath: string) {
   // check Firefox was installed
   if (fs.existsSync(nssDbFolder)) {
-    const nssDbTypes = ["sql"];
+    const nssDbTypes = ['sql'];
+    // eslint-disable-next-line
     for (const nssDbType of nssDbTypes) {
-      //#region Remove old Fortify SSL certs
+      // #region Remove old Fortify SSL certs
       try {
         while (true) {
           childProcess.execSync(`"${certUtil}" -D -n "${CERT_NAME}" -d ${nssDbType}:"${nssDbFolder}"`);
@@ -408,18 +417,19 @@ async function InstallTrustedNss(certUtil: string, nssDbFolder: string, certPath
       } catch {
         // nothing
       }
-      //#endregion
+      // #endregion
 
-      //#region Install Fortify SSL certificate
+      // #region Install Fortify SSL certificate
       try {
         childProcess.execSync(`"${certUtil}" -A -i "${certPath}" -n "${CERT_NAME}" -t "CT,c" -d ${nssDbType}:"${nssDbFolder}"`);
         winston.info(`SSL: NSS certificate was installed to ${nssDbType}:cert.db`);
+
         return 1;
       } catch (e) {
         winston.error(e.message);
         winston.info(`SSL:Error: Cannot install SSL cert to ${nssDbType}:cert.db`);
       }
-      //#endregion
+      // #endregion
     }
   } else {
     winston.info(`SSL: NSS folder not found '${nssDbFolder}'`);
