@@ -2,8 +2,8 @@ import { app, BrowserWindow } from 'electron';
 import * as url from 'url';
 import * as winston from 'winston';
 
-import { HTML_PATH } from './const';
-import { locale } from './locale';
+import { HTML_PATH } from '../const';
+import { locale } from '../locale';
 
 let counter = 0;
 const windows: { [key: number]: BrowserWindowEx } = {};

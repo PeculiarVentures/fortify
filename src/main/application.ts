@@ -9,7 +9,7 @@ import * as winston from 'winston';
 import { ConfigureRead } from './config';
 import { APP_CONFIG_FILE, APP_LOG_FILE, APP_TMP_DIR } from './const';
 import './crypto';
-import { BrowserWindowEx } from './window';
+import { BrowserWindowEx } from './windows';
 
 const LOG_DEFAULT_PROVIDERS_ADD = 'Default:Providers:Add::';
 

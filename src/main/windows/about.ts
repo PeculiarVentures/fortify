@@ -1,6 +1,6 @@
-import { icons } from '../const';
+import { icons, windowSizes } from '../const';
 import { t } from '../locale';
-import { CreateWindow } from '../window';
+import { CreateWindow } from './window';
 
 let aboutWindow: Electron.BrowserWindow | null = null;
 
@@ -13,9 +13,8 @@ export function CreateAboutWindow() {
   }
 
   aboutWindow = CreateWindow({
+    ...windowSizes.small,
     app: 'about',
-    width: 400,
-    height: 300,
     autoHideMenuBar: true,
     minimizable: false,
     fullscreen: false,

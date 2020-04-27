@@ -12,8 +12,7 @@ import { LoggingSwitch } from './application';
 import { ConfigureWrite } from './config';
 import { APP_CONFIG_FILE, APP_LOG_FILE, icons } from './const';
 import { Locale, locale, t } from './locale';
-import { CreateAboutWindow } from './windows/about';
-import { CreateKeysWindow } from './windows/keys';
+import { CreateAboutWindow, CreateKeysWindow } from './windows';
 
 let tray: Electron.Tray;
 

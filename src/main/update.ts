@@ -10,7 +10,7 @@ import { APP_DIR, DOWNLOAD_LINK, JWS_LINK } from './const';
 import * as jws from './jws';
 import { t } from './locale';
 import { UpdateError } from './update_error';
-import { CreateErrorWindow, CreateQuestionWindow } from './windows/message';
+import { CreateErrorWindow, CreateQuestionWindow } from './windows';
 
 function GetJWS() {
   return new Promise<string>((resolve, reject) => {

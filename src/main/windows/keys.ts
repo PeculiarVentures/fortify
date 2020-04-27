@@ -1,7 +1,7 @@
 import * as application from '../application';
-import { icons } from '../const';
+import { icons, windowSizes } from '../const';
 import { t } from '../locale';
-import { CreateWindow } from '../window';
+import { CreateWindow } from './window';
 
 export function CreateKeysWindow() {
   // Create the browser window.
@@ -10,10 +10,10 @@ export function CreateKeysWindow() {
 
     return;
   }
+
   application.windows.keys = CreateWindow({
+    ...windowSizes.default,
     app: 'keys',
-    width: 600,
-    height: 500,
     autoHideMenuBar: true,
     minimizable: false,
     resizable: false,

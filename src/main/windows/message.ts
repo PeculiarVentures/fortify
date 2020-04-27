@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import * as winston from 'winston';
-import { APP_DIALOG_FILE, icons } from '../const';
+import { APP_DIALOG_FILE, icons, windowSizes } from '../const';
 import { t } from '../locale';
-import { BrowserWindowEx, CreateWindow } from '../window';
+import { BrowserWindowEx, CreateWindow } from './window';
 
 function saveDialogs(dialogs: string[]) {
   fs.writeFileSync(APP_DIALOG_FILE, JSON.stringify(dialogs, null, '  '), { flag: 'w+' });
@@ -54,10 +54,10 @@ export function CreateErrorWindow(text: string, cb: () => void) {
 
     return;
   }
+
   errorWindow = CreateWindow({
+    ...windowSizes.small,
     app: 'message',
-    width: 500,
-    height: 300,
     autoHideMenuBar: true,
     minimizable: false,
     fullscreen: false,
@@ -114,9 +114,8 @@ export function CreateWarningWindow(
   }
 
   warnWindow = CreateWindow({
+    ...windowSizes.small,
     app: 'message',
-    width: 500,
-    height: 300,
     autoHideMenuBar: true,
     minimizable: false,
     fullscreenable: false,
@@ -174,9 +173,8 @@ export function CreateQuestionWindow(
 
   // Create the browser window.
   const window = CreateWindow({
+    ...windowSizes.small,
     app: 'message',
-    width: 500,
-    height: 300,
     autoHideMenuBar: true,
     minimizable: false,
     fullscreenable: false,

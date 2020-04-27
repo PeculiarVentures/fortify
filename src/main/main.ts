@@ -24,7 +24,7 @@ import { ConfigureWrite } from './config';
 import {
   APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_SSL_CERT,
   APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
-  icons, SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE,
+  icons, SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE, windowSizes,
 } from './const';
 import * as appCrypto from './crypto';
 import * as jws from './jws';
@@ -32,8 +32,12 @@ import { Locale, locale, t } from './locale';
 import * as ssl from './ssl';
 import * as tray from './tray';
 import { CheckUpdate } from './update';
-import { CreateWindow } from './window';
-import { CreateErrorWindow, CreateQuestionWindow, CreateWarningWindow } from './windows/message';
+import {
+  CreateErrorWindow,
+  CreateQuestionWindow,
+  CreateWarningWindow,
+  CreateWindow,
+} from './windows';
 
 require('@babel/polyfill');
 
@@ -107,9 +111,8 @@ let mainWindow;
 function CreateMainWindow() {
   // Create the browser window.
   mainWindow = CreateWindow({
+    ...windowSizes.default,
     app: 'index',
-    width: 800,
-    height: 600,
     show: false,
   });
 
@@ -289,11 +292,10 @@ async function InitService() {
 
           // Create the browser window.
           const window = CreateWindow({
+            ...windowSizes.small,
             app: 'key-pin',
-            width: 400,
-            height: 300,
-            x: width - 400,
-            y: height - 300,
+            x: width - windowSizes.small.width,
+            y: height - windowSizes.small.height,
             resizable: false,
             minimizable: false,
             autoHideMenuBar: true,
@@ -316,10 +318,9 @@ async function InitService() {
         case 'pin': {
           // Create the browser window.
           const window = CreateWindow({
+            ...windowSizes.small,
             app: 'p11-pin',
             title: t('p11-pin'),
-            width: 500,
-            height: 300,
             alwaysOnTop: true,
             autoHideMenuBar: true,
             resizable: false,
