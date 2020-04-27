@@ -6,22 +6,22 @@
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		<title></title>
 		<!-- Dependencies -->
-        <script defer src="../../node_modules/react/umd/react.production.min.js"></script>
-        <script defer src="../../node_modules/react-dom/umd/react-dom.production.min.js"></script>
+    <script defer src="../../node_modules/react/umd/react.production.min.js"></script>
+    <script defer src="../../node_modules/react-dom/umd/react-dom.production.min.js"></script>
 	</head>
 	<body>
-        <div id="root"></div>
-        <script>
-            const electron = require("electron");
-            const currentWindow = electron.remote.getCurrentWindow();
+    <div id="root"></div>
+    <script>
+      const electron = require("electron");
+      const currentWindow = electron.remote.getCurrentWindow();
 
-            if (!currentWindow.app) {
-                throw new Error("app parameter is empty");
-            }
+      if (!currentWindow.app) {
+        throw new Error("app parameter is empty");
+      }
 
-            const $script = document.createElement("script");
-            $script.setAttribute("src", `../../out/${currentWindow.app}.js`);
-            document.body.appendChild($script);
-        </script>
+      const $script = document.createElement("script");
+      $script.setAttribute("src", `../../out/${currentWindow.app}.js`);
+      document.body.appendChild($script);
+    </script>
 	</body>
 </html>
