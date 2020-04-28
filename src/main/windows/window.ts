@@ -1,8 +1,8 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import * as url from 'url';
 import * as winston from 'winston';
 
-import { HTML_PATH } from '../const';
+import { HTML_PATH, windowSizes } from '../const';
 import { locale } from '../locale';
 
 let counter = 0;
@@ -33,6 +33,8 @@ export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
     fullscreen: false,
     fullscreenable: false,
     resizable: false,
+    minWidth: windowSizes.small.width,
+    minHeight: windowSizes.small.height,
     ...options,
     webPreferences: {
       nodeIntegration: true,
@@ -65,6 +67,14 @@ export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
       }
     });
   }
+
+  // Open a url from <a> on default OS browser
+  window.webContents.on('will-navigate', (e: Event, href: string) => {
+    if (href !== window.webContents.getURL()) {
+      e.preventDefault();
+      shell.openExternal(href);
+    }
+  });
 
   return window;
 }
