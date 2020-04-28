@@ -15,5 +15,6 @@ module.exports = {
     'import/no-extraneous-dependencies': 1,
     'newline-before-return': 2,
     'import/prefer-default-export': 0,
+    'react/jsx-one-expression-per-line': 0,
   },
 };

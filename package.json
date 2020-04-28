@@ -5,7 +5,7 @@
   "description": "",
   "main": "out/main.js",
   "scripts": {
-    "start": "npm run build:src && electron .",
+    "start": "electron .",
     "build:src": "webpack --config scripts/webpack.config.js --development",
     "build:prod": "webpack --config scripts/webpack.config.js -p",
     "build:package": "electron-packager . --arch=x64 --out=build --icon=src/static/icons/tray/mac/icon.icns --overwrite=true --electron-version=1.7.6 --app-bundle-id=com.peculiarventures.fortify --no-prune",
