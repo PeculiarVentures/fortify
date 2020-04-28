@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { t } from '../../../main/locale';
+import { intl } from '../../../main/locale';
 
 const s = require('./styles/empty.sass');
 
@@ -24,7 +24,7 @@ export const Empty: React.SFC = () => (
     <div className={s.container}>
       <KeysIcon />
       <div className={s.descr}>
-        {t('keys.empty')}
+        {intl('keys.empty')}
       </div>
     </div>
   </div>

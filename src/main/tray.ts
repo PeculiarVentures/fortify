@@ -2,7 +2,6 @@ import {
   app,
   Menu,
   MenuItem,
-  nativeImage,
   shell,
   Tray,
 } from 'electron';
@@ -11,7 +10,7 @@ import * as application from './application';
 import { LoggingSwitch } from './application';
 import { ConfigureWrite } from './config';
 import { APP_CONFIG_FILE, APP_LOG_FILE, icons } from './const';
-import { Locale, locale, t } from './locale';
+import { Locale, locale, intl } from './locale';
 import { CreateAboutWindow, CreateKeysWindow } from './windows';
 
 let tray: Electron.Tray;
@@ -22,14 +21,14 @@ export function create() {
   const contextMenu = new Menu();
 
   const menuAbout = new MenuItem({
-    label: t('about'),
+    label: intl('about'),
   });
   menuAbout.click = () => {
     CreateAboutWindow();
   };
 
   const menuKeys = new MenuItem({
-    label: t('sites'),
+    label: intl('sites'),
   });
   menuKeys.click = () => {
     CreateKeysWindow();
@@ -37,14 +36,14 @@ export function create() {
 
   const menuLogSubMenu = new Menu();
   const menuLogView = new MenuItem({
-    label: t('view.log'),
+    label: intl('view.log'),
     enabled: !!application.configure.logging,
   });
   menuLogView.click = () => {
     shell.openItem(APP_LOG_FILE);
   };
   const menuLogDisable = new MenuItem({
-    label: t('enable.disable'),
+    label: intl('enable.disable'),
     type: 'checkbox',
     checked: !!application.configure.logging,
   });
@@ -59,12 +58,12 @@ export function create() {
   menuLogSubMenu.append(menuLogView);
   menuLogSubMenu.append(menuLogDisable);
   const menuLog = new MenuItem({
-    label: t('logging'),
+    label: intl('logging'),
     submenu: menuLogSubMenu,
   });
 
   const menuTools = new MenuItem({
-    label: t('tools'),
+    label: intl('tools'),
   });
   menuTools.click = () => {
     shell.openExternal('https://tools.fortifyapp.com/');
@@ -75,7 +74,7 @@ export function create() {
   });
 
   const menuExit = new MenuItem({
-    label: t('exit'),
+    label: intl('exit'),
   });
 
   menuExit.click = () => {
@@ -96,11 +95,11 @@ export function create() {
     menuLanguageSubmenu.append(menuItem);
   });
   const menuLanguage = new MenuItem({
-    label: t('language'),
+    label: intl('language'),
     submenu: menuLanguageSubmenu,
   });
   locale.on('change', () => {
-    menuLanguage.label = t('language');
+    menuLanguage.label = intl('language');
   });
 
   contextMenu.append(menuAbout);

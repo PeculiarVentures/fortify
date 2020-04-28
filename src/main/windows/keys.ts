@@ -1,6 +1,6 @@
 import * as application from '../application';
 import { icons, windowSizes } from '../const';
-import { t } from '../locale';
+import { intl } from '../locale';
 import { CreateWindow } from './window';
 
 export function CreateKeysWindow() {
@@ -15,7 +15,7 @@ export function CreateKeysWindow() {
     ...windowSizes.default,
     app: 'keys',
     autoHideMenuBar: true,
-    title: t('sites'),
+    title: intl('sites'),
     icon: icons.favicon,
     dock: true,
   });

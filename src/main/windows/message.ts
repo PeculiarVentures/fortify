@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as winston from 'winston';
 import { APP_DIALOG_FILE, icons, windowSizes } from '../const';
-import { t } from '../locale';
+import { intl } from '../locale';
 import { BrowserWindowEx, CreateWindow } from './window';
 
 function saveDialogs(dialogs: string[]) {
@@ -59,12 +59,12 @@ export function CreateErrorWindow(text: string, cb: () => void) {
     ...windowSizes.small,
     app: 'message',
     autoHideMenuBar: true,
-    title: t('error'),
+    title: intl('error'),
     icon: icons.favicon,
     alwaysOnTop: true,
     params: {
       type: 'error',
-      title: t('error'),
+      title: intl('error'),
       text,
     },
   });
@@ -113,7 +113,7 @@ export function CreateWarningWindow(
     ...windowSizes.small,
     app: 'message',
     autoHideMenuBar: true,
-    title: options.title || t('warning'),
+    title: options.title || intl('warning'),
     center: true,
     icon: icons.favicon,
     alwaysOnTop: !!options.alwaysOnTop,
@@ -122,8 +122,8 @@ export function CreateWarningWindow(
     dock: options.parent ? false : options.dock,
     params: {
       type: 'warning',
-      title: options.title || t('warning'),
-      buttonLabel: options.buttonLabel || t('close'),
+      title: options.title || intl('warning'),
+      buttonLabel: options.buttonLabel || intl('close'),
       text,
       id: options.id,
       showAgain: options.showAgain,
@@ -169,14 +169,14 @@ export function CreateQuestionWindow(
     ...windowSizes.small,
     app: 'message',
     autoHideMenuBar: true,
-    title: t('question'),
+    title: intl('question'),
     icon: icons.favicon,
     modal: !!options.parent,
     parent: options.parent,
     dock: options.parent ? false : options.dock,
     params: {
       type: 'question',
-      title: options.title || t('question'),
+      title: options.title || intl('question'),
       text,
       result: 0,
       id: options.id,

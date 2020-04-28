@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
-import { t } from '../../../main/locale';
+import { intl } from '../../../main/locale';
 import WindowComponent from '../../window';
 import { Empty } from './empty';
 import { Item } from './item';
@@ -94,7 +94,7 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
           <div>
             <input
               type="text"
-              placeholder={t('search')}
+              placeholder={intl('search')}
               onChange={this.handleSearchChange}
               className={s.input}
             />

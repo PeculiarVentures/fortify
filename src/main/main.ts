@@ -28,7 +28,7 @@ import {
 } from './const';
 import * as appCrypto from './crypto';
 import * as jws from './jws';
-import { Locale, locale, t } from './locale';
+import { Locale, locale, intl } from './locale';
 import * as ssl from './ssl';
 import * as tray from './tray';
 import { CheckUpdate } from './update';
@@ -163,7 +163,7 @@ async function InitService() {
 
     // Set cert as trusted
     const warning = new Promise((resolve) => { // wrap callback
-      CreateWarningWindow(t('warn.ssl.install'), { alwaysOnTop: true, buttonLabel: t('i_understand') }, () => {
+      CreateWarningWindow(intl('warn.ssl.install'), { alwaysOnTop: true, buttonLabel: intl('i_understand') }, () => {
         winston.info('Warning window was closed');
         resolve();
       });
@@ -180,7 +180,7 @@ async function InitService() {
         fs.unlinkSync(APP_SSL_CERT);
         fs.unlinkSync(APP_SSL_KEY);
 
-        CreateErrorWindow(t('error.ssl.install'), () => {
+        CreateErrorWindow(intl('error.ssl.install'), () => {
           application.quit();
         });
       });
@@ -226,7 +226,7 @@ async function InitService() {
     .on('token_new', (card) => {
       const atr = card.atr.toString('hex');
       winston.info(`New token was found reader: '${card.reader}' ATR: ${atr}`);
-      CreateQuestionWindow(t('question.new.token'), { id: 'question.new.token', showAgain: true }, (res) => {
+      CreateQuestionWindow(intl('question.new.token'), { id: 'question.new.token', showAgain: true }, (res) => {
         if (res) {
           try {
             const title = `Add support for '${atr}' token`;
@@ -252,10 +252,10 @@ async function InitService() {
         const { CODE } = wsServer.WebCryptoLocalError;
         switch (err.code) {
           case CODE.PCSC_CANNOT_START:
-            CreateWarningWindow(t('warn.pcsc.cannot_start'), {
+            CreateWarningWindow(intl('warn.pcsc.cannot_start'), {
               alwaysOnTop: true,
-              title: t('warning.title.oh_no'),
-              buttonLabel: t('i_understand'),
+              title: intl('warning.title.oh_no'),
+              buttonLabel: intl('i_understand'),
               id: 'warn.pcsc.cannot_start',
               showAgain: true,
             }, () => {
@@ -263,18 +263,18 @@ async function InitService() {
             });
             break;
           case CODE.PROVIDER_CRYPTO_NOT_FOUND:
-            CreateWarningWindow(t('warn.token.crypto_not_found', err.message), {
+            CreateWarningWindow(intl('warn.token.crypto_not_found', err.message), {
               alwaysOnTop: true,
-              title: t('warning.title.oh_no'),
+              title: intl('warning.title.oh_no'),
               id: 'warn.token.crypto_not_found',
               showAgain: true,
             });
             break;
           case CODE.PROVIDER_CRYPTO_WRONG:
           case CODE.PROVIDER_WRONG_LIBRARY:
-            CreateWarningWindow(t('warn.token.crypto_wrong', err.message), {
+            CreateWarningWindow(intl('warn.token.crypto_wrong', err.message), {
               alwaysOnTop: true,
-              title: t('warning.title.oh_no'),
+              title: intl('warning.title.oh_no'),
               id: 'warn.token.crypto_wrong',
               showAgain: true,
             });
@@ -318,7 +318,7 @@ async function InitService() {
           const window = CreateWindow({
             ...windowSizes.small,
             app: 'p11-pin',
-            title: t('p11-pin'),
+            title: intl('p11-pin'),
             alwaysOnTop: true,
             autoHideMenuBar: true,
             icon: icons.favicon,
@@ -541,7 +541,7 @@ function InitMessages() {
   })
     .on('2key-remove', (event: any, arg: any) => {
       const storage = application.server.server.storage as wsServer.FileStorage;
-      CreateQuestionWindow(t('question.2key.remove', arg), { parent: application.windows.keys }, (result) => {
+      CreateQuestionWindow(intl('question.2key.remove', arg), { parent: application.windows.keys }, (result) => {
         if (result) {
           winston.info(`Removing 2key session key ${arg}`);
           const remList = [];

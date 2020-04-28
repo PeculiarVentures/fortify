@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { t } from '../../../main/locale';
+import { intl } from '../../../main/locale';
 import Align from '../../components/align/index';
 import Button from '../../components/button/index';
 import { Content, Footer, Page } from '../../components/page/index';
@@ -32,13 +32,13 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
         <WindowEvent event="keydown" onCall={this.onKeyDown.bind(this)} />
         <Content>
           <div className={s.content}>
-            <p>{t('p11-pin.1')}</p>
-            <p>{t('p11-pin.2')}</p>
+            <p>{intl('p11-pin.1')}</p>
+            <p>{intl('p11-pin.2')}</p>
             <table className={s.input}>
               <tbody>
                 <tr>
                   <td className={s.cellImage}>
-                    <img src="../static/icons/smart_card.png" alt={t('smart.card')} width="64px" />
+                    <img src="../static/icons/smart_card.png" alt={intl('smart.card')} width="64px" />
                   </td>
                   <td>
                     <div className={s.label}>PIN</div>
@@ -54,8 +54,8 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
         <Footer>
           <Align type="center">
             <div>
-              <Button accept text={t('ok')} onClick={this.onOkClick.bind(this)} />
-              <Button text={t('cancel')} onClick={this.onCancelClick.bind(this)} />
+              <Button accept text={intl('ok')} onClick={this.onOkClick.bind(this)} />
+              <Button text={intl('cancel')} onClick={this.onCancelClick.bind(this)} />
             </div>
           </Align>
         </Footer>

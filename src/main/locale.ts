@@ -130,4 +130,4 @@ export class Locale extends EventEmitter {
 
 export const locale = new Locale();
 
-export const t = locale.get.bind(locale);
+export const intl = locale.get.bind(locale);

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { t } from '../../../main/locale';
+import { intl } from '../../../main/locale';
 import Align from '../../components/align/index';
 import Button from '../../components/button/index';
 import { Content, Footer, Page } from '../../components/page/index';
@@ -34,8 +34,8 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
       case 'question':
         return (
           [
-            <Button accept text={t('yes')} onClick={this.onYesClick.bind(this)} />,
-            <Button text={t('no')} onClick={() => this.close()} />,
+            <Button accept text={intl('yes')} onClick={this.onYesClick.bind(this)} />,
+            <Button text={intl('no')} onClick={() => this.close()} />,
           ]
         );
       default:
@@ -67,7 +67,9 @@ export class Root extends WindowComponent<IRootProps, IRootState> {
             ? (
               <div className={s.showDialog}>
                 <input ref="show-dialog" type="checkbox" id="show-dialog" />
-                <label htmlFor="show-dialog">{t('show.again')}</label>
+                <label htmlFor="show-dialog">
+                  {intl('show.again')}
+                </label>
               </div>
             )
             : null
