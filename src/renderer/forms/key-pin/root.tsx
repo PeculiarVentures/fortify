@@ -5,7 +5,7 @@ import Align from '../../components/align';
 import Button from '../../components/button';
 import { Content, Footer, Page } from '../../components/page';
 import { WindowEvent } from '../../components/window_event';
-import WindowComponent from '../../window';
+import WindowProvider from '../../components/window_provider';
 import Pin from './pin';
 
 const s = require('./style.sass');
@@ -13,7 +13,7 @@ const s = require('./style.sass');
 export interface IRootProps { }
 export interface IRootState { }
 
-export class Root extends WindowComponent<IRootProps, IRootState> {
+export class Root extends WindowProvider<IRootProps, IRootState> {
   constructor(props: IRootProps) {
     super(props);
 

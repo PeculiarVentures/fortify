@@ -1,12 +1,11 @@
 import * as electron from 'electron';
 import * as React from 'react';
 import * as winston from 'winston';
-
-import { locale } from '../main/locale';
+import { locale } from '../../main/locale';
 
 winston.add(new winston.transports.Console());
 
-export default class WindowComponent<P, S> extends React.Component<P, S> {
+export default class WindowProvider<P, S> extends React.Component<P, S> {
   public params: Assoc<any>;
 
   constructor(props: P) {
@@ -21,12 +20,12 @@ export default class WindowComponent<P, S> extends React.Component<P, S> {
     this.params = $window.params || {};
   }
 
-  public close() {
-    this.onClose();
-    electron.remote.getCurrentWindow().close();
-  }
-
   protected onClose() {
     // nothing
   }
+
+  close = () => {
+    this.onClose();
+    electron.remote.getCurrentWindow().close();
+  };
 }

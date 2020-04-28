@@ -4,7 +4,7 @@ import Align from '../../components/align/index';
 import Button from '../../components/button/index';
 import { Content, Footer, Page } from '../../components/page/index';
 import { WindowEvent } from '../../components/window_event';
-import WindowComponent from '../../window';
+import WindowProvider from '../../components/window_provider';
 
 const s = require('./style.sass');
 
@@ -13,7 +13,7 @@ export interface IRootState {
   pin: string;
 }
 
-export class Root extends WindowComponent<IRootProps, IRootState> {
+export class Root extends WindowProvider<IRootProps, IRootState> {
   constructor(props: IRootProps) {
     super(props);
 

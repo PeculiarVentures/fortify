@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { intl } from '../../../main/locale';
-import WindowComponent from '../../window';
+import WindowProvider from '../../components/window_provider';
 import { Empty } from './empty';
 import { Item } from './item';
 
@@ -13,7 +13,7 @@ export interface IRootState {
   filterValue?: string;
 }
 
-export class Root extends WindowComponent<IRootProps, IRootState> {
+export class Root extends WindowProvider<IRootProps, IRootState> {
   constructor(props: IRootProps) {
     super(props);
 
