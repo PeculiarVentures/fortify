@@ -26,6 +26,7 @@
         -webkit-text-size-adjust: none;
         -webkit-tap-highlight-color: transparent;
         word-break: break-word;
+        outline-color: #c4d8f7;
       }
 
       *:after, *:before {
@@ -38,6 +39,15 @@
 
       a {
         text-decoration: none;
+      }
+
+      a:not([class^="button"]) {
+        color: rgb(var(--primary));
+        transition: opacity 200ms;
+      }
+
+      a:not([class^="button"]):hover {
+        opacity: 0.6;
       }
 
       textarea {
@@ -54,6 +64,8 @@
 
       button {
         font-family: inherit;
+        font-weight: 400 !important;
+        outline-color: #c4d8f7 !important;
       }
 
       table {
@@ -77,6 +89,16 @@
         height: 100%;
         -webkit-overflow-scrolling: touch;
         position: relative;
+      }
+    </style>
+
+    <!-- Theme styles -->
+    <style>
+      :root {
+        --secondary: 10, 190, 101;
+        --primary: 6, 128, 255;
+        --grey_1: 250, 249, 249;
+        --grey_4: 182, 195, 204;
       }
     </style>
 	</head>
