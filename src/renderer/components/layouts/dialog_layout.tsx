@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Button } from 'lib-react-components';
+import { intl } from '../../../main/locale';
 
 const s = require('./styles/dialog_layout.sass');
 
@@ -34,7 +35,7 @@ export default class DialogLayout extends React.Component<IDialogLayoutProps> {
           key="reject"
           onClick={onReject}
         >
-          {textReject || 'Close'}
+          {textReject || intl('close')}
         </Button>
       ));
     }
@@ -48,7 +49,7 @@ export default class DialogLayout extends React.Component<IDialogLayoutProps> {
           key="approve"
           onClick={onApprove}
         >
-          {textApprove || 'Ok'}
+          {textApprove || intl('ok')}
         </Button>
       ));
     }
@@ -70,10 +71,10 @@ export default class DialogLayout extends React.Component<IDialogLayoutProps> {
           </div>
         </div>
         <footer className={s.footer}>
-          <div>
+          <div className={s.footer_content_container}>
             {footer}
           </div>
-          <div>
+          <div className={s.buttons_container}>
             {this.renderButtons()}
           </div>
         </footer>

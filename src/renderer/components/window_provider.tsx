@@ -20,12 +20,12 @@ export default class WindowProvider<P, S> extends React.Component<P, S> {
     this.params = $window.params || {};
   }
 
-  protected onClose() {
-    // nothing
+  protected onClose(...args: any[]) {
+    console.log(args);
   }
 
-  close = () => {
-    this.onClose();
+  close = (...args: any[]) => {
+    this.onClose(...args);
     electron.remote.getCurrentWindow().close();
   };
 }

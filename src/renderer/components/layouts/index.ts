@@ -1,1 +1,1 @@
-export { default as DialogLayout } from './dialog_layout';
+export { default as DialogLayout, IDialogLayoutProps } from './dialog_layout';
