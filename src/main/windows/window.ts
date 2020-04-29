@@ -22,6 +22,7 @@ export interface BrowserWindowConstructorOptionsEx
 }
 
 export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
+  // Allow resize window for `dev` mode
   if (process.env.NODE_ENV === 'development') {
     Object.assign(options, {
       resizable: true,
@@ -65,6 +66,7 @@ export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
 
     window.on('close', () => {
       delete windows[id];
+
       if (!Object.keys(windows).length) {
         app.dock.hide();
       }

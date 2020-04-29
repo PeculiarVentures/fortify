@@ -96,9 +96,9 @@ export default class Container extends React.Component<IContainerProps> {
       case 'question':
         props.icon = (
           <img
-            src="../static/icons/question_icon.svg"
-            alt="Question icon"
-            width="50"
+            src="../static/icons/token_icon.svg"
+            alt="Token icon"
+            width="24"
           />
         );
 
