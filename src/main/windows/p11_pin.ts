@@ -6,7 +6,7 @@ import { CreateWindow } from './window';
 export function CreateP11PinWindow(options: any) {
   // Create the browser window.
   const window = CreateWindow({
-    ...windowSizes.small,
+    ...windowSizes.default,
     app: 'p11-pin',
     title: intl('p11-pin'),
     alwaysOnTop: true,
