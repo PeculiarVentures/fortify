@@ -2,7 +2,7 @@ import { app, BrowserWindow, shell } from 'electron';
 import * as url from 'url';
 import * as winston from 'winston';
 
-import { HTML_PATH, windowSizes } from '../const';
+import { HTML_PATH, windowSizes, icons } from '../const';
 import { locale } from '../locale';
 
 let counter = 0;
@@ -29,6 +29,9 @@ export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
   }
 
   const window = new BrowserWindow({
+    icon: icons.favicon,
+    autoHideMenuBar: true,
+    dock: true,
     minimizable: false,
     fullscreen: false,
     fullscreenable: false,

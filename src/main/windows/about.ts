@@ -1,4 +1,4 @@
-import { icons, windowSizes } from '../const';
+import { windowSizes } from '../const';
 import { intl } from '../locale';
 import { CreateWindow } from './window';
 
@@ -15,10 +15,7 @@ export function CreateAboutWindow() {
   aboutWindow = CreateWindow({
     ...windowSizes.small,
     app: 'about',
-    autoHideMenuBar: true,
     title: intl('about'),
-    icon: icons.favicon,
-    dock: true,
   });
 
   // Emitted when the window is closed.

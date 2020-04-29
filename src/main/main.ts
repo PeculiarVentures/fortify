@@ -24,7 +24,7 @@ import { ConfigureWrite } from './config';
 import {
   APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_SSL_CERT,
   APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
-  icons, SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE, windowSizes,
+  SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE,
 } from './const';
 import * as appCrypto from './crypto';
 import * as jws from './jws';
@@ -36,7 +36,9 @@ import {
   CreateErrorWindow,
   CreateQuestionWindow,
   CreateWarningWindow,
-  CreateWindow,
+  CreateMainWindow,
+  CreateKeyPinWindow,
+  CreateP11PinWindow,
 } from './windows';
 
 require('@babel/polyfill');
@@ -103,27 +105,6 @@ app.once('ready', () => {
 //         app.quit()
 //     }
 // })
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
-
-function CreateMainWindow() {
-  // Create the browser window.
-  mainWindow = CreateWindow({
-    ...windowSizes.default,
-    app: 'index',
-    show: false,
-  });
-
-  // Emitted when the window is closed.
-  mainWindow.on('closed', () => {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    // mainWindow = null
-  });
-}
 
 function CheckSSL() {
   if (fs.existsSync(APP_SSL_CERT) && fs.existsSync(APP_SSL_KEY)) {
@@ -286,58 +267,22 @@ async function InitService() {
     })
     .on('notify', (p: any) => {
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
       switch (p.type) {
         case '2key': {
           p.accept = false;
 
-          // Create the browser window.
-          const window = CreateWindow({
-            ...windowSizes.small,
-            app: 'key-pin',
-            x: width - windowSizes.small.width,
-            y: height - windowSizes.small.height,
-            autoHideMenuBar: true,
-            modal: true,
-            alwaysOnTop: true,
-            icon: icons.favicon,
-            params: p,
+          CreateKeyPinWindow({
+            width,
+            height,
+            p,
           });
-
-          window
-            .on('ready-to-show', () => {
-              // window.show();
-              window.focus();
-            })
-            .on('closed', () => {
-              p.resolve(p.accept);
-            });
           break;
         }
         case 'pin': {
-          // Create the browser window.
-          const window = CreateWindow({
-            ...windowSizes.small,
-            app: 'p11-pin',
-            title: intl('p11-pin'),
-            alwaysOnTop: true,
-            autoHideMenuBar: true,
-            icon: icons.favicon,
+          CreateP11PinWindow({
+            p,
           });
-
-          window.params = p;
-          p.pin = '';
-
-          window
-            .on('ready-to-show', () => {
-              window.focus();
-            })
-            .on('closed', () => {
-              if (p.pin) {
-                p.resolve(p.pin);
-              } else {
-                p.reject(new wsServer.WebCryptoLocalError(10001, 'Incorrect PIN value. It cannot be empty.'));
-              }
-            });
           break;
         }
         default:
@@ -488,10 +433,12 @@ function InitMessages() {
       .then(() => {
         const identities = storage.remoteIdentities;
         const preparedList = [];
+
         for (const i in identities) {
           const identity = PrepareIdentity(identities[i]);
           preparedList.push(identity);
         }
+
         // sort identities
         preparedList.sort((a, b) => {
           if (a.origin > b.origin) {
@@ -545,12 +492,14 @@ function InitMessages() {
         if (result) {
           winston.info(`Removing 2key session key ${arg}`);
           const remList = [];
+
           for (const i in storage.remoteIdentities) {
             const identity = storage.remoteIdentities[i];
             if (identity.origin === arg) {
               remList.push(i);
             }
           }
+
           remList.forEach((item) => {
             delete storage.remoteIdentities[item];
           });

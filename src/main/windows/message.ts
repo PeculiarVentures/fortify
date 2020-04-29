@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as winston from 'winston';
-import { APP_DIALOG_FILE, icons, windowSizes } from '../const';
+import { APP_DIALOG_FILE, windowSizes } from '../const';
 import { intl } from '../locale';
 import { BrowserWindowEx, CreateWindow } from './window';
 
@@ -10,10 +10,12 @@ function saveDialogs(dialogs: string[]) {
 
 function getDialogs() {
   let dialogs: string[] = [];
+
   if (fs.existsSync(APP_DIALOG_FILE)) {
     try {
       const json = fs.readFileSync(APP_DIALOG_FILE).toString();
       dialogs = JSON.parse(json);
+
       if (!Array.isArray(dialogs)) {
         throw new TypeError('Bad JSON format. Must be Array of strings');
       }
@@ -33,6 +35,7 @@ function hasDialog(name: string) {
 function onDialogClose(window: BrowserWindowEx) {
   if (window.params && window.params.id && window.params.showAgainValue) {
     const dialogs = getDialogs();
+
     dialogs.push(window.params.id);
     saveDialogs(dialogs);
     winston.info(`Disable dialog ${window.params.id}`);
@@ -58,9 +61,7 @@ export function CreateErrorWindow(text: string, cb: () => void) {
   errorWindow = CreateWindow({
     ...windowSizes.small,
     app: 'message',
-    autoHideMenuBar: true,
     title: intl('error'),
-    icon: icons.favicon,
     alwaysOnTop: true,
     params: {
       type: 'error',
@@ -72,6 +73,7 @@ export function CreateErrorWindow(text: string, cb: () => void) {
   // Emitted when the window is closed.
   errorWindow.on('closed', () => {
     errorWindow = null;
+
     if (cb) {
       cb();
     }
@@ -112,10 +114,8 @@ export function CreateWarningWindow(
   warnWindow = CreateWindow({
     ...windowSizes.small,
     app: 'message',
-    autoHideMenuBar: true,
     title: options.title || intl('warning'),
     center: true,
-    icon: icons.favicon,
     alwaysOnTop: !!options.alwaysOnTop,
     modal: !!options.parent,
     parent: options.parent,
@@ -139,7 +139,9 @@ export function CreateWarningWindow(
     if (warnWindow) {
       onDialogClose(warnWindow);
     }
+
     warnWindow = null;
+
     if (cb) {
       cb();
     }
@@ -168,9 +170,7 @@ export function CreateQuestionWindow(
   const window = CreateWindow({
     ...windowSizes.small,
     app: 'message',
-    autoHideMenuBar: true,
     title: intl('question'),
-    icon: icons.favicon,
     modal: !!options.parent,
     parent: options.parent,
     dock: options.parent ? false : options.dock,
