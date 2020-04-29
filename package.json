@@ -15,7 +15,8 @@
     "build:msi_x64": "npm run build:prod && fortify-prepare && asar pack /tmp/fortify-prod/x64 ../fortify-prod/x64/resources/app.asar",
     "build:msi_x86": "npm run build:prod && fortify-prepare && asar pack /tmp/fortify-prod/x86 ../fortify-prod/x86/resources/app.asar",
     "build": "ts-node scripts/build",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./"
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./",
+    "rebuild": "electron-rebuild -f -w pkcs11js"
   },
   "keywords": [],
   "author": "",
@@ -34,7 +35,8 @@
     "@typescript-eslint/eslint-plugin": "^2.28.0",
     "awesome-typescript-loader": "^5.2.1",
     "css-loader": "^3.2.0",
-    "electron": "5.0.6",
+    "electron": "8.2.4",
+    "electron-rebuild": "^1.10.1",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript": "^7.2.1",
     "eslint-plugin-import": "^2.20.2",

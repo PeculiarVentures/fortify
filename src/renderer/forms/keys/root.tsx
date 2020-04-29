@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, IpcMainEvent } from 'electron';
 import { intl } from '../../../main/locale';
 import WindowProvider from '../../components/window_provider';
 import { Empty } from './empty';
@@ -26,13 +26,13 @@ export class Root extends WindowProvider<IRootProps, IRootState> {
     this.onKeyRemove = this.onKeyRemove.bind(this);
   }
 
-  public onKeyList(event: string, keys: IKey[]) {
+  public onKeyList(_: IpcMainEvent, keys: IKey[]) {
     this.setState({
       keys,
     });
   }
 
-  public onKeyRemove(event: string, origin: string) {
+  public onKeyRemove(_: IpcMainEvent, origin: string) {
     const keys = this.state.keys!.filter((key) => key.origin !== origin);
 
     this.setState({

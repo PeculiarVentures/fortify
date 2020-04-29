@@ -6,12 +6,6 @@
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title></title>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap&subset=cyrillic,greek" rel="stylesheet">
-
-		<!-- Dependencies -->
-    <link rel="stylesheet" href="../../node_modules/lib-react-components/lib/themes/default.css">
-
     <!-- Basic styles -->
     <style>
       * {
@@ -92,6 +86,12 @@
       }
     </style>
 
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap&subset=cyrillic,greek" rel="stylesheet">
+
+		<!-- Dependencies -->
+    <link rel="stylesheet" href="../../node_modules/lib-react-components/lib/themes/default.css">
+
     <!-- Theme styles -->
     <style>
       :root {
@@ -99,6 +99,15 @@
         --primary: 6, 128, 255;
         --grey_1: 250, 249, 249;
         --grey_4: 182, 195, 204;
+        --black: 64, 72, 79;
+        --white: 255, 255, 255;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --black: 255, 255, 255;
+          --white: 64, 72, 79;
+        }
       }
 
       .button {
@@ -106,7 +115,7 @@
       }
     </style>
 	</head>
-	<body>
+	<body class="fill_white">
     <div id="root">
       <style>
         .container_with_loading {

@@ -3,6 +3,7 @@ import {
   ipcMain,
   screen,
   shell,
+  IpcMainEvent,
 } from 'electron';
 
 import * as crypto from 'crypto';
@@ -508,7 +509,7 @@ function InitMessages() {
         }
       });
     })
-    .on('error', (error: Error) => {
+    .on('error', (error: IpcMainEvent) => {
       winston.error(error.toString());
     });
 }
