@@ -15,7 +15,9 @@
     "build:pkg:copy-nss": "cp nss/* build/Fortify-darwin-x64/Fortify.app/Contents/MacOS",
     "build:msi_x64": "npm run build:prod && fortify-prepare && asar pack /tmp/fortify-prod/x64 ../fortify-prod/x64/resources/app.asar",
     "build:msi_x86": "npm run build:prod && fortify-prepare && asar pack /tmp/fortify-prod/x86 ../fortify-prod/x86/resources/app.asar",
-    "build": "ts-node scripts/build"
+    "build": "ts-node scripts/build",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "keywords": [],
   "author": "",
@@ -62,6 +64,8 @@
     "request": "^2.88.0",
     "semver": "^6.3.0",
     "sudo-prompt": "^9.1.1",
-    "winston": "^3.2.1"
-  }
+    "winston": "^3.2.1",
+    "snyk": "^1.316.0"
+  },
+  "snyk": true
 }
