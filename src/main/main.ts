@@ -61,8 +61,8 @@ if ('dock' in app) {
   app.dock.hide();
 }
 
-app.once('ready', () => {
-  (async () => {
+app.once('ready', async () => {
+  try {
     // #region Load locale
     winston.info(`System locale is '${app.getLocale()}'`);
     if (!application.configure.locale) {
@@ -83,19 +83,20 @@ app.once('ready', () => {
     tray.create();
 
     CreateMainWindow();
+
     if (CHECK_UPDATE) {
       await CheckUpdate();
       setInterval(() => {
         CheckUpdate();
       }, CHECK_UPDATE_INTERVAL);
     }
+
     await InitService();
     InitMessages();
-  })()
-    .catch((err) => {
-      winston.error(err.toString());
-      app.emit('error', err);
-    });
+  } catch (error) {
+    winston.error(error.toString());
+    app.emit('error', error);
+  }
 });
 
 // Quit when all windows are closed.
@@ -173,6 +174,7 @@ async function InitService() {
       cert: fs.readFileSync(APP_SSL_CERT),
       key: fs.readFileSync(APP_SSL_KEY),
     } as any;
+
     winston.info('SSL certificate is loaded');
   }
 
@@ -185,7 +187,6 @@ async function InitService() {
   // console.log(JSON.stringify(config, null, "  "));
   // @ts-ignore
   sslData.config = config;
-
   sslData.storage = await wsServer.FileStorage.create();
 
   try {
@@ -198,6 +199,7 @@ async function InitService() {
   }
 
   const { server } = application;
+
   server
     .on('listening', (e: any) => {
       winston.info(`Server: Started at ${e}`);
@@ -208,6 +210,7 @@ async function InitService() {
     .on('token_new', (card) => {
       const atr = card.atr.toString('hex');
       winston.info(`New token was found reader: '${card.reader}' ATR: ${atr}`);
+
       CreateQuestionWindow(intl('question.new.token'), { id: 'question.new.token', showAgain: true }, (res) => {
         if (res) {
           try {
@@ -229,9 +232,11 @@ async function InitService() {
     })
     .on('error', (e: Error) => {
       winston.error(e.stack || e.toString());
+
       if (e.hasOwnProperty('code') && e.hasOwnProperty('type')) {
         const err = e as wsServer.WebCryptoLocalError;
         const { CODE } = wsServer.WebCryptoLocalError;
+
         switch (err.code) {
           case CODE.PCSC_CANNOT_START:
             CreateWarningWindow(intl('warn.pcsc.cannot_start'), {
@@ -303,6 +308,7 @@ async function PrepareConfig(config: IConfigure) {
   if (!config.disableCardUpdate) {
     await PrepareCardJson();
   }
+
   PrepareProviders(config);
   PrepareCards(config);
 }
@@ -489,6 +495,7 @@ function InitMessages() {
   })
     .on('2key-remove', (event: any, arg: any) => {
       const storage = application.server.server.storage as wsServer.FileStorage;
+
       CreateQuestionWindow(intl('question.2key.remove', arg), { parent: application.windows.keys }, (result) => {
         if (result) {
           winston.info(`Removing 2key session key ${arg}`);
@@ -553,6 +560,7 @@ function PrepareIdentity(identity: wsServer.RemoteIdentity) {
 function printInfo() {
   winston.info(`Application started at ${new Date()}`);
   winston.info(`OS ${os.platform()} ${os.arch()} `);
+
   try {
     const json = fs.readFileSync(path.join(APP_DIR, 'package.json'), 'utf8');
     const pkg = JSON.parse(json);
