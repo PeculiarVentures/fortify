@@ -1,5 +1,6 @@
 import { windowSizes } from '../const';
 import { CreateWindow } from './window';
+import { intl } from '../locale';
 
 export function CreateKeyPinWindow(options: any) {
   // Create the browser window.
@@ -11,6 +12,7 @@ export function CreateKeyPinWindow(options: any) {
     modal: true,
     alwaysOnTop: true,
     params: options.p,
+    title: intl('key-pin'),
   });
 
   window
