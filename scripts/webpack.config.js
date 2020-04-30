@@ -13,8 +13,7 @@ module.exports = (env, argv) => {
       message: path.join(__dirname, '../src/renderer/containers/message/index.tsx'),
       'key-pin': path.join(__dirname, '../src/renderer/containers/key_pin/index.tsx'),
       'p11-pin': path.join(__dirname, '../src/renderer/containers/p11_pin/index.tsx'),
-
-      keys: path.join(__dirname, '../src/renderer/forms/keys/index.tsx'),
+      settings: path.join(__dirname, '../src/renderer/containers/settings/index.tsx'),
     },
     output: {
       path: path.resolve(__dirname, '../out'),
