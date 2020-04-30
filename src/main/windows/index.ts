@@ -1,5 +1,5 @@
 export { CreateAboutWindow } from './about';
-export { CreateKeysWindow } from './keys';
+export { CreateSettingsWindow } from './settings';
 export { CreateMainWindow } from './main';
 export { CreateKeyPinWindow } from './key_pin';
 export { CreateP11PinWindow } from './p11_pin';

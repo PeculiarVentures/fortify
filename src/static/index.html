@@ -23,6 +23,12 @@
         outline-color: #c4d8f7;
       }
 
+      *:focus:not(:active):not(:hover) {
+        outline-width: 2px;
+        outline-style: solid;
+        outline-offset: -2px;
+      }
+
       *:after, *:before {
         box-sizing: border-box;
       }
@@ -59,7 +65,6 @@
       button {
         font-family: inherit;
         font-weight: 400 !important;
-        outline-color: #c4d8f7 !important;
       }
 
       table {
@@ -84,6 +89,12 @@
         -webkit-overflow-scrolling: touch;
         position: relative;
       }
+
+      .clear:after {
+        content: "";
+        clear: both;
+        display: table;
+      }
     </style>
 
     <!-- Fonts -->
@@ -106,6 +117,9 @@
 
       @media (prefers-color-scheme: dark) {
         :root {
+          --grey_1: 44, 52, 59;
+          --grey_2: 104, 112, 119;
+          --grey_4: 114, 122, 129;
           --black: 255, 255, 255;
           --white: 64, 72, 79;
         }
