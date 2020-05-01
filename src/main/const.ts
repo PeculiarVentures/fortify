@@ -29,18 +29,17 @@ export const CHECK_UPDATE = true;
 export const CHECK_UPDATE_INTERVAL = 24 * 60 * 60e3; // 24h
 
 export const icons = {
-  tray: path.join(ICON_DIR, 'tray', 'iconTemplate.png'),
-  trayWhite: path.join(ICON_DIR, 'tray', 'iconPressedTemplate.png'),
-  favicon: path.join(ICON_DIR, 'favicon-32x32.png'),
+  tray: path.join(ICON_DIR, 'tray/png', 'icon.png'),
+  favicon: path.join(ICON_DIR, 'tray/png', 'icon@2x.png'),
 };
 
-switch (os.platform()) {
-  case 'win32':
-    icons.tray = path.join(ICON_DIR, 'favicon-32x32.png');
-    break;
-  case 'linux':
-    icons.tray = path.join(ICON_DIR, 'tray', 'iconPressedTemplate@2x.png');
-    break;
-  default:
-    // nothing
-}
+export const windowSizes = {
+  small: {
+    width: 500,
+    height: 300,
+  },
+  default: {
+    width: 600,
+    height: 500,
+  },
+};

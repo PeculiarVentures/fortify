@@ -22,7 +22,8 @@
     "approve": "Accettare",
     "show.again": "Non mostrare più questa finestra di dialogo",
     "version": "Versione",
-    "copyright": "Copyright (c) 2020, Peculiar Ventures",
+    "copyright": "© Peculiar Ventures, Inc",
+    "made.with": "Made with ❤️ across the globe",
     "all.rights": "Tutti i diritti riservati",
     "pin": "PIN",
     "keys.empty": "Non considera attendibile ancora nessun sito.",
@@ -43,5 +44,8 @@
     "warn.ssl.install": "Dobbiamo rendere attendibile il certificato SSL di Fortify. Quando effettueremo ciò, Le sarà richiesta la Sua password di amministratore.",
     "warn.token.crypto_not_found": "La smart card inserita è supportata da Fortify, ma non siamo stati in grado di trovare il middleware per la carta. Si assicuri (%1) che sia presente e in caso contrario installi il middleware per le smart card e riprovi.",
     "warn.token.crypto_wrong": "C’è stato un problema mentre veniva caricato il middleware (%1) per il Suo token di sicurezza o la Sua smart card. \nSi assicuri che il middleware sia installato correttamente e riprovi.",
-    "warn.pcsc.cannot_start": "Sembra che lo `Smart Card Resource Manager` non funzioni. Imposti questo servizio e riavvii Fortify."
+    "warn.pcsc.cannot_start": "Sembra che lo `Smart Card Resource Manager` non funzioni. Imposti questo servizio e riavvii Fortify.",
+    "keys.empty.search": "There are no websites matching that search.",
+    "remove": "Remove",
+    "settings": "Settings"
 }

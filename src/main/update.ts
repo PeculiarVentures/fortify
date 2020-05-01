@@ -8,9 +8,9 @@ import * as winston from 'winston';
 import { quit } from './application';
 import { APP_DIR, DOWNLOAD_LINK, JWS_LINK } from './const';
 import * as jws from './jws';
-import { t } from './locale';
+import { intl } from './locale';
 import { UpdateError } from './update_error';
-import { CreateErrorWindow, CreateQuestionWindow } from './windows/message';
+import { CreateErrorWindow, CreateQuestionWindow } from './windows';
 
 function GetJWS() {
   return new Promise<string>((resolve, reject) => {
@@ -20,7 +20,7 @@ function GetJWS() {
       if (error) {
         winston.warn(`Cannot GET ${JWS_LINK}`);
         winston.error(error.toString());
-        reject(new UpdateError(t('error.update.server'), false));
+        reject(new UpdateError(intl('error.update.server'), false));
       } else {
         resolve(body.replace(/[\n\r]/g, ''));
       }
@@ -41,7 +41,7 @@ export async function GetUpdateInfo() {
     if (err instanceof UpdateError) {
       throw err;
     } else {
-      throw new UpdateError(t('error.update.check'), false);
+      throw new UpdateError(intl('error.update.check'), false);
     }
   }
 }
@@ -58,7 +58,7 @@ export async function CheckUpdate() {
     if (semver.lt(curVersion, update.version)) {
       winston.info('Update: New version was found');
       await new Promise((resolve, reject) => {
-        CreateQuestionWindow(t('question.update.new', update.version), { id: 'question.update.new', showAgain: true }, (res) => {
+        CreateQuestionWindow(intl('question.update.new', update.version), { id: 'question.update.new', showAgain: true }, (res) => {
           if (res) {
             // yes
             winston.info(`User agreed to download new version ${update.version}`);
@@ -69,7 +69,7 @@ export async function CheckUpdate() {
           }
           if (update.min && semver.lt(curVersion, update.min)) {
             winston.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
-            CreateErrorWindow(t('error.critical.update'), () => {
+            CreateErrorWindow(intl('error.critical.update'), () => {
               winston.info('Close application');
               quit();
             });

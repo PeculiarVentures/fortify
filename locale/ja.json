@@ -22,7 +22,8 @@
     "approve": "承認",
     "show.again": "このダイアログをもう表示しない",
     "version": "バージョン",
-    "copyright": "Copyright (c) 2020, Peculiar Ventures",
+    "copyright": "© Peculiar Ventures, Inc",
+    "made.with": "Made with ❤️ across the globe",
     "all.rights": "All rights reserved",
     "pin": "PIN",
     "keys.empty": "どのサイトもまだ信頼していません。",
@@ -43,5 +44,8 @@
     "warn.ssl.install": "Fortify SSL証明書を信頼することが必要となります。信頼する際に管理者パスワードを聞かれます。",
     "warn.token.crypto_not_found": "挿入されているスマートカードはFortifyによりサポートされていますが、カードのミドルウエアを見つけることができませんでした。 本スマートカードミドルウエアがインストールされていない場合、 (%1) が存在するかを確認し、再試行願います。",
     "warn.token.crypto_wrong": "セキュリティトークンもしくはスマートカードのミドルウエア (%1) のロード中に問題が発生しました。\n該当のミドルウエアが正しくインストールされているか確認し、再試行願います。",
-    "warn.pcsc.cannot_start": "`Smart Card Resource Manager`が動作していないようにみえます。本サービスを開始し、再度Fortifyを起動してください。"
+    "warn.pcsc.cannot_start": "`Smart Card Resource Manager`が動作していないようにみえます。本サービスを開始し、再度Fortifyを起動してください。",
+    "keys.empty.search": "There are no websites matching that search.",
+    "remove": "Remove",
+    "settings": "Settings"
 }

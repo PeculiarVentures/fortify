@@ -1,33 +1,24 @@
-import { icons } from '../const';
-import { t } from '../locale';
-import { CreateWindow } from '../window';
-
-let aboutWindow: Electron.BrowserWindow | null = null;
+import { windowSizes } from '../const';
+import { windows } from '../application';
+import { intl } from '../locale';
+import { CreateWindow } from './window';
 
 export function CreateAboutWindow() {
   // Create the browser window.
-  if (aboutWindow) {
-    aboutWindow.focus();
+  if (windows.about) {
+    windows.about.focus();
 
     return;
   }
 
-  aboutWindow = CreateWindow({
+  windows.about = CreateWindow({
+    ...windowSizes.small,
     app: 'about',
-    width: 400,
-    height: 300,
-    autoHideMenuBar: true,
-    minimizable: false,
-    fullscreen: false,
-    fullscreenable: false,
-    resizable: false,
-    title: t('about'),
-    icon: icons.favicon,
-    dock: true,
+    title: intl('about'),
   });
 
   // Emitted when the window is closed.
-  aboutWindow.on('closed', () => {
-    aboutWindow = null;
+  windows.about.on('closed', () => {
+    delete windows.about;
   });
 }

@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import * as winston from 'winston';
-import { APP_DIALOG_FILE, icons } from '../const';
-import { t } from '../locale';
-import { BrowserWindowEx, CreateWindow } from '../window';
+import { APP_DIALOG_FILE, windowSizes } from '../const';
+import { intl } from '../locale';
+import { BrowserWindowEx, CreateWindow } from './window';
 
 function saveDialogs(dialogs: string[]) {
   fs.writeFileSync(APP_DIALOG_FILE, JSON.stringify(dialogs, null, '  '), { flag: 'w+' });
@@ -10,10 +10,12 @@ function saveDialogs(dialogs: string[]) {
 
 function getDialogs() {
   let dialogs: string[] = [];
+
   if (fs.existsSync(APP_DIALOG_FILE)) {
     try {
       const json = fs.readFileSync(APP_DIALOG_FILE).toString();
       dialogs = JSON.parse(json);
+
       if (!Array.isArray(dialogs)) {
         throw new TypeError('Bad JSON format. Must be Array of strings');
       }
@@ -33,6 +35,7 @@ function hasDialog(name: string) {
 function onDialogClose(window: BrowserWindowEx) {
   if (window.params && window.params.id && window.params.showAgainValue) {
     const dialogs = getDialogs();
+
     dialogs.push(window.params.id);
     saveDialogs(dialogs);
     winston.info(`Disable dialog ${window.params.id}`);
@@ -54,21 +57,15 @@ export function CreateErrorWindow(text: string, cb: () => void) {
 
     return;
   }
+
   errorWindow = CreateWindow({
+    ...windowSizes.small,
     app: 'message',
-    width: 500,
-    height: 300,
-    autoHideMenuBar: true,
-    minimizable: false,
-    fullscreen: false,
-    fullscreenable: false,
-    resizable: false,
-    title: t('error'),
-    icon: icons.favicon,
+    title: intl('error'),
     alwaysOnTop: true,
     params: {
       type: 'error',
-      title: t('error'),
+      title: intl('error'),
       text,
     },
   });
@@ -76,6 +73,7 @@ export function CreateErrorWindow(text: string, cb: () => void) {
   // Emitted when the window is closed.
   errorWindow.on('closed', () => {
     errorWindow = null;
+
     if (cb) {
       cb();
     }
@@ -114,24 +112,18 @@ export function CreateWarningWindow(
   }
 
   warnWindow = CreateWindow({
+    ...windowSizes.small,
     app: 'message',
-    width: 500,
-    height: 300,
-    autoHideMenuBar: true,
-    minimizable: false,
-    fullscreenable: false,
-    resizable: false,
-    title: options.title || t('warning'),
+    title: options.title || intl('warning'),
     center: true,
-    icon: icons.favicon,
     alwaysOnTop: !!options.alwaysOnTop,
     modal: !!options.parent,
     parent: options.parent,
     dock: options.parent ? false : options.dock,
     params: {
       type: 'warning',
-      title: options.title || t('warning'),
-      buttonLabel: options.buttonLabel || t('close'),
+      title: options.title || intl('warning'),
+      buttonLabel: options.buttonLabel || intl('close'),
       text,
       id: options.id,
       showAgain: options.showAgain,
@@ -147,7 +139,9 @@ export function CreateWarningWindow(
     if (warnWindow) {
       onDialogClose(warnWindow);
     }
+
     warnWindow = null;
+
     if (cb) {
       cb();
     }
@@ -174,21 +168,15 @@ export function CreateQuestionWindow(
 
   // Create the browser window.
   const window = CreateWindow({
+    ...windowSizes.small,
     app: 'message',
-    width: 500,
-    height: 300,
-    autoHideMenuBar: true,
-    minimizable: false,
-    fullscreenable: false,
-    resizable: false,
-    title: t('question'),
-    icon: icons.favicon,
+    title: intl('question'),
     modal: !!options.parent,
     parent: options.parent,
     dock: options.parent ? false : options.dock,
     params: {
       type: 'question',
-      title: options.title || t('question'),
+      title: options.title || intl('question'),
       text,
       result: 0,
       id: options.id,

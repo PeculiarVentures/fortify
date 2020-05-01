@@ -1,0 +1,56 @@
+.item_key
+  border-radius: 3px
+  display: block
+  width: 100%
+  padding: 14px 30px 17px 20px
+  display: flex
+  justify-content: space-between
+  align-items: center
+  & + .item_key
+    margin-top: 10px
+  &:hover
+    background: rgba(var(--grey_2), 0.2) !important
+    .button_remove
+      visibility: visible
+
+.date
+  margin-bottom: 5px
+
+.image_browser
+  float: left
+  height: 16px
+  filter: grayscale(100%)
+  opacity: .7
+  &[data-active="true"]
+    filter: none
+    opacity: 1
+  & + .image_browser
+    margin-left: 5px
+
+.button_remove
+  padding: 0 15px
+  margin-left: 15px
+  flex-shrink: 0
+  visibility: hidden
+
+.search
+  margin-bottom: 10px
+
+.content
+  height: calc(100% - 40px - 10px)
+  overflow: auto
+  &.m_center
+    display: flex
+    align-items: center
+    justify-content: center
+
+.container_list_state
+  padding: 15px 10px
+  font-size: 0
+  display: flex
+  width: 100%
+  align-items: start
+
+.icon_list_state
+  margin-right: 12px
+

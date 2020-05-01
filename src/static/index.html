@@ -4,13 +4,152 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title></title>
+    <title></title>
+
+    <!-- Basic styles -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        border: 0;
+        border-radius: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-size-adjust: none;
+        -webkit-text-size-adjust: none;
+        -webkit-tap-highlight-color: transparent;
+        word-break: break-word;
+        outline-color: #c4d8f7;
+      }
+
+      *:focus:not(:active):not(:hover) {
+        outline-width: 2px;
+        outline-style: solid;
+        outline-offset: -2px;
+      }
+
+      *:after, *:before {
+        box-sizing: border-box;
+      }
+
+      input:focus, textarea:focus, *:active, *:hover {
+        outline: none !important;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      a:not([class^="button"]) {
+        color: rgb(var(--primary));
+        transition: opacity 200ms;
+      }
+
+      a:not([class^="button"]):hover {
+        opacity: 0.6;
+      }
+
+      textarea {
+        resize: none;
+      }
+
+      input, textarea {
+        -webkit-appearance: none !important;
+        -moz-appearance: none;
+        -ms-appearance: none;
+        appearance: none !important;
+        font-family: inherit;
+      }
+
+      button {
+        font-family: inherit;
+        font-weight: 400 !important;
+      }
+
+      table {
+        cellspacing: 0 !important;
+        border-spacing: 0 !important;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        min-width: 320px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
+      }
+
+      #root {
+        height: 100%;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+      }
+
+      .clear:after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+    </style>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap&subset=cyrillic,greek" rel="stylesheet">
+
 		<!-- Dependencies -->
-    <script defer src="../../node_modules/react/umd/react.production.min.js"></script>
-    <script defer src="../../node_modules/react-dom/umd/react-dom.production.min.js"></script>
+    <link rel="stylesheet" href="../../node_modules/lib-react-components/lib/themes/default.css">
+
+    <!-- Theme styles -->
+    <style>
+      :root {
+        --secondary: 10, 190, 101;
+        --primary: 6, 128, 255;
+        --grey_1: 250, 249, 249;
+        --grey_2: 225, 228, 230;
+        --grey_4: 182, 195, 204;
+        --black: 64, 72, 79;
+        --white: 255, 255, 255;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --grey_1: 44, 52, 59;
+          --grey_2: 104, 112, 119;
+          --grey_4: 114, 122, 129;
+          --black: 255, 255, 255;
+          --white: 64, 72, 79;
+        }
+      }
+
+      .button {
+        padding: 0 30px;
+      }
+    </style>
 	</head>
-	<body>
-    <div id="root"></div>
+	<body class="fill_white">
+    <div id="root">
+      <style>
+        .container_with_loading {
+          position: absolute;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          left: 50%;
+        }
+      </style>
+      <div class="container_with_loading">
+        <div data-component="circular-progress" class="circle_progress" style="width: 24px; height: 24px;">
+          <svg class="circle_progress_svg" viewBox="0 0 50 50">
+            <circle class="circle_progress_stroke_light_grey" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+            <circle class="circle_progress_circle circle_progress_stroke_primary" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
     <script>
       const electron = require("electron");
       const currentWindow = electron.remote.getCurrentWindow();

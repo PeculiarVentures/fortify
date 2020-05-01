@@ -3,6 +3,7 @@ import {
   ipcMain,
   screen,
   shell,
+  IpcMainEvent,
 } from 'electron';
 
 import * as crypto from 'crypto';
@@ -24,16 +25,22 @@ import { ConfigureWrite } from './config';
 import {
   APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_SSL_CERT,
   APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
-  icons, SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE,
+  SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE, APP_LOG_FILE,
 } from './const';
 import * as appCrypto from './crypto';
 import * as jws from './jws';
-import { Locale, locale, t } from './locale';
+import { Locale, locale, intl } from './locale';
 import * as ssl from './ssl';
 import * as tray from './tray';
 import { CheckUpdate } from './update';
-import { CreateWindow } from './window';
-import { CreateErrorWindow, CreateQuestionWindow, CreateWarningWindow } from './windows/message';
+import {
+  CreateErrorWindow,
+  CreateQuestionWindow,
+  CreateWarningWindow,
+  CreateMainWindow,
+  CreateKeyPinWindow,
+  CreateP11PinWindow,
+} from './windows';
 
 require('@babel/polyfill');
 
@@ -54,8 +61,8 @@ if ('dock' in app) {
   app.dock.hide();
 }
 
-app.once('ready', () => {
-  (async () => {
+app.once('ready', async () => {
+  try {
     // #region Load locale
     winston.info(`System locale is '${app.getLocale()}'`);
     if (!application.configure.locale) {
@@ -76,19 +83,20 @@ app.once('ready', () => {
     tray.create();
 
     CreateMainWindow();
+
     if (CHECK_UPDATE) {
       await CheckUpdate();
       setInterval(() => {
         CheckUpdate();
       }, CHECK_UPDATE_INTERVAL);
     }
+
     await InitService();
     InitMessages();
-  })()
-    .catch((err) => {
-      winston.error(err.toString());
-      app.emit('error', err);
-    });
+  } catch (error) {
+    winston.error(error.toString());
+    app.emit('error', error);
+  }
 });
 
 // Quit when all windows are closed.
@@ -99,28 +107,6 @@ app.once('ready', () => {
 //         app.quit()
 //     }
 // })
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
-
-function CreateMainWindow() {
-  // Create the browser window.
-  mainWindow = CreateWindow({
-    app: 'index',
-    width: 800,
-    height: 600,
-    show: false,
-  });
-
-  // Emitted when the window is closed.
-  mainWindow.on('closed', () => {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    // mainWindow = null
-  });
-}
 
 function CheckSSL() {
   if (fs.existsSync(APP_SSL_CERT) && fs.existsSync(APP_SSL_KEY)) {
@@ -160,7 +146,7 @@ async function InitService() {
 
     // Set cert as trusted
     const warning = new Promise((resolve) => { // wrap callback
-      CreateWarningWindow(t('warn.ssl.install'), { alwaysOnTop: true, buttonLabel: t('i_understand') }, () => {
+      CreateWarningWindow(intl('warn.ssl.install'), { alwaysOnTop: true, buttonLabel: intl('i_understand') }, () => {
         winston.info('Warning window was closed');
         resolve();
       });
@@ -177,7 +163,7 @@ async function InitService() {
         fs.unlinkSync(APP_SSL_CERT);
         fs.unlinkSync(APP_SSL_KEY);
 
-        CreateErrorWindow(t('error.ssl.install'), () => {
+        CreateErrorWindow(intl('error.ssl.install'), () => {
           application.quit();
         });
       });
@@ -188,6 +174,7 @@ async function InitService() {
       cert: fs.readFileSync(APP_SSL_CERT),
       key: fs.readFileSync(APP_SSL_KEY),
     } as any;
+
     winston.info('SSL certificate is loaded');
   }
 
@@ -200,7 +187,6 @@ async function InitService() {
   // console.log(JSON.stringify(config, null, "  "));
   // @ts-ignore
   sslData.config = config;
-
   sslData.storage = await wsServer.FileStorage.create();
 
   try {
@@ -213,6 +199,7 @@ async function InitService() {
   }
 
   const { server } = application;
+
   server
     .on('listening', (e: any) => {
       winston.info(`Server: Started at ${e}`);
@@ -223,7 +210,8 @@ async function InitService() {
     .on('token_new', (card) => {
       const atr = card.atr.toString('hex');
       winston.info(`New token was found reader: '${card.reader}' ATR: ${atr}`);
-      CreateQuestionWindow(t('question.new.token'), { id: 'question.new.token', showAgain: true }, (res) => {
+
+      CreateQuestionWindow(intl('question.new.token'), { id: 'question.new.token', showAgain: true }, (res) => {
         if (res) {
           try {
             const title = `Add support for '${atr}' token`;
@@ -244,15 +232,17 @@ async function InitService() {
     })
     .on('error', (e: Error) => {
       winston.error(e.stack || e.toString());
+
       if (e.hasOwnProperty('code') && e.hasOwnProperty('type')) {
         const err = e as wsServer.WebCryptoLocalError;
         const { CODE } = wsServer.WebCryptoLocalError;
+
         switch (err.code) {
           case CODE.PCSC_CANNOT_START:
-            CreateWarningWindow(t('warn.pcsc.cannot_start'), {
+            CreateWarningWindow(intl('warn.pcsc.cannot_start'), {
               alwaysOnTop: true,
-              title: t('warning.title.oh_no'),
-              buttonLabel: t('i_understand'),
+              title: intl('warning.title.oh_no'),
+              buttonLabel: intl('i_understand'),
               id: 'warn.pcsc.cannot_start',
               showAgain: true,
             }, () => {
@@ -260,18 +250,18 @@ async function InitService() {
             });
             break;
           case CODE.PROVIDER_CRYPTO_NOT_FOUND:
-            CreateWarningWindow(t('warn.token.crypto_not_found', err.message), {
+            CreateWarningWindow(intl('warn.token.crypto_not_found', err.message), {
               alwaysOnTop: true,
-              title: t('warning.title.oh_no'),
+              title: intl('warning.title.oh_no'),
               id: 'warn.token.crypto_not_found',
               showAgain: true,
             });
             break;
           case CODE.PROVIDER_CRYPTO_WRONG:
           case CODE.PROVIDER_WRONG_LIBRARY:
-            CreateWarningWindow(t('warn.token.crypto_wrong', err.message), {
+            CreateWarningWindow(intl('warn.token.crypto_wrong', err.message), {
               alwaysOnTop: true,
-              title: t('warning.title.oh_no'),
+              title: intl('warning.title.oh_no'),
               id: 'warn.token.crypto_wrong',
               showAgain: true,
             });
@@ -283,64 +273,22 @@ async function InitService() {
     })
     .on('notify', (p: any) => {
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
       switch (p.type) {
         case '2key': {
           p.accept = false;
 
-          // Create the browser window.
-          const window = CreateWindow({
-            app: 'key-pin',
-            width: 400,
-            height: 300,
-            x: width - 400,
-            y: height - 300,
-            resizable: false,
-            minimizable: false,
-            autoHideMenuBar: true,
-            modal: true,
-            alwaysOnTop: true,
-            icon: icons.favicon,
-            params: p,
+          CreateKeyPinWindow({
+            width,
+            height,
+            p,
           });
-
-          window
-            .on('ready-to-show', () => {
-              // window.show();
-              window.focus();
-            })
-            .on('closed', () => {
-              p.resolve(p.accept);
-            });
           break;
         }
         case 'pin': {
-          // Create the browser window.
-          const window = CreateWindow({
-            app: 'p11-pin',
-            title: t('p11-pin'),
-            width: 500,
-            height: 300,
-            alwaysOnTop: true,
-            autoHideMenuBar: true,
-            resizable: false,
-            minimizable: false,
-            icon: icons.favicon,
+          CreateP11PinWindow({
+            p,
           });
-
-          window.params = p;
-          p.pin = '';
-
-          window
-            .on('ready-to-show', () => {
-              window.focus();
-            })
-            .on('closed', () => {
-              if (p.pin) {
-                p.resolve(p.pin);
-              } else {
-                p.reject(new wsServer.WebCryptoLocalError(10001, 'Incorrect PIN value. It cannot be empty.'));
-              }
-            });
           break;
         }
         default:
@@ -360,6 +308,7 @@ async function PrepareConfig(config: IConfigure) {
   if (!config.disableCardUpdate) {
     await PrepareCardJson();
   }
+
   PrepareProviders(config);
   PrepareCards(config);
 }
@@ -430,7 +379,6 @@ async function PrepareCardJson() {
       winston.info('Comparing current version of card.json file with remote');
 
       let remote: any;
-      let local: any;
 
       try {
         const jwsString = await GetRemoteFile(APP_CARD_JSON_LINK);
@@ -439,7 +387,7 @@ async function PrepareCardJson() {
         winston.error(`Cannot get get file ${APP_CARD_JSON_LINK}. ${e.message}`);
       }
 
-      local = JSON.parse(
+      const local = JSON.parse(
         fs.readFileSync(APP_CARD_JSON, { encoding: 'utf8' }),
       );
 
@@ -477,93 +425,132 @@ interface CurrentIdentity {
 }
 
 function InitMessages() {
-  ipcMain.on('2key-list', (event: any) => {
-    let storage: wsServer.FileStorage;
-    Promise.resolve()
-      .then(() => {
-        storage = application.server.server.storage as wsServer.FileStorage;
-        if (!Object.keys(storage.remoteIdentities).length) {
-          // NOTE: call protected method of the storage
-          // @ts-ignore
-          return storage.loadRemote();
-        }
-      })
-      .then(() => {
-        const identities = storage.remoteIdentities;
-        const preparedList = [];
-        for (const i in identities) {
-          const identity = PrepareIdentity(identities[i]);
-          preparedList.push(identity);
-        }
-        // sort identities
-        preparedList.sort((a, b) => {
-          if (a.origin > b.origin) {
-            return 1;
-          } if (a.origin < b.origin) {
-            return -1;
+  ipcMain
+    .on('2key-list', (event: IpcMainEvent) => {
+      let storage: wsServer.FileStorage;
+
+      Promise.resolve()
+        .then(() => {
+          storage = application.server.server.storage as wsServer.FileStorage;
+          if (!Object.keys(storage.remoteIdentities).length) {
+            // NOTE: call protected method of the storage
+            // @ts-ignore
+            return storage.loadRemote();
           }
-          if (a.browser > b.browser) {
-            return 1;
-          } if (a.browser < b.browser) {
-            return -1;
+        })
+        .then(() => {
+          const identities = storage.remoteIdentities;
+          const preparedList = [];
+
+          for (const i in identities) {
+            const identity = PrepareIdentity(identities[i]);
+
+            preparedList.push(identity);
           }
 
-          return 0;
-        });
-        // prepare data
-        const res: CurrentIdentity[] = [];
-        let currentIdentity: CurrentIdentity = {
-          origin: null,
-          created: null,
-          browsers: [],
-        };
-        preparedList.forEach((identity) => {
-          if (currentIdentity.origin !== identity.origin) {
-            if (currentIdentity.origin !== null) {
-              res.push(currentIdentity);
+          // sort identities
+          preparedList.sort((a, b) => {
+            if (a.origin > b.origin) {
+              return 1;
+            } if (a.origin < b.origin) {
+              return -1;
             }
-            currentIdentity = {
-              origin: identity.origin,
-              created: identity.created,
-              browsers: [identity.browser],
-            };
-          } else {
-            if (currentIdentity.created! > identity.created) {
-              currentIdentity.created = identity.created;
+            if (a.browser > b.browser) {
+              return 1;
+            } if (a.browser < b.browser) {
+              return -1;
             }
-            if (!currentIdentity.browsers.some((browser) => browser === identity.browser)) {
-              currentIdentity.browsers.push(identity.browser);
-            }
-          }
-        });
-        if (currentIdentity.origin !== null) {
-          res.push(currentIdentity);
-        }
-        event.sender.send('2key-list', res);
-      });
-  })
-    .on('2key-remove', (event: any, arg: any) => {
-      const storage = application.server.server.storage as wsServer.FileStorage;
-      CreateQuestionWindow(t('question.2key.remove', arg), { parent: application.windows.keys }, (result) => {
-        if (result) {
-          winston.info(`Removing 2key session key ${arg}`);
-          const remList = [];
-          for (const i in storage.remoteIdentities) {
-            const identity = storage.remoteIdentities[i];
-            if (identity.origin === arg) {
-              remList.push(i);
-            }
-          }
-          remList.forEach((item) => {
-            delete storage.remoteIdentities[item];
+
+            return 0;
           });
-          storage.removeRemoteIdentity(arg);
-          event.sender.send('2key-remove', arg);
-        }
-      });
+          // prepare data
+          const res: CurrentIdentity[] = [];
+          let currentIdentity: CurrentIdentity = {
+            origin: null,
+            created: null,
+            browsers: [],
+          };
+
+          preparedList.forEach((identity) => {
+            if (currentIdentity.origin !== identity.origin) {
+              if (currentIdentity.origin !== null) {
+                res.push(currentIdentity);
+              }
+              currentIdentity = {
+                origin: identity.origin,
+                created: identity.created,
+                browsers: [identity.browser],
+              };
+            } else {
+              if (currentIdentity.created! > identity.created) {
+                currentIdentity.created = identity.created;
+              }
+              if (!currentIdentity.browsers.some((browser) => browser === identity.browser)) {
+                currentIdentity.browsers.push(identity.browser);
+              }
+            }
+          });
+
+          if (currentIdentity.origin !== null) {
+            res.push(currentIdentity);
+          }
+
+          event.sender.send('2key-list', res);
+        });
     })
-    .on('error', (error: Error) => {
-      winston.error(error.toString());
+    .on('2key-remove', (event: IpcMainEvent, arg: any) => {
+      const storage = application.server.server.storage as wsServer.FileStorage;
+
+      CreateQuestionWindow(
+        intl('question.2key.remove', arg),
+        { parent: application.windows.settings },
+        (result) => {
+          if (result) {
+            winston.info(`Removing 2key session key ${arg}`);
+            const remList = [];
+
+            for (const i in storage.remoteIdentities) {
+              const identity = storage.remoteIdentities[i];
+              if (identity.origin === arg) {
+                remList.push(i);
+              }
+            }
+
+            remList.forEach((item) => {
+              delete storage.remoteIdentities[item];
+            });
+            storage.removeRemoteIdentity(arg);
+
+            event.sender.send('2key-remove', arg);
+          }
+        },
+      );
+    })
+    .on('logging-open', () => {
+      shell.openItem(APP_LOG_FILE);
+    })
+    .on('logging-status', (event: IpcMainEvent) => {
+      event.sender.send('logging-status', application.configure.logging);
+    })
+    .on('logging-status-change', (event: IpcMainEvent) => {
+      application.configure.logging = !application.configure.logging;
+
+      ConfigureWrite(APP_CONFIG_FILE, application.configure);
+      application.LoggingSwitch(application.configure.logging);
+
+      event.sender.send('logging-status', application.configure.logging);
+    })
+    .on('language-change', (event: IpcMainEvent, lang: string) => {
+      locale.setLang(lang);
+      tray.create();
+
+      event.sender.send('language-change', locale.lang);
+    })
+    .on('language-get', (event: IpcMainEvent) => {
+      event.sender.send('language-get', locale.lang);
+    })
+    .on('error', (event: IpcMainEvent) => {
+      winston.error(event.toString());
     });
 }
 
@@ -582,6 +569,7 @@ interface Identity {
 function PrepareIdentity(identity: wsServer.RemoteIdentity) {
   const userAgent = identity.userAgent!;
   const res: Identity = {} as any;
+
   if (/edge\/([\d\.]+)/i.exec(userAgent)) {
     res.browser = 'edge';
   } else if (/msie/i.test(userAgent)) {
@@ -597,6 +585,7 @@ function PrepareIdentity(identity: wsServer.RemoteIdentity) {
   } else {
     res.browser = 'Other';
   }
+
   res.created = identity.createdAt;
   res.origin = identity.origin!;
 
@@ -606,9 +595,11 @@ function PrepareIdentity(identity: wsServer.RemoteIdentity) {
 function printInfo() {
   winston.info(`Application started at ${new Date()}`);
   winston.info(`OS ${os.platform()} ${os.arch()} `);
+
   try {
     const json = fs.readFileSync(path.join(APP_DIR, 'package.json'), 'utf8');
     const pkg = JSON.parse(json);
+
     winston.info(`Fortify v${pkg.version}`);
   } catch {
     //

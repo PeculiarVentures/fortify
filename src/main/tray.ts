@@ -1,124 +1,182 @@
 import {
-  app,
   Menu,
-  MenuItem,
-  nativeImage,
   shell,
   Tray,
+  MenuItemConstructorOptions,
 } from 'electron';
 
 import * as application from './application';
-import { LoggingSwitch } from './application';
-import { ConfigureWrite } from './config';
-import { APP_CONFIG_FILE, APP_LOG_FILE, icons } from './const';
-import { Locale, locale, t } from './locale';
-import { CreateAboutWindow } from './windows/about';
-import { CreateKeysWindow } from './windows/keys';
+import { icons } from './const';
+import { intl } from './locale';
+import {
+  CreateErrorWindow,
+  CreateQuestionWindow,
+  CreateWarningWindow,
+  CreateKeyPinWindow,
+  CreateP11PinWindow,
+  CreateAboutWindow,
+  CreateSettingsWindow,
+} from './windows';
 
 let tray: Electron.Tray;
 
 export function create() {
-  tray = new Tray(icons.tray);
-  const trayIconPressed = nativeImage.createFromPath(icons.trayWhite);
-  tray.setPressedImage(trayIconPressed);
+  if (!tray) {
+    tray = new Tray(icons.tray);
+  }
 
-  const contextMenu = new Menu();
-
-  const menuAbout = new MenuItem({
-    label: t('about'),
-  });
-  menuAbout.click = () => {
-    CreateAboutWindow();
-  };
-
-  const menuKeys = new MenuItem({
-    label: t('sites'),
-  });
-  menuKeys.click = () => {
-    CreateKeysWindow();
-  };
-
-  const menuLogSubMenu = new Menu();
-  const menuLogView = new MenuItem({
-    label: t('view.log'),
-    enabled: !!application.configure.logging,
-  });
-  menuLogView.click = () => {
-    shell.openItem(APP_LOG_FILE);
-  };
-  const menuLogDisable = new MenuItem({
-    label: t('enable.disable'),
-    type: 'checkbox',
-    checked: !!application.configure.logging,
-  });
-
-  menuLogDisable.click = () => {
-    application.configure.logging = !application.configure.logging;
-    menuLogDisable.checked = application.configure.logging;
-    menuLogView.enabled = application.configure.logging;
-    ConfigureWrite(APP_CONFIG_FILE, application.configure);
-    LoggingSwitch(application.configure.logging);
-  };
-  menuLogSubMenu.append(menuLogView);
-  menuLogSubMenu.append(menuLogDisable);
-  const menuLog = new MenuItem({
-    label: t('logging'),
-    submenu: menuLogSubMenu,
-  });
-
-  const menuTools = new MenuItem({
-    label: t('tools'),
-  });
-  menuTools.click = () => {
-    shell.openExternal('https://tools.fortifyapp.com/');
-  };
-
-  const menuSeparator = new MenuItem({
-    type: 'separator',
-  });
-
-  const menuExit = new MenuItem({
-    label: t('exit'),
-  });
-
-  menuExit.click = () => {
-    app.exit(0);
-  };
-
-  const menuLanguageSubmenu = new Menu();
-  Locale.getLangList().forEach((lang) => {
-    const menuItem = new MenuItem({
-      label: lang,
-      type: 'checkbox',
-      checked: lang === locale.lang,
+  const menuTemplate: MenuItemConstructorOptions[] = [
+    {
+      label: intl('about'),
       click: () => {
-        locale.setLang(lang);
-        reset();
+        CreateAboutWindow();
       },
-    });
-    menuLanguageSubmenu.append(menuItem);
-  });
-  const menuLanguage = new MenuItem({
-    label: t('language'),
-    submenu: menuLanguageSubmenu,
-  });
-  locale.on('change', () => {
-    menuLanguage.label = t('language');
-  });
+    },
+    {
+      label: intl('settings'),
+      click: () => {
+        CreateSettingsWindow();
+      },
+    },
+    {
+      type: 'separator',
+    },
+    {
+      label: intl('tools'),
+      click: () => {
+        shell.openExternal('https://tools.fortifyapp.com/');
+      },
+    },
+    {
+      label: intl('exit'),
+      role: 'quit',
+    },
+  ];
 
-  contextMenu.append(menuAbout);
-  contextMenu.append(menuKeys);
-  contextMenu.append(menuLog);
-  contextMenu.append(menuLanguage);
-  contextMenu.append(menuTools);
-  contextMenu.append(menuSeparator);
-  contextMenu.append(menuExit);
+  if (process.env.NODE_ENV === 'development') {
+    menuTemplate.push(
+      {
+        type: 'separator',
+      },
+      {
+        label: 'Develop',
+        submenu: [
+          {
+            label: 'Error',
+            click: () => {
+              CreateErrorWindow(
+                intl('error.ssl.install'),
+                () => {},
+              );
+            },
+          },
+          {
+            label: 'New token',
+            click: () => {
+              CreateQuestionWindow(
+                intl('question.new.token'),
+                { id: 'question.new.token', showAgain: true },
+                () => {},
+              );
+            },
+          },
+          {
+            label: 'Remove token',
+            click: () => {
+              CreateQuestionWindow(
+                intl('question.2key.remove', 'TEST'),
+                { parent: application.windows.settings },
+                () => {},
+              );
+            },
+          },
+          {
+            label: 'SSL install',
+            click: () => {
+              CreateWarningWindow(
+                intl('warn.ssl.install'),
+                {
+                  alwaysOnTop: true,
+                  buttonLabel: intl('i_understand'),
+                },
+                () => {},
+              );
+            },
+          },
+          {
+            label: 'Cannot start',
+            click: () => {
+              CreateWarningWindow(
+                intl('warn.pcsc.cannot_start'),
+                {
+                  alwaysOnTop: true,
+                  title: intl('warning.title.oh_no'),
+                  buttonLabel: intl('i_understand'),
+                  id: 'warn.pcsc.cannot_start',
+                  showAgain: true,
+                },
+                () => {},
+              );
+            },
+          },
+          {
+            label: 'Crypto not found',
+            click: () => {
+              CreateWarningWindow(
+                intl('warn.token.crypto_not_found', 'TEST'),
+                {
+                  alwaysOnTop: true,
+                  title: intl('warning.title.oh_no'),
+                  id: 'warn.token.crypto_not_found',
+                  showAgain: true,
+                },
+              );
+            },
+          },
+          {
+            label: 'Crypto wrong',
+            click: () => {
+              CreateWarningWindow(
+                intl('warn.token.crypto_wrong', 'TEST'),
+                {
+                  alwaysOnTop: true,
+                  title: intl('warning.title.oh_no'),
+                  id: 'warn.token.crypto_wrong',
+                  showAgain: true,
+                },
+              );
+            },
+          },
+          {
+            label: 'Key PIN',
+            click: () => {
+              CreateKeyPinWindow({
+                width: 2000,
+                height: 2000,
+                p: {
+                  pin: '123456',
+                  origin: 'https://TEST.com/',
+                },
+              });
+            },
+          },
+          {
+            label: 'P11 PIN',
+            click: () => {
+              CreateP11PinWindow({
+                p: {
+                  origin: 'https://TEST.com/',
+                },
+              });
+            },
+          },
+        ],
+      },
+    );
+  }
+
+  const menu = Menu.buildFromTemplate(menuTemplate);
 
   tray.setToolTip('Fortify');
-  tray.setContextMenu(contextMenu);
-}
-
-function reset() {
-  tray.destroy();
-  create();
+  tray.setContextMenu(menu);
 }
