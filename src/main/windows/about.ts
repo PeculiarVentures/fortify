@@ -1,25 +1,24 @@
 import { windowSizes } from '../const';
+import { windows } from '../application';
 import { intl } from '../locale';
 import { CreateWindow } from './window';
 
-let aboutWindow: Electron.BrowserWindow | null = null;
-
 export function CreateAboutWindow() {
   // Create the browser window.
-  if (aboutWindow) {
-    aboutWindow.focus();
+  if (windows.about) {
+    windows.about.focus();
 
     return;
   }
 
-  aboutWindow = CreateWindow({
+  windows.about = CreateWindow({
     ...windowSizes.small,
     app: 'about',
     title: intl('about'),
   });
 
   // Emitted when the window is closed.
-  aboutWindow.on('closed', () => {
-    aboutWindow = null;
+  windows.about.on('closed', () => {
+    delete windows.about;
   });
 }

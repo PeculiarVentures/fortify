@@ -25,7 +25,7 @@ import { ConfigureWrite } from './config';
 import {
   APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_SSL_CERT,
   APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
-  SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE,
+  SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE, APP_LOG_FILE,
 } from './const';
 import * as appCrypto from './crypto';
 import * as jws from './jws';
@@ -379,7 +379,6 @@ async function PrepareCardJson() {
       winston.info('Comparing current version of card.json file with remote');
 
       let remote: any;
-      let local: any;
 
       try {
         const jwsString = await GetRemoteFile(APP_CARD_JSON_LINK);
@@ -388,7 +387,7 @@ async function PrepareCardJson() {
         winston.error(`Cannot get get file ${APP_CARD_JSON_LINK}. ${e.message}`);
       }
 
-      local = JSON.parse(
+      const local = JSON.parse(
         fs.readFileSync(APP_CARD_JSON, { encoding: 'utf8' }),
       );
 
@@ -426,98 +425,127 @@ interface CurrentIdentity {
 }
 
 function InitMessages() {
-  ipcMain.on('2key-list', (event: any) => {
-    let storage: wsServer.FileStorage;
-    Promise.resolve()
-      .then(() => {
-        storage = application.server.server.storage as wsServer.FileStorage;
-        if (!Object.keys(storage.remoteIdentities).length) {
-          // NOTE: call protected method of the storage
-          // @ts-ignore
-          return storage.loadRemote();
-        }
-      })
-      .then(() => {
-        const identities = storage.remoteIdentities;
-        const preparedList = [];
+  ipcMain
+    .on('2key-list', (event: IpcMainEvent) => {
+      let storage: wsServer.FileStorage;
 
-        for (const i in identities) {
-          const identity = PrepareIdentity(identities[i]);
-          preparedList.push(identity);
-        }
-
-        // sort identities
-        preparedList.sort((a, b) => {
-          if (a.origin > b.origin) {
-            return 1;
-          } if (a.origin < b.origin) {
-            return -1;
+      Promise.resolve()
+        .then(() => {
+          storage = application.server.server.storage as wsServer.FileStorage;
+          if (!Object.keys(storage.remoteIdentities).length) {
+            // NOTE: call protected method of the storage
+            // @ts-ignore
+            return storage.loadRemote();
           }
-          if (a.browser > b.browser) {
-            return 1;
-          } if (a.browser < b.browser) {
-            return -1;
+        })
+        .then(() => {
+          const identities = storage.remoteIdentities;
+          const preparedList = [];
+
+          for (const i in identities) {
+            const identity = PrepareIdentity(identities[i]);
+
+            preparedList.push(identity);
           }
 
-          return 0;
+          // sort identities
+          preparedList.sort((a, b) => {
+            if (a.origin > b.origin) {
+              return 1;
+            } if (a.origin < b.origin) {
+              return -1;
+            }
+            if (a.browser > b.browser) {
+              return 1;
+            } if (a.browser < b.browser) {
+              return -1;
+            }
+
+            return 0;
+          });
+          // prepare data
+          const res: CurrentIdentity[] = [];
+          let currentIdentity: CurrentIdentity = {
+            origin: null,
+            created: null,
+            browsers: [],
+          };
+
+          preparedList.forEach((identity) => {
+            if (currentIdentity.origin !== identity.origin) {
+              if (currentIdentity.origin !== null) {
+                res.push(currentIdentity);
+              }
+              currentIdentity = {
+                origin: identity.origin,
+                created: identity.created,
+                browsers: [identity.browser],
+              };
+            } else {
+              if (currentIdentity.created! > identity.created) {
+                currentIdentity.created = identity.created;
+              }
+              if (!currentIdentity.browsers.some((browser) => browser === identity.browser)) {
+                currentIdentity.browsers.push(identity.browser);
+              }
+            }
+          });
+
+          if (currentIdentity.origin !== null) {
+            res.push(currentIdentity);
+          }
+
+          event.sender.send('2key-list', res);
         });
-        // prepare data
-        const res: CurrentIdentity[] = [];
-        let currentIdentity: CurrentIdentity = {
-          origin: null,
-          created: null,
-          browsers: [],
-        };
-        preparedList.forEach((identity) => {
-          if (currentIdentity.origin !== identity.origin) {
-            if (currentIdentity.origin !== null) {
-              res.push(currentIdentity);
-            }
-            currentIdentity = {
-              origin: identity.origin,
-              created: identity.created,
-              browsers: [identity.browser],
-            };
-          } else {
-            if (currentIdentity.created! > identity.created) {
-              currentIdentity.created = identity.created;
-            }
-            if (!currentIdentity.browsers.some((browser) => browser === identity.browser)) {
-              currentIdentity.browsers.push(identity.browser);
-            }
-          }
-        });
-        if (currentIdentity.origin !== null) {
-          res.push(currentIdentity);
-        }
-        event.sender.send('2key-list', res);
-      });
-  })
-    .on('2key-remove', (event: any, arg: any) => {
+    })
+    .on('2key-remove', (event: IpcMainEvent, arg: any) => {
       const storage = application.server.server.storage as wsServer.FileStorage;
 
-      CreateQuestionWindow(intl('question.2key.remove', arg), { parent: application.windows.keys }, (result) => {
-        if (result) {
-          winston.info(`Removing 2key session key ${arg}`);
-          const remList = [];
+      CreateQuestionWindow(
+        intl('question.2key.remove', arg),
+        { parent: application.windows.settings },
+        (result) => {
+          if (result) {
+            winston.info(`Removing 2key session key ${arg}`);
+            const remList = [];
 
-          for (const i in storage.remoteIdentities) {
-            const identity = storage.remoteIdentities[i];
-            if (identity.origin === arg) {
-              remList.push(i);
+            for (const i in storage.remoteIdentities) {
+              const identity = storage.remoteIdentities[i];
+              if (identity.origin === arg) {
+                remList.push(i);
+              }
             }
-          }
 
-          remList.forEach((item) => {
-            delete storage.remoteIdentities[item];
-          });
-          storage.removeRemoteIdentity(arg);
-          event.sender.send('2key-remove', arg);
-        }
-      });
+            remList.forEach((item) => {
+              delete storage.remoteIdentities[item];
+            });
+            storage.removeRemoteIdentity(arg);
+
+            event.sender.send('2key-remove', arg);
+          }
+        },
+      );
     })
-    .on('error', (error: IpcMainEvent) => {
-      winston.error(error.toString());
+    .on('logging-open', () => {
+      shell.openItem(APP_LOG_FILE);
+    })
+    .on('logging-status', (event: IpcMainEvent) => {
+      event.sender.send('logging-status', application.configure.logging);
+    })
+    .on('logging-status-change', (event: IpcMainEvent) => {
+      application.configure.logging = !application.configure.logging;
+
+      ConfigureWrite(APP_CONFIG_FILE, application.configure);
+      application.LoggingSwitch(application.configure.logging);
+
+      event.sender.send('logging-status', application.configure.logging);
+    })
+    .on('language-change', (_: IpcMainEvent, lang: string) => {
+      locale.setLang(lang);
+      tray.create();
+    })
+    .on('error', (event: IpcMainEvent) => {
+      winston.error(event.toString());
     });
 }
 
@@ -536,6 +564,7 @@ interface Identity {
 function PrepareIdentity(identity: wsServer.RemoteIdentity) {
   const userAgent = identity.userAgent!;
   const res: Identity = {} as any;
+
   if (/edge\/([\d\.]+)/i.exec(userAgent)) {
     res.browser = 'edge';
   } else if (/msie/i.test(userAgent)) {
@@ -551,6 +580,7 @@ function PrepareIdentity(identity: wsServer.RemoteIdentity) {
   } else {
     res.browser = 'Other';
   }
+
   res.created = identity.createdAt;
   res.origin = identity.origin!;
 
@@ -564,6 +594,7 @@ function printInfo() {
   try {
     const json = fs.readFileSync(path.join(APP_DIR, 'package.json'), 'utf8');
     const pkg = JSON.parse(json);
+
     winston.info(`Fortify v${pkg.version}`);
   } catch {
     //
