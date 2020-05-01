@@ -7,7 +7,7 @@ import {
   CircularProgress,
 } from 'lib-react-components';
 import classnames from 'classnames';
-import { intl } from '../../../main/locale';
+import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/sites.sass');
 
@@ -53,6 +53,10 @@ export class Sites extends React.Component<ISitesProps, ISitesState> {
     },
   ];
 
+  static contextType = IntlContext;
+
+  context!: React.ContextType<typeof IntlContext>;
+
   constructor(props: ISitesProps) {
     super(props);
 
@@ -69,6 +73,7 @@ export class Sites extends React.Component<ISitesProps, ISitesState> {
 
   renderKeyItem(key: IKey) {
     const { keys } = this.props;
+    const { intl } = this.context;
 
     return (
       <Box
@@ -120,6 +125,7 @@ export class Sites extends React.Component<ISitesProps, ISitesState> {
   renderContent() {
     const { keys } = this.props;
     const { search } = this.state;
+    const { intl } = this.context;
 
     if (keys.isFetching === 'pending') {
       return (
@@ -189,6 +195,7 @@ export class Sites extends React.Component<ISitesProps, ISitesState> {
 
   render() {
     const { keys } = this.props;
+    const { intl } = this.context;
 
     return (
       <>

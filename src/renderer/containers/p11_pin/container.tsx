@@ -2,7 +2,7 @@ import * as React from 'react';
 import { TextField } from 'lib-react-components';
 import { ModalLayout } from '../../components/layouts';
 import { WindowEvent } from '../../components/window_event';
-import { intl } from '../../../main/locale';
+import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/container.sass');
 
@@ -13,6 +13,10 @@ export interface IContainerProps {
 }
 
 export default class Container extends React.Component<IContainerProps> {
+  static contextType = IntlContext;
+
+  context!: React.ContextType<typeof IntlContext>;
+
   textFieldRef = React.createRef<any>();
 
   onKeyDown = (e: KeyboardEvent) => {
@@ -44,6 +48,7 @@ export default class Container extends React.Component<IContainerProps> {
       onReject,
       origin,
     } = this.props;
+    const { intl } = this.context;
 
     return (
       <>

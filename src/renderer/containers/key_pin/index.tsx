@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import WindowProvider from '../../components/window_provider';
 import Container from './container';
+import { IntlProvider } from '../../components/intl';
 
 class Root extends WindowProvider<{}, {}> {
   onReject = () => {
@@ -16,12 +17,14 @@ class Root extends WindowProvider<{}, {}> {
 
   render() {
     return (
-      <Container
-        onReject={this.onReject}
-        onApprove={this.onApprove}
-        origin={this.params.origin}
-        pin={this.params.pin}
-      />
+      <IntlProvider>
+        <Container
+          onReject={this.onReject}
+          onApprove={this.onApprove}
+          origin={this.params.origin}
+          pin={this.params.pin}
+        />
+      </IntlProvider>
     );
   }
 }

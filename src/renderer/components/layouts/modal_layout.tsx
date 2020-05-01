@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button, Typography } from 'lib-react-components';
-import { intl } from '../../../main/locale';
+import { IntlContext } from '../intl';
 
 const s = require('./styles/modal_layout.sass');
 
@@ -14,6 +14,10 @@ export interface IModalLayoutProps {
 }
 
 export default class ModalLayout extends React.Component<IModalLayoutProps> {
+  static contextType = IntlContext;
+
+  context!: React.ContextType<typeof IntlContext>;
+
   renderButtons() {
     const {
       onReject,
@@ -21,6 +25,7 @@ export default class ModalLayout extends React.Component<IModalLayoutProps> {
       textReject,
       textApprove,
     } = this.props;
+    const { intl } = this.context;
 
     return (
       <>

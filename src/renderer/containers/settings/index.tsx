@@ -2,8 +2,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import WindowProvider from '../../components/window_provider';
+import { IntlProvider } from '../../components/intl';
 import Container from './container';
-import { Locale, locale } from '../../../main/locale';
 
 interface IRootProps {}
 
@@ -41,11 +41,6 @@ class Root extends WindowProvider<IRootProps, IRootState> {
     ipcRenderer.send('2key-list');
     // Call event for get logging status
     ipcRenderer.send('logging-status');
-
-    // TODO: Need to check auto change UI lang
-    locale.on('change', () => {
-      console.log('lang changed');
-    });
   }
 
   componentWillUnmount() {
@@ -101,22 +96,22 @@ class Root extends WindowProvider<IRootProps, IRootState> {
     const { keys, logging } = this.state;
 
     return (
-      <Container
-        logging={{
-          onLoggingOpen: this.onLoggingOpen,
-          onLoggingStatusChange: this.onLoggingStatusChange,
-          ...logging,
-        }}
-        language={{
-          list: Locale.getLangList(),
-          current: locale.lang,
-          onLanguageChange: this.onLanguageChange,
-        }}
-        keys={{
-          ...keys,
-          onKeyRemove: this.onKeyRemove,
-        }}
-      />
+      <IntlProvider>
+        <Container
+          logging={{
+            onLoggingOpen: this.onLoggingOpen,
+            onLoggingStatusChange: this.onLoggingStatusChange,
+            ...logging,
+          }}
+          language={{
+            onLanguageChange: this.onLanguageChange,
+          }}
+          keys={{
+            ...keys,
+            onKeyRemove: this.onKeyRemove,
+          }}
+        />
+      </IntlProvider>
     );
   }
 }

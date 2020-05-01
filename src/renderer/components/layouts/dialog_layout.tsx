@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button } from 'lib-react-components';
-import { intl } from '../../../main/locale';
+import { IntlContext } from '../intl';
 
 const s = require('./styles/dialog_layout.sass');
 
@@ -15,6 +15,10 @@ export interface IDialogLayoutProps {
 }
 
 export default class DialogLayout extends React.Component<IDialogLayoutProps> {
+  static contextType = IntlContext;
+
+  context!: React.ContextType<typeof IntlContext>;
+
   renderButtons() {
     const {
       onReject,
@@ -22,6 +26,7 @@ export default class DialogLayout extends React.Component<IDialogLayoutProps> {
       textReject,
       textApprove,
     } = this.props;
+    const { intl } = this.context;
     const buttons = [];
 
     if (onReject) {

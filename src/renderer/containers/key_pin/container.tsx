@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Typography, Box } from 'lib-react-components';
 import { ModalLayout } from '../../components/layouts';
 import { WindowEvent } from '../../components/window_event';
-import { intl } from '../../../main/locale';
+import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/container.sass');
 
@@ -14,6 +14,10 @@ export interface IContainerProps {
 }
 
 export default class Container extends React.Component<IContainerProps> {
+  static contextType = IntlContext;
+
+  context!: React.ContextType<typeof IntlContext>;
+
   onKeyDown = (e: KeyboardEvent) => {
     const { onApprove, onReject } = this.props;
 
@@ -38,6 +42,7 @@ export default class Container extends React.Component<IContainerProps> {
       origin,
       pin,
     } = this.props;
+    const { intl } = this.context;
 
     return (
       <>

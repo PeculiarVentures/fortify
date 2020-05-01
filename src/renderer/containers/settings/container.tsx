@@ -9,7 +9,7 @@ import classnames from 'classnames';
 import { Sites } from './sites';
 import { Logging } from './logging';
 import { Language } from './language';
-import { intl } from '../../../main/locale';
+import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/container.sass');
 
@@ -26,8 +26,6 @@ export interface IContainerProps {
     status: boolean;
   };
   language: {
-    list: string[],
-    current: string;
     onLanguageChange: (lang: string) => void;
   };
   keys: {
@@ -42,6 +40,10 @@ export interface IContainerState {
 }
 
 export default class Container extends React.Component<IContainerProps, IContainerState> {
+  static contextType = IntlContext;
+
+  context!: React.ContextType<typeof IntlContext>;
+
   constructor(props: IContainerProps) {
     super(props);
 
@@ -59,6 +61,7 @@ export default class Container extends React.Component<IContainerProps, IContain
   render() {
     const { language, keys, logging } = this.props;
     const { tab } = this.state;
+    const { intl } = this.context;
 
     return (
       <Box

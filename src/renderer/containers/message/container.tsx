@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Typography, Checkbox } from 'lib-react-components';
 import { DialogLayout, IDialogLayoutProps } from '../../components/layouts';
 import { WindowEvent } from '../../components/window_event';
-import { intl } from '../../../main/locale';
+import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/container.sass');
 
@@ -16,6 +16,10 @@ export interface IContainerProps {
 }
 
 export default class Container extends React.Component<IContainerProps> {
+  static contextType = IntlContext;
+
+  context!: React.ContextType<typeof IntlContext>;
+
   checkboxRef = React.createRef<any>();
 
   onKeyDown = (e: KeyboardEvent) => {
@@ -52,6 +56,7 @@ export default class Container extends React.Component<IContainerProps> {
       onApprove,
       hasShowAgain,
     } = this.props;
+    const { intl } = this.context;
     const props: Omit<IDialogLayoutProps, 'children'> = {
       icon: (
         <img
