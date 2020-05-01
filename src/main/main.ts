@@ -540,9 +540,14 @@ function InitMessages() {
 
       event.sender.send('logging-status', application.configure.logging);
     })
-    .on('language-change', (_: IpcMainEvent, lang: string) => {
+    .on('language-change', (event: IpcMainEvent, lang: string) => {
       locale.setLang(lang);
       tray.create();
+
+      event.sender.send('language-change', locale.lang);
+    })
+    .on('language-get', (event: IpcMainEvent) => {
+      event.sender.send('language-get', locale.lang);
     })
     .on('error', (event: IpcMainEvent) => {
       winston.error(event.toString());
