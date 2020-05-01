@@ -4,7 +4,9 @@ import {
   Box,
   TextField,
   Button,
+  CircularProgress,
 } from 'lib-react-components';
+import classnames from 'classnames';
 import { intl } from '../../../main/locale';
 
 const s = require('./styles/sites.sass');
@@ -14,10 +16,13 @@ interface ISitesProps {
   keys: {
     list: IKey[];
     isFetching: IsFetchingType;
+    onKeyRemove: (origin: string) => void;
   };
 }
 
-interface ISitesState {}
+interface ISitesState {
+  search: string;
+}
 
 export class Sites extends React.Component<ISitesProps, ISitesState> {
   static browsersList = [
@@ -51,14 +56,140 @@ export class Sites extends React.Component<ISitesProps, ISitesState> {
   constructor(props: ISitesProps) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      search: '',
+    };
+  }
+
+  onChangeSearch = (e: any) => {
+    this.setState({
+      search: e.target.value.toLowerCase(),
+    });
+  };
+
+  renderKeyItem(key: IKey) {
+    const { keys } = this.props;
+
+    return (
+      <Box
+        key={key.origin}
+        tagType="li"
+        stroke="grey_2"
+        fill="white"
+        className={s.item_key}
+      >
+        <div>
+          <Typography
+            type="b3"
+          >
+            {key.origin}
+          </Typography>
+          <Typography
+            type="c1"
+            color="grey_4"
+            className={s.date}
+          >
+            {new Date(key.created).toLocaleDateString()}
+          </Typography>
+          <div className="clear">
+            {Sites.browsersList.map((browser) => (
+              <img
+                className={s.image_browser}
+                key={browser.name}
+                src={browser.src}
+                title={browser.title}
+                data-active={key.browsers.indexOf(browser.name) !== -1}
+                alt={browser.title}
+              />
+            ))}
+          </div>
+        </div>
+        <Button
+          bgType="stroke"
+          color="grey_4"
+          textColor="black"
+          className={s.button_remove}
+          onClick={() => keys.onKeyRemove(key.origin)}
+        >
+          {intl('remove')}
+        </Button>
+      </Box>
+    );
+  }
+
+  renderContent() {
+    const { keys } = this.props;
+    const { search } = this.state;
+
+    if (keys.isFetching === 'pending') {
+      return (
+        <CircularProgress />
+      );
+    }
+
+    if (keys.list.length === 0) {
+      return (
+        <div className={s.container_list_state}>
+          <img
+            src="../static/icons/globe_icon.svg"
+            alt="Globe icon"
+            width="20"
+            className={s.icon_list_state}
+          />
+          <Typography
+            type="b3"
+            color="grey_4"
+          >
+            {intl('keys.empty')}
+          </Typography>
+        </div>
+      );
+    }
+
+    const newList: React.ReactNode[] = [];
+
+    keys.list.forEach((key) => {
+      if (search) {
+        const origin = key.origin.toLowerCase();
+        const hasMatch = origin.includes(search);
+
+        if (!hasMatch) {
+          return;
+        }
+      }
+
+      newList.push(this.renderKeyItem(key));
+    });
+
+    if (newList.length === 0) {
+      return (
+        <div className={s.container_list_state}>
+          <img
+            src="../static/icons/search_icon.svg"
+            alt="Search icon"
+            width="20"
+            className={s.icon_list_state}
+          />
+          <Typography
+            type="b3"
+            color="grey_4"
+          >
+            {intl('keys.empty.search')}
+          </Typography>
+        </div>
+      );
+    }
+
+    return (
+      <ul>
+        {newList}
+      </ul>
+    );
   }
 
   render() {
     const { keys } = this.props;
 
-    // TODO: Use `Remove` from locale
-    // TODO: Need to add handler for `loading`, `search`
     return (
       <>
         <TextField
@@ -67,54 +198,18 @@ export class Sites extends React.Component<ISitesProps, ISitesState> {
           size="large"
           color="grey_2"
           className={s.search}
+          onChange={this.onChangeSearch}
+          disabled={keys.list.length === 0}
         />
-        <div className={s.content}>
-          <ul>
-            {keys.list.map((key) => (
-              <Box
-                key={key.origin}
-                tagType="li"
-                stroke="grey_2"
-                fill="white"
-                className={s.item_key}
-              >
-                <div>
-                  <Typography
-                    type="b3"
-                  >
-                    {key.origin}
-                  </Typography>
-                  <Typography
-                    type="c1"
-                    color="grey_4"
-                    className={s.date}
-                  >
-                    {new Date(key.created).toLocaleDateString()}
-                  </Typography>
-                  <div className="clear">
-                    {Sites.browsersList.map((browser) => (
-                      <img
-                        className={s.image_browser}
-                        key={browser.name}
-                        src={browser.src}
-                        title={browser.title}
-                        data-active={key.browsers.indexOf(browser.name) !== -1}
-                        alt={browser.title}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <Button
-                  bgType="stroke"
-                  color="grey_4"
-                  textColor="black"
-                  className={s.button_remove}
-                >
-                  Remove
-                </Button>
-              </Box>
-            ))}
-          </ul>
+        <div
+          className={classnames(
+            s.content,
+            {
+              [s.m_center]: keys.isFetching === 'pending',
+            },
+          )}
+        >
+          {this.renderContent()}
         </div>
       </>
     );

@@ -9,8 +9,7 @@ import classnames from 'classnames';
 import { Sites } from './sites';
 import { Logging } from './logging';
 import { Language } from './language';
-// import { WindowEvent } from '../../components/window_event';
-// import { intl } from '../../../main/locale';
+import { intl } from '../../../main/locale';
 
 const s = require('./styles/container.sass');
 
@@ -21,13 +20,20 @@ enum TabType {
 }
 
 export interface IContainerProps {
+  logging: {
+    onLoggingOpen: () => void;
+    onLoggingStatusChange: () => void;
+    status: boolean;
+  };
   language: {
     list: string[],
     current: string;
+    onLanguageChange: (lang: string) => void;
   };
   keys: {
     list: IKey[];
     isFetching: IsFetchingType;
+    onKeyRemove: (origin: string) => void;
   };
 }
 
@@ -35,7 +41,6 @@ export interface IContainerState {
   tab: TabType;
 }
 
-// Use Tabs strings from locale
 export default class Container extends React.Component<IContainerProps, IContainerState> {
   constructor(props: IContainerProps) {
     super(props);
@@ -52,11 +57,14 @@ export default class Container extends React.Component<IContainerProps, IContain
   };
 
   render() {
-    const { language, keys } = this.props;
+    const { language, keys, logging } = this.props;
     const { tab } = this.state;
 
     return (
-      <section className={s.host}>
+      <Box
+        className={s.host}
+        fill="grey_1"
+      >
         <Box
           stroke="grey_2"
           strokeType="bottom"
@@ -71,21 +79,21 @@ export default class Container extends React.Component<IContainerProps, IContain
               className={classnames(s.tab, 'b3')}
               color="grey_4"
             >
-              Sites
+              {intl('sites')}
             </Tab>
             <Tab
               value={TabType.logging}
               className={classnames(s.tab, 'b3')}
               color="grey_4"
             >
-              Logging
+              {intl('logging')}
             </Tab>
             <Tab
               value={TabType.language}
               className={classnames(s.tab, 'b3')}
               color="grey_4"
             >
-              Language
+              {intl('language')}
             </Tab>
           </Tabs>
         </Box>
@@ -97,6 +105,7 @@ export default class Container extends React.Component<IContainerProps, IContain
             />
             <Logging
               name={TabType.logging}
+              logging={logging}
             />
             <Language
               name={TabType.language}
@@ -104,7 +113,7 @@ export default class Container extends React.Component<IContainerProps, IContain
             />
           </SegueHandler>
         </div>
-      </section>
+      </Box>
     );
   }
 }

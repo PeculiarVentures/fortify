@@ -9,6 +9,7 @@
   & + .item_key
     margin-top: 10px
   &:hover
+    background: rgba(var(--grey_2), 0.2) !important
     .button_remove
       visibility: visible
 
@@ -38,4 +39,18 @@
 .content
   height: calc(100% - 40px - 10px)
   overflow: auto
+  &.m_center
+    display: flex
+    align-items: center
+    justify-content: center
+
+.container_list_state
+  padding: 15px 10px
+  font-size: 0
+  display: flex
+  width: 100%
+  align-items: start
+
+.icon_list_state
+  margin-right: 12px
 

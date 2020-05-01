@@ -8,8 +8,13 @@ import { Locale, locale } from '../../../main/locale';
 interface IRootProps {}
 
 interface IRootState {
-  keys: IKey[];
-  isFetching: IsFetchingType;
+  keys: {
+    list: IKey[];
+    isFetching: IsFetchingType;
+  };
+  logging: {
+    status: boolean;
+  };
 }
 
 class Root extends WindowProvider<IRootProps, IRootState> {
@@ -17,33 +22,62 @@ class Root extends WindowProvider<IRootProps, IRootState> {
     super(props);
 
     this.state = {
-      keys: [],
-      isFetching: 'pending',
+      keys: {
+        list: [],
+        isFetching: 'pending',
+      },
+      logging: {
+        status: false,
+      },
     };
   }
 
   componentWillMount() {
     ipcRenderer.on('2key-list', this.onKeyListListener);
     ipcRenderer.on('2key-remove', this.onKeyRemoveListener);
+    ipcRenderer.on('logging-status', this.onLoggingStatusListener);
+
+    // Call event for get sites list
     ipcRenderer.send('2key-list');
+    // Call event for get logging status
+    ipcRenderer.send('logging-status');
+
+    // TODO: Need to check auto change UI lang
+    locale.on('change', () => {
+      console.log('lang changed');
+    });
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeListener('2key-list', this.onKeyListListener);
-    ipcRenderer.removeListener('2key-remove', this.onKeyRemoveListener);
+    ipcRenderer.removeAllListeners('2key-list');
+    ipcRenderer.removeAllListeners('2key-remove');
+    ipcRenderer.removeAllListeners('logging-status');
   }
 
-  onKeyListListener = (_: IpcRendererEvent, keys: IKey[]) => {
+  onLoggingStatusListener = (_: IpcRendererEvent, status: boolean) => {
     this.setState({
-      keys,
-      isFetching: 'resolved',
+      logging: {
+        status,
+      },
+    });
+  };
+
+  onKeyListListener = (_: IpcRendererEvent, list: IKey[]) => {
+    this.setState({
+      keys: {
+        list,
+        isFetching: 'resolved',
+      },
     });
   };
 
   onKeyRemoveListener = (_: IpcRendererEvent, origin: string) => {
     this.setState((prevState) => ({
-      keys: prevState.keys
-        .filter((key) => key.origin !== origin),
+      keys: {
+        ...prevState.keys,
+        list: prevState.keys.list
+          .filter((key) => key.origin !== origin),
+      },
     }));
   };
 
@@ -51,18 +85,36 @@ class Root extends WindowProvider<IRootProps, IRootState> {
     ipcRenderer.send('2key-remove', origin);
   };
 
+  onLoggingOpen = () => {
+    ipcRenderer.send('logging-open');
+  };
+
+  onLoggingStatusChange = () => {
+    ipcRenderer.send('logging-status-change');
+  };
+
+  onLanguageChange = (lang: string) => {
+    ipcRenderer.send('language-change', lang);
+  };
+
   render() {
-    const { keys, isFetching } = this.state;
+    const { keys, logging } = this.state;
 
     return (
       <Container
+        logging={{
+          onLoggingOpen: this.onLoggingOpen,
+          onLoggingStatusChange: this.onLoggingStatusChange,
+          ...logging,
+        }}
         language={{
           list: Locale.getLangList(),
           current: locale.lang,
+          onLanguageChange: this.onLanguageChange,
         }}
         keys={{
-          isFetching,
-          list: keys,
+          ...keys,
+          onKeyRemove: this.onKeyRemove,
         }}
       />
     );

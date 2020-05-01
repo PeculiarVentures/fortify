@@ -53,7 +53,7 @@ export default class Container extends React.Component<IContainerProps> {
         />
         <ModalLayout
           title={[
-            [<a href={origin}>{origin}</a>, <br />, intl('p11-pin.1', '')],
+            [<a href={origin}>{origin}</a>, <br />, intl('p11-pin.1')],
             intl('p11-pin.2'),
           ]}
           onApprove={this.onApprove}
