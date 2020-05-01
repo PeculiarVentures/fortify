@@ -44,5 +44,8 @@
 	"warn.ssl.install": "我们需要使Fortify SSL证书可信。 执行此操作时，系统会要求您输入管理员密码。",
 	"warn.token.crypto_not_found": "Fortify支持插入的智能卡，但我们无法找到该卡的中间件请确保（％1）存在。如果没有安装智能卡中间件，请重新尝试。",
 	"warn.token.crypto_wrong": "加载安全令牌或智能卡的中间件（％1）时出现问题。\n请确保中间件安装正确并重试.",
-	"warn.pcsc.cannot_start": "看起来“智能卡资源管理器”没有运行。 请启动此服务并再次启动Fortify。"
+  "warn.pcsc.cannot_start": "看起来“智能卡资源管理器”没有运行。 请启动此服务并再次启动Fortify。",
+  "keys.empty.search": "There are no websites matching that search.",
+  "remove": "Remove",
+  "settings": "Settings"
 }

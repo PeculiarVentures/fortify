@@ -44,5 +44,8 @@
     "warn.ssl.install": "Πρέπει να κάνουμε το Fortify SSL πιστοποιητικό αξιόπιστο. Όταν το κάνουμε, θα σας ζητηθεί ο κωδικός διαχειριστή.",
     "warn.token.crypto_not_found": "Η τοποθετημένη smart card υποστηρίζεται από το Fortify αλλά δεν μπορέσαμε να βρούμε το middleware για αυτήν. Σιγουρευτείτε ότι το (%1) υπάρχει, αν όχι, εγκαταστήστε το middlewware της smart card και προσπαθήστε ξανά.",
     "warn.token.crypto_wrong": "Προέκυψε ένα πρόβλημα φορτώνοντας το middleware (%1) για το security token ή την  smart card σας.\nΠαρακαλούμε σιγουρευτείτε ότι το middleware είναι σωστά εγκατεστημένοκαι προσπαθήστε ξανά.",
-    "warn.pcsc.cannot_start": "Φαίνεται πως το `Smart Card Resource Manager` δεν τρέχει.Παρακαλούμε εκκινήστε την υπηρεσία και εκκινήστε το Fortify ξανά."
+    "warn.pcsc.cannot_start": "Φαίνεται πως το `Smart Card Resource Manager` δεν τρέχει.Παρακαλούμε εκκινήστε την υπηρεσία και εκκινήστε το Fortify ξανά.",
+    "keys.empty.search": "There are no websites matching that search.",
+    "remove": "Remove",
+    "settings": "Settings"
 }

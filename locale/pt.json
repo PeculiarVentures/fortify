@@ -44,5 +44,8 @@
     "warn.ssl.install": "Precisamos que adicionar o certificado SSL Fortify à confiança. Será solicitado para inserir a sua password de administrador.",
     "warn.token.crypto_not_found": "O smart card inserido é suportado pelo Fortify mas não foi possível encontrar o middleware para o cartão. Verifique se (%1) existe, senão instale o middleware do smart card e tente novamente.",
     "warn.token.crypto_wrong": "Ocorreu um problema ao carregar o middleware (%1) para o token ou smart card.\nVerifique se o middleware está corretamente instalado e tente novamente.",
-    "warn.pcsc.cannot_start": "O serviço `Smart Card Resource Manager` não está em execução. Por favor inicie o serviço e reinicie a aplicação Fortify."
+    "warn.pcsc.cannot_start": "O serviço `Smart Card Resource Manager` não está em execução. Por favor inicie o serviço e reinicie a aplicação Fortify.",
+    "keys.empty.search": "There are no websites matching that search.",
+    "remove": "Remove",
+    "settings": "Settings"
 }
