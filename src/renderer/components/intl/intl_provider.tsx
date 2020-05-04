@@ -18,7 +18,7 @@ export default class IntlProvider extends React.Component<IIntlProviderProps, II
     this.state = {
       lang: locale.lang,
       intl,
-      list: Locale.getLangList(),
+      list: Locale.getLangList() as any,
     };
   }
 

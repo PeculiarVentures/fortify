@@ -44,14 +44,17 @@ export class Locale extends EventEmitter {
     if (!fs.existsSync(LANG_DIR)) {
       throw new Error(`Cannot read ${LANG_DIR}. Folder doesn't exist`);
     }
+
     const items = fs.readdirSync(LANG_DIR);
     const langList: string[] = [];
     // eslint-disable-next-line
     for (const item of items) {
       const itemPath = path.join(LANG_DIR, item);
       const itemStat = fs.statSync(itemPath);
+
       if (itemStat.isFile()) {
         const parts = /(\w+)\.json/.exec(item);
+
         if (parts) {
           langList.push(parts[1]);
         }

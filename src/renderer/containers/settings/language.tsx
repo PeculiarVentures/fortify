@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Select, SelectItem } from 'lib-react-components';
 import { IntlContext } from '../../components/intl';
+import { ISO_LANGS } from '../../conts';
 
 interface ILanguageProps {
   name: any;
@@ -14,8 +15,13 @@ export class Language extends React.Component<ILanguageProps> {
 
   context!: React.ContextType<typeof IntlContext>;
 
-  render() {
+  onChangeSelect = (_: Event, value: string | number) => {
     const { language } = this.props;
+
+    language.onLanguageChange(value as string);
+  };
+
+  render() {
     const { list, lang } = this.context;
 
     return (
@@ -24,16 +30,20 @@ export class Language extends React.Component<ILanguageProps> {
         size="large"
         bgType="stroke"
         color="grey_2"
-        onChange={(_: Event, value: string | number) => language.onLanguageChange(value as string)}
+        onChange={this.onChangeSelect}
       >
-        {list.map((value) => (
-          <SelectItem
-            key={value}
-            value={value}
-          >
-            {value}
-          </SelectItem>
-        ))}
+        {list.map((value) => {
+          const isoLang = ISO_LANGS[value];
+
+          return (
+            <SelectItem
+              key={value}
+              value={value}
+            >
+              {isoLang ? isoLang.nativeName : value}
+            </SelectItem>
+          );
+        })}
       </Select>
     );
   }
