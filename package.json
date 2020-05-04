@@ -6,8 +6,9 @@
   "main": "out/main.js",
   "scripts": {
     "start": "electron .",
-    "build:dev": "webpack --config scripts/webpack.config.js --development",
-    "build:prod": "webpack --config scripts/webpack.config.js -p",
+    "build:main": "webpack --config scripts/webpack.main.config.js",
+    "build:renderer": "webpack --config scripts/webpack.renderer.config.js",
+    "build:prod": "npm run build:main & npm run build:renderer",
     "build:package": "electron-packager . --arch=x64 --out=build --icon=src/static/icons/tray/mac/icon.icns --overwrite=true --electron-version=1.7.6 --app-bundle-id=com.peculiarventures.fortify --no-prune",
     "build:dmg": "electron-installer-dmg build/Fortify-darwin-x64/Fortify.app fortify-mac-x64 --out=build --overwrite --icon=src/static/icons/tray/png/icon@2x.png",
     "build:pkg": "npm run build:prod && fortify-prepare && electron-packager /tmp/fortify-prod/x64 --arch=x64 --out=build --icon=src/static/icons/tray/mac/icon.icns --overwrite=true --electron-version=1.8.4 --app-bundle-id=com.peculiarventures.fortify --no-prune && npm run build:pkg:copy-nss",
