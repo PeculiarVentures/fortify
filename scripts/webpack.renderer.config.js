@@ -4,7 +4,7 @@ const webpack = require('webpack');
 module.exports = {
   target: 'electron-renderer',
   devtool: 'source-map',
-  mode: 'development',
+  mode: process.env.NODE_ENV || 'development',
   entry: {
     about: path.join(__dirname, '../src/renderer/containers/about/index.tsx'),
     message: path.join(__dirname, '../src/renderer/containers/message/index.tsx'),

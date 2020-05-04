@@ -4,7 +4,7 @@ const webpack = require('webpack');
 module.exports = {
   target: 'electron-main',
   devtool: 'source-map',
-  mode: 'development',
+  mode: process.env.NODE_ENV || 'development',
   entry: {
     main: path.join(__dirname, '../src/main/main.ts'),
   },
