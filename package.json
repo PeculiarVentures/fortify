@@ -1,7 +1,7 @@
 {
   "name": "fortify",
   "productName": "Fortify",
-  "version": "1.0.21",
+  "version": "1.0.23",
   "description": "",
   "main": "out/main.js",
   "scripts": {
@@ -15,8 +15,7 @@
     "build:msi_x64": "npm run build:prod && fortify-prepare && asar pack /tmp/fortify-prod/x64 ../fortify-prod/x64/resources/app.asar",
     "build:msi_x86": "npm run build:prod && fortify-prepare && asar pack /tmp/fortify-prod/x86 ../fortify-prod/x86/resources/app.asar",
     "build": "ts-node scripts/build",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./",
-    "rebuild": "electron-rebuild -f -w pkcs11js"
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./"
   },
   "keywords": [],
   "author": "",
@@ -38,7 +37,6 @@
     "css-loader": "^3.5.3",
     "electron": "8.2.4",
     "electron-packager": "^14.2.1",
-    "electron-rebuild": "^1.10.1",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript": "^7.2.1",
     "eslint-plugin-import": "^2.20.2",

@@ -38,7 +38,7 @@ export default async function run() {
       '--asar',
       `--out=${TMP}`,
       '--overwrite=true',
-      '--electron-version=5.0.6',
+      '--electron-version=8.2.4',
       '--no-prune',
     ], 'Create Electron package');
     if (fs.existsSync(DEB_FORTIFY)) {
