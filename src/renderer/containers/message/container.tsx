@@ -7,7 +7,7 @@ import { IntlContext } from '../../components/intl';
 const s = require('./styles/container.sass');
 
 export interface IContainerProps {
-  type: 'error' | 'warning' | 'question';
+  type: 'error' | 'warning' | 'question' | 'token';
   text: string;
   onClose: (showAgain?: boolean) => void;
   onApprove?: () => void;
@@ -27,7 +27,7 @@ export default class Container extends React.Component<IContainerProps> {
 
     switch (e.keyCode) {
       case 13: // enter
-        if (type === 'question' && onApprove) {
+        if (['question', 'token'].includes(type) && onApprove) {
           onApprove();
         }
 
@@ -99,6 +99,20 @@ export default class Container extends React.Component<IContainerProps> {
         break;
 
       case 'question':
+        props.icon = (
+          <img
+            src="../static/icons/question_icon.svg"
+            alt="Question icon"
+            width="50"
+          />
+        );
+
+        props.onApprove = onApprove;
+        props.textReject = intl('no');
+        props.textApprove = intl('yes');
+        break;
+
+      case 'token':
         props.icon = (
           <img
             src="../static/icons/token_icon.svg"

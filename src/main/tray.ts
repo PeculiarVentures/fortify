@@ -5,7 +5,6 @@ import {
   MenuItemConstructorOptions,
 } from 'electron';
 
-import * as application from './application';
 import { icons } from './const';
 import { intl } from './locale';
 import {
@@ -16,6 +15,7 @@ import {
   CreateP11PinWindow,
   CreateAboutWindow,
   CreateSettingsWindow,
+  CreateTokenWindow,
 } from './windows';
 
 let tray: Electron.Tray;
@@ -62,7 +62,20 @@ export function create() {
         label: 'Develop',
         submenu: [
           {
-            label: 'Error',
+            label: 'Token new',
+            click: () => {
+              CreateTokenWindow(
+                intl('question.new.token'),
+                { id: 'question.new.token', showAgain: true },
+                () => {},
+              );
+            },
+          },
+          {
+            type: 'separator',
+          },
+          {
+            label: 'Error SSL install',
             click: () => {
               CreateErrorWindow(
                 intl('error.ssl.install'),
@@ -71,27 +84,42 @@ export function create() {
             },
           },
           {
-            label: 'New token',
+            label: 'Error critical update',
             click: () => {
-              CreateQuestionWindow(
-                intl('question.new.token'),
-                { id: 'question.new.token', showAgain: true },
+              CreateErrorWindow(
+                intl('error.critical.update'),
                 () => {},
               );
             },
           },
           {
-            label: 'Remove token',
+            type: 'separator',
+          },
+          {
+            label: 'Question 2key remove',
             click: () => {
               CreateQuestionWindow(
                 intl('question.2key.remove', 'TEST'),
-                { parent: application.windows.settings },
+                {},
                 () => {},
               );
             },
           },
           {
-            label: 'SSL install',
+            label: 'Question update new',
+            click: () => {
+              CreateQuestionWindow(
+                intl('question.update.new', 'test'),
+                { id: 'question.update.new', showAgain: true },
+                () => {},
+              );
+            },
+          },
+          {
+            type: 'separator',
+          },
+          {
+            label: 'Warning SSL install',
             click: () => {
               CreateWarningWindow(
                 intl('warn.ssl.install'),
@@ -104,7 +132,7 @@ export function create() {
             },
           },
           {
-            label: 'Cannot start',
+            label: 'Warning cannot start',
             click: () => {
               CreateWarningWindow(
                 intl('warn.pcsc.cannot_start'),
@@ -120,7 +148,7 @@ export function create() {
             },
           },
           {
-            label: 'Crypto not found',
+            label: 'Warning crypto not found',
             click: () => {
               CreateWarningWindow(
                 intl('warn.token.crypto_not_found', 'TEST'),
@@ -134,7 +162,7 @@ export function create() {
             },
           },
           {
-            label: 'Crypto wrong',
+            label: 'Warning crypto wrong',
             click: () => {
               CreateWarningWindow(
                 intl('warn.token.crypto_wrong', 'TEST'),
@@ -146,6 +174,9 @@ export function create() {
                 },
               );
             },
+          },
+          {
+            type: 'separator',
           },
           {
             label: 'Key PIN',

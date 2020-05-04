@@ -65,7 +65,6 @@ export function CreateErrorWindow(text: string, cb: () => void) {
     alwaysOnTop: true,
     params: {
       type: 'error',
-      title: intl('error'),
       text,
     },
   });
@@ -122,7 +121,6 @@ export function CreateWarningWindow(
     dock: options.parent ? false : options.dock,
     params: {
       type: 'warning',
-      title: options.title || intl('warning'),
       buttonLabel: options.buttonLabel || intl('close'),
       text,
       id: options.id,
@@ -170,13 +168,60 @@ export function CreateQuestionWindow(
   const window = CreateWindow({
     ...windowSizes.small,
     app: 'message',
-    title: intl('question'),
+    title: options.title || intl('question'),
     modal: !!options.parent,
     parent: options.parent,
     dock: options.parent ? false : options.dock,
     params: {
       type: 'question',
-      title: options.title || intl('question'),
+      text,
+      result: 0,
+      id: options.id,
+      showAgain: options.showAgain,
+      showAgainValue: false,
+    },
+  });
+
+  // Emitted when the window is closed.
+  window.on('closed', () => {
+    onDialogClose(window);
+
+    if (cb) {
+      cb(window.params.result);
+    }
+  });
+
+  return window;
+}
+
+/**
+ *
+ * @param text
+ * @param options
+ * @param cb
+ * @return {BrowserWindow}
+ */
+export function CreateTokenWindow(
+  text: string,
+  options: ICreateWindowOptions,
+  cb?: (result: number) => void,
+) {
+  if (options.id && options.showAgain && hasDialog(options.id)) {
+    winston.info(`Don't show dialog '${options.id}'. It's disabled`);
+
+    return null;
+  }
+
+  // Create the browser window.
+  const window = CreateWindow({
+    ...windowSizes.small,
+    app: 'message',
+    title: options.title || intl('question'),
+    modal: !!options.parent,
+    parent: options.parent,
+    dock: options.parent ? false : options.dock,
+    params: {
+      type: 'token',
       text,
       result: 0,
       id: options.id,
