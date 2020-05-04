@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut } from 'electron';
 import * as url from 'url';
 import * as winston from 'winston';
 
@@ -22,12 +22,7 @@ export interface BrowserWindowConstructorOptionsEx
 }
 
 export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
-  // Allow resize window for `dev` mode
-  if (process.env.NODE_ENV === 'development') {
-    Object.assign(options, {
-      resizable: true,
-    });
-  }
+  const isDev = process.env.NODE_ENV === 'development';
 
   const window = new BrowserWindow({
     icon: icons.favicon,
@@ -36,12 +31,16 @@ export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
     minimizable: false,
     fullscreen: false,
     fullscreenable: false,
-    resizable: false,
+    // Prevent resize window on production
+    resizable: isDev,
     minWidth: windowSizes.small.width,
     minHeight: windowSizes.small.height,
+    show: false,
     ...options,
     webPreferences: {
       nodeIntegration: true,
+      // Prevent open DevTools on production
+      devTools: isDev,
     },
   }) as BrowserWindowEx;
 
@@ -79,6 +78,22 @@ export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
       e.preventDefault();
       shell.openExternal(href);
     }
+  });
+
+  // Show page only after `lfinish-load` event and prevent show index page
+  if (options.app !== 'index') {
+    window.webContents.on('did-finish-load', () => {
+      window.show();
+    });
+  }
+
+  // Prevent BrowserWindow refreshes
+  window.on('focus', () => {
+    globalShortcut.registerAll(['CommandOrControl+R', 'F5'], () => {});
+  });
+
+  window.on('blur', () => {
+    globalShortcut.unregisterAll();
   });
 
   return window;
