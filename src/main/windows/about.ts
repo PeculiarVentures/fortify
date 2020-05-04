@@ -7,6 +7,7 @@ export function CreateAboutWindow() {
   // Create the browser window.
   if (windows.about) {
     windows.about.focus();
+    windows.about.show();
 
     return;
   }

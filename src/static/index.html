@@ -150,6 +150,7 @@
       </div>
     </div>
 
+    <script src="../../out/vendors.js"></script>
     <script>
       const electron = require("electron");
       const currentWindow = electron.remote.getCurrentWindow();
@@ -159,7 +160,7 @@
       }
 
       const $script = document.createElement("script");
-      $script.setAttribute("src", `../../out/${currentWindow.app}.js`);
+      $script.setAttribute('src', `../../out/${currentWindow.app}.js`);
       document.body.appendChild($script);
     </script>
 	</body>

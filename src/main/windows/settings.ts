@@ -7,6 +7,7 @@ export function CreateSettingsWindow() {
   // Create the browser window.
   if (windows.settings) {
     windows.settings.focus();
+    windows.settings.show();
 
     return;
   }
