@@ -96,5 +96,9 @@ export function CreateWindow(options: BrowserWindowConstructorOptionsEx) {
     globalShortcut.unregisterAll();
   });
 
+  window.on('close', () => {
+    globalShortcut.unregisterAll();
+  });
+
   return window;
 }
