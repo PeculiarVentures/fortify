@@ -11,6 +11,7 @@
     // Fortiy files
     "locale/**/*",
     "src/static/**/*",
+    "src/resources/**/*",
     "out/**/*",
     "libpvpkcs11.dylib",
     "package.json"
