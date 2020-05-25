@@ -25,7 +25,7 @@ const alg = {
   publicExponent: new Uint8Array([1, 0, 1]),
   modulusLength: 2048,
   hash: 'SHA-256',
-};
+} as RsaHashedKeyGenParams;
 const hashAlg = 'SHA-256';
 
 /**
@@ -166,19 +166,9 @@ async function GenerateCertificateCA(keyPair: CryptoKeyPair) {
  * Generates key pair for sign/verify
  */
 async function GenerateKey() {
-  return crypto.subtle.generateKey(alg, true, ['sign', 'verify']);
-}
+  const keys = (await crypto.subtle.generateKey(alg, true, ['sign', 'verify'])) as CryptoKeyPair;
 
-/**
- * Returns crypto key in PEM format
- *
- * @param   key
- */
-async function ConvertKeyToPEM(key: CryptoKey) {
-  const format = key.type === 'public' ? 'spki' : 'pkcs8';
-  const der = await crypto.subtle.exportKey(format, key);
-
-  return ConvertToPEM(der, `RSA ${key.type.toUpperCase()} KEY`);
+  return keys;
 }
 
 /**
@@ -201,10 +191,22 @@ function ConvertToPEM(der: ArrayBuffer, tag: string) {
     pem = `${pem}${b64[i]}`;
   }
 
-  tag = tag.toUpperCase();
+  const t = tag.toUpperCase();
   const pad = '-----';
 
-  return `${pad}BEGIN ${tag}${pad}\r\n${pem}\r\n${pad}END ${tag}${pad}\r\n`;
+  return `${pad}BEGIN ${t}${pad}\r\n${pem}\r\n${pad}END ${t}${pad}\r\n`;
+}
+
+/**
+ * Returns crypto key in PEM format
+ *
+ * @param   key
+ */
+async function ConvertKeyToPEM(key: CryptoKey) {
+  const format = key.type === 'public' ? 'spki' : 'pkcs8';
+  const der = await crypto.subtle.exportKey(format, key);
+
+  return ConvertToPEM(der, `RSA ${key.type.toUpperCase()} KEY`);
 }
 
 /**
@@ -238,26 +240,41 @@ export async function generate() {
   };
 }
 
-/**
- * Installs cert to trusted stores
- *
- * @param certPath    Path to cert which must be installed to trusted store
- */
-export async function InstallTrustedCertificate(certPath: string) {
-  const platform = os.platform();
-  switch (platform) {
-    case 'darwin':
-      await InstallTrustedOSX(certPath);
-      break;
-    case 'win32':
-      await InstallTrustedWindows(certPath);
-      break;
-    case 'linux':
-      await InstallTrustedLinux(certPath);
-      break;
-    default:
-      throw new Error(`Unsupported OS platform '${platform}'`);
+async function InstallTrustedNss(certUtil: string, nssDbFolder: string, certPath: string) {
+  // check Firefox was installed
+  if (fs.existsSync(nssDbFolder)) {
+    const nssDbTypes = ['sql'];
+    // eslint-disable-next-line
+    for (const nssDbType of nssDbTypes) {
+      // #region Remove old Fortify SSL certs
+      try {
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          childProcess.execSync(`"${certUtil}" -D -n "${CERT_NAME}" -d ${nssDbType}:"${nssDbFolder}"`);
+          winston.info(`SSL: NSS old SSL certificate was removed from ${nssDbType}:cert.db`);
+        }
+      } catch {
+        // nothing
+      }
+      // #endregion
+
+      // #region Install Fortify SSL certificate
+      try {
+        childProcess.execSync(`"${certUtil}" -A -i "${certPath}" -n "${CERT_NAME}" -t "CT,c" -d ${nssDbType}:"${nssDbFolder}"`);
+        winston.info(`SSL: NSS certificate was installed to ${nssDbType}:cert.db`);
+
+        return 1;
+      } catch (e) {
+        winston.error(e.message);
+        winston.info(`SSL:Error: Cannot install SSL cert to ${nssDbType}:cert.db`);
+      }
+      // #endregion
+    }
+  } else {
+    winston.info(`SSL: NSS folder not found '${nssDbFolder}'`);
   }
+
+  return 0;
 }
 
 /**
@@ -278,11 +295,13 @@ async function InstallTrustedOSX(certPath: string) {
     };
     const appPath = path.dirname(certPath);
     const { username } = os.userInfo();
-    sudo.exec(`appPath=${appPath} userDir=${os.homedir()} USER=${username} CERTUTIL=${process.cwd()} bash ${SRC_DIR}/resources/osx-ssl.sh`, options, (err, stdout) => {
+    winston.info('SSL: Adding CA certificate to System KeyChain');
+    sudo.exec(`appPath=${appPath} userDir=${os.homedir()} USER=${username} CERTUTIL=${process.cwd()} bash ${SRC_DIR}/resources/osx-ssl.sh`, options, (err) => {
       // console.log(stdout.toString());
       if (err) {
         reject(err);
       } else {
+        winston.info('SSL: CA certificate was added to System KeyChain');
         resolve();
       }
     });
@@ -295,7 +314,7 @@ async function InstallTrustedOSX(certPath: string) {
 
     // eslint-disable-next-line
     for (const profile of profiles) {
-      if (/default$/.test(profile)) {
+      if (/default/.test(profile)) {
         const firefoxProfile = path.normalize(path.join(FIREFOX_DIR, profile));
         winston.info(`SSL: ${firefoxProfile}`);
         // tslint:disable-next-line:no-bitwise
@@ -335,7 +354,6 @@ async function InstallTrustedWindows(certPath: string) {
       if (/default$/.test(profile)) {
         const firefoxProfile = path.normalize(path.join(FIREFOX_DIR, profile));
         winston.info(`SSL: ${firefoxProfile}`);
-        // tslint:disable-next-line:no-bitwise
         ok |= await InstallTrustedNss(CERTUTIL, firefoxProfile, certPath);
       }
     }
@@ -378,7 +396,6 @@ async function InstallTrustedLinux(certPath: string) {
       if (/default$/.test(profile)) {
         const firefoxProfile = path.normalize(path.join(FIREFOX_DIR, profile));
         winston.info(`SSL: ${firefoxProfile}`);
-        // tslint:disable-next-line:no-bitwise
         ok |= await InstallTrustedNss(CERTUTIL, firefoxProfile, certPath);
       }
     }
@@ -402,38 +419,24 @@ async function InstallTrustedLinux(certPath: string) {
   }
 }
 
-async function InstallTrustedNss(certUtil: string, nssDbFolder: string, certPath: string) {
-  // check Firefox was installed
-  if (fs.existsSync(nssDbFolder)) {
-    const nssDbTypes = ['sql'];
-    // eslint-disable-next-line
-    for (const nssDbType of nssDbTypes) {
-      // #region Remove old Fortify SSL certs
-      try {
-        while (true) {
-          childProcess.execSync(`"${certUtil}" -D -n "${CERT_NAME}" -d ${nssDbType}:"${nssDbFolder}"`);
-          winston.info(`SSL: NSS old SSL certificate was removed from ${nssDbType}:cert.db`);
-        }
-      } catch {
-        // nothing
-      }
-      // #endregion
-
-      // #region Install Fortify SSL certificate
-      try {
-        childProcess.execSync(`"${certUtil}" -A -i "${certPath}" -n "${CERT_NAME}" -t "CT,c" -d ${nssDbType}:"${nssDbFolder}"`);
-        winston.info(`SSL: NSS certificate was installed to ${nssDbType}:cert.db`);
-
-        return 1;
-      } catch (e) {
-        winston.error(e.message);
-        winston.info(`SSL:Error: Cannot install SSL cert to ${nssDbType}:cert.db`);
-      }
-      // #endregion
-    }
-  } else {
-    winston.info(`SSL: NSS folder not found '${nssDbFolder}'`);
+/**
+ * Installs cert to trusted stores
+ *
+ * @param certPath    Path to cert which must be installed to trusted store
+ */
+export async function InstallTrustedCertificate(certPath: string) {
+  const platform = os.platform();
+  switch (platform) {
+    case 'darwin':
+      await InstallTrustedOSX(certPath);
+      break;
+    case 'win32':
+      await InstallTrustedWindows(certPath);
+      break;
+    case 'linux':
+      await InstallTrustedLinux(certPath);
+      break;
+    default:
+      throw new Error(`Unsupported OS platform '${platform}'`);
   }
-
-  return 0;
 }
