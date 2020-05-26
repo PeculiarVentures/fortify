@@ -1,4 +1,4 @@
-import { Component, h, Prop } from '@stencil/core';
+import { Component, h, Prop, Host } from '@stencil/core';
 
 @Component({
   tag: 'doc-tab',
@@ -8,13 +8,11 @@ export class DocTab {
 
   @Prop({ reflectToAttr: true }) selected = false;
 
-  hostData() {
-    return {
-      role: 'tabpanel',
-    };
-  }
-
   render() {
-    return <slot/>;
+    return (
+      <Host role="tabpanel">
+        <slot />
+      </Host>
+    );
   }
 }

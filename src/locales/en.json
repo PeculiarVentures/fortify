@@ -1,3 +1,11 @@
 {
-  "menu.user.download": "Download"
+  "menu.user.download": "Download",
+
+  "menu.examples": "Examples",
+  "menu.examples.certificate-enrollment": "Certificate enrollment",
+  "menu.examples.certificate-management": "Certificate management",
+  "menu.examples.signing": "Signing",
+
+  "menu.docs.getting-started": "Getting started",
+  "menu.docs.getting-started.overview": "Overview"
 }

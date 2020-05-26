@@ -20,6 +20,8 @@ body {
   background: rgb(var(--peculiar-color-light-rgb));
   font-size: 15px;
   line-height: 1.6;
+  min-width: 1024px;
+  overflow-x: hidden;
 }
 
 body,

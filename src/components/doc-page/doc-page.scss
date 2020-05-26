@@ -1,5 +1,7 @@
 doc-page {
   display: block;
+  margin-top: var(--header-height);
+  margin-left: var(--menu-width);
 
   p {
     color: rgb(var(--peculiar-color-grey-5-rgb));

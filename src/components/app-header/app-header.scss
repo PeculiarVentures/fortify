@@ -1,3 +1,11 @@
 app-header {
   display: block;
+  height: var(--header-height);
+  background: rgb(var(--peculiar-color-light-rgb));
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.03);
 }

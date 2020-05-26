@@ -1,4 +1,4 @@
-import { Component, h, State, Element } from '@stencil/core';
+import { Component, h, State, Element, Host } from '@stencil/core';
 
 @Component({
   tag: 'doc-tabs',
@@ -47,18 +47,14 @@ export class DocTabs {
     );
   }
 
-  hostData() {
-    return {
-      role: 'tablist',
-    };
-  }
-
   render() {
-    return [
-      <header class="header">
-        {this.tabs.map(this.toTabButton)}
-      </header>,
-      <slot/>
-    ];
+    return (
+      <Host role="tablist">
+        <header class="header">
+          {this.tabs.map(this.toTabButton)}
+        </header>
+        <slot/>
+      </Host>
+    );
   }
 }
