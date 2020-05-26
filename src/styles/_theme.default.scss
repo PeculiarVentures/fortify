@@ -1,0 +1,18 @@
+$dark: #40484f !default;
+$grey-1: #FAF9F9 !default;
+$grey-5: #6D7D87 !default;
+$light: #ffffff !default;
+$secondary: #0abe65 !default;
+$primary: #0680ff !default;
+$attention: #F7A831 !default;
+
+// Default Colors
+$colors: (
+  dark: $dark,
+  grey-1: $grey-1,
+  grey-5: $grey-5,
+  light: $light,
+  secondary: $secondary,
+  primary: $primary,
+  attention: $attention,
+) !default;

@@ -1,0 +1,10 @@
+@import './theme.default';
+@import './functions.color';
+
+:root {
+  @each $name, $value in $colors {
+    --peculiar-color-#{$name}-rgb: #{color-to-rgb-list($value)};
+  }
+  --peculiar-font-family: 'Open Sans', 'Arial', sans-serif;
+  --peculiar-code-font-family: Consolas, Monaco, Menlo, Andale Mono, Ubuntu Mono, monospace;
+}

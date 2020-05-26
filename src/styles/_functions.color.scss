@@ -1,0 +1,19 @@
+// Gets the active color's css variable from a variation. Alpha is optional.
+// --------------------------------------------------------------------------------------------
+// Example usage:
+// current-color(base) => var(--peculiar-color-base)
+// current-color(contrast, 0.1) => rgba(var(--peculiar-color-contrast-rgb), 0.1)
+// --------------------------------------------------------------------------------------------
+@function current-color($variation, $alpha: null) {
+  @if $alpha == null {
+    @return var(--peculiar-color-#{$variation});
+  } @else {
+    @return rgba(var(--peculiar-color-#{$variation}-rgb), #{$alpha});
+  }
+}
+
+// Converts a color to a comma separated rgb.
+// --------------------------------------------------------------------------------------------
+@function color-to-rgb-list($color) {
+  @return #{red($color)},#{green($color)},#{blue($color)};
+}
