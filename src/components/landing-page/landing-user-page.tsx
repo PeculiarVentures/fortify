@@ -2,7 +2,7 @@ import { Component, Host, h } from '@stencil/core';
 
 @Component({
   tag: 'landing-user-page',
-  styleUrl: 'landing-user-page.scss',
+  styleUrl: 'landing-page.scss',
 })
 export class LandingUserPage {
   render() {

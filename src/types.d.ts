@@ -6,3 +6,9 @@ interface IMarkdownContent {
   github?: string;
   body: any[];
 }
+
+type IMenuItem = [string, string];
+
+interface IMenuItems {
+  [key: string]: string | IMenuItems | IMenuItem[];
+}

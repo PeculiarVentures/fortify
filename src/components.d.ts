@@ -15,6 +15,11 @@ export namespace Components {
     interface DocCode {
         "language": string;
     }
+    interface DocMenu {
+    }
+    interface DocNav {
+        "items": IMenuItems;
+    }
     interface DocPage {
         "path"?: string;
     }
@@ -55,6 +60,18 @@ declare global {
     var HTMLDocCodeElement: {
         prototype: HTMLDocCodeElement;
         new (): HTMLDocCodeElement;
+    };
+    interface HTMLDocMenuElement extends Components.DocMenu, HTMLStencilElement {
+    }
+    var HTMLDocMenuElement: {
+        prototype: HTMLDocMenuElement;
+        new (): HTMLDocMenuElement;
+    };
+    interface HTMLDocNavElement extends Components.DocNav, HTMLStencilElement {
+    }
+    var HTMLDocNavElement: {
+        prototype: HTMLDocNavElement;
+        new (): HTMLDocNavElement;
     };
     interface HTMLDocPageElement extends Components.DocPage, HTMLStencilElement {
     }
@@ -97,6 +114,8 @@ declare global {
         "app-header": HTMLAppHeaderElement;
         "app-root": HTMLAppRootElement;
         "doc-code": HTMLDocCodeElement;
+        "doc-menu": HTMLDocMenuElement;
+        "doc-nav": HTMLDocNavElement;
         "doc-page": HTMLDocPageElement;
         "doc-tab": HTMLDocTabElement;
         "doc-tabs": HTMLDocTabsElement;
@@ -114,6 +133,11 @@ declare namespace LocalJSX {
     }
     interface DocCode {
         "language"?: string;
+    }
+    interface DocMenu {
+    }
+    interface DocNav {
+        "items"?: IMenuItems;
     }
     interface DocPage {
         "path"?: string;
@@ -135,6 +159,8 @@ declare namespace LocalJSX {
         "app-header": AppHeader;
         "app-root": AppRoot;
         "doc-code": DocCode;
+        "doc-menu": DocMenu;
+        "doc-nav": DocNav;
         "doc-page": DocPage;
         "doc-tab": DocTab;
         "doc-tabs": DocTabs;
@@ -151,6 +177,8 @@ declare module "@stencil/core" {
             "app-header": LocalJSX.AppHeader & JSXBase.HTMLAttributes<HTMLAppHeaderElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
             "doc-code": LocalJSX.DocCode & JSXBase.HTMLAttributes<HTMLDocCodeElement>;
+            "doc-menu": LocalJSX.DocMenu & JSXBase.HTMLAttributes<HTMLDocMenuElement>;
+            "doc-nav": LocalJSX.DocNav & JSXBase.HTMLAttributes<HTMLDocNavElement>;
             "doc-page": LocalJSX.DocPage & JSXBase.HTMLAttributes<HTMLDocPageElement>;
             "doc-tab": LocalJSX.DocTab & JSXBase.HTMLAttributes<HTMLDocTabElement>;
             "doc-tabs": LocalJSX.DocTabs & JSXBase.HTMLAttributes<HTMLDocTabsElement>;
