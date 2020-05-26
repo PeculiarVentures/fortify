@@ -1,0 +1,11 @@
+doc-menu {
+  display: block;
+  background: rgb(var(--peculiar-color-grey-2-rgb));
+  border-right: 1px solid rgb(var(--peculiar-color-grey-3-rgb));
+  position: fixed;
+  top: var(--header-height);
+  width: var(--menu-width);
+  left: 0;
+  height: calc(100% - var(--header-height));
+  z-index: 1;
+}

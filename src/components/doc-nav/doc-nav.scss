@@ -1,0 +1,72 @@
+doc-nav {
+  display: block;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    color: inherit;
+    font-weight: inherit;
+
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+
+  .nav {
+    color: rgb(var(--peculiar-color-dark-rgb));
+    font-size: 15px;
+    line-height: 25px;
+
+    span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      letter-spacing: 0.03em;
+    }
+
+    > li {
+      padding-bottom: 40px;
+    }
+  }
+
+  .subnav {
+    color: rgb(var(--peculiar-color-dark-rgb));
+
+    .header {
+      color: rgb(var(--peculiar-color-dark-rgb));
+      font-size: inherit;
+      line-height: inherit;
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+  }
+
+  .header {
+    font-size: 13px;
+    line-height: 20px;
+    color: rgb(var(--peculiar-color-grey-4-rgb));
+    letter-spacing: 0.03em;
+    padding-bottom: 14px;
+    padding-left: calc(var(--level, 1) * 10px);
+  }
+
+  .link,
+  .header {
+    display: block;
+  }
+
+  .link {
+    padding-left: calc(var(--level, 1) * 10px);
+    padding-top: 2px;
+    padding-bottom: 2px;
+
+    &.m_active {
+      color: rgb(var(--peculiar-color-primary-rgb));
+    }
+  }
+}

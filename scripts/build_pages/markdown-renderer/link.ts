@@ -1,7 +1,7 @@
-const isGlobal = /(http|https):\/\/$/;
+import { isExternalLink } from '../../../src/utils';
 
 export default function(href: string, title: string, text: string) {
-  if (isGlobal.test(href)) {
+  if (isExternalLink(href)) {
     return `
       <a href=${href} ${title ? `title=${title}` : ''}>
         ${text}
