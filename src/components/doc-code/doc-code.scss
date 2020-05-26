@@ -1,0 +1,66 @@
+@import './prismjs-theme';
+@import './prismjs-shell-theme';
+
+doc-code {
+  display: block;
+  position: relative;
+
+  &:before {
+    color: rgb(var(--peculiar-color-grey-5-rgb));
+    content: attr(language);
+    font-family: var(--peculiar-code-font-family);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    padding: 0.75em;
+    position: absolute;
+    right: 0;
+    text-transform: uppercase;
+    top: 0;
+  }
+
+  &[language="shell"] pre {
+    white-space: pre-wrap;
+  }
+}
+
+.code_copy {
+  position: absolute;
+  right: 0;
+  top: -1.6rem;
+
+  &_button,
+  &_confirmation {
+    padding: 4px 5px;
+    border-radius: 2px;
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 600;
+  }
+
+  &_button {
+    color: rgb(var(--peculiar-color-primary-rgb));
+    background-color: rgba(var(--peculiar-color-primary-rgb), 0.1);
+    display: block;
+    transition: opacity 200ms;
+
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+
+  &_confirmation {
+    color: rgb(var(--peculiar-color-secondary-rgb));
+    display: none;
+  }
+
+  &.m_copied {
+    .code_copy_button {
+      display: none;
+    }
+
+    .code_copy_confirmation {
+      display: block;
+    }
+  }
+}

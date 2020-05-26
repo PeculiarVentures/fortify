@@ -1,0 +1,40 @@
+doc-page {
+  display: block;
+
+  p {
+    color: rgb(var(--peculiar-color-grey-5-rgb));
+  }
+
+  h1 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    a[href^="#"] {
+      color: inherit;
+      position: relative;
+
+      &:before {
+        content: "#";
+        opacity: 0;
+        padding-right: 5px;
+        position: absolute;
+        right: 100%;
+        transition: opacity 100ms ease;
+      }
+
+      &:hover {
+        &:before {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

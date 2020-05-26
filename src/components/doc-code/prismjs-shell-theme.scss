@@ -1,0 +1,18 @@
+doc-code[language="shell"] {
+  &:before {
+    display: none;
+  }
+
+  .token {
+    color: inherit;
+  }
+
+  .token.prompt {
+    color: #fb96f9;
+    user-select: none;
+  }
+
+  .token.comment {
+    color: rgba(255, 255, 255, 0.45);
+  }
+}
