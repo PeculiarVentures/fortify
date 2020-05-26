@@ -19,8 +19,9 @@ export const config: Config = {
       serviceWorker: null,
       copy: [
         { src: 'pages/**/*.json' },
-        { src: 'assets', dest: 'assets' },
-        { src: 'manifest.json', dest: 'manifest.json' },
+        { src: 'assets' },
+        { src: 'manifest.json' },
+        { src: 'CNAME' },
       ],
     },
   ],
