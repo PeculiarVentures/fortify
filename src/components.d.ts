@@ -12,6 +12,9 @@ export namespace Components {
     }
     interface AppRoot {
     }
+    interface CardsSupported {
+        "open": boolean;
+    }
     interface DocCode {
         "language": string;
     }
@@ -32,6 +35,11 @@ export namespace Components {
     interface LandingDevelopersPage {
     }
     interface LandingUsersPage {
+    }
+    interface MdViewer {
+        "notFound"?: HTMLElement;
+        "path"?: string;
+        "showTitle"?: boolean;
     }
     interface NotfoundPage {
     }
@@ -54,6 +62,12 @@ declare global {
     var HTMLAppRootElement: {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
+    };
+    interface HTMLCardsSupportedElement extends Components.CardsSupported, HTMLStencilElement {
+    }
+    var HTMLCardsSupportedElement: {
+        prototype: HTMLCardsSupportedElement;
+        new (): HTMLCardsSupportedElement;
     };
     interface HTMLDocCodeElement extends Components.DocCode, HTMLStencilElement {
     }
@@ -103,6 +117,12 @@ declare global {
         prototype: HTMLLandingUsersPageElement;
         new (): HTMLLandingUsersPageElement;
     };
+    interface HTMLMdViewerElement extends Components.MdViewer, HTMLStencilElement {
+    }
+    var HTMLMdViewerElement: {
+        prototype: HTMLMdViewerElement;
+        new (): HTMLMdViewerElement;
+    };
     interface HTMLNotfoundPageElement extends Components.NotfoundPage, HTMLStencilElement {
     }
     var HTMLNotfoundPageElement: {
@@ -113,6 +133,7 @@ declare global {
         "app-footer": HTMLAppFooterElement;
         "app-header": HTMLAppHeaderElement;
         "app-root": HTMLAppRootElement;
+        "cards-supported": HTMLCardsSupportedElement;
         "doc-code": HTMLDocCodeElement;
         "doc-menu": HTMLDocMenuElement;
         "doc-nav": HTMLDocNavElement;
@@ -121,6 +142,7 @@ declare global {
         "doc-tabs": HTMLDocTabsElement;
         "landing-developers-page": HTMLLandingDevelopersPageElement;
         "landing-users-page": HTMLLandingUsersPageElement;
+        "md-viewer": HTMLMdViewerElement;
         "notfound-page": HTMLNotfoundPageElement;
     }
 }
@@ -130,6 +152,9 @@ declare namespace LocalJSX {
     interface AppHeader {
     }
     interface AppRoot {
+    }
+    interface CardsSupported {
+        "open"?: boolean;
     }
     interface DocCode {
         "language"?: string;
@@ -152,12 +177,18 @@ declare namespace LocalJSX {
     }
     interface LandingUsersPage {
     }
+    interface MdViewer {
+        "notFound"?: HTMLElement;
+        "path"?: string;
+        "showTitle"?: boolean;
+    }
     interface NotfoundPage {
     }
     interface IntrinsicElements {
         "app-footer": AppFooter;
         "app-header": AppHeader;
         "app-root": AppRoot;
+        "cards-supported": CardsSupported;
         "doc-code": DocCode;
         "doc-menu": DocMenu;
         "doc-nav": DocNav;
@@ -166,6 +197,7 @@ declare namespace LocalJSX {
         "doc-tabs": DocTabs;
         "landing-developers-page": LandingDevelopersPage;
         "landing-users-page": LandingUsersPage;
+        "md-viewer": MdViewer;
         "notfound-page": NotfoundPage;
     }
 }
@@ -176,6 +208,7 @@ declare module "@stencil/core" {
             "app-footer": LocalJSX.AppFooter & JSXBase.HTMLAttributes<HTMLAppFooterElement>;
             "app-header": LocalJSX.AppHeader & JSXBase.HTMLAttributes<HTMLAppHeaderElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "cards-supported": LocalJSX.CardsSupported & JSXBase.HTMLAttributes<HTMLCardsSupportedElement>;
             "doc-code": LocalJSX.DocCode & JSXBase.HTMLAttributes<HTMLDocCodeElement>;
             "doc-menu": LocalJSX.DocMenu & JSXBase.HTMLAttributes<HTMLDocMenuElement>;
             "doc-nav": LocalJSX.DocNav & JSXBase.HTMLAttributes<HTMLDocNavElement>;
@@ -184,6 +217,7 @@ declare module "@stencil/core" {
             "doc-tabs": LocalJSX.DocTabs & JSXBase.HTMLAttributes<HTMLDocTabsElement>;
             "landing-developers-page": LocalJSX.LandingDevelopersPage & JSXBase.HTMLAttributes<HTMLLandingDevelopersPageElement>;
             "landing-users-page": LocalJSX.LandingUsersPage & JSXBase.HTMLAttributes<HTMLLandingUsersPageElement>;
+            "md-viewer": LocalJSX.MdViewer & JSXBase.HTMLAttributes<HTMLMdViewerElement>;
             "notfound-page": LocalJSX.NotfoundPage & JSXBase.HTMLAttributes<HTMLNotfoundPageElement>;
         }
     }

@@ -24,10 +24,29 @@ doc-page {
   }
 
   h2,
+  h3 {
+    margin-bottom: .2em;
+  }
+
+  h2+h3,
+  h3+h4 {
+    margin-top: -1em;
+  }
+
+  h2+p>small,
+  h3+p>small,
+  h4+p>small {
+    display: block;
+    margin-top: -2em;
+  }
+
+  h2,
   h3,
   h4,
   h5,
   h6 {
+    padding-top: 2em;
+
     a[href^="#"] {
       color: inherit;
       position: relative;

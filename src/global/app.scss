@@ -2,6 +2,8 @@
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -13,8 +15,6 @@ body {
   -ms-content-zooming: none;
   word-wrap: break-word;
   text-size-adjust: none;
-  margin: 0;
-  padding: 0;
   font-family: var(--peculiar-font-family);
   color: rgb(var(--peculiar-color-dark-rgb));
   background: rgb(var(--peculiar-color-light-rgb));
@@ -45,15 +45,12 @@ button {
   border: none;
 }
 
-ul,
-ol {
-  padding: 0;
-  margin: 0;
+ul {
   list-style-type: none;
 }
 
-p {
-  margin: 0;
+ol {
+  list-style-position: inside;
 }
 
 .intro {
@@ -75,16 +72,12 @@ h3,
 h4,
 h5,
 h6 {
-  color: rgb(var(--peculiar-color-dark-rgb));
-  font-family: var(--peculiar-font-family);
   letter-spacing: -.03em;
   line-height: 1.1;
-  padding-top: 2em;
 }
 
 h1 {
   font-size: 3.5rem;
-  padding-top: 0;
 }
 
 @media (max-width: 768px) {
@@ -95,10 +88,6 @@ h1 {
 
 h2 {
   font-size: 1.825rem;
-}
-
-h2,h3 {
-  margin-bottom: .2em;
 }
 
 h3 {
@@ -112,24 +101,6 @@ h4 {
 h5,
 h6 {
   font-size: 1rem;
-}
-
-h2+h3,
-h3+h4 {
-  margin-top: -1em;
-}
-
-h2+p>small,
-h3+p>small,
-h4+p>small {
-  display: block;
-  margin-top: -2em;
-}
-
-hr {
-  border-style: solid;
-  border-width: 1px 0 0 0;
-  margin: 3rem 0;
 }
 
 code {
@@ -160,10 +131,6 @@ pre code {
 }
 
 table {
-  border-width: 1px 0 0 1px;
-  font-size: 13px;
-  margin: 2em 0;
-  overflow-x: auto;
   width: 100%
 }
 
@@ -171,15 +138,6 @@ table,
 td,
 th {
   border-collapse: collapse;
-  border-style: solid
-}
-
-td,
-th {
-  border-width: 0 1px 1px 0;
-  line-height: 1.5;
-  padding: 1em;
-  text-align: left
 }
 
 iframe {
@@ -187,6 +145,11 @@ iframe {
   background-color: rgb(var(--peculiar-color-grey-1-rgb));
   box-shadow: 10px 10px 20px rgba(0,0,0,.1);
   margin: 2em 0;
+}
+
+video {
+  width: 100%;
+  display: block;
 }
 
 .max_width {
