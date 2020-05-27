@@ -67,8 +67,7 @@ function fillPvPKCS11(options: wsServer.IServerOptions) {
 
   switch (os.platform()) {
     case 'win32':
-      options.config.pvpkcs11.push(path.join(__dirname, '..', '..', '..', 'pvpkcs11.dll'));
-      options.config.pvpkcs11.push(path.join(__dirname, '..', 'pvpkcs11.dll'));
+      options.config.pvpkcs11.push(path.normalize(`${process.execPath}/../resources/pvpkcs11.dll`));
       break;
     case 'darwin':
       options.config.pvpkcs11.push(path.join(__dirname, '..', 'libpvpkcs11.dylib'));
@@ -86,7 +85,7 @@ function createFirefoxProviders() {
   switch (os.platform()) {
     case 'win32': {
       firefoxProfilesDir = path.join(os.homedir(), 'AppData', 'Roaming', 'Mozilla', 'Firefox', 'Profiles');
-      lib = 'softokn3.dll';
+      lib = path.normalize(`${process.execPath}/../softokn3.dll`);
       break;
     }
     case 'linux': {

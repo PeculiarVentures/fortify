@@ -45,7 +45,7 @@ export function spawn(command: string, args: string[] = []) {
 
     let item: childProcess.ChildProcess;
     if (os.platform() === 'win32') {
-      item = childProcess.spawn('cmd', ['/c', command, ...args], { stdio: 'inherit' });
+      item = childProcess.spawn(command, args, { stdio: 'inherit', shell: 'cmd' });
     } else {
       item = childProcess.spawn(command, args, { stdio: 'inherit', shell: 'bash' });
     }
