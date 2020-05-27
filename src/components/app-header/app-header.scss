@@ -10,6 +10,7 @@ app-header {
   display: flex;
   align-items: center;
   padding: 0 30px;
+  color: rgb(var(--peculiar-color-grey-5-rgb));
 
   header {
     display: flex;
@@ -29,9 +30,23 @@ app-header {
   .nav_extra {
     flex: 1;
     text-align: right;
+    margin-right: 90px;
   }
 
-  li {
+  .nav_item {
     display: inline-block;
+
+    + .nav_item {
+      margin-left: 30px;
+    }
+  }
+
+  .link_logo {
+    width: 92px;
+    margin-right: 118px;
+  }
+
+  .link {
+    color: inherit;
   }
 }

@@ -1,10 +1,10 @@
 import { Component, Host, h } from '@stencil/core';
 
 @Component({
-  tag: 'landing-dev-page',
+  tag: 'landing-developers-page',
   styleUrl: 'landing-page.scss',
 })
-export class LandingDevPage {
+export class LandingDevelopersPage {
   render() {
     return (
       <Host>

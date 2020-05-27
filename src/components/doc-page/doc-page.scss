@@ -2,9 +2,11 @@ doc-page {
   display: block;
   margin-top: var(--header-height);
   margin-left: var(--menu-width);
+  padding: 0 130px;
 
   p {
     color: rgb(var(--peculiar-color-grey-5-rgb));
+    margin: 1em 0;
   }
 
   ol,

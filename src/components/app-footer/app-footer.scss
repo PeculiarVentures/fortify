@@ -1,7 +1,43 @@
 app-footer {
   display: block;
-  background: rgb(var(--peculiar-color-dark-rgb));
   position: relative;
   z-index: 2;
-  padding: 82px 0 102px;
+  color: rgba(var(--peculiar-color-light-rgb), 0.5);
+
+  footer {
+    background: rgb(var(--peculiar-color-dark-rgb));
+    padding: 82px 0 102px;
+  }
+
+  .info {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .copyright {
+    margin-right: 20px;
+  }
+
+  .logo_item {
+    display: inline-block;
+    vertical-align: top;
+
+    + .logo_item {
+      margin-left: 20px;
+    }
+  }
+
+  .nav_item {
+    display: inline-block;
+    vertical-align: top;
+
+    + .nav_item {
+      margin-left: 20px;
+    }
+  }
+
+  .link {
+    color: inherit;
+  }
 }

@@ -1,5 +1,6 @@
 import { Component, h } from '@stencil/core';
-import { toLink } from '../doc-nav/link';
+import { toLink } from '../../utils/toLink';
+import { l10n } from '../../utils/l10n';
 import navigationMain from  '../../pages/navigationMain';
 
 @Component({
@@ -11,16 +12,54 @@ export class AppHeader {
     return Array.isArray(items) ? items : Object.entries(items);
   }
 
-  render() {
-    const users = [
-      this.normalizeItems(navigationMain.users.main),
-      this.normalizeItems(navigationMain.users.extra),
-    ];
-    const developers = [
-      this.normalizeItems(navigationMain.developers.main),
-      this.normalizeItems(navigationMain.developers.extra),
+  renderHeaderNav(mode: 'users' | 'developers' = 'users') {
+    const items = [
+      this.normalizeItems(navigationMain[mode].main),
+      this.normalizeItems(navigationMain[mode].extra),
     ];
 
+    return [
+      <stencil-route-link
+        url={mode == 'developers' ? '/developers' : '/'}
+        exact={true}
+        class="link_logo"
+      >
+        <img
+          src="/assets/images/logo.svg"
+          alt="Fortify logo"
+          class="logo"
+        />
+      </stencil-route-link>,
+      <ul class="nav_main">
+        {items[0].map(item => (
+          <li
+            key={item}
+            class="nav_item"
+          >
+            {toLink(item)}
+          </li>
+        ))}
+      </ul>,
+      <ul class="nav_extra">
+        {items[1].map(item => (
+          <li
+            key={item}
+            class="nav_item"
+          >
+            {toLink(item)}
+          </li>
+        ))}
+      </ul>,
+    ];
+  }
+
+  onChangeLocale = (e: any) => {
+    l10n.setLocale(e.target.value);
+
+    window.location.reload();
+  }
+
+  render() {
     return (
       <header>
         <stencil-route-switch>
@@ -28,66 +67,20 @@ export class AppHeader {
             url="/"
             exact={true}
           >
-            <stencil-route-link
-              url="/"
-              exact={true}
-            >
-              <img
-                src="/assets/images/logo.svg"
-                alt="Fortify logo"
-                class="logo"
-              />
-            </stencil-route-link>
-            <ul class="nav_main">
-              {users[0].map(item => (
-                <li key={item}>
-                  {toLink(item)}
-                </li>
-              ))}
-            </ul>
-            <ul class="nav_extra">
-              {users[1].map(item => (
-                <li key={item}>
-                  {toLink(item)}
-                </li>
-              ))}
-            </ul>
+            {this.renderHeaderNav()}
           </stencil-route>
 
           <stencil-route
             url="/developers"
           >
-            <stencil-route-link
-              url="/developers"
-              exact={true}
-            >
-              <img
-                src="/assets/images/logo.svg"
-                alt="Fortify logo"
-                class="logo"
-              />
-            </stencil-route-link>
-            <ul class="nav_main">
-              {developers[0].map(item => (
-                <li key={item}>
-                  {toLink(item)}
-                </li>
-              ))}
-            </ul>
-            <ul class="nav_extra">
-              {developers[1].map(item => (
-                <li key={item}>
-                  {toLink(item)}
-                </li>
-              ))}
-            </ul>
+            {this.renderHeaderNav('developers')}
           </stencil-route>
         </stencil-route-switch>
-        <select name="locale">
-          <option value="en">
+        <select name="locale" onChange={this.onChangeLocale}>
+          <option value="en" selected={l10n.getLocale() === 'en'}>
             English
           </option>
-          <option value="ru">
+          <option value="ru" selected={l10n.getLocale() === 'ru'}>
             Русский
           </option>
         </select>

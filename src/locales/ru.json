@@ -1,5 +1,5 @@
 {
-  "menu.examples": "Примепы",
+  "menu.examples": "Примеры",
   "menu.examples.certificate-enrollment": "Выпуск сертификатов",
   "menu.examples.certificate-management": "Управление сертификатами",
   "menu.examples.signing": "Подписание",
@@ -17,5 +17,7 @@
   "menu.features": "Особенности",
   "menu.docs": "Документация",
   "menu.github": "GitHub",
-  "menu.for-users": "Для пользователей"
+  "menu.for-users": "Для пользователей",
+
+  "footer.copyright": "© Peculiar Ventures, Inc. All rights reserved."
 }

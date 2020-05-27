@@ -13,9 +13,9 @@ export default {
   },
   developers: {
     main: {
-      'menu.features': '#features',
-      'menu.docs': '/developers/docs',
-      'menu.examples': '/developers/examples',
+      'menu.features': '/developers#features',
+      'menu.docs': '/developers/docs/getting-started/overview',
+      'menu.examples': '/developers/examples/certificate-enrollment',
       'menu.github': 'https://github.com/PeculiarVentures/fortify',
     },
     extra: {

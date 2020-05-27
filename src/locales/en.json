@@ -17,5 +17,7 @@
   "menu.features": "Features",
   "menu.docs": "Docs",
   "menu.github": "GitHub",
-  "menu.for-users": "For users"
+  "menu.for-users": "For users",
+
+  "footer.copyright": "© Peculiar Ventures, Inc. All rights reserved."
 }

@@ -1,6 +1,6 @@
 import { h } from '@stencil/core';
-import { l10n } from '../../utils/l10n';
-import { isExternalLink } from '../../utils';
+import { l10n } from './l10n';
+import { isExternalLink } from './';
 
 export const toLink = (item) => {
   const [id, href] = item;
