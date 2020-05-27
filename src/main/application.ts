@@ -61,23 +61,20 @@ export function load(options: wsServer.IServerOptions) {
 }
 
 function fillPvPKCS11(options: wsServer.IServerOptions) {
-  let libPath = '';
+  if (!options.config.pvpkcs11) {
+    options.config.pvpkcs11 = [];
+  }
 
   switch (os.platform()) {
     case 'win32':
-      libPath = path.join(__dirname, '..', '..', '..', 'pvpkcs11.dll');
+      options.config.pvpkcs11.push(path.join(__dirname, '..', '..', '..', 'pvpkcs11.dll'));
+      options.config.pvpkcs11.push(path.join(__dirname, '..', 'pvpkcs11.dll'));
       break;
     case 'darwin':
-      libPath = path.join(__dirname, '..', 'libpvpkcs11.dylib');
+      options.config.pvpkcs11.push(path.join(__dirname, '..', 'libpvpkcs11.dylib'));
       break;
     default:
-      // nothing
-  }
-
-  const libs = options.config.pvpkcs11 = options.config.pvpkcs11 || [];
-
-  if (libPath) {
-    libs.push(libPath);
+    // nothing
   }
 }
 
@@ -99,11 +96,11 @@ function createFirefoxProviders() {
     }
     case 'darwin': {
       firefoxProfilesDir = path.join(os.homedir(), 'Library', 'Application Support', 'Firefox', 'Profiles');
-      lib = '/Applications/Fortify.app/Contents/MacOS/libsoftokn3.dylib';
+      lib = path.normalize(`${process.execPath}/../libsoftokn3.dylib`);
       break;
     }
     default:
-      // nothing
+    // nothing
   }
 
   if (!firefoxProfilesDir) {
