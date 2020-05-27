@@ -1,0 +1,21 @@
+{
+  "menu.examples": "Примепы",
+  "menu.examples.certificate-enrollment": "Выпуск сертификатов",
+  "menu.examples.certificate-management": "Управление сертификатами",
+  "menu.examples.signing": "Подписание",
+
+  "menu.docs.getting-started": "С чего начать",
+  "menu.docs.getting-started.overview": "Обзор",
+
+  "menu.my-certificates": "Мои сертификаты",
+  "menu.what-it-does": "Что он делает",
+  "menu.download": "Скачать",
+  "menu.guides": "Руководства",
+  "menu.faq": "FAQ",
+  "menu.for-developers": "Для разработчиков",
+
+  "menu.features": "Особенности",
+  "menu.docs": "Документация",
+  "menu.github": "GitHub",
+  "menu.for-users": "Для пользователей"
+}

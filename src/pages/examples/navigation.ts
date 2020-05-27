@@ -5,4 +5,3 @@ export default {
     'menu.examples.signing': '/developers/examples/signing',
   },
 };
-

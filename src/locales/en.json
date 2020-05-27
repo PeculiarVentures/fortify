@@ -1,11 +1,21 @@
 {
-  "menu.user.download": "Download",
-
   "menu.examples": "Examples",
   "menu.examples.certificate-enrollment": "Certificate enrollment",
   "menu.examples.certificate-management": "Certificate management",
   "menu.examples.signing": "Signing",
 
   "menu.docs.getting-started": "Getting started",
-  "menu.docs.getting-started.overview": "Overview"
+  "menu.docs.getting-started.overview": "Overview",
+
+  "menu.my-certificates": "My certificates",
+  "menu.what-it-does": "What it does",
+  "menu.download": "Download",
+  "menu.guides": "Guides",
+  "menu.faq": "FAQ",
+  "menu.for-developers": "For developers",
+
+  "menu.features": "Features",
+  "menu.docs": "Docs",
+  "menu.github": "GitHub",
+  "menu.for-users": "For users"
 }

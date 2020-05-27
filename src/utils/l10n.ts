@@ -1,18 +1,43 @@
 import en from '../locales/en.json';
+import ru from '../locales/ru.json';
 
 const MESSAGES_ALL = {
-  'en': en,
+  en,
+  ru,
 };
 
 export class DocsLocalization {
-  private readonly locale: string;
-  private readonly bundle: { [id: string]: string };
+  private locale: string;
+
+  private bundle: { [id: string]: string };
 
   constructor() {
-    const language = 'en';
+    let language = this.getLocaleFromStorage();
 
-    this.locale = language && MESSAGES_ALL.hasOwnProperty(language) ? language : 'en';
+    if (!language) {
+      language = this.getLocaleFromNavigator();
+    }
+
+    this.setLocale(language);
+  }
+
+  private setLocaleToStorage(locale: string) {
+    localStorage.setItem('locale', locale);
+  }
+
+  private getLocaleFromStorage(): string {
+    return localStorage.getItem('locale');
+  }
+
+  private getLocaleFromNavigator(): string {
+    return window.navigator.language.slice(0, 2).toLowerCase();
+  }
+
+  setLocale = (locale: string) => {
+    this.locale = locale && MESSAGES_ALL.hasOwnProperty(locale) ? locale : 'en';
     this.bundle = MESSAGES_ALL[this.locale];
+
+    this.setLocaleToStorage(this.locale);
   }
 
   getLocale = () => this.locale;
