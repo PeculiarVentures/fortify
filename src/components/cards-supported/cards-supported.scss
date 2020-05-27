@@ -1,0 +1,16 @@
+cards-supported {
+  display: block;
+
+  .table {
+    th,
+    td {
+      &:not(:first-child) {
+        text-align: center;
+      }
+
+      &:first-child {
+        text-align: left;
+      }
+    }
+  }
+}

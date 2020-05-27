@@ -6,6 +6,7 @@ export default (text: string, level: number) => {
   const doc = createDocument(text);
   const { textContent } = doc.body;
   const hash = slugify(textContent);
+
   return `
     <h${level} id="${hash}">
       <a href="#${hash}">${text}</a>
