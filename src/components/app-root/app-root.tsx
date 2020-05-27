@@ -1,7 +1,7 @@
 import { Component, h, Host } from '@stencil/core';
 import { l10n } from '../../utils/l10n';
-import pagesDocs from '../../pages/docs';
-import pagesExamples from '../../pages/examples';
+import navigationDocs from '../../pages/docs/navigation';
+import navigationExamples from '../../pages/examples/navigation';
 
 @Component({
   tag: 'app-root',
@@ -12,23 +12,17 @@ export class AppRoot {
     return (
       <Host>
         <app-header />
-        <stencil-router>
-          <stencil-route-switch scrollTopOffset={0}>
+        <stencil-router scrollTopOffset={0}>
+          <stencil-route-switch>
             <stencil-route
               url="/"
               exact={true}
-              routeRender={() => ([
-                <landing-user-page key="landing" />,
-                <app-footer key="footer" />,
-              ])}
+              component="landing-users-page"
             />
             <stencil-route
               url="/developers"
               exact={true}
-              routeRender={() => ([
-                <landing-user-page key="landing" />,
-                <app-footer key="footer" />,
-              ])}
+              component="landing-developers-page"
             />
             <stencil-route
               url="/developers/docs/:page*"
@@ -36,7 +30,7 @@ export class AppRoot {
                 <doc-menu
                   key="menu"
                 >
-                  <doc-nav items={pagesDocs} />
+                  <doc-nav items={navigationDocs} />
                 </doc-menu>,
                 <doc-page
                   key="page"
@@ -50,7 +44,7 @@ export class AppRoot {
                 <doc-menu
                   key="menu"
                 >
-                  <doc-nav items={pagesExamples} />
+                  <doc-nav items={navigationExamples} />
                 </doc-menu>,
                 <doc-page
                   key="page"
@@ -58,9 +52,12 @@ export class AppRoot {
                 />
               ])}
             />
-            <stencil-route component='notfound-page' />
+            <stencil-route
+              component='notfound-page'
+            />
           </stencil-route-switch>
         </stencil-router>
+        <app-footer />
       </Host>
     );
   }

@@ -7,6 +7,13 @@ doc-page {
     color: rgb(var(--peculiar-color-grey-5-rgb));
   }
 
+  ol,
+  ul {
+    padding-left: 2em;
+    margin: 1em 0;
+    list-style-type: disc;
+  }
+
   h1 {
     display: flex;
     justify-content: space-between;

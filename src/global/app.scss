@@ -36,7 +36,7 @@ img {
 
 a {
   color: rgb(var(--peculiar-color-primary-rgb));
-  text-decoration: none
+  text-decoration: none;
 }
 
 button {
@@ -45,9 +45,11 @@ button {
   border: none;
 }
 
-ol,
-ul {
-  padding-left: 2em
+ul,
+ol {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
 }
 
 .intro {

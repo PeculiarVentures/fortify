@@ -29,9 +29,9 @@ export namespace Components {
     }
     interface DocTabs {
     }
-    interface LandingDevPage {
+    interface LandingDevelopersPage {
     }
-    interface LandingUserPage {
+    interface LandingUsersPage {
     }
     interface NotfoundPage {
     }
@@ -91,17 +91,17 @@ declare global {
         prototype: HTMLDocTabsElement;
         new (): HTMLDocTabsElement;
     };
-    interface HTMLLandingDevPageElement extends Components.LandingDevPage, HTMLStencilElement {
+    interface HTMLLandingDevelopersPageElement extends Components.LandingDevelopersPage, HTMLStencilElement {
     }
-    var HTMLLandingDevPageElement: {
-        prototype: HTMLLandingDevPageElement;
-        new (): HTMLLandingDevPageElement;
+    var HTMLLandingDevelopersPageElement: {
+        prototype: HTMLLandingDevelopersPageElement;
+        new (): HTMLLandingDevelopersPageElement;
     };
-    interface HTMLLandingUserPageElement extends Components.LandingUserPage, HTMLStencilElement {
+    interface HTMLLandingUsersPageElement extends Components.LandingUsersPage, HTMLStencilElement {
     }
-    var HTMLLandingUserPageElement: {
-        prototype: HTMLLandingUserPageElement;
-        new (): HTMLLandingUserPageElement;
+    var HTMLLandingUsersPageElement: {
+        prototype: HTMLLandingUsersPageElement;
+        new (): HTMLLandingUsersPageElement;
     };
     interface HTMLNotfoundPageElement extends Components.NotfoundPage, HTMLStencilElement {
     }
@@ -119,8 +119,8 @@ declare global {
         "doc-page": HTMLDocPageElement;
         "doc-tab": HTMLDocTabElement;
         "doc-tabs": HTMLDocTabsElement;
-        "landing-dev-page": HTMLLandingDevPageElement;
-        "landing-user-page": HTMLLandingUserPageElement;
+        "landing-developers-page": HTMLLandingDevelopersPageElement;
+        "landing-users-page": HTMLLandingUsersPageElement;
         "notfound-page": HTMLNotfoundPageElement;
     }
 }
@@ -148,9 +148,9 @@ declare namespace LocalJSX {
     }
     interface DocTabs {
     }
-    interface LandingDevPage {
+    interface LandingDevelopersPage {
     }
-    interface LandingUserPage {
+    interface LandingUsersPage {
     }
     interface NotfoundPage {
     }
@@ -164,8 +164,8 @@ declare namespace LocalJSX {
         "doc-page": DocPage;
         "doc-tab": DocTab;
         "doc-tabs": DocTabs;
-        "landing-dev-page": LandingDevPage;
-        "landing-user-page": LandingUserPage;
+        "landing-developers-page": LandingDevelopersPage;
+        "landing-users-page": LandingUsersPage;
         "notfound-page": NotfoundPage;
     }
 }
@@ -182,8 +182,8 @@ declare module "@stencil/core" {
             "doc-page": LocalJSX.DocPage & JSXBase.HTMLAttributes<HTMLDocPageElement>;
             "doc-tab": LocalJSX.DocTab & JSXBase.HTMLAttributes<HTMLDocTabElement>;
             "doc-tabs": LocalJSX.DocTabs & JSXBase.HTMLAttributes<HTMLDocTabsElement>;
-            "landing-dev-page": LocalJSX.LandingDevPage & JSXBase.HTMLAttributes<HTMLLandingDevPageElement>;
-            "landing-user-page": LocalJSX.LandingUserPage & JSXBase.HTMLAttributes<HTMLLandingUserPageElement>;
+            "landing-developers-page": LocalJSX.LandingDevelopersPage & JSXBase.HTMLAttributes<HTMLLandingDevelopersPageElement>;
+            "landing-users-page": LocalJSX.LandingUsersPage & JSXBase.HTMLAttributes<HTMLLandingUsersPageElement>;
             "notfound-page": LocalJSX.NotfoundPage & JSXBase.HTMLAttributes<HTMLNotfoundPageElement>;
         }
     }

@@ -1,5 +1,5 @@
 import { Component, h, Element, Prop, Host } from '@stencil/core';
-import { link } from './link';
+import { toLink } from './link';
 import { l10n } from '../../utils/l10n';
 
 @Component({
@@ -15,17 +15,16 @@ export class DocNav {
     return Array.isArray(items) ? items : Object.entries(items);
   }
 
-  toLink = link;
-
   toItem = (item, level = 0) => {
     const [id, value] = item;
+
     switch (typeof value) {
       case 'string':
         // Go ahead...git blame...I know you want TWO :-)
         if (id.match(/menu-native-[ce]e-show-all/)) {
-         return <li style={{ 'font-style': 'italic' }} key={item}>{this.toLink(item)}</li>;
+         return <li style={{ 'font-style': 'italic' }} key={item}>{toLink(item)}</li>;
         }
-        return <li key={item}>{this.toLink(item)}</li>;
+        return <li key={item}>{toLink(item)}</li>;
       case 'object':
         return <li key={item}>{this.toSection(item, level + 1)}</li>;
       default:

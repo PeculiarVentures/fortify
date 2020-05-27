@@ -1,5 +1,4 @@
 app-header {
-  display: block;
   height: var(--header-height);
   background: rgb(var(--peculiar-color-light-rgb));
   position: fixed;
@@ -8,4 +7,31 @@ app-header {
   width: 100%;
   z-index: 2;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+
+  header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  stencil-route-switch {
+    flex: 1;
+  }
+
+  stencil-route {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav_extra {
+    flex: 1;
+    text-align: right;
+  }
+
+  li {
+    display: inline-block;
+  }
 }
