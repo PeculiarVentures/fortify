@@ -2,8 +2,13 @@ cards-supported {
   display: block;
 
   .table {
+    margin-bottom: 14px;
+
     th,
     td {
+      border: 1px solid rgb(var(--peculiar-color-grey-2-rgb));
+      padding: 10px 20px;
+
       &:not(:first-child) {
         text-align: center;
       }
@@ -12,5 +17,9 @@ cards-supported {
         text-align: left;
       }
     }
+  }
+
+  .button {
+    color: rgb(var(--peculiar-color-primary-rgb));
   }
 }

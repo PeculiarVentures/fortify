@@ -1,5 +1,11 @@
 import { Component, Host, h, Prop } from '@stencil/core';
 
+export interface ICard {
+  name: string;
+  win: boolean;
+  mac: boolean;
+}
+
 @Component({
   tag: 'cards-supported',
   styleUrl: 'cards-supported.scss',
@@ -7,7 +13,7 @@ import { Component, Host, h, Prop } from '@stencil/core';
 export class CardsSupported {
   @Prop({ reflect: true, mutable: true }) open: boolean = false;
 
-  content?: any;
+  content?: ICard[] = [];
 
   async componentWillRender() {
     try {
@@ -23,9 +29,9 @@ export class CardsSupported {
     }
   }
 
-  private prepareData(content: any) {
+  private prepareData(content: any): ICard[] {
     if (!content) {
-      return false;
+      return [];
     }
 
     return content.cards

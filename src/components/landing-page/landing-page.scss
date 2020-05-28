@@ -41,6 +41,10 @@
       color: rgb(var(--peculiar-color-light-rgb));
       background: rgb(var(--peculiar-color-primary-rgb));
       display: inline-block;
+
+      a {
+        color: inherit;
+      }
     }
   }
 
@@ -118,7 +122,7 @@
       > table > tbody > tr {
         &:not(:last-child) {
           > td {
-            border-bottom: 1px solid rgb(var(--peculiar-color-grey-1-rgb));
+            border-bottom: 1px solid rgb(var(--peculiar-color-grey-2-rgb));
           }
         }
 

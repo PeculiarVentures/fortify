@@ -8,6 +8,22 @@ export class LandingDevelopersPage {
   render() {
     return (
       <Host class="landing_page">
+        <section class="preview">
+          <div class="max_width">
+            <div class="content">
+              <h2>
+                Fortify makes it easy for you to build modern web applications that use smart cards and local certificates.
+              </h2>
+              <stencil-route-link
+                url="/developers/docs/getting-started/overview"
+                class="button"
+              >
+                Get started
+              </stencil-route-link>
+            </div>
+          </div>
+        </section>
+
         <section class="features" id="features">
           <div class="max_width">
             <ul class="list">
