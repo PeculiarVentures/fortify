@@ -19,7 +19,7 @@ export class LandingUsersPage {
               </p>
               <a
                 href="#download"
-                class="button"
+                class="button_primary button"
               >
                 Download App
               </a>
@@ -32,6 +32,7 @@ export class LandingUsersPage {
             <h2>
               What does Fortify do?
             </h2>
+
             <ul class="list">
               <li class="list_item">
                 <img
@@ -66,6 +67,7 @@ export class LandingUsersPage {
             <h2>
               Download App
             </h2>
+
             <ul class="list">
               <li class="list_item">
                 <a
@@ -160,6 +162,7 @@ export class LandingUsersPage {
 
             <md-viewer
               path="/pages/guides/en/macos.json"
+              class="content"
             />
           </div>
         </section>
@@ -169,6 +172,7 @@ export class LandingUsersPage {
             <h2>
               Frequently asked questions
             </h2>
+
             <md-viewer
               path="/pages/faq/en/index.json"
               class="content"
@@ -181,6 +185,7 @@ export class LandingUsersPage {
             <h2>
               Trusted by
             </h2>
+
             <ul class="list">
               <li class="list_item">
                 <img

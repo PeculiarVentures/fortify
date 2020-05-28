@@ -13,6 +13,7 @@ export const toLink = (item) => {
         href={href}
         target="_blank"
         class="link"
+        rel="noopener noreferrer"
       >
         <span>
           {text}

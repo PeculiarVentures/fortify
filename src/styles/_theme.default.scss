@@ -8,6 +8,7 @@ $light: #ffffff !default;
 $secondary: #0abe65 !default;
 $primary: #0680ff !default;
 $attention: #F7A831 !default;
+$wrong: #CD463F !default;
 
 // Default Colors
 $colors: (
@@ -21,4 +22,5 @@ $colors: (
   secondary: $secondary,
   primary: $primary,
   attention: $attention,
+  wrong: $wrong,
 ) !default;

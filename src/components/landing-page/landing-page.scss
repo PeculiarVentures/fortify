@@ -35,16 +35,6 @@
 
     .button {
       margin-top: 40px;
-      line-height: 36px;
-      padding: 0 15px;
-      border-radius: 2px;
-      color: rgb(var(--peculiar-color-light-rgb));
-      background: rgb(var(--peculiar-color-primary-rgb));
-      display: inline-block;
-
-      a {
-        color: inherit;
-      }
     }
   }
 
@@ -109,6 +99,38 @@
 
   .guides {
     padding: 50px 0;
+
+    .content {
+      margin-top: 92px;
+    }
+
+    .guide {
+      display: flex;
+
+      h5 {
+        margin-bottom: 66px;
+      }
+
+      li {
+        + li {
+          margin-top: 30px;
+        }
+      }
+
+      + .guide {
+        margin-top: 46px;
+        padding-top: 50px;
+        border-top: 1px solid rgb(var(--peculiar-color-grey-2-rgb));
+      }
+    }
+
+    .guide_description {
+      margin-right: 80px;
+    }
+
+    .video {
+      width: 62%;
+    }
   }
 
   .faq {
@@ -163,6 +185,48 @@
 
     .image {
       margin: 0 auto;
+    }
+  }
+
+  .using {
+    padding: 118px 0 126px;
+
+    .content {
+      margin-top: 66px;
+    }
+  }
+
+  .support {
+    background: rgb(var(--peculiar-color-grey-1-rgb));
+    padding: 80px 0;
+
+    .content,
+    .form {
+      margin-top: 40px;
+    }
+
+    .button {
+      margin-top: 20px;
+    }
+
+    .container {
+      display: flex;
+    }
+
+    .subscribe_part,
+    .support_part {
+      flex: 1;
+      padding-top: 40px;
+      padding-bottom: 20px;
+    }
+
+    .subscribe_part {
+      padding-left: 16%;
+    }
+
+    .support_part {
+      padding-right: 16%;
+      border-right: 1px solid rgb(var(--peculiar-color-grey-2-rgb));
     }
   }
 

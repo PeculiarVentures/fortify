@@ -16,7 +16,7 @@ export class LandingDevelopersPage {
               </h2>
               <stencil-route-link
                 url="/developers/docs/getting-started/overview"
-                class="button"
+                class="button_primary button"
               >
                 Get started
               </stencil-route-link>
@@ -64,6 +64,59 @@ export class LandingDevelopersPage {
                 </p>
               </li>
             </ul>
+          </div>
+        </section>
+
+        <section class="using" id="using">
+          <div class="max_width">
+            <h2>
+              Using it is easy
+            </h2>
+
+            <div class="content">
+              <iframe height="400" style={{ width: '100%' }} scrolling="no" title="Certificate viewer" src="https://codepen.io/donskov/embed/preview/RwPqLLa?height=400&theme-id=light&default-tab=result" frameborder="no" allowtransparency="true" allowfullScreen="true">
+                See the Pen <a href='https://codepen.io/donskov/pen/RwPqLLa'>Certificate viewer</a> by Dmitriy Donskov
+                (<a href='https://codepen.io/donskov'>@donskov</a>) on <a href='https://codepen.io'>CodePen</a>.
+              </iframe>
+            </div>
+          </div>
+        </section>
+
+        <section class="support" id="support">
+          <div class="max_width">
+            <div class="container">
+              <div class="support_part">
+                <h2>
+                  Support
+                </h2>
+
+                <md-viewer
+                  path="/pages/support/en/index.json"
+                  class="content"
+                />
+              </div>
+
+              <div class="subscribe_part">
+                <h2>
+                  Subscribe to be aware of recent updates
+                </h2>
+
+                <form class="form">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    disabled
+                    class="input_email"
+                  />
+                  <button
+                    disabled
+                    class="button_primary button"
+                  >
+                    Subscribe
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
         </section>
       </Host>

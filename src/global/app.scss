@@ -39,11 +39,32 @@ a {
   text-decoration: none;
 }
 
+input {
+  width: 100%;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 2px;
+}
+
 button {
   cursor: pointer;
   font-family: inherit;
   border: none;
   background: none;
+}
+
+.button_primary {
+  height: 36px;
+  line-height: 36px;
+  color: rgb(var(--peculiar-color-light-rgb));
+  border-radius: 2px;
+  padding: 0 16px;
+  background: linear-gradient(180deg, #4DA3FC 0%, #027EFF 100%);
+  display: inline-block;
+
+  a {
+    color: inherit;
+  }
 }
 
 ul {
