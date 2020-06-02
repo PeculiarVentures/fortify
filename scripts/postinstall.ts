@@ -51,6 +51,7 @@ async function win32() {
     fs.mkdirSync(nssDir);
     Logger.debug(`${nssDir} folder was created`);
 
+    // eslint-disable-next-line no-inner-declarations
     async function downloadUnzip(url: string, target: string) {
       // Download and extract files
       const zip = path.join(nssDir, 'tmp.zip');
@@ -76,16 +77,15 @@ async function win32() {
     if (!fs.existsSync(nssRuntimeDir)) {
       await downloadUnzip(nssRuntimeUrl, nssRuntimeDir);
     }
-
   }
 
-  await spawn('xcopy', ['pvpkcs11.dll', path.normalize('node_modules/electron/dist/resources'), '/R', '/Y'])
+  await spawn('xcopy', ['pvpkcs11.dll', path.normalize('node_modules/electron/dist/resources'), '/R', '/Y']);
   Logger.info('pvpkcs11 was copied to electron folder');
 
-  await spawn('xcopy', [path.join(nssUtilsDir, "*"), path.normalize('node_modules/electron/dist/resources'), '/R', '/Y'])
+  await spawn('xcopy', [path.join(nssUtilsDir, '*'), path.normalize('node_modules/electron/dist/resources'), '/R', '/Y']);
   Logger.info('NSS util files were copied to electron folder');
 
-  await spawn('xcopy', [path.join(nssRuntimeDir, "*"), path.normalize('node_modules/electron/dist'), '/R', '/Y'])
+  await spawn('xcopy', [path.join(nssRuntimeDir, '*'), path.normalize('node_modules/electron/dist'), '/R', '/Y']);
   Logger.info('NSS runtime file were copied to electron folder');
 }
 
