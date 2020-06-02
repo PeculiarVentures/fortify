@@ -38,7 +38,7 @@
     "fortify-prepare": "git+https://github.com/PeculiarVentures/fortify-prepare.git",
     "json-parser": "^3.1.2",
     "node-gyp": "^6.0.1",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
