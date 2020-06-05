@@ -14,7 +14,8 @@
     "build": "npm run build:prod",
     "clear": "rimraf out build",
     "rebuild": "npm run clear && npm run build",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./"
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./",
+    "test": "mocha"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "@types/asn1js": "0.0.1",
     "@types/classnames": "^2.2.10",
     "@types/extract-zip": "^1.6.2",
+    "@types/mocha": "^7.0.2",
     "@types/node": "^12.12.42",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
@@ -47,6 +49,7 @@
     "extract-zip": "^1.7.0",
     "fortify-prepare": "git+https://github.com/PeculiarVentures/fortify-prepare.git",
     "json-parser": "^3.1.2",
+    "mocha": "^7.2.0",
     "node-gyp": "^6.1.0",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
@@ -64,6 +67,8 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.8.7",
+    "@peculiar/asn1-schema": "^2.0.5",
+    "@peculiar/asn1-x509": "^2.0.5",
     "@peculiar/webcrypto": "1.0.22",
     "@webcrypto-local/server": "^1.1.0",
     "asn1js": "^2.0.26",
@@ -71,11 +76,24 @@
     "jose-jwe-jws": "github:microshine/js-jose",
     "lib-react-components": "0.3.84",
     "pkijs": "^2.1.88",
+    "pvtsutils": "^1.0.10",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "request": "^2.88.2",
     "semver": "^6.3.0",
     "sudo-prompt": "^9.2.1",
+    "webcrypto-core": "^1.1.1",
     "winston": "^3.2.1"
+  },
+  "mocha": {
+    "require": [
+      "ts-node/register"
+    ],
+    "extension": [
+      "ts"
+    ],
+    "spec": [
+      "test/**/*.ts"
+    ]
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 // NodeJS
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
@@ -12,6 +13,8 @@ import * as asn1js from 'asn1js';
 
 import { SRC_DIR } from './const';
 import { crypto } from './crypto';
+import { Firefox } from "./ssl/firefox";
+import { NssCertUtils } from "./ssl/nss";
 
 const pkijs = require('pkijs');
 
@@ -240,7 +243,7 @@ export async function generate() {
   };
 }
 
-async function InstallTrustedNss(certUtil: string, nssDbFolder: string, certPath: string) {
+export async function InstallTrustedNss(certUtil: string, nssDbFolder: string, certPath: string) {
   // check Firefox was installed
   if (fs.existsSync(nssDbFolder)) {
     const nssDbTypes = ['sql'];

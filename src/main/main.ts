@@ -1,3 +1,10 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import {
   app,
   ipcMain,
@@ -19,18 +26,17 @@ import * as winston from 'winston';
 import * as wsServer from '@webcrypto-local/server';
 
 // PKI
-import * as asn1js from 'asn1js';
 import * as application from './application';
 import { ConfigureWrite } from './config';
 import {
   APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_SSL_CERT,
-  APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
+  APP_SSL_KEY, APP_USER_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
   SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE, APP_LOG_FILE,
 } from './const';
 import * as appCrypto from './crypto';
 import * as jws from './jws';
 import { Locale, locale, intl } from './locale';
-import * as ssl from './ssl';
+import * as services from './services';
 import * as tray from './tray';
 import { CheckUpdate } from './update';
 import {
@@ -50,10 +56,9 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
   app.quit();
 }
-const pkijs = require('pkijs');
 
-if (!fs.existsSync(APP_TMP_DIR)) {
-  fs.mkdirSync(APP_TMP_DIR);
+if (!fs.existsSync(APP_USER_DIR)) {
+  fs.mkdirSync(APP_USER_DIR);
 }
 
 printInfo();
@@ -109,42 +114,15 @@ app.once('ready', async () => {
 //     }
 // })
 
-function CheckSSL() {
-  if (fs.existsSync(APP_SSL_CERT) && fs.existsSync(APP_SSL_KEY)) {
-    const sslCert = fs.readFileSync(APP_SSL_CERT, 'utf8').replace(/-{5}[\w\s]+-{5}/ig, '').replace(/\r/g, '').replace(/\n/g, '');
-
-    // Parse cert
-
-    const asn1 = asn1js.fromBER(new Uint8Array(Buffer.from(sslCert, 'base64')).buffer);
-    const cert = new pkijs.Certificate({ schema: asn1.result });
-
-    // Check date
-    if (cert.notAfter.value < new Date()) {
-      winston.info('SSL certificate is expired');
-
-      return false;
-    }
-
-    return true;
-  }
-  winston.info('SSL certificate is not found');
-
-  return false;
-}
-
 async function InitService() {
-  let sslData: wsServer.IServerOptions;
   wsServer.setEngine('@peculiar/webcrypto', appCrypto.crypto);
+  const sslService = new services.SslService();
 
-  if (!CheckSSL()) {
-    winston.info('SSL certificate is created');
-    sslData = await ssl.generate() as any;
-
-    // write files
-    fs.writeFileSync(APP_SSL_CERT_CA, (sslData as any).root);
-    fs.writeFileSync(APP_SSL_CERT, sslData.cert);
-    fs.writeFileSync(APP_SSL_KEY, sslData.key);
-
+  if (os.platform() === 'win32') {
+    if (!fs.existsSync(APP_SSL_CERT) || !fs.existsSync(APP_SSL_KEY)) {
+      throw new Error('Cannot get SSL certificate for Fortify service');
+    }
+  } else if (sslService.checkRenew()) {
     // Set cert as trusted
     const warning = new Promise((resolve) => { // wrap callback
       CreateWarningWindow(intl('warn.ssl.install'), { alwaysOnTop: true, buttonLabel: intl('i_understand') }, () => {
@@ -155,29 +133,27 @@ async function InitService() {
       .then(() => {
         winston.info('Installing SSL certificate');
 
-        return ssl.InstallTrustedCertificate(APP_SSL_CERT_CA);
+        return sslService.run();
       })
       .catch((err) => {
         winston.error(err.toString());
         // remove ssl files if installation is fail
-        fs.unlinkSync(APP_SSL_CERT_CA);
-        fs.unlinkSync(APP_SSL_CERT);
-        fs.unlinkSync(APP_SSL_KEY);
+        // fs.unlinkSync(APP_SSL_CERT_CA);
+        // fs.unlinkSync(APP_SSL_CERT);
+        // fs.unlinkSync(APP_SSL_KEY);
 
         CreateErrorWindow(intl('error.ssl.install'), () => {
           application.quit();
         });
       });
     await warning;
-  } else {
-    // read files
-    sslData = {
-      cert: fs.readFileSync(APP_SSL_CERT),
-      key: fs.readFileSync(APP_SSL_KEY),
-    } as any;
-
-    winston.info('SSL certificate is loaded');
   }
+
+  const sslData: wsServer.IServerOptions = {
+    cert: fs.readFileSync(APP_SSL_CERT),
+    key: fs.readFileSync(APP_SSL_KEY),
+  } as any;
+  winston.info('SSL certificate is loaded');
 
   const config: IConfigure = {
     disableCardUpdate: application.configure.disableCardUpdate,
@@ -272,7 +248,7 @@ async function InitService() {
             });
             break;
           default:
-            // nothing
+          // nothing
         }
       }
     })
@@ -575,7 +551,7 @@ function PrepareIdentity(identity: wsServer.RemoteIdentity) {
   const userAgent = identity.userAgent!;
   const res: Identity = {} as any;
 
-  if (/edge\/([\d\.]+)/i.exec(userAgent)) {
+  if (/edge\/([\d.]+)/i.exec(userAgent)) {
     res.browser = 'edge';
   } else if (/msie/i.test(userAgent)) {
     res.browser = 'ie';

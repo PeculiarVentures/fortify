@@ -10,7 +10,9 @@ async function macOS() {
   const nssUrl = 'https://github.com/PeculiarVentures/fortify/releases/download/binaries/nss-macos.zip';
   const pvpkcs11Url = 'https://github.com/PeculiarVentures/fortify/releases/download/binaries/libpvpkcs11.dylib';
   const pvpkcs11File = 'libpvpkcs11.dylib';
-  const nssFolder = 'nss';
+  const solutionFolder = path.join(__dirname, '..');
+  const nssFolder = path.join(solutionFolder, 'nss');
+  const nssUtilsFolder = path.join(nssFolder, 'utils');
 
   if (!fs.existsSync(pvpkcs11File)) {
     await download(pvpkcs11Url, pvpkcs11File);
@@ -18,16 +20,24 @@ async function macOS() {
   }
 
   if (!fs.existsSync(nssFolder)) {
-    await download(nssUrl, 'nss.zip');
+    fs.mkdirSync(nssFolder);
+    Logger.info(`Folder '${nssFolder}' created`);
+  }
+  if (!fs.existsSync(nssUtilsFolder)) {
+    fs.mkdirSync(nssUtilsFolder);
+    Logger.info(`Folder '${nssUtilsFolder}' created`);
+
+    const nssZip = `${nssUtilsFolder}/nss.zip`;
+    await download(nssUrl, nssZip);
     try {
-      await extract('nss.zip', `${__dirname}/../${nssFolder}`);
+      await extract(nssZip, nssUtilsFolder);
       Logger.info('NSS files were copied to nss folder');
     } finally {
-      fs.unlinkSync('nss.zip');
+      fs.unlinkSync(nssZip);
     }
   }
 
-  await spawn('cp', ['nss/*', 'node_modules/electron/dist/Electron.app/Contents/MacOS/']);
+  await spawn('cp', [`${nssUtilsFolder}/*`, 'node_modules/electron/dist/Electron.app/Contents/MacOS/']);
   Logger.info('NSS files were copied to Electron folder');
 }
 

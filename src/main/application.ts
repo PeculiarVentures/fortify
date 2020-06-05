@@ -7,14 +7,14 @@ import * as path from 'path';
 import * as winston from 'winston';
 
 import { ConfigureRead } from './config';
-import { APP_CONFIG_FILE, APP_LOG_FILE, APP_TMP_DIR } from './const';
+import { APP_CONFIG_FILE, APP_LOG_FILE, APP_USER_DIR } from './const';
 import './crypto';
 import { BrowserWindowEx } from './windows';
 
 const LOG_DEFAULT_PROVIDERS_ADD = 'Default:Providers:Add::';
 
-if (!fs.existsSync(APP_TMP_DIR)) {
-  fs.mkdirSync(APP_TMP_DIR);
+if (!fs.existsSync(APP_USER_DIR)) {
+  fs.mkdirSync(APP_USER_DIR);
 }
 
 export let server: wsServer.LocalServer;
