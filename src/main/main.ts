@@ -24,6 +24,7 @@ import * as semver from 'semver';
 import * as winston from 'winston';
 
 import * as wsServer from '@webcrypto-local/server';
+import type { Cards } from '@webcrypto-local/cards';
 
 // PKI
 import * as application from './application';
@@ -286,6 +287,14 @@ async function InitService() {
 async function PrepareConfig(config: IConfigure) {
   config.cardConfigPath = APP_CARD_JSON;
 
+  // Copy card.json from npm deps if file does not exist
+  if (!fs.existsSync(APP_CARD_JSON)) {
+    // eslint-disable-next-line global-require
+    const cards: Cards = require('@webcrypto-local/cards/lib/card.json');
+    fs.writeFileSync(APP_CARD_JSON, JSON.stringify(cards, null, '  '), { flag: 'w+' });
+    winston.info(`card.json file created v${cards.version}`);
+  }
+
   if (!config.disableCardUpdate) {
     await PrepareCardJson();
   }
@@ -333,11 +342,11 @@ async function PrepareCardJson() {
         const message = await GetRemoteFile(APP_CARD_JSON_LINK);
 
         // try to parse
-        const card = await jws.GetContent(message);
+        const card: Cards = await jws.GetContent(message);
 
         // copy card.json to .fortify
         fs.writeFileSync(APP_CARD_JSON, JSON.stringify(card, null, '  '), { flag: 'w+' });
-        winston.info(`card.json was copied to .fortify from ${APP_CARD_JSON_LINK}`);
+        winston.info(`card.json v${card.version} was copied to .fortify from ${APP_CARD_JSON_LINK}`);
 
         return;
       } catch (err) {
@@ -359,7 +368,7 @@ async function PrepareCardJson() {
       // if remote version is higher then upload and remove local file
       winston.info('Comparing current version of card.json file with remote');
 
-      let remote: any;
+      let remote: Cards | undefined;
 
       try {
         const jwsString = await GetRemoteFile(APP_CARD_JSON_LINK);
@@ -368,16 +377,16 @@ async function PrepareCardJson() {
         winston.error(`Cannot get get file ${APP_CARD_JSON_LINK}. ${e.message}`);
       }
 
-      const local = JSON.parse(
+      const local: Cards = JSON.parse(
         fs.readFileSync(APP_CARD_JSON, { encoding: 'utf8' }),
       );
 
       if (remote && semver.lt(local.version || '0.0.0', remote.version || '0.0.0')) {
         // copy card.json to .fortify
         fs.writeFileSync(APP_CARD_JSON, JSON.stringify(remote, null, '  '), { flag: 'w+' });
-        winston.info(`card.json was copied to .fortify from ${APP_CARD_JSON_LINK}`);
+        winston.info(`card.json v${remote.version} was copied to .fortify from ${APP_CARD_JSON_LINK}`);
       } else {
-        winston.info('card.json has the latest version');
+        winston.info(`card.json has the latest version v${local.version}`);
       }
     }
   } catch (err) {
