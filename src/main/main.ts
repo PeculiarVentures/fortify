@@ -287,14 +287,6 @@ async function InitService() {
 async function PrepareConfig(config: IConfigure) {
   config.cardConfigPath = APP_CARD_JSON;
 
-  // Copy card.json from npm deps if file does not exist
-  if (!fs.existsSync(APP_CARD_JSON)) {
-    // eslint-disable-next-line global-require
-    const cards: Cards = require('@webcrypto-local/cards/lib/card.json');
-    fs.writeFileSync(APP_CARD_JSON, JSON.stringify(cards, null, '  '), { flag: 'w+' });
-    winston.info(`card.json file created v${cards.version}`);
-  }
-
   if (!config.disableCardUpdate) {
     await PrepareCardJson();
   }
@@ -354,15 +346,10 @@ async function PrepareCardJson() {
       }
 
       // get original card.json from webcrypto-local
-      const originalPath = path.join(APP_DIR, 'node_modules', '@webcrypto-local', 'cards', 'lib', 'card.json');
-      if (fs.existsSync(originalPath)) {
-        // copy card.json to .fortify
-        const buf = fs.readFileSync(originalPath);
-        fs.writeFileSync(APP_CARD_JSON, buf, { flag: 'w+' });
-        winston.info(`card.json was copied to .fortify from ${originalPath}`);
-      } else {
-        throw new Error(`Cannot find original card.json by path ${originalPath}`);
-      }
+      // eslint-disable-next-line global-require
+      const original: Cards = require('@webcrypto-local/cards/lib/card.json');
+      fs.writeFileSync(APP_CARD_JSON, JSON.stringify(original, null, '  '), { flag: 'w+' });
+      winston.info(`card.json v${original.version} was copied to .fortify from modules`);
     } else {
       // compare existing card.json version with remote
       // if remote version is higher then upload and remove local file
