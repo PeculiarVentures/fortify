@@ -88,6 +88,7 @@ export class SslService {
       };
       const caKeys = (await crypto.subtle.generateKey(SslService.CERT_KEY_ALG, false, ['sign', 'verify'])) as CryptoKeyPair;
       const caCert = await CertificateGenerator.create({
+        serialNumber: CertificateGenerator.randomSerial(),
         subject: caName,
         validity: {
           type: 'year',
@@ -124,7 +125,7 @@ export class SslService {
       };
       const localhostKeys = (await crypto.subtle.generateKey(SslService.CERT_KEY_ALG, true, ['sign', 'verify'])) as CryptoKeyPair;
       const localhostCert = await CertificateGenerator.create({
-        serialNumber: 2,
+        serialNumber: CertificateGenerator.randomSerial(),
         subject: localhostName,
         issuer: caName,
         validity: {

@@ -120,29 +120,33 @@ export class SslCertInstaller {
     const profiles = Firefox.profiles();
     let installed = false;
     for (const profile of profiles) {
-      const nss = new NssCertUtils(certUtil, `sql:${profile}`);
-      if (nss.exists(certName, caDer)) {
-        continue;
-      }
-      if (nss.exists(certName)) {
-        // Remove a prev SSL certificate
-        const pem = nss.get(certName);
-        nss.remove(certName);
-        winston.info('SSL certificate removed from Mozilla Firefox profile', {
+      try {
+        const nss = new NssCertUtils(certUtil, `sql:${profile}`);
+        if (nss.exists(certName, caDer)) {
+          continue;
+        }
+        if (nss.exists(certName)) {
+          // Remove a prev SSL certificate
+          const pem = nss.get(certName);
+          nss.remove(certName);
+          winston.info('SSL certificate removed from Mozilla Firefox profile', {
+            class: 'SslCertInstaller',
+            profile,
+            certName,
+            pem,
+          });
+        }
+        // Add cert to NSS
+        nss.add(certPath, certName, 'CT,c,');
+        winston.info('SSL certificate added to Mozilla Firefox profile', {
           class: 'SslCertInstaller',
           profile,
           certName,
-          pem,
         });
+        installed = true;
+      } catch (e) {
+        winston.error(e.toString());
       }
-      // Add cert to NSS
-      nss.add(certPath, certName, 'CT,c,');
-      winston.info('SSL certificate added to Mozilla Firefox profile', {
-        class: 'SslCertInstaller',
-        profile,
-        certName,
-      });
-      installed = true;
     }
 
     if (profiles.length && installed) {

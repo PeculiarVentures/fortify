@@ -104,6 +104,10 @@ export class CertificateGenerator {
     }
   }
 
+  public static randomSerial() {
+      return Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER));
+  }
+
   public static async create(params: ICertificateGeneratorCreateParams) {
     pkijs.setEngine('OpenSSL', crypto, new pkijs.CryptoEngine({ name: 'OpenSSL', crypto, subtle: crypto.subtle }));
 
