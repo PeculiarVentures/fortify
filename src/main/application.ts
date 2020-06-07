@@ -22,7 +22,12 @@ export const configure = ConfigureRead(APP_CONFIG_FILE, initConfig);
 export const windows: Assoc<BrowserWindowEx> = {};
 
 function initConfig() {
-  const config: IConfigure = { providers: [], cards: [] };
+  const config: IConfigure = {
+    providers: [],
+    cards: [],
+    disableCardUpdate: false,
+    proxy: '',
+  };
 
   try {
     const firefoxProviders = createFirefoxProviders();

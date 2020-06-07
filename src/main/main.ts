@@ -28,7 +28,7 @@ import type { Cards } from '@webcrypto-local/cards';
 
 // PKI
 import * as application from './application';
-import { ConfigureWrite } from './config';
+import { ConfigureWrite, ConfigureRead } from './config';
 import {
   APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_SSL_CERT,
   APP_SSL_KEY, APP_USER_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
@@ -138,6 +138,8 @@ async function InitService() {
 
   const config: IConfigure = {
     disableCardUpdate: application.configure.disableCardUpdate,
+    proxy: '',
+    logging: false,
     cards: [],
     providers: [],
   };
@@ -362,10 +364,16 @@ async function PrepareCardJson() {
 }
 
 async function GetRemoteFile(link: string, encoding = 'utf8') {
+  const config = ConfigureRead(APP_CONFIG_FILE);
+  const options: request.CoreOptions = {
+    encoding,
+  };
+  if (config.proxy) {
+    options.proxy = config.proxy;
+  }
+
   return new Promise<string>((resolve, reject) => {
-    request.get(link, {
-      encoding,
-    }, (error, response, body) => {
+    request.get(link, options, (error, response, body) => {
       if (error) {
         reject(error);
       } else {

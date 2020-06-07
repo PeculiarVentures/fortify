@@ -6,17 +6,26 @@ import * as semver from 'semver';
 import * as winston from 'winston';
 
 import { quit } from './application';
-import { APP_DIR, DOWNLOAD_LINK, JWS_LINK } from './const';
+import {
+  APP_DIR, DOWNLOAD_LINK, JWS_LINK, APP_CONFIG_FILE,
+} from './const';
 import * as jws from './jws';
 import { intl } from './locale';
 import { UpdateError } from './update_error';
 import { CreateErrorWindow, CreateQuestionWindow } from './windows';
+import { ConfigureRead } from './config';
 
 function GetJWS() {
   return new Promise<string>((resolve, reject) => {
-    request.get(JWS_LINK, {
+    const config = ConfigureRead(APP_CONFIG_FILE);
+    const options: request.CoreOptions = {
       encoding: 'utf8',
-    }, (error, response, body) => {
+    };
+    if (config.proxy) {
+      options.proxy = config.proxy;
+    }
+
+    request.get(JWS_LINK, options, (error, response, body) => {
       if (error) {
         winston.warn(`Cannot GET ${JWS_LINK}`);
         winston.error(error.toString());
