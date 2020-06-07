@@ -3,6 +3,8 @@
 import { execSync } from 'child_process';
 import * as os from 'os';
 import * as winston from 'winston';
+import { BufferSourceConverter, Convert } from 'pvtsutils';
+import { PemConverter } from 'webcrypto-core';
 
 export interface INssCertUtilArguments {
   [key: string]: string | undefined;
@@ -424,10 +426,19 @@ export class NssCertUtils {
    * Returns true if certificate exists in NSS database storage, otherwise false
    * @param certName Certificate name
    */
-  public exists(certName: string) {
+  public exists(certName: string, cert?: BufferSource) {
     const certs = this.list();
 
-    return certs.some((o) => o.name === certName);
+    const ok = certs.some((o) => o.name === certName);
+    if (ok && cert) {
+      const derCert = BufferSourceConverter.toArrayBuffer(cert);
+      const nssCertPem = this.get(certName);
+      const nssCertDer = PemConverter.toArrayBuffer(nssCertPem);
+
+      return Convert.ToHex(derCert) === Convert.ToHex(nssCertDer);
+    }
+
+    return ok;
   }
 
   /**

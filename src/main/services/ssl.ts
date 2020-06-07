@@ -29,6 +29,12 @@ export class SslService {
     modulusLength: 2048,
   };
 
+  public installer: SslCertInstaller;
+
+  constructor() {
+    this.installer = this.createInstaller();
+  }
+
   public getCaCert() {
     if (fs.existsSync(c.APP_SSL_CERT_CA)) {
       const pem = fs.readFileSync(c.APP_SSL_CERT_CA, { encoding: 'utf8' });
@@ -118,6 +124,7 @@ export class SslService {
       };
       const localhostKeys = (await crypto.subtle.generateKey(SslService.CERT_KEY_ALG, true, ['sign', 'verify'])) as CryptoKeyPair;
       const localhostCert = await CertificateGenerator.create({
+        serialNumber: 2,
         subject: localhostName,
         issuer: caName,
         validity: {
@@ -171,30 +178,7 @@ export class SslService {
       });
       // #endregion
 
-      let nssCertUtil: string;
-      const platform = os.platform();
-      switch (platform) {
-        case 'linux':
-          nssCertUtil = 'certutil';
-          break;
-        case 'darwin':
-          nssCertUtil = '/Applications/Fortify.app/Contents/MacOS/certutil'; // TODO: Use exec path
-          break;
-        case 'win32':
-          nssCertUtil = path.normalize(`${__dirname}\\..\\..\\certutil.exe`); // TODO: Use exec path
-          break;
-        default:
-          throw new Error('Unsupported Operation System');
-      }
-
       // #region Install CA cert
-      const installer = new SslCertInstaller({
-        nssCertName: SslService.CERT_CA_COMMON_NAME,
-        nssCertUtil,
-        osxAppIcons: '/Applications/Fortify.app/Contents/Resources/static/icons/tray/mac/icon.icns',
-        osxAppName: 'Fortify application',
-      });
-
       // Save CA file
       fs.writeFileSync(c.APP_SSL_CERT_CA, caCert.cert, { flag: 'w+' });
       winston.info('ca.pem file added to ProgramData folder', {
@@ -203,7 +187,7 @@ export class SslService {
       });
 
       try {
-        installer.install(c.APP_SSL_CERT_CA);
+        this.installer.install(c.APP_SSL_CERT_CA);
 
         winston.info('SSL certificate added to trusted storages', {
           class: 'SslService',
@@ -226,6 +210,35 @@ export class SslService {
       const pkcs8 = await crypto.subtle.exportKey('pkcs8', localhostKeys.privateKey);
       fs.writeFileSync(c.APP_SSL_KEY, PemConverter.fromBufferSource(pkcs8, 'PRIVATE KEY'), { flag: 'w+' });
       // #endregion
+    } else {
+      this.installer.installFirefox(c.APP_SSL_CERT_CA);
     }
+  }
+
+  private createInstaller() {
+    let nssCertUtil: string;
+    const platform = os.platform();
+    switch (platform) {
+      case 'linux':
+        nssCertUtil = 'certutil';
+        break;
+      case 'darwin':
+        nssCertUtil = '/Applications/Fortify.app/Contents/MacOS/certutil'; // TODO: Use exec path
+        break;
+      case 'win32':
+        nssCertUtil = path.normalize(`${__dirname}\\..\\..\\certutil.exe`); // TODO: Use exec path
+        break;
+      default:
+        throw new Error('Unsupported Operation System');
+    }
+
+    const installer = new SslCertInstaller({
+      nssCertName: SslService.CERT_CA_COMMON_NAME,
+      nssCertUtil,
+      osxAppIcons: '/Applications/Fortify.app/Contents/Resources/static/icons/tray/mac/icon.icns',
+      osxAppName: 'Fortify application',
+    });
+
+    return installer;
   }
 }

@@ -118,36 +118,16 @@ app.once('ready', async () => {
 async function InitService() {
   wsServer.setEngine('@peculiar/webcrypto', appCrypto.crypto);
   const sslService = new services.SslService();
+  try {
+    await sslService.run();
+  } catch (e) {
+    winston.error(e.toString());
 
-  if (os.platform() === 'win32') {
-    if (!fs.existsSync(APP_SSL_CERT) || !fs.existsSync(APP_SSL_KEY)) {
-      throw new Error('Cannot get SSL certificate for Fortify service');
-    }
-  } else if (sslService.checkRenew()) {
-    // Set cert as trusted
-    const warning = new Promise((resolve) => { // wrap callback
-      CreateWarningWindow(intl('warn.ssl.install'), { alwaysOnTop: true, buttonLabel: intl('i_understand') }, () => {
-        winston.info('Warning window was closed');
-        resolve();
-      });
-    })
-      .then(() => {
-        winston.info('Installing SSL certificate');
+    CreateErrorWindow(intl('error.ssl.install'), () => {
+      application.quit();
+    });
 
-        return sslService.run();
-      })
-      .catch((err) => {
-        winston.error(err.toString());
-        // remove ssl files if installation is fail
-        // fs.unlinkSync(APP_SSL_CERT_CA);
-        // fs.unlinkSync(APP_SSL_CERT);
-        // fs.unlinkSync(APP_SSL_KEY);
-
-        CreateErrorWindow(intl('error.ssl.install'), () => {
-          application.quit();
-        });
-      });
-    await warning;
+    application.quit();
   }
 
   const sslData: wsServer.IServerOptions = {

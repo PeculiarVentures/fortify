@@ -1,10 +1,13 @@
+/* eslint-disable no-continue */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-restricted-syntax */
 
+import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as sudo from 'sudo-prompt';
 import * as winston from 'winston';
+import { PemConverter } from 'webcrypto-core';
 import { Firefox } from './firefox';
 import { NssCertUtils } from './nss';
 import { SRC_DIR } from '../const';
@@ -108,13 +111,19 @@ export class SslCertInstaller {
     });
   }
 
-  private installFirefox(cert: string) {
+  public installFirefox(certPath: string) {
     const certName = this.policy.nssCertName;
     const certUtil = this.policy.nssCertUtil;
+    const caPem = fs.readFileSync(certPath, { encoding: 'utf8' });
+    const caDer = PemConverter.toArrayBuffer(caPem);
 
     const profiles = Firefox.profiles();
+    let installed = false;
     for (const profile of profiles) {
       const nss = new NssCertUtils(certUtil, `sql:${profile}`);
+      if (nss.exists(certName, caDer)) {
+        continue;
+      }
       if (nss.exists(certName)) {
         // Remove a prev SSL certificate
         const pem = nss.get(certName);
@@ -126,16 +135,17 @@ export class SslCertInstaller {
           pem,
         });
       }
-      //
-      nss.add(cert, certName, 'CT,c,');
+      // Add cert to NSS
+      nss.add(certPath, certName, 'CT,c,');
       winston.info('SSL certificate added to Mozilla Firefox profile', {
         class: 'SslCertInstaller',
         profile,
         certName,
       });
+      installed = true;
     }
 
-    if (profiles.length) {
+    if (profiles.length && installed) {
       Firefox.restart();
     }
   }
