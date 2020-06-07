@@ -89,7 +89,7 @@ async function win32() {
     }
   }
 
-  await spawn('xcopy', ['pvpkcs11.dll', path.normalize('node_modules/electron/dist/resources'), '/R', '/Y']);
+  await spawn('xcopy', ['pvpkcs11.dll', path.normalize('node_modules/electron/dist'), '/R', '/Y']);
   Logger.info('pvpkcs11 was copied to electron folder');
 
   await spawn('xcopy', [path.join(nssUtilsDir, '*'), path.normalize('node_modules/electron/dist/resources'), '/R', '/Y']);
