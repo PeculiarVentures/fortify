@@ -212,7 +212,11 @@ export class SslService {
       fs.writeFileSync(c.APP_SSL_KEY, PemConverter.fromBufferSource(pkcs8, 'PRIVATE KEY'), { flag: 'w+' });
       // #endregion
     } else {
-      this.installer.installFirefox(c.APP_SSL_CERT_CA);
+      try {
+        this.installer.installFirefox(c.APP_SSL_CERT_CA);
+      } catch (e) {
+        winston.error(e.toString());
+      }
     }
   }
 
