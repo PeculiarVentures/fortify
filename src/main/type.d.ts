@@ -27,7 +27,6 @@ interface IConfigure {
   cardConfigPath?: string;
   providers?: IConfigureProvider[];
   cards: ICard[];
-  proxy: string;
 }
 
 declare module 'sudo-prompt' {

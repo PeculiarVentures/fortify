@@ -30,7 +30,6 @@ export function ConfigureRead(path: string, cb?: () => IConfigure) {
         cards: [],
         disableCardUpdate: false,
         logging: false,
-        proxy: '',
       };
     }
     ConfigureWrite(APP_CONFIG_FILE, res);

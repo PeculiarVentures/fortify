@@ -83,6 +83,9 @@ export class CertificateGenerator {
     return res;
   }
 
+  /**
+   * Returns a validity period in seconds
+   */
   private static getSeconds(validity: IValidity) {
     switch (validity.type) {
       case 'second':
@@ -104,10 +107,17 @@ export class CertificateGenerator {
     }
   }
 
+  /**
+   * Returns a random serial number
+   */
   public static randomSerial() {
-      return Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER));
+    return Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER));
   }
 
+  /**
+   * Creates X509 certificate
+   * @param params Parameters
+   */
   public static async create(params: ICertificateGeneratorCreateParams) {
     pkijs.setEngine('OpenSSL', crypto, new pkijs.CryptoEngine({ name: 'OpenSSL', crypto, subtle: crypto.subtle }));
 

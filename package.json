@@ -74,6 +74,7 @@
     "@webcrypto-local/server": "^1.1.0",
     "asn1js": "^2.0.26",
     "classnames": "^2.2.6",
+    "get-proxy-settings": "^0.1.11",
     "jose-jwe-jws": "github:microshine/js-jose",
     "lib-react-components": "0.3.84",
     "pkijs": "^2.1.88",

@@ -22,13 +22,14 @@ import * as querystring from 'querystring';
 import * as request from 'request';
 import * as semver from 'semver';
 import * as winston from 'winston';
+import { getProxySettings } from 'get-proxy-settings';
 
 import * as wsServer from '@webcrypto-local/server';
 import type { Cards } from '@webcrypto-local/cards';
 
 // PKI
 import * as application from './application';
-import { ConfigureWrite, ConfigureRead } from './config';
+import { ConfigureWrite } from './config';
 import {
   APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_SSL_CERT,
   APP_SSL_KEY, APP_USER_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
@@ -138,7 +139,6 @@ async function InitService() {
 
   const config: IConfigure = {
     disableCardUpdate: application.configure.disableCardUpdate,
-    proxy: '',
     logging: false,
     cards: [],
     providers: [],
@@ -364,12 +364,12 @@ async function PrepareCardJson() {
 }
 
 async function GetRemoteFile(link: string, encoding = 'utf8') {
-  const config = ConfigureRead(APP_CONFIG_FILE);
   const options: request.CoreOptions = {
     encoding,
   };
-  if (config.proxy) {
-    options.proxy = config.proxy;
+  const proxySettings = await getProxySettings();
+  if (proxySettings && proxySettings.https) {
+    options.proxy = proxySettings.https.toString();
   }
 
   return new Promise<string>((resolve, reject) => {

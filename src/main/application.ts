@@ -26,7 +26,6 @@ function initConfig() {
     providers: [],
     cards: [],
     disableCardUpdate: false,
-    proxy: '',
   };
 
   try {

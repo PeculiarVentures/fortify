@@ -9,6 +9,12 @@ import * as winston from 'winston';
 import * as c from '../const';
 import { CertificateGenerator, IName, SslCertInstaller } from '../ssl';
 
+export enum CaCertificateStatus {
+  none,
+  valid,
+  renew,
+}
+
 export class SslService {
   public static readonly CERT_VALIDITY_YEARS = 2;
 
@@ -35,6 +41,9 @@ export class SslService {
     this.installer = this.createInstaller();
   }
 
+  /**
+   * Returns CA certificate in PEM format
+   */
   public getCaCert() {
     if (fs.existsSync(c.APP_SSL_CERT_CA)) {
       const pem = fs.readFileSync(c.APP_SSL_CERT_CA, { encoding: 'utf8' });
@@ -45,7 +54,10 @@ export class SslService {
     return null;
   }
 
-  public checkRenew() {
+  /**
+   * Returns `true` if CA certificate requires renew
+   */
+  public getCaCertStatus() {
     const pem = this.getCaCert();
     if (pem) {
       const der = PemConverter.toArrayBuffer(pem);
@@ -56,18 +68,22 @@ export class SslService {
       const renewDate = notBefore.getTime() + Math.floor((notAfter.getTime()
         - notBefore.getTime()) * (1 - SslService.CERT_RENEW_COEFFICIENT));
 
-      return renewDate < Date.now();
+      return renewDate < Date.now()
+        ? CaCertificateStatus.renew
+        : CaCertificateStatus.valid;
     }
 
-    return true;
+    return CaCertificateStatus.none;
   }
 
   public async run() {
-    if (this.checkRenew()) {
+    const status = this.getCaCertStatus();
+    if (status !== CaCertificateStatus.valid) {
       const pem = this.getCaCert();
       winston.info('SSL certificate enrollment is required', {
         class: 'SslService',
         pem,
+        status: CaCertificateStatus[status],
       });
 
       // #region PublicData folder
@@ -88,6 +104,8 @@ export class SslService {
       };
       const caKeys = (await crypto.subtle.generateKey(SslService.CERT_KEY_ALG, false, ['sign', 'verify'])) as CryptoKeyPair;
       const caCert = await CertificateGenerator.create({
+        // NOTE: Use random serial. Firefox doesn't allow to add certificate
+        // with the same serial number
         serialNumber: CertificateGenerator.randomSerial(),
         subject: caName,
         validity: {
@@ -125,6 +143,8 @@ export class SslService {
       };
       const localhostKeys = (await crypto.subtle.generateKey(SslService.CERT_KEY_ALG, true, ['sign', 'verify'])) as CryptoKeyPair;
       const localhostCert = await CertificateGenerator.create({
+        // NOTE: Use random serial. Firefox doesn't allow to add certificate
+        // with the same serial number
         serialNumber: CertificateGenerator.randomSerial(),
         subject: localhostName,
         issuer: caName,
