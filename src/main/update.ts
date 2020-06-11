@@ -1,11 +1,9 @@
 import { shell } from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as request from 'request';
 import * as semver from 'semver';
 import * as winston from 'winston';
 
-import { getProxySettings } from 'get-proxy-settings';
 import { quit } from './application';
 import {
   APP_DIR, DOWNLOAD_LINK, JWS_LINK,
@@ -13,28 +11,19 @@ import {
 import * as jws from './jws';
 import { intl } from './locale';
 import { UpdateError } from './update_error';
+import { request } from './utils';
 import { CreateErrorWindow, CreateQuestionWindow } from './windows';
 
 async function GetJWS() {
-  const options: request.CoreOptions = {
-    encoding: 'utf8',
-  };
-  const proxySettings = await getProxySettings();
-  if (proxySettings && proxySettings.https) {
-    options.proxy = proxySettings.https.toString();
-  }
+  try {
+    const resp = await request(JWS_LINK);
 
-  return new Promise<string>((resolve, reject) => {
-    request.get(JWS_LINK, options, (error, response, body) => {
-      if (error) {
-        winston.warn(`Cannot GET ${JWS_LINK}`);
-        winston.error(error.toString());
-        reject(new UpdateError(intl('error.update.server'), false));
-      } else {
-        resolve(body.replace(/[\n\r]/g, ''));
-      }
-    });
-  });
+    return resp.replace(/[\n\r]/g, '');
+  } catch (e) {
+    winston.warn(`Cannot GET ${JWS_LINK}`);
+    winston.error(e);
+    throw new UpdateError(intl('error.update.server'), false);
+  }
 }
 
 /**

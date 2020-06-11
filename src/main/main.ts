@@ -18,11 +18,8 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as querystring from 'querystring';
-
-import * as request from 'request';
 import * as semver from 'semver';
 import * as winston from 'winston';
-import { getProxySettings } from 'get-proxy-settings';
 
 import * as wsServer from '@webcrypto-local/server';
 import type { Cards } from '@webcrypto-local/cards';
@@ -38,6 +35,7 @@ import {
 import * as appCrypto from './crypto';
 import * as jws from './jws';
 import { Locale, locale, intl } from './locale';
+import { request } from './utils';
 import * as services from './services';
 import * as tray from './tray';
 import { CheckUpdate } from './update';
@@ -313,7 +311,7 @@ async function PrepareCardJson() {
     if (!fs.existsSync(APP_CARD_JSON)) {
       // try to get the latest card.json from git
       try {
-        const message = await GetRemoteFile(APP_CARD_JSON_LINK);
+        const message = await request(APP_CARD_JSON_LINK);
 
         // try to parse
         const card: Cards = await jws.GetContent(message);
@@ -340,7 +338,7 @@ async function PrepareCardJson() {
       let remote: Cards | undefined;
 
       try {
-        const jwsString = await GetRemoteFile(APP_CARD_JSON_LINK);
+        const jwsString = await request(APP_CARD_JSON_LINK);
         remote = await jws.GetContent(jwsString);
       } catch (e) {
         winston.error(`Cannot get get file ${APP_CARD_JSON_LINK}. ${e.message}`);
@@ -361,26 +359,6 @@ async function PrepareCardJson() {
   } catch (err) {
     winston.error(`Cannot prepare card.json data. ${err.stack}`);
   }
-}
-
-async function GetRemoteFile(link: string, encoding = 'utf8') {
-  const options: request.CoreOptions = {
-    encoding,
-  };
-  const proxySettings = await getProxySettings();
-  if (proxySettings && proxySettings.https) {
-    options.proxy = proxySettings.https.toString();
-  }
-
-  return new Promise<string>((resolve, reject) => {
-    request.get(link, options, (error, response, body) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(body);
-      }
-    });
-  });
 }
 
 interface CurrentIdentity {
