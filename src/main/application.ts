@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { setEngine } from '2key-ratchet';
 import * as wsServer from '@webcrypto-local/server';
 import * as electron from 'electron';
@@ -58,12 +59,6 @@ export function LoggingSwitch(enabled: boolean) {
 
 LoggingSwitch(!!configure.logging);
 
-export function load(options: wsServer.IServerOptions) {
-  setEngine('@peculiar/webcrypto', (global as any).crypto);
-  fillPvPKCS11(options);
-  server = new wsServer.LocalServer(options);
-}
-
 function fillPvPKCS11(options: wsServer.IServerOptions) {
   if (!options.config.pvpkcs11) {
     options.config.pvpkcs11 = [];
@@ -79,6 +74,28 @@ function fillPvPKCS11(options: wsServer.IServerOptions) {
     default:
     // nothing
   }
+}
+
+function fillOpenScOptions(options: wsServer.IServerOptions) {
+  const platform = os.platform();
+  switch (platform) {
+    case 'win32':
+      options.config.opensc = path.join(process.execPath, '..', 'opensc-pkcs11.dll');
+      break;
+    case 'darwin':
+    case 'linux':
+      options.config.opensc = path.join(process.execPath, '..', 'opensc-pkcs11.so');
+      break;
+    default:
+    // nothing
+  }
+}
+
+export function load(options: wsServer.IServerOptions) {
+  setEngine('@peculiar/webcrypto', (global as any).crypto);
+  fillPvPKCS11(options);
+  fillOpenScOptions(options);
+  server = new wsServer.LocalServer(options);
 }
 
 function createFirefoxProviders() {

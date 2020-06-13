@@ -8,11 +8,13 @@ import {
 
 async function macOS() {
   const nssUrl = 'https://github.com/PeculiarVentures/fortify/releases/download/binaries/nss-macos.zip';
+  const openscUrl = 'https://github.com/PeculiarVentures/fortify/releases/download/binaries/opensc-macos.zip';
   const pvpkcs11Url = 'https://github.com/PeculiarVentures/fortify/releases/download/binaries/libpvpkcs11.dylib';
   const pvpkcs11File = 'libpvpkcs11.dylib';
   const solutionFolder = path.join(__dirname, '..');
   const nssFolder = path.join(solutionFolder, 'nss');
   const nssUtilsFolder = path.join(nssFolder, 'utils');
+  const openscFolder = path.join(nssFolder, 'opensc');
 
   if (!fs.existsSync(pvpkcs11File)) {
     await download(pvpkcs11Url, pvpkcs11File);
@@ -39,6 +41,30 @@ async function macOS() {
 
   await spawn('cp', [`${nssUtilsFolder}/*`, 'node_modules/electron/dist/Electron.app/Contents/MacOS/']);
   Logger.info('NSS files were copied to Electron folder');
+
+  if (!fs.existsSync(openscFolder)) {
+    fs.mkdirSync(openscFolder);
+    Logger.info(`Folder '${openscFolder}' created`);
+
+    const openscZip = `${openscFolder}/opensc.zip`;
+    await download(openscUrl, openscZip);
+    try {
+      await extract(openscZip, openscFolder);
+      Logger.info('OpenSC files were copied to nss folder');
+    } finally {
+      fs.unlinkSync(openscZip);
+    }
+  }
+
+  const macOsFolder = path.join(__dirname, '../node_modules/electron/dist/Electron.app/Contents/MacOS');
+  await spawn('cp', [`${openscFolder}/*`, `${macOsFolder}/`]);
+  Logger.info('OpenSC files were copied to Electron folder');
+  await spawn('install_name_tool', [
+    '-change',
+    'libopensc.6.dylib',
+    path.join(macOsFolder, 'libopensc.6.dylib'),
+    path.join(macOsFolder, 'opensc-pkcs11.so'),
+  ]);
 }
 
 async function win32() {
