@@ -1,31 +1,27 @@
-import { exec } from 'child_process';
-import * as os from 'os';
+import { getProxySettings } from 'get-proxy-settings';
+import * as request2 from 'request';
 
 /**
- * Sends GET request using OS commanders
- *
- * - PowerShell (Windows)
- * - Bash (Others)
+ * Sends GET request
  * @param url URL
  */
-export async function request(url: string) {
+export async function request(url: string, encoding = 'utf8') {
+  const options: request2.CoreOptions = {
+    encoding,
+  };
+  const proxySettings = await getProxySettings();
+  if (proxySettings && proxySettings.https) {
+    options.proxy = proxySettings.https.toString();
+  }
+
   return new Promise<string>((resolve, reject) => {
-    if (os.platform() === 'win32') {
-      exec(`Write-Output (Invoke-WebRequest -Uri ${url}).Content`, { shell: 'powershell' }, (error, data) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(data);
-        }
-      });
-    } else {
-      exec(`curl ${url}`, { shell: 'bash' }, (error, data) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(data);
-        }
-      });
-    }
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "1";
+    request2.get(url, options, (error: Error, response, body) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(body);
+      }
+    });
   });
 }
