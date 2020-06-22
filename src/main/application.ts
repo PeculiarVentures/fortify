@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { setEngine } from '2key-ratchet';
 import * as wsServer from '@webcrypto-local/server';
 import * as electron from 'electron';
@@ -7,14 +8,14 @@ import * as path from 'path';
 import * as winston from 'winston';
 
 import { ConfigureRead } from './config';
-import { APP_CONFIG_FILE, APP_LOG_FILE, APP_TMP_DIR } from './const';
+import { APP_CONFIG_FILE, APP_LOG_FILE, APP_USER_DIR } from './const';
 import './crypto';
 import { BrowserWindowEx } from './windows';
 
 const LOG_DEFAULT_PROVIDERS_ADD = 'Default:Providers:Add::';
 
-if (!fs.existsSync(APP_TMP_DIR)) {
-  fs.mkdirSync(APP_TMP_DIR);
+if (!fs.existsSync(APP_USER_DIR)) {
+  fs.mkdirSync(APP_USER_DIR);
 }
 
 export let server: wsServer.LocalServer;
@@ -22,7 +23,11 @@ export const configure = ConfigureRead(APP_CONFIG_FILE, initConfig);
 export const windows: Assoc<BrowserWindowEx> = {};
 
 function initConfig() {
-  const config: IConfigure = { providers: [], cards: [] };
+  const config: IConfigure = {
+    providers: [],
+    cards: [],
+    disableCardUpdate: false,
+  };
 
   try {
     const firefoxProviders = createFirefoxProviders();
@@ -54,31 +59,43 @@ export function LoggingSwitch(enabled: boolean) {
 
 LoggingSwitch(!!configure.logging);
 
-export function load(options: wsServer.IServerOptions) {
-  setEngine('@peculiar/webcrypto', (global as any).crypto);
-  fillPvPKCS11(options);
-  server = new wsServer.LocalServer(options);
-}
-
 function fillPvPKCS11(options: wsServer.IServerOptions) {
-  let libPath = '';
+  if (!options.config.pvpkcs11) {
+    options.config.pvpkcs11 = [];
+  }
 
   switch (os.platform()) {
     case 'win32':
-      libPath = path.join(__dirname, '..', '..', '..', 'pvpkcs11.dll');
+      options.config.pvpkcs11.push(path.normalize(`${process.execPath}/../pvpkcs11.dll`));
       break;
     case 'darwin':
-      libPath = path.join(__dirname, '..', 'libpvpkcs11.dylib');
+      options.config.pvpkcs11.push(path.join(__dirname, '..', 'libpvpkcs11.dylib'));
       break;
     default:
-      // nothing
+    // nothing
   }
+}
 
-  const libs = options.config.pvpkcs11 = options.config.pvpkcs11 || [];
-
-  if (libPath) {
-    libs.push(libPath);
+function fillOpenScOptions(options: wsServer.IServerOptions) {
+  const platform = os.platform();
+  switch (platform) {
+    case 'win32':
+      options.config.opensc = path.join(process.execPath, '..', 'opensc-pkcs11.dll');
+      break;
+    case 'darwin':
+    case 'linux':
+      options.config.opensc = path.join(process.execPath, '..', 'opensc-pkcs11.so');
+      break;
+    default:
+    // nothing
   }
+}
+
+export function load(options: wsServer.IServerOptions) {
+  setEngine('@peculiar/webcrypto', (global as any).crypto);
+  fillPvPKCS11(options);
+  fillOpenScOptions(options);
+  server = new wsServer.LocalServer(options);
 }
 
 function createFirefoxProviders() {
@@ -89,7 +106,7 @@ function createFirefoxProviders() {
   switch (os.platform()) {
     case 'win32': {
       firefoxProfilesDir = path.join(os.homedir(), 'AppData', 'Roaming', 'Mozilla', 'Firefox', 'Profiles');
-      lib = 'softokn3.dll';
+      lib = path.normalize(`${process.execPath}/../softokn3.dll`);
       break;
     }
     case 'linux': {
@@ -99,11 +116,11 @@ function createFirefoxProviders() {
     }
     case 'darwin': {
       firefoxProfilesDir = path.join(os.homedir(), 'Library', 'Application Support', 'Firefox', 'Profiles');
-      lib = '/Applications/Fortify.app/Contents/MacOS/libsoftokn3.dylib';
+      lib = path.normalize(`${process.execPath}/../libsoftokn3.dylib`);
       break;
     }
     default:
-      // nothing
+    // nothing
   }
 
   if (!firefoxProfilesDir) {

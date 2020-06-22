@@ -6,7 +6,9 @@
     "node_modules/pkcs11js/**/{*.js,*.json,*.node}",
     "node_modules/pcsclite/**/{*.js,*.json,*.node}",
     "node_modules/bindings/**/{*.js,*.json,*.node}",
+    // "node_modules/bufferutil/**/{*.js,*.json,*.node}",
     "node_modules/file-uri-to-path/**/{*.js,*.json,*.node}",
+    // "node_modules/utf-8-validate/**/{*.js,*.json,*.node}",
     "node_modules/lib-react-components/**/{*.css}",
     // Fortiy files
     "locale/**/*",

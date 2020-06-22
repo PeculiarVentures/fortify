@@ -1,31 +1,29 @@
 import { shell } from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as request from 'request';
 import * as semver from 'semver';
 import * as winston from 'winston';
 
 import { quit } from './application';
-import { APP_DIR, DOWNLOAD_LINK, JWS_LINK } from './const';
+import {
+  APP_DIR, DOWNLOAD_LINK, JWS_LINK,
+} from './const';
 import * as jws from './jws';
 import { intl } from './locale';
 import { UpdateError } from './update_error';
+import { request } from './utils';
 import { CreateErrorWindow, CreateQuestionWindow } from './windows';
 
-function GetJWS() {
-  return new Promise<string>((resolve, reject) => {
-    request.get(JWS_LINK, {
-      encoding: 'utf8',
-    }, (error, response, body) => {
-      if (error) {
-        winston.warn(`Cannot GET ${JWS_LINK}`);
-        winston.error(error.toString());
-        reject(new UpdateError(intl('error.update.server'), false));
-      } else {
-        resolve(body.replace(/[\n\r]/g, ''));
-      }
-    });
-  });
+async function GetJWS() {
+  try {
+    const resp = await request(JWS_LINK);
+
+    return resp.replace(/[\n\r]/g, '');
+  } catch (e) {
+    winston.warn(`Cannot GET ${JWS_LINK}`);
+    winston.error(e);
+    throw new UpdateError(intl('error.update.server'), false);
+  }
 }
 
 /**

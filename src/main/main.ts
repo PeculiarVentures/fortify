@@ -1,3 +1,10 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import {
   app,
   ipcMain,
@@ -11,26 +18,25 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as querystring from 'querystring';
-
-import * as request from 'request';
 import * as semver from 'semver';
 import * as winston from 'winston';
 
 import * as wsServer from '@webcrypto-local/server';
+import type { Cards } from '@webcrypto-local/cards';
 
 // PKI
-import * as asn1js from 'asn1js';
 import * as application from './application';
 import { ConfigureWrite } from './config';
 import {
   APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_SSL_CERT,
-  APP_SSL_CERT_CA, APP_SSL_KEY, APP_TMP_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
+  APP_SSL_KEY, APP_USER_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
   SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE, APP_LOG_FILE,
 } from './const';
 import * as appCrypto from './crypto';
 import * as jws from './jws';
 import { Locale, locale, intl } from './locale';
-import * as ssl from './ssl';
+import { request } from './utils';
+import * as services from './services';
 import * as tray from './tray';
 import { CheckUpdate } from './update';
 import {
@@ -50,10 +56,9 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
   app.quit();
 }
-const pkijs = require('pkijs');
 
-if (!fs.existsSync(APP_TMP_DIR)) {
-  fs.mkdirSync(APP_TMP_DIR);
+if (!fs.existsSync(APP_USER_DIR)) {
+  fs.mkdirSync(APP_USER_DIR);
 }
 
 printInfo();
@@ -109,78 +114,30 @@ app.once('ready', async () => {
 //     }
 // })
 
-function CheckSSL() {
-  if (fs.existsSync(APP_SSL_CERT) && fs.existsSync(APP_SSL_KEY)) {
-    const sslCert = fs.readFileSync(APP_SSL_CERT, 'utf8').replace(/-{5}[\w\s]+-{5}/ig, '').replace(/\r/g, '').replace(/\n/g, '');
-
-    // Parse cert
-
-    const asn1 = asn1js.fromBER(new Uint8Array(Buffer.from(sslCert, 'base64')).buffer);
-    const cert = new pkijs.Certificate({ schema: asn1.result });
-
-    // Check date
-    if (cert.notAfter.value < new Date()) {
-      winston.info('SSL certificate is expired');
-
-      return false;
-    }
-
-    return true;
-  }
-  winston.info('SSL certificate is not found');
-
-  return false;
-}
-
 async function InitService() {
-  let sslData: wsServer.IServerOptions;
   wsServer.setEngine('@peculiar/webcrypto', appCrypto.crypto);
+  const sslService = new services.SslService();
+  try {
+    await sslService.run();
+  } catch (e) {
+    winston.error(e.toString());
 
-  if (!CheckSSL()) {
-    winston.info('SSL certificate is created');
-    sslData = await ssl.generate() as any;
+    CreateErrorWindow(intl('error.ssl.install'), () => {
+      application.quit();
+    });
 
-    // write files
-    fs.writeFileSync(APP_SSL_CERT_CA, (sslData as any).root);
-    fs.writeFileSync(APP_SSL_CERT, sslData.cert);
-    fs.writeFileSync(APP_SSL_KEY, sslData.key);
-
-    // Set cert as trusted
-    const warning = new Promise((resolve) => { // wrap callback
-      CreateWarningWindow(intl('warn.ssl.install'), { alwaysOnTop: true, buttonLabel: intl('i_understand') }, () => {
-        winston.info('Warning window was closed');
-        resolve();
-      });
-    })
-      .then(() => {
-        winston.info('Installing SSL certificate');
-
-        return ssl.InstallTrustedCertificate(APP_SSL_CERT_CA);
-      })
-      .catch((err) => {
-        winston.error(err.toString());
-        // remove ssl files if installation is fail
-        fs.unlinkSync(APP_SSL_CERT_CA);
-        fs.unlinkSync(APP_SSL_CERT);
-        fs.unlinkSync(APP_SSL_KEY);
-
-        CreateErrorWindow(intl('error.ssl.install'), () => {
-          application.quit();
-        });
-      });
-    await warning;
-  } else {
-    // read files
-    sslData = {
-      cert: fs.readFileSync(APP_SSL_CERT),
-      key: fs.readFileSync(APP_SSL_KEY),
-    } as any;
-
-    winston.info('SSL certificate is loaded');
+    application.quit();
   }
+
+  const sslData: wsServer.IServerOptions = {
+    cert: fs.readFileSync(APP_SSL_CERT),
+    key: fs.readFileSync(APP_SSL_KEY),
+  } as any;
+  winston.info('SSL certificate is loaded');
 
   const config: IConfigure = {
     disableCardUpdate: application.configure.disableCardUpdate,
+    logging: false,
     cards: [],
     providers: [],
   };
@@ -272,7 +229,7 @@ async function InitService() {
             });
             break;
           default:
-            // nothing
+          // nothing
         }
       }
     })
@@ -354,14 +311,14 @@ async function PrepareCardJson() {
     if (!fs.existsSync(APP_CARD_JSON)) {
       // try to get the latest card.json from git
       try {
-        const message = await GetRemoteFile(APP_CARD_JSON_LINK);
+        const message = await request(APP_CARD_JSON_LINK);
 
         // try to parse
-        const card = await jws.GetContent(message);
+        const card: Cards = await jws.GetContent(message);
 
         // copy card.json to .fortify
         fs.writeFileSync(APP_CARD_JSON, JSON.stringify(card, null, '  '), { flag: 'w+' });
-        winston.info(`card.json was copied to .fortify from ${APP_CARD_JSON_LINK}`);
+        winston.info(`card.json v${card.version} was copied to .fortify from ${APP_CARD_JSON_LINK}`);
 
         return;
       } catch (err) {
@@ -369,58 +326,39 @@ async function PrepareCardJson() {
       }
 
       // get original card.json from webcrypto-local
-      const originalPath = path.join(APP_DIR, 'node_modules', '@webcrypto-local', 'cards', 'lib', 'card.json');
-      if (fs.existsSync(originalPath)) {
-        // copy card.json to .fortify
-        const buf = fs.readFileSync(originalPath);
-        fs.writeFileSync(APP_CARD_JSON, buf, { flag: 'w+' });
-        winston.info(`card.json was copied to .fortify from ${originalPath}`);
-      } else {
-        throw new Error(`Cannot find original card.json by path ${originalPath}`);
-      }
+      // eslint-disable-next-line global-require
+      const original: Cards = require('@webcrypto-local/cards/lib/card.json');
+      fs.writeFileSync(APP_CARD_JSON, JSON.stringify(original, null, '  '), { flag: 'w+' });
+      winston.info(`card.json v${original.version} was copied to .fortify from modules`);
     } else {
       // compare existing card.json version with remote
       // if remote version is higher then upload and remove local file
       winston.info('Comparing current version of card.json file with remote');
 
-      let remote: any;
+      let remote: Cards | undefined;
 
       try {
-        const jwsString = await GetRemoteFile(APP_CARD_JSON_LINK);
+        const jwsString = await request(APP_CARD_JSON_LINK);
         remote = await jws.GetContent(jwsString);
       } catch (e) {
         winston.error(`Cannot get get file ${APP_CARD_JSON_LINK}. ${e.message}`);
       }
 
-      const local = JSON.parse(
+      const local: Cards = JSON.parse(
         fs.readFileSync(APP_CARD_JSON, { encoding: 'utf8' }),
       );
 
       if (remote && semver.lt(local.version || '0.0.0', remote.version || '0.0.0')) {
         // copy card.json to .fortify
         fs.writeFileSync(APP_CARD_JSON, JSON.stringify(remote, null, '  '), { flag: 'w+' });
-        winston.info(`card.json was copied to .fortify from ${APP_CARD_JSON_LINK}`);
+        winston.info(`card.json v${remote.version} was copied to .fortify from ${APP_CARD_JSON_LINK}`);
       } else {
-        winston.info('card.json has the latest version');
+        winston.info(`card.json has the latest version v${local.version}`);
       }
     }
   } catch (err) {
     winston.error(`Cannot prepare card.json data. ${err.stack}`);
   }
-}
-
-async function GetRemoteFile(link: string, encoding = 'utf8') {
-  return new Promise<string>((resolve, reject) => {
-    request.get(link, {
-      encoding,
-    }, (error, response, body) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(body);
-      }
-    });
-  });
 }
 
 interface CurrentIdentity {
@@ -575,7 +513,7 @@ function PrepareIdentity(identity: wsServer.RemoteIdentity) {
   const userAgent = identity.userAgent!;
   const res: Identity = {} as any;
 
-  if (/edge\/([\d\.]+)/i.exec(userAgent)) {
+  if (/edge\/([\d.]+)/i.exec(userAgent)) {
     res.browser = 'edge';
   } else if (/msie/i.test(userAgent)) {
     res.browser = 'ie';

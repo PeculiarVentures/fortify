@@ -29,7 +29,7 @@ export async function GetContent(jws: string) {
     joseCrypto = new jose.Jose.WebCryptographer();
     joseCrypto.setContentSignAlgorithm('RS256');
 
-    verifier = new jose.JoseJWS.Verifier(joseCrypto, jws);
+    verifier = new jose.JoseJWS.Verifier(joseCrypto, jws.replace(/[\n\r]/g, ''));
   } catch (e) {
     winston.error(`${fName}: ${e.toString()}`);
     throw new Error('Unable to check JWS. Malformed update metadata.');
