@@ -39,7 +39,7 @@
     "colors": "^1.4.0",
     "cross-env": "^7.0.2",
     "css-loader": "^3.6.0",
-    "electron": "^8.3.1",
+    "electron": "8.3.3",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript": "^7.2.1",
     "eslint-plugin-import": "^2.21.2",
