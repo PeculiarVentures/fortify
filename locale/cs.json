@@ -22,7 +22,8 @@
   "approve": "Povolit",
   "show.again": "Nezobrazovat tento dialog znovu",
   "version": "Verze",
-  "copyright": "Copyright (c) 2017, Peculiar Ventures",
+  "copyright": "© Peculiar Ventures, Inc",
+  "made.with": "Made with ❤️ across the globe",
   "all.rights": "Všechna práva vyhrazena",
   "pin": "PIN",
   "keys.empty": "Doposud nemáte žádné adresy jako důvěryhodné.",
@@ -43,5 +44,8 @@
   "warn.ssl.install": "Pro správnou funkci je nutné označit Fortify SSL certifikát jako důvěryhodný. Při nastavení můžete být vyzván k zadání hesla správce.",
   "warn.token.crypto_not_found": "Vložená karta je aplikací Fortify podporována ale nepodařilo se zjistit správný ovladač. Ujistěte se, že soubor (%1) existuje. Pokud ne, nainstalujte ovladače pro čipovou kartu a zkuste znovu.",
   "warn.token.crypto_wrong": "Nepodařilo se spustit ovladače (%1) pro vaši čipovou kartu nebo token.\nUjistěte se, že je ovladač nainstalován správně a zkuste znovu.",
-  "warn.pcsc.cannot_start": "Zdá se, že `Správce prostředků čipových karet` není spuštěn. Spusťte tuto službu a poté restartujte Fortify, prosím."
+  "warn.pcsc.cannot_start": "Zdá se, že `Správce prostředků čipových karet` není spuštěn. Spusťte tuto službu a poté restartujte Fortify, prosím.",
+  "keys.empty.search": "There are no websites matching that search.",
+  "remove": "Remove",
+  "settings": "Settings"
 }

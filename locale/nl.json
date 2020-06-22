@@ -22,7 +22,8 @@
     "approve": "Goedkeuren",
     "show.again": "Laat dit dialoogvenster niet meer verschijnen",
     "version": "Versie",
-    "copyright": "Copyright (c) 2017, Peculiar Ventures",
+    "copyright": "© Peculiar Ventures, Inc",
+    "made.with": "Made with ❤️ across the globe",
     "all.rights": "Alle rechten voorbehouden",
     "pin": "PIN",
     "keys.empty": "U heeft nog geen vertrouwde sites.",
@@ -43,5 +44,8 @@
     "warn.ssl.install": "Het Fortify SSL certificaat dient als betrouwbaar te worden gezien. Wanneer wij dit doen, zult u uw Administrator Password moeten invoeren.",
     "warn.token.crypto_not_found": "De ingestoken Smart Card wordt ondersteund door Fortify, maar de middleware kan niet worden gelokaliseerd. Controleer of deze is geïnstalleerd, zo niet, installeer deze en probeer het nogmaals.",
     "warn.token.crypto_wrong": "Er is een probleem opgetreden bij het laden van de middleware (%1) voor uw beveiligde token of Smart Card.\nControleer of de middelware correct is geïnstalleerd en probeer het nogmaals.",
-    "warn.pcsc.cannot_start": "Het lijkt erop dat de 'Smart Card Resource Manager' niet actief is. Start deze service en herstart Fortify."
+    "warn.pcsc.cannot_start": "Het lijkt erop dat de 'Smart Card Resource Manager' niet actief is. Start deze service en herstart Fortify.",
+    "keys.empty.search": "There are no websites matching that search.",
+    "remove": "Remove",
+    "settings": "Settings"
 }

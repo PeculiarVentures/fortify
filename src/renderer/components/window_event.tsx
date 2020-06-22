@@ -1,28 +1,31 @@
-import * as React from "react";
+import * as React from 'react';
 
 export interface IWindowEventProps {
-    event: string;
-    onCall: (e: any) => void;
+  event: string;
+  onCall: (e: any) => void;
 }
 export interface IWindowEventState { }
 
 export class WindowEvent extends React.Component<IWindowEventProps, IWindowEventState> {
+  constructor(props: IWindowEventProps) {
+    super(props);
 
-    constructor(props: IWindowEventProps) {
-        super(props);
+    this.state = {};
+  }
 
-        this.state = {};
-    }
+  public componentDidMount() {
+    const { event, onCall } = this.props;
 
-    public componentDidMount() {
-        window.addEventListener(this.props.event, this.props.onCall);
-    }
+    window.addEventListener(event, onCall);
+  }
 
-    public componentWillUnmount() {
-        window.removeEventListener(this.props.event, this.props.onCall);
-    }
+  public componentWillUnmount() {
+    const { event, onCall } = this.props;
 
-    public render() {
-        return null;
-    }
+    window.removeEventListener(event, onCall);
+  }
+
+  public render() {
+    return null;
+  }
 }

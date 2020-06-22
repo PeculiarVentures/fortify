@@ -1,8 +1,8 @@
-const ERROR_NAME = "UpdateError";
+const ERROR_NAME = 'UpdateError';
 
 export class UpdateError extends Error {
-
   public type: string;
+
   public critical = false;
 
   constructor(message: string, critical = false) {

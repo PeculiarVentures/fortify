@@ -1,7 +1,7 @@
 # Add certificate to system key chain
 
-certPath=${appPath}/ca.pem
-certificateName="Fortify Local CA" 
+certPath=${certPath}
+certificateName="${certName}" 
 
 echo -e "certificateName: ${certificateName}"
 echo -e "certPath: ${certPath}"
