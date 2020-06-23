@@ -69,11 +69,12 @@ async function macOS() {
 }
 
 async function win32() {
-  // copy pvpkcs11
-  const pvpkcs11Url = 'https://github.com/PeculiarVentures/fortify/releases/download/binaries/pvpkcs11-win32-x64.dll';
+  const platform = process.env.Platform || "x64";
+
+  const pvpkcs11Url = `https://github.com/PeculiarVentures/fortify/releases/download/binaries/pvpkcs11-win32-${platform}.dll`;
   const pvpkcs11File = 'pvpkcs11.dll';
-  const nssUtilsUrl = 'https://github.com/PeculiarVentures/fortify/releases/download/binaries/nss-certutil-win32-x64.zip';
-  const nssRuntimeUrl = 'https://github.com/PeculiarVentures/fortify/releases/download/binaries/nss-runtime-win32-x64.zip';
+  const nssUtilsUrl = `https://github.com/PeculiarVentures/fortify/releases/download/binaries/nss-certutil-win32-${platform}.zip`;
+  const nssRuntimeUrl = `https://github.com/PeculiarVentures/fortify/releases/download/binaries/nss-runtime-win32-${platform}.zip`;
   const nssDir = 'nss';
   const nssUtilsDir = path.join(nssDir, 'utils');
   const nssRuntimeDir = path.join(nssDir, 'runtime');
@@ -130,7 +131,7 @@ async function win32() {
     Logger.info(`Folder '${openscFolder}' created`);
 
     const openscZip = `${openscFolder}/opensc.zip`;
-    await download("https://github.com/PeculiarVentures/fortify/releases/download/binaries/opensc-win32-x64.zip", openscZip);
+    await download(`https://github.com/PeculiarVentures/fortify/releases/download/binaries/opensc-win32-${platform}.zip`, openscZip);
     try {
       await extract(openscZip, openscFolder);
       Logger.info('OpenSC files were copied to nss folder');
