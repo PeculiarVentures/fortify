@@ -65,22 +65,26 @@ export class SslService {
    * Returns `true` if CA certificate requires renew
    */
   public getCaCertStatus() {
-    const pem = this.getCaCert();
-    if (pem) {
-      const der = PemConverter.toArrayBuffer(pem);
-      const cert = asn.AsnConvert.parse(der, x509.Certificate);
+    if (fs.existsSync(c.APP_SSL_CERT)
+      && fs.existsSync(c.APP_SSL_KEY)
+      && fs.existsSync(c.APP_SSL_CERT_CA)) {
+      const pem = this.getCaCert();
+      if (pem) {
+        const der = PemConverter.toArrayBuffer(pem);
+        const cert = asn.AsnConvert.parse(der, x509.Certificate);
 
-      const notBefore = cert.tbsCertificate.validity.notBefore.getTime();
-      const notAfter = cert.tbsCertificate.validity.notAfter.getTime();
-      const renewDate = notBefore.getTime() + Math.floor((notAfter.getTime()
-        - notBefore.getTime()) * (1 - SslService.CERT_RENEW_COEFFICIENT));
+        const notBefore = cert.tbsCertificate.validity.notBefore.getTime();
+        const notAfter = cert.tbsCertificate.validity.notAfter.getTime();
+        const renewDate = notBefore.getTime() + Math.floor((notAfter.getTime()
+          - notBefore.getTime()) * (1 - SslService.CERT_RENEW_COEFFICIENT));
 
-      // eslint-disable-next-line no-nested-ternary
-      return notAfter.getTime() < Date.now()
-        ? CaCertificateStatus.expired
-        : renewDate < Date.now()
-          ? CaCertificateStatus.renew
-          : CaCertificateStatus.valid;
+        // eslint-disable-next-line no-nested-ternary
+        return notAfter.getTime() < Date.now()
+          ? CaCertificateStatus.expired
+          : renewDate < Date.now()
+            ? CaCertificateStatus.renew
+            : CaCertificateStatus.valid;
+      }
     }
 
     return CaCertificateStatus.none;
