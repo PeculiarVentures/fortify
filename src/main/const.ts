@@ -14,7 +14,7 @@ export const APP_USER_DIR = path.join(HOME_DIR, '.fortify');
  */
 export const APP_DATA_DIR = (os.platform() === 'win32')
   ? path.join(process.env.ProgramData!, 'Fortify')
-  : '/var/lib/fortify';
+  : APP_USER_DIR;
 
 export const APP_DIR = path.join(__dirname, '..');
 export const SRC_DIR = path.join(APP_DIR, 'src');

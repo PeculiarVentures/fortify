@@ -7,16 +7,23 @@ import * as path from 'path';
 import { PemConverter } from 'webcrypto-core';
 import * as winston from 'winston';
 import * as c from '../const';
-import { CertificateGenerator, IName, SslCertInstaller } from '../ssl';
+import {
+  CertificateGenerator, IName, SslCertInstaller, ValidityType,
+} from '../ssl';
+import { CreateWarningWindow } from '../windows';
+import { intl } from '../locale';
 
 export enum CaCertificateStatus {
   none,
   valid,
   renew,
+  expired
 }
 
 export class SslService {
-  public static readonly CERT_VALIDITY_YEARS = 2;
+  public static readonly CERT_VALIDITY_TYPE: ValidityType = 'year';
+
+  public static readonly CERT_VALIDITY_VALUE = 2;
 
   public static readonly CERT_RENEW_COEFFICIENT = 0.2;
 
@@ -68,22 +75,44 @@ export class SslService {
       const renewDate = notBefore.getTime() + Math.floor((notAfter.getTime()
         - notBefore.getTime()) * (1 - SslService.CERT_RENEW_COEFFICIENT));
 
-      return renewDate < Date.now()
-        ? CaCertificateStatus.renew
-        : CaCertificateStatus.valid;
+      // eslint-disable-next-line no-nested-ternary
+      return notAfter.getTime() < Date.now()
+        ? CaCertificateStatus.expired
+        : renewDate < Date.now()
+          ? CaCertificateStatus.renew
+          : CaCertificateStatus.valid;
     }
 
     return CaCertificateStatus.none;
   }
 
   public async run() {
-    const status = this.getCaCertStatus();
+    let status = this.getCaCertStatus();
+    winston.info('Get SSL certificate status', { status: CaCertificateStatus[status] });
+
+    if (os.platform() === 'win32' && (status === CaCertificateStatus.renew || status === CaCertificateStatus.expired)) {
+      // Show warning dialog
+      CreateWarningWindow('SSL certificate requires renew. Please run Fortify installer to renew a certificate.', {
+        alwaysOnTop: true,
+        title: intl('warning.title.oh_no'),
+      });
+
+      status = CaCertificateStatus.valid;
+    }
+
     if (status !== CaCertificateStatus.valid) {
       const pem = this.getCaCert();
       winston.info('SSL certificate enrollment is required', {
         class: 'SslService',
         pem,
         status: CaCertificateStatus[status],
+      });
+
+      await new Promise((resolve) => { // wrap callback
+        CreateWarningWindow(intl('warn.ssl.install'), { alwaysOnTop: true, buttonLabel: intl('i_understand') }, () => {
+          winston.info('Warning window was closed');
+          resolve();
+        });
       });
 
       // #region PublicData folder
@@ -94,7 +123,6 @@ export class SslService {
           folder: c.APP_DATA_DIR,
         });
       }
-
       // #endregion
 
       // #region Generate CA cert
@@ -109,8 +137,8 @@ export class SslService {
         serialNumber: CertificateGenerator.randomSerial(),
         subject: caName,
         validity: {
-          type: 'year',
-          value: SslService.CERT_VALIDITY_YEARS,
+          type: SslService.CERT_VALIDITY_TYPE,
+          value: SslService.CERT_VALIDITY_VALUE,
         },
         publicKey: caKeys.publicKey,
         signingKey: caKeys.privateKey,
@@ -149,8 +177,8 @@ export class SslService {
         subject: localhostName,
         issuer: caName,
         validity: {
-          type: 'year',
-          value: SslService.CERT_VALIDITY_YEARS,
+          type: SslService.CERT_VALIDITY_TYPE,
+          value: SslService.CERT_VALIDITY_VALUE,
         },
         publicKey: localhostKeys.publicKey,
         signingKey: caKeys.privateKey,
