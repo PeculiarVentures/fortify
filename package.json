@@ -18,7 +18,7 @@
     "test": "mocha"
   },
   "keywords": [],
-  "author": "",
+  "author": "PeculiarVentures Team",
   "license": "MIT",
   "devDependencies": {
     "@types/asn1js": "0.0.1",
