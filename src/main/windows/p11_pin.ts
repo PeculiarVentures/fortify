@@ -8,7 +8,7 @@ export function CreateP11PinWindow(options: any) {
   const window = CreateWindow({
     ...windowSizes.default,
     app: 'p11-pin',
-    title: intl('p11-pin'),
+    title: options.p.label || intl('p11-pin'),
     alwaysOnTop: true,
     params: options.p,
   });
