@@ -63,13 +63,13 @@ async function macOS() {
   await spawn('install_name_tool', [
     '-change',
     'libopensc.6.dylib',
-    path.join(macOsFolder, 'libopensc.6.dylib'),
+    path.join('@executable_path/libopensc.6.dylib'),
     path.join(macOsFolder, 'opensc-pkcs11.so'),
   ]);
 }
 
 async function win32() {
-  const platform = process.env.Platform || "x64";
+  const platform = process.env.Platform || 'x64';
 
   const pvpkcs11Url = `https://github.com/PeculiarVentures/fortify/releases/download/binaries/pvpkcs11-win32-${platform}.dll`;
   const pvpkcs11File = 'pvpkcs11.dll';
