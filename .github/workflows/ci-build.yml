@@ -1,0 +1,73 @@
+name: ci-build
+
+on:
+    push:
+        tags:
+            - "*" # This will run only in all tags
+
+jobs:
+    build:
+        strategy:
+            matrix:
+                docker_tag:
+                    - centos7
+                    - centos8
+                    - debian-buster
+                    - debian-stretch
+                    - fedora-latest
+                    - fedora31
+                    - opensuse-leap
+                    - opensuse-tumbleweed
+                os: [ubuntu-20.04, macos-latest, windows-latest]
+                node: [12, 14]
+            
+        runs-on: ${{ matrix.os }}
+        env: 
+            DOCKER_TAG: ${{matrix.docker_tag}}
+            FILE_EXTENSION: ""
+            OS_TYPE: ""
+        steps:
+            - uses: actions/checkout@v2
+            - name: Build application
+              run: npm run build
+            - name: Get file extension
+            - run: |
+                if [ "${{matrix.os}}" == "macos-latest" ] ; then \
+                    FILE_EXTENSION="pkg"
+                    OS_TYPE="macos"
+                elif [ "${{matrix.os}}" == "windows-latest" ] ; then \
+                    FILE_EXTENSION="msi"
+                    OS_TYPE="windows"
+                else
+                    OS_TYPE="${{matrix.os}}"
+                    if [ "${{matrix.os}}" ==*"debian"* || "${{matrix.os}}"==*"ubuntu"* ] ; then \
+                      FILE_EXTENSION="deb"
+                    else
+                      FILE_EXTENSION="rpm"
+                    fi
+                fi
+            - if: matrix.os == 'ubuntu-latest'
+              run: |
+                docker build --tag fortify-${{DOCKER_TAG}} -f ./Dockerfile.${{DOCKER_TAG}} .
+                docker run --name fortify-${{DOCKER_TAG}} fortify-${{DOCKER_TAG}}
+                mkdir /installers
+                docker cp fortify-${{DOCKER_TAG}}:/fortify/installer /installers
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+              with:
+                tag_name: ${{ github.ref }}
+                release_name: ${{ github.ref }}
+                draft: false
+                prerelease: false
+            - name: Upload Release Asset
+              id: upload-release-asset 
+              uses: actions/upload-release-asset@v1
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+                asset_path: ./fortify-installers/fortify-${{OS_TYPE}}.${{FILE_EXTENSION}}
+                asset_content_type: application/zip
