@@ -1,0 +1,21 @@
+FROM node:lts AS build
+
+RUN mkdir /fortify
+COPY ./package.json /fortify
+COPY ./package-lock.json /fortify
+
+WORKDIR /fortify
+RUN npm install && npm install --save-dev electron-installer-redhat
+COPY . /fortify
+RUN npm run build
+
+
+FROM fedora:31 AS baseOS
+
+RUN dnf install -y rpm-build @development-tools @development-libraries
+RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+
+RUN mkdir /fortify
+COPY --from=build /fortify /fortify
+
+CMD [ "/bin/bash -c \"npx electron-installer-redhat --config /fortify/config/config.rpm.json \""" ]

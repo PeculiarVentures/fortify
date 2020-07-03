@@ -5,7 +5,7 @@
   "description": "",
   "main": "out/main.js",
   "scripts": {
-    "postinstall": "ts-node scripts/postinstall",
+    "postinstall": "ts-node scripts/postinstall && electron-builder install-app-deps",
     "start": "electron .",
     "build:main": "webpack --config scripts/webpack.main.config.js",
     "build:renderer": "webpack --config scripts/webpack.renderer.config.js",
