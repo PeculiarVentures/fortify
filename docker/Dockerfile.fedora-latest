@@ -1,13 +1,16 @@
 FROM fedora:latest AS baseOS
 
-RUN dnf install -y rpm-build @development-tools g++ nss-tools pcsc-lite pcsc-lite-ccid opensc pcsc-lite-devel
+RUN dnf install -y rpm-build @development-tools git g++ nss-tools pcsc-lite pcsc-lite-ccid opensc pcsc-lite-devel
 RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash - && dnf -y install nodejs
 
 RUN mkdir /fortify
 COPY . /fortify
 
 WORKDIR /fortify
-RUN npm ci && npm install --save-dev electron-installer electron-installer-redhat
-RUN npm run build
+RUN npm ci && npm install --save-dev electron-installer electron-installer-redhat electron-packager
+# This will build the application && copies the package.json to the build directory
+RUN npm run build && cp package.json ./out/packages.json
+# This packages the application for electron to build later
+RUN npx electron-packager ./out/ fortify --platform linux --arch x64 --out ./packages/
 
 CMD [ "/bin/bash -c \"npx electron-installer-redhat --config /fortify/config/config.rpm.json \"" ]

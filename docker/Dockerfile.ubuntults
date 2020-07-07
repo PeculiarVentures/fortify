@@ -1,14 +1,17 @@
 #latest points to the latest lts version
 FROM ubuntu:latest AS baseOS
 
-RUN apt-get update && apt-get install -y fakeroot dpkg build-essential curl g++ libnss3-tools libpcsclite1 pcscd
+RUN apt-get update && apt-get install -y fakeroot dpkg build-essential git curl g++ libnss3-tools libpcsclite1 pcscd
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -y nodejs
 
 RUN mkdir /fortify
 COPY . /fortify
 
 WORKDIR /fortify
-RUN npm ci && npm install --save-dev electron-installer electron-installer-debian
-RUN npm run build
+RUN npm ci && npm install --save-dev electron-installer electron-installer-debian electron-packager
+# This will build the application && copies the package.json to the build directory
+RUN npm run build && cp package.json ./out/packages.json
+# This packages the application for electron to build later
+RUN npx electron-packager ./out/ fortify --platform linux --arch x64 --out ./packages/
 
 CMD [ "/bin/bash -c \"npx electron-installer-debian --config /fortify/config/config.deb.json \"" ]
