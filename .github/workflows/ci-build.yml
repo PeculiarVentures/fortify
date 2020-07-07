@@ -18,6 +18,8 @@ jobs:
                     - fedora31
                     - opensuse-leap
                     - opensuse-tumbleweed
+                    - ubuntults
+                    - ubuntu-1910
                 os: [ubuntu-20.04, macos-latest, windows-latest]
                 node: [12, 14]
             
