@@ -31,7 +31,7 @@ jobs:
             - name: Build application
               run: npm run build
             - name: Get file extension
-            - run: |
+              run: |
                 if [ "${{matrix.os}}" == "macos-latest" ] ; then \
                     FILE_EXTENSION="pkg"
                     OS_TYPE="macos"
