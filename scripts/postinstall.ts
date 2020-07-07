@@ -146,7 +146,31 @@ async function win32() {
 }
 
 async function linux() {
-  throw new Error('Method not implemented');
+  const openscUrl = 'https://github.com/PeculiarVentures/fortify/releases/download/binaries/opensc-linux.zip';
+
+  
+  if (!fs.existsSync(nssFolder)) {
+    fs.mkdirSync(nssFolder);
+    Logger.info(`Folder '${nssFolder}' created`);
+  }
+
+  if (!fs.existsSync(openscFolder)) {
+    fs.mkdirSync(openscFolder);
+    Logger.info(`Folder '${openscFolder}' created`);
+
+    const openscZip = `${openscFolder}/opensc.zip`;
+    await download(openscUrl, openscZip);
+    try {
+      await extract(openscZip, openscFolder);
+      Logger.info(`OpenSC files were copied to ${openscFolder} folder`);
+    } finally {
+      fs.unlinkSync(openscZip);
+    }
+  }
+
+  const electronFolder = path.join(__dirname, '../node_modules/electron/dist');
+  await spawn('cp', [`${openscFolder}/*`, `${electronFolder}/`]);
+  Logger.info('OpenSC files were copied to Electron folder');
 }
 
 async function main() {
