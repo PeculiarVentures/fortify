@@ -1,5 +1,5 @@
 {
-    "src": "/fortify/out/",
+    "src": "/fortify/packages/fortify-linux-x64/",
     "dest": "/fortify/installer/",
     "name": "Fortify",
     "productName": "Fortify App",
@@ -11,7 +11,6 @@
         "libpcsclite1",
         "pcscd"
     ],
-    "bin": "/usr/bin/fortify",
     "icon":"./src/static/icons/logo.svg",
     "categories": ["Application"],
     "mimeType": ["application/sc"]
