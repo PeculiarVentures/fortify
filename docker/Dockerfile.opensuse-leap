@@ -1,20 +1,12 @@
-FROM node:lts AS build
-
-RUN mkdir /fortify
-COPY ./package.json /fortify
-COPY ./package-lock.json /fortify
-
-WORKDIR /fortify
-RUN npm install && npm install --save-dev electron-installer-redhat
-COPY . /fortify
-RUN npm run build
-
-
 FROM opensuse/leap:latest AS baseOS
 
-RUN zypper install -y rpm-build nodejs12 && zypper install --type pattern devel_basis
+RUN zypper install -y rpm-build nodejs12 mozilla-nss-tools libpcsclite1 pcsc-lite pcsc-ccid opensc g++ && zypper install --type pattern devel_basis
 
 RUN mkdir /fortify
-COPY --from=build /fortify /fortify
+COPY . /fortify
 
-CMD [ "/bin/bash -c \"npx electron-installer-redhat --config /fortify/config/config.suse.json \""" ]
+WORKDIR /fortify
+RUN npm ci && npm install --save-dev electron-installer electron-installer-redhat
+RUN npm run build
+
+CMD [ "/bin/bash -c \"npx electron-installer-redhat --config /fortify/config/config.suse.json \"" ]

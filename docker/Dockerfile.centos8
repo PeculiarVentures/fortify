@@ -1,21 +1,13 @@
-FROM node:lts AS build
-
-RUN mkdir /fortify
-COPY ./package.json /fortify
-COPY ./package-lock.json /fortify
-
-WORKDIR /fortify
-RUN npm install && npm install --save-dev electron-installer-redhat
-COPY . /fortify
-RUN npm run build
-
-
 FROM centos:centos8 AS baseOS
 
-RUN yum install -y rpm-build &&  yum groupinstall 'Development Tools' curl -y
-RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+RUN yum install -y rpm-build g++ nss-tools pcsc-lite pcsc-lite-ccid opensc pcsc-lite-devel &&  yum groupinstall 'Development Tools' curl -y
+RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash - && yum install -y nodejs
 
 RUN mkdir /fortify
-COPY --from=build /fortify /fortify
+COPY . /fortify
 
-CMD [ "/bin/bash -c \"npx electron-installer-redhat --config /fortify/config/config.rpm.json \""" ]
+WORKDIR /fortify
+RUN npm ci && npm install --save-dev electron-installer electron-installer-redhat
+RUN npm run build
+
+CMD [ "/bin/bash -c \"npx electron-installer-redhat --config /fortify/config/config.rpm.json \""]

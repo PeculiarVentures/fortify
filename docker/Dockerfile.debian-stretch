@@ -1,21 +1,13 @@
-FROM node:lts AS build
-
-RUN mkdir /fortify
-COPY ./package.json /fortify
-COPY ./package-lock.json /fortify
-
-WORKDIR /fortify
-RUN npm install && npm install --save-dev electron-installer-debian
-COPY . /fortify
-RUN npm run build
-
-
 FROM debian:stretch AS baseOS
 
-RUN apt-get update && apt-get install -y fakeroot dpkg build-essential curl
+RUN apt-get update && apt-get install -y fakeroot dpkg build-essential curl g++ libnss3-tools libpcsclite1 pcscd
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -y nodejs
 
-RUN mkdir /fortify/out
-COPY --from=build /fortify /fortify
+RUN mkdir /fortify
+COPY . /fortify
 
-CMD [ "/bin/bash -c \"npx electron-installer-debian --config /fortify/config/config.deb.json \""" ]
+WORKDIR /fortify
+RUN npm ci && npm install --save-dev electron-installer electron-installer-debian
+RUN npm run build
+
+CMD [ "/bin/bash -c \"npx electron-installer-debian --config /fortify/config/config.deb.json \"" ]
