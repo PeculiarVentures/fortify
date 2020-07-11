@@ -4,7 +4,7 @@
     "name": "Fortify",
     "productName": "Fortify App",
     "description": "Fortify enables cross-browser usage of local certificates and smart cards",
-    "arch": "x86_64",
+    "arch": "amd64",
     "homepage": "https://fortifyapp.com/",
     "requires": [
         "libnss3-tools",
