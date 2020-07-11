@@ -1,16 +1,22 @@
 FROM centos:centos7 AS baseOS
 
-RUN yum install -y rpm-build git g++ nss-tools pcsc-lite pcsc-lite-ccid opensc pcsc-lite-devel &&  yum groupinstall 'Development Tools' curl -y
-RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash - && yum install -y nodejs
+# This takes advantage of docker image caching and one will have 
+# to install dependencies once
+RUN yum install -y rpm-build git g++ nss-tools pcsc-lite pcsc-lite-ccid opensc pcsc-lite-devel &&  yum groupinstall 'Development Tools' curl -y \
+    && curl -sL https://rpm.nodesource.com/setup_12.x | bash - && yum install -y nodejs \
+    # Install yarn
+    &&  curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && yum -y install yarn
 
 RUN mkdir /fortify
 COPY . /fortify
 
 WORKDIR /fortify
-RUN npm ci && npm install --save-dev electron-installer electron-installer-redhat electron-packager
+# Apparently when installing multiple package in parallel, typescript fails to get installed every time. 
+# Limiting the number to just 1, this seems to go away.
+RUN yarn --network-concurrency 1 && yarn add electron-builder electron-installer-redhat electron-packager -D
 # This will build the application && copies the package.json to the build directory
-RUN npm run build && cp package.json ./out/packages.json
+RUN yarn run build && cp package.json ./out/package.json
 # This packages the application for electron to build later
 RUN npx electron-packager ./out/ fortify --platform linux --arch x64 --out ./packages/
 
-CMD [ "/bin/bash -c \"npx electron-installer-redhat --config /fortify/config/config.rpm.json \""]
+CMD npx electron-installer-redhat --config /fortify/config/config.rpm.json
