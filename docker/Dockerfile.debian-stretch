@@ -5,7 +5,7 @@ FROM debian:stretch AS baseOS
 RUN apt-get update && apt-get install -y fakeroot dpkg build-essential git curl g++ libnss3-tools libccid pcscd \
     libpcsclite1 libpcsclite-dev && curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -y nodejs \
     # Install yarn
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt update && apt install yarn
 

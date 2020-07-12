@@ -2,7 +2,9 @@ FROM centos:centos8 AS baseOS
 
 # This takes advantage of docker image caching and one will have 
 # to install dependencies once
-RUN yum install -y rpm-build git g++ nss-tools pcsc-lite pcsc-lite-ccid opensc pcsc-lite-devel &&  yum groupinstall 'Development Tools' curl -y \
+# CentOS PowerTools repository is disabled by default. This repository provides the pcsc lite development package and has to be enabled.
+RUN yum install -y dnf-plugins-core && yum config-manager --set-enabled PowerTools \
+    && yum install -y rpm-build git gcc-c++ nss-tools pcsc-lite pcsc-lite-ccid pcsc-lite-devel opensc curl && yum -y groupinstall 'Development Tools' \
     && curl -sL https://rpm.nodesource.com/setup_12.x | bash - && yum install -y nodejs \
     # Install yarn
     &&  curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && yum -y install yarn

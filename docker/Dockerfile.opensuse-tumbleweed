@@ -1,7 +1,9 @@
 FROM opensuse/tumbleweed:latest AS baseOS
 
-RUN zypper install -y rpm-build git nodejs12 yarn mozilla-nss-tools libpcsclite1 pcsc-lite pcsc-ccid opensc \
-    g++ && zypper install --type pattern devel_basis
+# This takes advantage of docker image caching and one will have 
+# to install dependencies once
+RUN zypper install -y rpm-build git nodejs12 yarn mozilla-nss-tools libpcsclite1 pcsc-lite pcsc-lite-devel \ 
+    pcsc-ccid opensc gcc-c++ && zypper in -y npm 
 
 RUN mkdir /fortify
 COPY . /fortify

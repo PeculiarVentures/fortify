@@ -1,9 +1,11 @@
 FROM ubuntu:19.10 AS baseOS
 
-RUN apt-get update && apt-get install -y fakeroot dpkg build-essential git curl g++ libnss3-tools libccid pcscd libpcsclite1 libpcsclite-dev
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -y nodejs
-# Install yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+# This takes advantage of docker image caching and one will have 
+# to install dependencies once
+RUN apt-get update && apt-get install -y fakeroot dpkg build-essential git curl g++ libnss3-tools libccid pcscd \
+    libpcsclite1 libpcsclite-dev && curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -y nodejs \
+    # Install yarn
+    && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt update && apt install yarn
 
@@ -11,12 +13,12 @@ RUN mkdir /fortify
 COPY . /fortify
 
 WORKDIR /fortify
-RUN rm /fortify/package-lock.json
-RUN yarn install 
-RUN yarn add electron-builder electron-installer-debian electron-packager -D
+# Apparently when installing multiple package in parallel, typescript fails to get installed every time. 
+# Limiting the number to just 1, this seems to go away.
+RUN yarn --network-concurrency 1 && yarn add electron-builder electron-installer-debian electron-packager -D
 # This will build the application && copies the package.json to the build directory
 RUN yarn run build && cp package.json ./out/package.json
 # This packages the application for electron to build later
 RUN npx electron-packager ./out/ fortify --platform linux --arch x64 --out ./packages/
 
-CMD ["npx", "electron-installer-debian", "--config /fortify/config/config.deb.json" ]
+CMD npx electron-installer-debian --config /fortify/config/config.deb.json
