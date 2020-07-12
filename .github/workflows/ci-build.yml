@@ -10,7 +10,6 @@ jobs:
         strategy:
             matrix:
                 docker_tag:
-                    - centos7
                     - centos8
                     - debian-buster
                     - debian-stretch
