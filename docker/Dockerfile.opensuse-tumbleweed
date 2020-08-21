@@ -1,0 +1,20 @@
+FROM opensuse/tumbleweed:latest AS baseOS
+
+# This takes advantage of docker image caching and one will have 
+# to install dependencies once
+RUN zypper install -y rpm-build git nodejs12 yarn mozilla-nss-tools libpcsclite1 pcsc-lite pcsc-lite-devel \ 
+    pcsc-ccid opensc gcc-c++ && zypper in -y npm 
+
+RUN mkdir /fortify
+COPY . /fortify
+
+WORKDIR /fortify
+# Apparently when installing multiple package in parallel, typescript fails to get installed every time. 
+# Limiting the number to just 1, this seems to go away.
+RUN yarn --network-concurrency 1 && yarn add electron-builder electron-installer-redhat electron-packager -D
+# This will build the application && copies the package.json to the build directory
+RUN yarn run build && cp package.json ./out/package.json
+# This packages the application for electron to build later
+RUN npx electron-packager ./out/ fortify --platform linux --arch x64 --out ./packages/
+
+CMD npx electron-installer-redhat --config /fortify/config/config.suse.json

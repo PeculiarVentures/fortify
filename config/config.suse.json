@@ -1,0 +1,19 @@
+{
+    "src": "/fortify/packages/fortify-linux-x64/",
+    "dest": "/fortify/installer/",
+    "name": "Fortify",
+    "productName": "Fortify App",
+    "description": "Fortify enables cross-browser usage of local certificates and smart cards",
+    "arch": "x86_64",
+    "homepage": "https://fortifyapp.com/",
+    "requires": [
+        "mozilla-nss-tools",
+        "libpcsclite1",
+        "pcsc-lite",
+        "pcsc-ccid",
+        "opensc"
+    ],
+    "icon":"./src/static/icons/logo.svg",
+    "categories": ["Application"],
+    "mimeType": ["application/sc"]
+}
