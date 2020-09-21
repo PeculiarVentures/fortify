@@ -1,5 +1,4 @@
 export { CreateMainWindow } from './main';
-export { CreateP11PinWindow } from './p11_pin';
 export {
   CreateErrorWindow,
   CreateWarningWindow,
@@ -15,4 +14,5 @@ export {
   CreateAboutWindow,
   CreateKeyPinWindow,
   CreateSettingsWindow,
+  CreateP11PinWindow,
 } from '../app_windows';

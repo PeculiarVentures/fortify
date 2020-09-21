@@ -150,8 +150,11 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         label: 'P11 PIN',
         click: () => {
           CreateP11PinWindow({
-            p: {
+            params: {
+              pin: '',
               origin: 'https://TEST.com/',
+              resolve: () => undefined,
+              reject: () => undefined,
             },
           });
         },

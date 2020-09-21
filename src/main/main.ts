@@ -249,8 +249,10 @@ async function InitService() {
           break;
         }
         case 'pin': {
+          params.pin = '';
+
           CreateP11PinWindow({
-            p: params,
+            params,
           });
           break;
         }
@@ -372,7 +374,7 @@ function InitMainChanells() {
     .on('2key-remove', (event: IpcMainEvent, arg: any) => {
       CreateQuestionWindow(
         intl('question.2key.remove', arg),
-        { parent: application.windows.settings },
+        { parent: application.windows.settings.window },
         async (result) => {
           if (result) {
             winston.info(`Removing 2key session key ${arg}`);

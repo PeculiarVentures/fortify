@@ -5,9 +5,10 @@ import { windows } from '../application';
 export class SettingsWindow extends Window {
   constructor(options: Pick<IWindowOptions, 'onClosed'>) {
     super({
+      ...options,
+      size: 'default',
       app: 'settings',
       title: intl('settings'),
-      ...options,
     });
   }
 }

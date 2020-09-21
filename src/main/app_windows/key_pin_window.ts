@@ -17,6 +17,7 @@ export class KeyPinWindow extends Window {
     const { width, height } = screen.getPrimaryDisplay().bounds;
 
     super({
+      ...options,
       size: 'default',
       app: 'key-pin',
       title: intl('key-pin'),
@@ -26,7 +27,6 @@ export class KeyPinWindow extends Window {
         x: width - windowSizes.default.width,
         y: height - windowSizes.default.height,
       },
-      ...options,
     });
   }
 }

@@ -19,7 +19,7 @@ export interface IBrowserWindow extends Electron.BrowserWindow {
 
 export interface IWindowOptions {
   app: string;
-  title?: string;
+  title: string;
   size?: keyof typeof windowSizes;
   params?: Assoc<any>;
   onClosed: () => void;
@@ -36,6 +36,7 @@ export class Window {
 
   constructor(options: IWindowOptions) {
     this.window = new BrowserWindow({
+      title: options.title,
       ...this.getWindowDefaultOptions(),
       ...this.getWindowSize(options.size),
       ...options.windowOptions,

@@ -5,10 +5,10 @@ import { windows } from '../application';
 export class AboutWindow extends Window {
   constructor(options: Pick<IWindowOptions, 'onClosed'>) {
     super({
+      ...options,
       app: 'about',
       size: 'small',
       title: intl('about'),
-      ...options,
     });
   }
 }
