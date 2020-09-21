@@ -1,7 +1,5 @@
-export { CreateAboutWindow } from './about';
 export { CreateSettingsWindow } from './settings';
 export { CreateMainWindow } from './main';
-export { CreateKeyPinWindow } from './key_pin';
 export { CreateP11PinWindow } from './p11_pin';
 export {
   CreateErrorWindow,
@@ -14,3 +12,4 @@ export {
   BrowserWindowEx,
   BrowserWindowConstructorOptionsEx,
 } from './window';
+export { CreateAboutWindow, CreateKeyPinWindow } from '../app_windows';
