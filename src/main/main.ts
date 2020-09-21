@@ -37,17 +37,18 @@ import * as jws from './jws';
 import { Locale, locale, intl } from './locale';
 import { request } from './utils';
 import * as services from './services';
-import * as tray from './tray';
+import { tray } from './tray';
 import { CheckUpdate } from './update';
 import {
   CreateErrorWindow,
   CreateQuestionWindow,
   CreateWarningWindow,
   CreateMainWindow,
-  CreateKeyPinWindow,
   CreateP11PinWindow,
   CreateTokenWindow,
+  CreateKeyPinWindow,
 } from './windows';
+import { ServerStorage } from './server_storage';
 
 require('@babel/polyfill');
 
@@ -71,6 +72,7 @@ app.once('ready', async () => {
   try {
     // #region Load locale
     winston.info(`System locale is '${app.getLocale()}'`);
+
     if (!application.configure.locale) {
       const localeList = Locale.getLangList();
       const lang = app.getLocale().split('-')[0];
@@ -78,8 +80,8 @@ app.once('ready', async () => {
       // save configure
       ConfigureWrite(APP_CONFIG_FILE, application.configure);
     }
-    locale.setLang(application.configure.locale);
 
+    locale.setLang(application.configure.locale);
     locale.on('change', () => {
       application.configure.locale = locale.lang;
       ConfigureWrite(APP_CONFIG_FILE, application.configure);
@@ -92,13 +94,15 @@ app.once('ready', async () => {
 
     if (CHECK_UPDATE) {
       await CheckUpdate();
+
       setInterval(() => {
         CheckUpdate();
       }, CHECK_UPDATE_INTERVAL);
     }
 
     await InitService();
-    InitMessages();
+
+    InitMainChanells();
   } catch (error) {
     winston.error(error.toString());
     app.emit('error', error);
@@ -117,6 +121,7 @@ app.once('ready', async () => {
 async function InitService() {
   wsServer.setEngine('@peculiar/webcrypto', appCrypto.crypto);
   const sslService = new services.SslService();
+
   try {
     await sslService.run();
   } catch (e) {
@@ -233,23 +238,19 @@ async function InitService() {
         }
       }
     })
-    .on('notify', (p: any) => {
-      const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-
-      switch (p.type) {
+    .on('notify', (params: any) => {
+      switch (params.type) {
         case '2key': {
-          p.accept = false;
+          params.accept = false;
 
           CreateKeyPinWindow({
-            width,
-            height,
-            p,
+            params,
           });
           break;
         }
         case 'pin': {
           CreateP11PinWindow({
-            p,
+            p: params,
           });
           break;
         }
@@ -361,108 +362,22 @@ async function PrepareCardJson() {
   }
 }
 
-interface CurrentIdentity {
-  origin: string | null;
-  created: Date | null;
-  browsers: string[];
-}
-
-function InitMessages() {
+function InitMainChanells() {
   ipcMain
-    .on('2key-list', (event: IpcMainEvent) => {
-      let storage: wsServer.FileStorage;
+    .on('2key-list', async (event: IpcMainEvent) => {
+      const identities = await ServerStorage.getIdentities();
 
-      Promise.resolve()
-        .then(() => {
-          storage = application.server.server.storage as wsServer.FileStorage;
-          if (!Object.keys(storage.remoteIdentities).length) {
-            // NOTE: call protected method of the storage
-            // @ts-ignore
-            return storage.loadRemote();
-          }
-        })
-        .then(() => {
-          const identities = storage.remoteIdentities;
-          const preparedList = [];
-
-          for (const i in identities) {
-            const identity = PrepareIdentity(identities[i]);
-
-            preparedList.push(identity);
-          }
-
-          // sort identities
-          preparedList.sort((a, b) => {
-            if (a.origin > b.origin) {
-              return 1;
-            } if (a.origin < b.origin) {
-              return -1;
-            }
-            if (a.browser > b.browser) {
-              return 1;
-            } if (a.browser < b.browser) {
-              return -1;
-            }
-
-            return 0;
-          });
-          // prepare data
-          const res: CurrentIdentity[] = [];
-          let currentIdentity: CurrentIdentity = {
-            origin: null,
-            created: null,
-            browsers: [],
-          };
-
-          preparedList.forEach((identity) => {
-            if (currentIdentity.origin !== identity.origin) {
-              if (currentIdentity.origin !== null) {
-                res.push(currentIdentity);
-              }
-              currentIdentity = {
-                origin: identity.origin,
-                created: identity.created,
-                browsers: [identity.browser],
-              };
-            } else {
-              if (currentIdentity.created! > identity.created) {
-                currentIdentity.created = identity.created;
-              }
-              if (!currentIdentity.browsers.some((browser) => browser === identity.browser)) {
-                currentIdentity.browsers.push(identity.browser);
-              }
-            }
-          });
-
-          if (currentIdentity.origin !== null) {
-            res.push(currentIdentity);
-          }
-
-          event.sender.send('2key-list', res);
-        });
+      event.sender.send('2key-list', identities);
     })
     .on('2key-remove', (event: IpcMainEvent, arg: any) => {
-      const storage = application.server.server.storage as wsServer.FileStorage;
-
       CreateQuestionWindow(
         intl('question.2key.remove', arg),
         { parent: application.windows.settings },
-        (result) => {
+        async (result) => {
           if (result) {
             winston.info(`Removing 2key session key ${arg}`);
-            const remList = [];
 
-            for (const i in storage.remoteIdentities) {
-              const identity = storage.remoteIdentities[i];
-              if (identity.origin === arg) {
-                remList.push(i);
-              }
-            }
-
-            remList.forEach((item) => {
-              delete storage.remoteIdentities[item];
-            });
-            storage.removeRemoteIdentity(arg);
+            await ServerStorage.removeIdentity(arg);
 
             event.sender.send('2key-remove', arg);
           }
@@ -495,44 +410,6 @@ function InitMessages() {
     .on('error', (event: IpcMainEvent) => {
       winston.error(event.toString());
     });
-}
-
-interface Identity {
-  browser: string;
-  userAgent: string;
-  created: Date;
-  id: string;
-  origin: string | 'edge' | 'ie' | 'chrome' | 'safari' | 'firefox' | 'other';
-}
-
-/**
- *
- * @param {WebCryptoLocal.RemoteIdentityEx} identity
- */
-function PrepareIdentity(identity: wsServer.RemoteIdentity) {
-  const userAgent = identity.userAgent!;
-  const res: Identity = {} as any;
-
-  if (/edge\/([\d.]+)/i.exec(userAgent)) {
-    res.browser = 'edge';
-  } else if (/msie/i.test(userAgent)) {
-    res.browser = 'ie';
-  } else if (/Trident/i.test(userAgent)) {
-    res.browser = 'ie';
-  } else if (/chrome/i.test(userAgent)) {
-    res.browser = 'chrome';
-  } else if (/safari/i.test(userAgent)) {
-    res.browser = 'safari';
-  } else if (/firefox/i.test(userAgent)) {
-    res.browser = 'firefox';
-  } else {
-    res.browser = 'Other';
-  }
-
-  res.created = identity.createdAt;
-  res.origin = identity.origin!;
-
-  return res;
 }
 
 function printInfo() {
