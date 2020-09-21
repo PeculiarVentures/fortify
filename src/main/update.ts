@@ -70,13 +70,17 @@ export async function CheckUpdate() {
             }
             if (update.min && semver.lt(curVersion, update.min)) {
               winston.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
-              CreateErrorWindow(
-                intl('error.critical.update'),
-                () => {
+
+              CreateErrorWindow({
+                params: {
+                  type: 'error',
+                  text: intl('error.critical.update'),
+                },
+                onClosed: () => {
                   winston.info('Close application');
                   quit();
                 },
-              );
+              });
             } else {
               resolve();
             }
@@ -90,12 +94,15 @@ export async function CheckUpdate() {
     winston.error(e.toString());
     if (e.type === 'UpdateError' && e.critical) {
       await new Promise(() => {
-        CreateErrorWindow(
-          e.toString(),
-          () => {
+        CreateErrorWindow({
+          params: {
+            type: 'error',
+            text: e.toString(),
+          },
+          onClosed: () => {
             quit();
           },
-        );
+        });
       });
     } else {
       // await new Promise((resolve, reject) => {

@@ -32,19 +32,25 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Error SSL install',
         click: () => {
-          CreateErrorWindow(
-            intl('error.ssl.install'),
-            () => {},
-          );
+          CreateErrorWindow({
+            params: {
+              type: 'error',
+              text: intl('error.ssl.install'),
+            },
+            onClosed: () => {},
+          });
         },
       },
       {
         label: 'Error critical update',
         click: () => {
-          CreateErrorWindow(
-            intl('error.critical.update'),
-            () => {},
-          );
+          CreateErrorWindow({
+            params: {
+              type: 'error',
+              text: intl('error.critical.update'),
+            },
+            onClosed: () => {},
+          });
         },
       },
       {

@@ -127,8 +127,14 @@ async function InitService() {
   } catch (e) {
     winston.error(e.toString());
 
-    CreateErrorWindow(intl('error.ssl.install'), () => {
-      application.quit();
+    CreateErrorWindow({
+      params: {
+        type: 'error',
+        text: intl('error.ssl.install'),
+      },
+      onClosed: () => {
+        application.quit();
+      },
     });
 
     application.quit();

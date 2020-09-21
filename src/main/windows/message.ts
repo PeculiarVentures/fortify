@@ -42,43 +42,6 @@ function onDialogClose(window: BrowserWindowEx) {
   }
 }
 
-let errorWindow: Electron.BrowserWindow | null = null;
-/**
- * Creates Error window
- *
- * @param text  Message text
- * @param cb    Callback on message close
- * @returns
- */
-export function CreateErrorWindow(text: string, cb: () => void) {
-  // Create the browser window.
-  if (errorWindow) {
-    errorWindow.show();
-
-    return;
-  }
-
-  errorWindow = CreateWindow({
-    ...windowSizes.small,
-    app: 'message',
-    title: intl('error'),
-    alwaysOnTop: true,
-    params: {
-      type: 'error',
-      text,
-    },
-  });
-
-  // Emitted when the window is closed.
-  errorWindow.on('closed', () => {
-    errorWindow = null;
-
-    if (cb) {
-      cb();
-    }
-  });
-}
-
 let warnWindow: BrowserWindowEx | null = null;
 
 interface ICreateWarningWindowOptions extends ICreateWindowOptions {
