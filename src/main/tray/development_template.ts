@@ -82,58 +82,74 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Warning SSL install',
         click: () => {
-          CreateWarningWindow(
-            intl('warn.ssl.install'),
-            {
-              alwaysOnTop: true,
+          CreateWarningWindow({
+            params: {
+              type: 'warning',
+              text: intl('warn.ssl.install'),
               buttonLabel: intl('i_understand'),
+              id: 'ssl.install',
             },
-            () => {},
-          );
+            onClosed: () => {
+              // nothing
+            },
+          });
         },
       },
       {
         label: 'Warning cannot start',
         click: () => {
-          CreateWarningWindow(
-            intl('warn.pcsc.cannot_start'),
-            {
-              alwaysOnTop: true,
+          CreateWarningWindow({
+            params: {
+              type: 'warning',
+              text: intl('warn.pcsc.cannot_start'),
               title: intl('warning.title.oh_no'),
               buttonLabel: intl('i_understand'),
               id: 'warn.pcsc.cannot_start',
               showAgain: true,
+              showAgainValue: false,
             },
-            () => {},
-          );
+            onClosed: () => {
+              // nothing
+            },
+          });
         },
       },
       {
         label: 'Warning crypto not found',
         click: () => {
-          CreateWarningWindow(
-            intl('warn.token.crypto_not_found', 'TEST'),
-            {
-              alwaysOnTop: true,
+          CreateWarningWindow({
+            params: {
+              type: 'warning',
+              text: intl('warn.token.crypto_not_found', 'TEST'),
               title: intl('warning.title.oh_no'),
+              buttonLabel: intl('close'),
               id: 'warn.token.crypto_not_found',
               showAgain: true,
+              showAgainValue: false,
             },
-          );
+            onClosed: () => {
+              // nothing
+            },
+          });
         },
       },
       {
         label: 'Warning crypto wrong',
         click: () => {
-          CreateWarningWindow(
-            intl('warn.token.crypto_wrong', 'TEST'),
-            {
-              alwaysOnTop: true,
+          CreateWarningWindow({
+            params: {
+              type: 'warning',
+              text: intl('warn.token.crypto_wrong', 'TEST'),
               title: intl('warning.title.oh_no'),
+              buttonLabel: intl('close'),
               id: 'warn.token.crypto_wrong',
               showAgain: true,
+              showAgainValue: false,
             },
-          );
+            onClosed: () => {
+              // nothing
+            },
+          });
         },
       },
       {

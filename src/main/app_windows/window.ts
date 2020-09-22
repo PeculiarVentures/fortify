@@ -28,6 +28,7 @@ export interface IWindowOptions {
     alwaysOnTop?: boolean;
     x?: number;
     y?: number;
+    center?: boolean;
   };
 }
 

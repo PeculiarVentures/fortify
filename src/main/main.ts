@@ -212,31 +212,52 @@ async function InitService() {
 
         switch (err.code) {
           case CODE.PCSC_CANNOT_START:
-            CreateWarningWindow(intl('warn.pcsc.cannot_start'), {
-              alwaysOnTop: true,
-              title: intl('warning.title.oh_no'),
-              buttonLabel: intl('i_understand'),
-              id: 'warn.pcsc.cannot_start',
-              showAgain: true,
-            }, () => {
-              // nothing
+            CreateWarningWindow({
+              params: {
+                type: 'warning',
+                text: intl('warn.pcsc.cannot_start'),
+                title: intl('warning.title.oh_no'),
+                buttonLabel: intl('i_understand'),
+                id: 'warn.pcsc.cannot_start',
+                showAgain: true,
+                showAgainValue: false,
+              },
+              onClosed: () => {
+                // nothing
+              },
             });
             break;
           case CODE.PROVIDER_CRYPTO_NOT_FOUND:
-            CreateWarningWindow(intl('warn.token.crypto_not_found', err.message), {
-              alwaysOnTop: true,
-              title: intl('warning.title.oh_no'),
-              id: 'warn.token.crypto_not_found',
-              showAgain: true,
+            CreateWarningWindow({
+              params: {
+                type: 'warning',
+                text: intl('warn.token.crypto_not_found', err.message),
+                title: intl('warning.title.oh_no'),
+                buttonLabel: intl('close'),
+                id: 'warn.token.crypto_not_found',
+                showAgain: true,
+                showAgainValue: false,
+              },
+              onClosed: () => {
+                // nothing
+              },
             });
             break;
           case CODE.PROVIDER_CRYPTO_WRONG:
           case CODE.PROVIDER_WRONG_LIBRARY:
-            CreateWarningWindow(intl('warn.token.crypto_wrong', err.message), {
-              alwaysOnTop: true,
-              title: intl('warning.title.oh_no'),
-              id: 'warn.token.crypto_wrong',
-              showAgain: true,
+            CreateWarningWindow({
+              params: {
+                type: 'warning',
+                text: intl('warn.token.crypto_wrong', err.message),
+                title: intl('warning.title.oh_no'),
+                buttonLabel: intl('close'),
+                id: 'warn.token.crypto_wrong',
+                showAgain: true,
+                showAgainValue: false,
+              },
+              onClosed: () => {
+                // nothing
+              },
             });
             break;
           default:
