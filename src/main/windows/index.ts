@@ -1,6 +1,5 @@
 export { CreateMainWindow } from './main';
 export {
-  CreateQuestionWindow,
   CreateTokenWindow,
 } from './message';
 export {
@@ -15,4 +14,5 @@ export {
   CreateP11PinWindow,
   CreateErrorWindow,
   CreateWarningWindow,
+  CreateQuestionWindow,
 } from '../app_windows';

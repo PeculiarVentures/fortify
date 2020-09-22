@@ -56,11 +56,17 @@ export async function CheckUpdate() {
     if (semver.lt(curVersion, update.version)) {
       winston.info('Update: New version was found');
       await new Promise((resolve) => {
-        CreateQuestionWindow(
-          intl('question.update.new', update.version),
-          { id: 'question.update.new', showAgain: true },
-          (res) => {
-            if (res) {
+        CreateQuestionWindow({
+          params: {
+            type: 'question',
+            text: intl('question.update.new', update.version),
+            id: 'question.update.new',
+            result: 0,
+            showAgain: true,
+            showAgainValue: false,
+          },
+          onClosed: (result) => {
+            if (result) {
               // yes
               winston.info(`User agreed to download new version ${update.version}`);
               shell.openExternal(DOWNLOAD_LINK);
@@ -68,6 +74,7 @@ export async function CheckUpdate() {
               // no
               winston.info(`User refused to download new version ${update.version}`);
             }
+
             if (update.min && semver.lt(curVersion, update.min)) {
               winston.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
 
@@ -85,7 +92,7 @@ export async function CheckUpdate() {
               resolve();
             }
           },
-        );
+        });
       });
     } else {
       winston.info("Update: New version wasn't found");

@@ -22,13 +22,14 @@ export interface IWindowOptions {
   title: string;
   size?: keyof typeof windowSizes;
   params?: Assoc<any>;
-  onClosed: () => void;
+  onClosed: (...args: any[]) => void;
   windowOptions?: {
     modal?: boolean;
     alwaysOnTop?: boolean;
     x?: number;
     y?: number;
     center?: boolean;
+    parent?: BrowserWindow;
   };
 }
 

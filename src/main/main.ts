@@ -399,10 +399,15 @@ function InitMainChanells() {
       event.sender.send('2key-list', identities);
     })
     .on('2key-remove', (event: IpcMainEvent, arg: any) => {
-      CreateQuestionWindow(
-        intl('question.2key.remove', arg),
-        { parent: application.windows.settings.window },
-        async (result) => {
+      CreateQuestionWindow({
+        params: {
+          type: 'question',
+          text: intl('question.2key.remove', arg),
+          id: 'question.2key.remove',
+          result: 0,
+        },
+        parent: application.windows.settings.window,
+        onClosed: async (result) => {
           if (result) {
             winston.info(`Removing 2key session key ${arg}`);
 
@@ -411,7 +416,7 @@ function InitMainChanells() {
             event.sender.send('2key-remove', arg);
           }
         },
-      );
+      });
     })
     .on('logging-open', () => {
       shell.openItem(APP_LOG_FILE);

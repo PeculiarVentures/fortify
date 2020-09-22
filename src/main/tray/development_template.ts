@@ -59,21 +59,31 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Question 2key remove',
         click: () => {
-          CreateQuestionWindow(
-            intl('question.2key.remove', 'TEST'),
-            {},
-            () => {},
-          );
+          CreateQuestionWindow({
+            params: {
+              type: 'question',
+              text: intl('question.2key.remove', 'TEST'),
+              id: 'question.2key.remove',
+              result: 0,
+            },
+            onClosed: () => {},
+          });
         },
       },
       {
         label: 'Question update new',
         click: () => {
-          CreateQuestionWindow(
-            intl('question.update.new', 'test'),
-            { id: 'question.update.new', showAgain: true },
-            () => {},
-          );
+          CreateQuestionWindow({
+            params: {
+              type: 'question',
+              text: intl('question.update.new', 'TEST'),
+              id: 'question.update.new',
+              result: 0,
+              showAgain: true,
+              showAgainValue: false,
+            },
+            onClosed: () => {},
+          });
         },
       },
       {
@@ -89,9 +99,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               buttonLabel: intl('i_understand'),
               id: 'ssl.install',
             },
-            onClosed: () => {
-              // nothing
-            },
+            onClosed: () => {},
           });
         },
       },
@@ -108,9 +116,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               showAgain: true,
               showAgainValue: false,
             },
-            onClosed: () => {
-              // nothing
-            },
+            onClosed: () => {},
           });
         },
       },
@@ -127,9 +133,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               showAgain: true,
               showAgainValue: false,
             },
-            onClosed: () => {
-              // nothing
-            },
+            onClosed: () => {},
           });
         },
       },
@@ -146,9 +150,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               showAgain: true,
               showAgainValue: false,
             },
-            onClosed: () => {
-              // nothing
-            },
+            onClosed: () => {},
           });
         },
       },
