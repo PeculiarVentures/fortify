@@ -1,8 +1,8 @@
-import { Window, IWindowOptions } from './window';
+import { BrowserWindow, IWindowOptions } from './window';
 import { intl } from '../locale';
 import { windows } from '../application';
 
-export class AboutWindow extends Window {
+export class AboutWindow extends BrowserWindow {
   constructor(options: Pick<IWindowOptions, 'onClosed'>) {
     super({
       ...options,
@@ -26,5 +26,5 @@ export function CreateAboutWindow() {
     onClosed: () => {
       delete windows.about;
     },
-  }) as any;
+  });
 }

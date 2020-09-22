@@ -1,5 +1,5 @@
 import * as wsServer from '@webcrypto-local/server';
-import { Window, IWindowOptions } from './window';
+import { BrowserWindow, IWindowOptions } from './window';
 import { intl } from '../locale';
 
 interface IP11PinWindowParams {
@@ -12,7 +12,7 @@ interface IP11PinWindowParams {
   };
 }
 
-export class P11PinWindow extends Window {
+export class P11PinWindow extends BrowserWindow {
   constructor(options: Pick<IWindowOptions, 'onClosed'> & IP11PinWindowParams) {
     super({
       ...options,

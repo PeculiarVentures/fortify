@@ -1,14 +1,14 @@
 import {
-  BrowserWindow,
+  BrowserWindow as ElectronWindow,
 } from 'electron';
 import * as winston from 'winston';
-import { Window } from './window';
+import { BrowserWindow } from './window';
 import { intl } from '../locale';
 import { DialogsStorage } from './utils';
 
-interface IQuestionWindowParams {
+interface ITokenWindowParams {
   params: {
-    type: 'question';
+    type: 'token';
     title?: string;
     id: string;
     showAgain?: boolean;
@@ -16,14 +16,14 @@ interface IQuestionWindowParams {
     text: string;
     result: number;
   };
-  parent?: BrowserWindow;
+  parent?: ElectronWindow;
   onClosed: (result: number) => void;
 }
 
-type QuestionWindowOptionsType = IQuestionWindowParams;
+type TokenWindowOptionsType = ITokenWindowParams;
 
-export class QuestionWindow extends Window {
-  constructor(options: QuestionWindowOptionsType) {
+export class TokenWindow extends BrowserWindow {
+  constructor(options: TokenWindowOptionsType) {
     super({
       ...options,
       app: 'message',
@@ -38,19 +38,19 @@ export class QuestionWindow extends Window {
   }
 }
 
-export function CreateQuestionWindow(options: QuestionWindowOptionsType) {
+export function CreateTokenWindow(options: TokenWindowOptionsType) {
   if (options.params.id && options.params.showAgain && DialogsStorage.hasDialog(options.params.id)) {
     winston.info(`Don't show dialog '${options.params.id}'. It's disabled`);
 
     return;
   }
 
-  const window = new QuestionWindow({
+  const window = new TokenWindow({
     ...options,
     onClosed: () => {
-      DialogsStorage.onDialogClose(window.window as any);
+      DialogsStorage.onDialogClose(window.window);
 
       options.onClosed(options.params.result);
     },
-  }) as any;
+  });
 }

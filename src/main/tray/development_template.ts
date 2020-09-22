@@ -19,11 +19,17 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Token new',
         click: () => {
-          CreateTokenWindow(
-            intl('question.new.token'),
-            { id: 'question.new.token', showAgain: true },
-            () => {},
-          );
+          CreateTokenWindow({
+            params: {
+              type: 'token',
+              text: intl('question.new.token'),
+              id: 'question.new.token',
+              showAgain: true,
+              showAgainValue: false,
+              result: 0,
+            },
+            onClosed: () => {},
+          });
         },
       },
       {

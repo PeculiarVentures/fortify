@@ -1,5 +1,5 @@
 import { screen } from 'electron';
-import { Window, IWindowOptions } from './window';
+import { BrowserWindow, IWindowOptions } from './window';
 import { intl } from '../locale';
 import { windowSizes } from '../const';
 
@@ -12,7 +12,7 @@ interface IKeyPinWindowParams {
   };
 }
 
-export class KeyPinWindow extends Window {
+export class KeyPinWindow extends BrowserWindow {
   constructor(options: Pick<IWindowOptions, 'onClosed'> & IKeyPinWindowParams) {
     const { width, height } = screen.getPrimaryDisplay().bounds;
 

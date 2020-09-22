@@ -1,4 +1,4 @@
-import { Window, IWindowOptions } from './window';
+import { BrowserWindow, IWindowOptions } from './window';
 import { intl } from '../locale';
 import { windows } from '../application';
 
@@ -11,7 +11,7 @@ interface IErrorWindowParams {
 
 type ErrorWindowOptionsType = Pick<IWindowOptions, 'onClosed'> & IErrorWindowParams;
 
-export class ErrorWindow extends Window {
+export class ErrorWindow extends BrowserWindow {
   constructor(options: ErrorWindowOptionsType) {
     super({
       ...options,
@@ -41,5 +41,5 @@ export function CreateErrorWindow(options: ErrorWindowOptionsType) {
 
       delete windows.error;
     },
-  }) as any;
+  });
 }

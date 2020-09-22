@@ -1,5 +1,5 @@
 import * as winston from 'winston';
-import { Window, IWindowOptions } from './window';
+import { BrowserWindow, IWindowOptions } from './window';
 import { intl } from '../locale';
 import { windows } from '../application';
 import { DialogsStorage } from './utils';
@@ -18,7 +18,7 @@ interface IWarningWindowParams {
 
 type WarningWindowOptionsType = Pick<IWindowOptions, 'onClosed'> & IWarningWindowParams;
 
-export class WarningWindow extends Window {
+export class WarningWindow extends BrowserWindow {
   constructor(options: WarningWindowOptionsType) {
     super({
       ...options,
@@ -50,11 +50,11 @@ export function CreateWarningWindow(options: WarningWindowOptionsType) {
   windows.warning = new WarningWindow({
     ...options,
     onClosed: () => {
-      DialogsStorage.onDialogClose(windows.warning.window as any);
+      DialogsStorage.onDialogClose(windows.warning.window);
 
       options.onClosed();
 
       delete windows.warning;
     },
-  }) as any;
+  });
 }
