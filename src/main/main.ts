@@ -207,29 +207,6 @@ async function InitService() {
           }
         },
       });
-
-      // CreateTokenWindow(
-      //   intl('question.new.token'),
-      //   { id: 'question.new.token', showAgain: true },
-      //   (res) => {
-      //     if (res) {
-      //       try {
-      //         const title = `Add support for '${atr}' token`;
-      //         const body = fs.readFileSync(TEMPLATE_NEW_CARD_FILE, { encoding: 'utf8' })
-      //           .replace(/\$\{reader\}/g, card.reader)
-      //           .replace(/\$\{atr\}/g, atr.toUpperCase())
-      //           .replace(/\$\{driver\}/g, crypto.randomBytes(20).toString('hex').toUpperCase());
-      //         const url1 = `${SUPPORT_NEW_TOKEN_LINK}/issues/new?${querystring.stringify({
-      //           title,
-      //           body,
-      //         })}`;
-      //         shell.openExternal(url1);
-      //       } catch (e) {
-      //         winston.error(e.message);
-      //       }
-      //     }
-      //   },
-      // );
     })
     .on('error', (e: Error) => {
       winston.error(e.stack || e.toString());
