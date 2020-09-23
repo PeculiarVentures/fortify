@@ -12,14 +12,16 @@ import { HTML_PATH, windowSizes, icons } from '../const';
 import { locale } from '../locale';
 import { isDevelopment } from '../utils';
 
+type WindowAppType = 'about' | 'key-pin' | 'message' | 'p11-pin' | 'settings' | 'index';
+
 export interface IBrowserWindow extends ElectronWindow {
-  app: string;
+  app: WindowAppType;
   lang: string;
   params: Assoc<any>;
 }
 
 export interface IWindowOptions {
-  app: string;
+  app: WindowAppType;
   title: string;
   size?: keyof typeof windowSizes;
   params?: Assoc<any>;
@@ -35,6 +37,9 @@ export interface IWindowOptions {
   };
 }
 
+/**
+ * Base class for create browser windows and interact with them.
+ */
 export class BrowserWindow {
   window: IBrowserWindow;
 
