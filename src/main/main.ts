@@ -40,7 +40,7 @@ import { tray } from './tray';
 import { CheckUpdate } from './update';
 import {
   ErrorWindow,
-  CreateQuestionWindow,
+  QuestionWindow,
   CreateWarningWindow,
   MainWindow,
   P11PinWindow,
@@ -403,7 +403,7 @@ function InitMainChanells() {
       event.sender.send('2key-list', identities);
     })
     .on('2key-remove', (event: IpcMainEvent, arg: any) => {
-      CreateQuestionWindow({
+      QuestionWindow.create({
         params: {
           type: 'question',
           text: intl('question.2key.remove', arg),

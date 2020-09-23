@@ -2,7 +2,7 @@ import { MenuItemConstructorOptions } from 'electron';
 import { intl } from '../locale';
 import {
   ErrorWindow,
-  CreateQuestionWindow,
+  QuestionWindow,
   CreateWarningWindow,
   P11PinWindow,
   CreateTokenWindow,
@@ -65,7 +65,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Question 2key remove',
         click: () => {
-          CreateQuestionWindow({
+          QuestionWindow.create({
             params: {
               type: 'question',
               text: intl('question.2key.remove', 'TEST'),
@@ -79,7 +79,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Question update new',
         click: () => {
-          CreateQuestionWindow({
+          QuestionWindow.create({
             params: {
               type: 'question',
               text: intl('question.update.new', 'TEST'),

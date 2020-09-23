@@ -25,8 +25,10 @@ export class P11PinWindow extends BrowserWindow {
     });
   }
 
+  /**
+   * Create the browser window.
+   */
   static create(options: IP11PinWindowParams) {
-    // Create the browser window.
     const window = new P11PinWindow({
       onClosed: () => {
         if (options.params.pin) {

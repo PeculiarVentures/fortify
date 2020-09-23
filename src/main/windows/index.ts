@@ -6,6 +6,6 @@ export { ErrorWindow } from './error_window';
 export { DialogsStorage } from './utils';
 export { IBrowserWindow, BrowserWindow } from './window';
 export { CreateWarningWindow } from './warning_window';
-export { CreateQuestionWindow } from './question_window';
+export { QuestionWindow } from './question_window';
 export { CreateTokenWindow } from './token_window';
 export { MainWindow } from './main_window';

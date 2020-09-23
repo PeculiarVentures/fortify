@@ -12,7 +12,7 @@ import * as jws from './jws';
 import { intl } from './locale';
 import { UpdateError } from './update_error';
 import { request } from './utils';
-import { ErrorWindow, CreateQuestionWindow } from './windows';
+import { ErrorWindow, QuestionWindow } from './windows';
 
 async function GetJWS() {
   try {
@@ -56,7 +56,7 @@ export async function CheckUpdate() {
     if (semver.lt(curVersion, update.version)) {
       winston.info('Update: New version was found');
       await new Promise((resolve) => {
-        CreateQuestionWindow({
+        QuestionWindow.create({
           params: {
             type: 'question',
             text: intl('question.update.new', update.version),

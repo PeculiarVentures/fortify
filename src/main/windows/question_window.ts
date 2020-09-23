@@ -36,21 +36,28 @@ export class QuestionWindow extends BrowserWindow {
       title: options.params.title || intl('question'),
     });
   }
-}
 
-export function CreateQuestionWindow(options: QuestionWindowOptionsType) {
-  if (options.params.id && options.params.showAgain && DialogsStorage.hasDialog(options.params.id)) {
-    winston.info(`Don't show dialog '${options.params.id}'. It's disabled`);
+  /**
+   * Create the browser window.
+   */
+  static create(options: QuestionWindowOptionsType) {
+    if (
+      options.params.id
+      && options.params.showAgain
+      && DialogsStorage.hasDialog(options.params.id)
+    ) {
+      winston.info(`Don't show dialog '${options.params.id}'. It's disabled`);
 
-    return;
+      return;
+    }
+
+    const window = new QuestionWindow({
+      ...options,
+      onClosed: () => {
+        DialogsStorage.onDialogClose(window.window);
+
+        options.onClosed(options.params.result);
+      },
+    });
   }
-
-  const window = new QuestionWindow({
-    ...options,
-    onClosed: () => {
-      DialogsStorage.onDialogClose(window.window);
-
-      options.onClosed(options.params.result);
-    },
-  });
 }
