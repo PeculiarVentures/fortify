@@ -23,23 +23,28 @@ export class ErrorWindow extends BrowserWindow {
       },
     });
   }
-}
 
-export function CreateErrorWindow(options: ErrorWindowOptionsType) {
-  // Create the browser window.
-  if (windows.error) {
-    windows.error.focus();
-    windows.error.show();
+  /**
+   * Create the browser window.
+   */
+  static create(options: ErrorWindowOptionsType) {
+    /**
+     * Don't create if the window exists.
+     */
+    if (windows.error) {
+      windows.error.focus();
+      windows.error.show();
 
-    return;
+      return;
+    }
+
+    windows.error = new ErrorWindow({
+      ...options,
+      onClosed: () => {
+        options.onClosed();
+
+        delete windows.error;
+      },
+    });
   }
-
-  windows.error = new ErrorWindow({
-    ...options,
-    onClosed: () => {
-      options.onClosed();
-
-      delete windows.error;
-    },
-  });
 }

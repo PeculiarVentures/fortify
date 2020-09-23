@@ -39,7 +39,7 @@ import * as services from './services';
 import { tray } from './tray';
 import { CheckUpdate } from './update';
 import {
-  CreateErrorWindow,
+  ErrorWindow,
   CreateQuestionWindow,
   CreateWarningWindow,
   MainWindow,
@@ -125,7 +125,7 @@ async function InitService() {
   } catch (e) {
     winston.error(e.toString());
 
-    CreateErrorWindow({
+    ErrorWindow.create({
       params: {
         type: 'error',
         text: intl('error.ssl.install'),

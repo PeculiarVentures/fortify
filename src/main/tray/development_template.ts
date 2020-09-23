@@ -1,7 +1,7 @@
 import { MenuItemConstructorOptions } from 'electron';
 import { intl } from '../locale';
 import {
-  CreateErrorWindow,
+  ErrorWindow,
   CreateQuestionWindow,
   CreateWarningWindow,
   CreateP11PinWindow,
@@ -38,7 +38,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Error SSL install',
         click: () => {
-          CreateErrorWindow({
+          ErrorWindow.create({
             params: {
               type: 'error',
               text: intl('error.ssl.install'),
@@ -50,7 +50,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Error critical update',
         click: () => {
-          CreateErrorWindow({
+          ErrorWindow.create({
             params: {
               type: 'error',
               text: intl('error.critical.update'),

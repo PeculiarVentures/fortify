@@ -12,7 +12,7 @@ import * as jws from './jws';
 import { intl } from './locale';
 import { UpdateError } from './update_error';
 import { request } from './utils';
-import { CreateErrorWindow, CreateQuestionWindow } from './windows';
+import { ErrorWindow, CreateQuestionWindow } from './windows';
 
 async function GetJWS() {
   try {
@@ -78,7 +78,7 @@ export async function CheckUpdate() {
             if (update.min && semver.lt(curVersion, update.min)) {
               winston.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
 
-              CreateErrorWindow({
+              ErrorWindow.create({
                 params: {
                   type: 'error',
                   text: intl('error.critical.update'),
@@ -101,7 +101,7 @@ export async function CheckUpdate() {
     winston.error(e.toString());
     if (e.type === 'UpdateError' && e.critical) {
       await new Promise(() => {
-        CreateErrorWindow({
+        ErrorWindow.create({
           params: {
             type: 'error',
             text: e.toString(),
