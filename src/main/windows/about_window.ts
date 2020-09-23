@@ -11,20 +11,25 @@ export class AboutWindow extends BrowserWindow {
       title: intl('about'),
     });
   }
-}
 
-export function CreateAboutWindow() {
-  // Create the browser window.
-  if (windows.about) {
-    windows.about.focus();
-    windows.about.show();
+  /**
+   * Create the browser window.
+   */
+  static create() {
+    /**
+     * Don't create if the window exists.
+     */
+    if (windows.about) {
+      windows.about.focus();
+      windows.about.show();
 
-    return;
+      return;
+    }
+
+    windows.about = new AboutWindow({
+      onClosed: () => {
+        delete windows.about;
+      },
+    });
   }
-
-  windows.about = new AboutWindow({
-    onClosed: () => {
-      delete windows.about;
-    },
-  });
 }

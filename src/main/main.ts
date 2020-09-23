@@ -42,7 +42,7 @@ import {
   CreateErrorWindow,
   CreateQuestionWindow,
   CreateWarningWindow,
-  CreateMainWindow,
+  MainWindow,
   CreateP11PinWindow,
   CreateTokenWindow,
   CreateKeyPinWindow,
@@ -88,8 +88,7 @@ app.once('ready', async () => {
     // #endregion
 
     tray.create();
-
-    CreateMainWindow();
+    MainWindow.create();
 
     if (CHECK_UPDATE) {
       await CheckUpdate();

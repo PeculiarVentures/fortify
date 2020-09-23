@@ -4,7 +4,7 @@ import {
 } from 'electron';
 import { intl } from '../locale';
 import {
-  CreateAboutWindow,
+  AboutWindow,
   CreateSettingsWindow,
 } from '../windows';
 
@@ -12,7 +12,7 @@ export const baseTemplate = (): MenuItemConstructorOptions[] => ([
   {
     label: intl('about'),
     click: () => {
-      CreateAboutWindow();
+      AboutWindow.create();
     },
   },
   {
