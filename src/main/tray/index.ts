@@ -2,14 +2,13 @@ import { Menu, Tray } from 'electron';
 import { icons } from '../const';
 import { baseTemplate } from './base_template';
 import { developmentTemplate } from './development_template';
-
-const isDev = process.env.NODE_ENV === 'development';
+import { isDevelopment } from '../utils';
 
 class TrayCreator {
   static tray: Electron.Tray;
 
   static getTemplate() {
-    return baseTemplate().concat(isDev ? developmentTemplate() : []);
+    return baseTemplate().concat(isDevelopment ? developmentTemplate() : []);
   }
 
   static create() {

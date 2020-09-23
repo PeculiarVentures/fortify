@@ -10,8 +10,7 @@ import * as winston from 'winston';
 
 import { HTML_PATH, windowSizes, icons } from '../const';
 import { locale } from '../locale';
-
-const isDev = process.env.NODE_ENV === 'development';
+import { isDevelopment } from '../utils';
 
 export interface IBrowserWindow extends ElectronWindow {
   app: string;
@@ -106,13 +105,13 @@ export class BrowserWindow {
       fullscreen: false,
       fullscreenable: false,
       // Prevent resize window on production
-      resizable: isDev,
+      resizable: isDevelopment,
       show: false,
       ...this.getWindowSize(),
       webPreferences: {
         nodeIntegration: true,
         // Prevent open DevTools on production
-        devTools: isDev,
+        devTools: isDevelopment,
       },
     };
   }
