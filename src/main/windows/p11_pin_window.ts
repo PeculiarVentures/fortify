@@ -24,22 +24,22 @@ export class P11PinWindow extends BrowserWindow {
       title: options.params.label || intl('p11-pin'),
     });
   }
-}
 
-export function CreateP11PinWindow(options: IP11PinWindowParams) {
-  // Create the browser window.
-  const window = new P11PinWindow({
-    onClosed: () => {
-      if (options.params.pin) {
-        options.params.resolve(options.params.pin);
-      } else {
-        options.params.reject(new wsServer.WebCryptoLocalError(10001, 'Incorrect PIN value. It cannot be empty.'));
-      }
-    },
-    ...options,
-  });
+  static create(options: IP11PinWindowParams) {
+    // Create the browser window.
+    const window = new P11PinWindow({
+      onClosed: () => {
+        if (options.params.pin) {
+          options.params.resolve(options.params.pin);
+        } else {
+          options.params.reject(new wsServer.WebCryptoLocalError(10001, 'Incorrect PIN value. It cannot be empty.'));
+        }
+      },
+      ...options,
+    });
 
-  window.window.on('ready-to-show', () => {
-    window.focus();
-  });
+    window.window.on('ready-to-show', () => {
+      window.focus();
+    });
+  }
 }

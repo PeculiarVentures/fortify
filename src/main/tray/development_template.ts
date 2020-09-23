@@ -4,7 +4,7 @@ import {
   ErrorWindow,
   CreateQuestionWindow,
   CreateWarningWindow,
-  CreateP11PinWindow,
+  P11PinWindow,
   CreateTokenWindow,
   KeyPinWindow,
 } from '../windows';
@@ -179,7 +179,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'P11 PIN',
         click: () => {
-          CreateP11PinWindow({
+          P11PinWindow.create({
             params: {
               pin: '',
               origin: 'https://TEST.com/',

@@ -43,7 +43,7 @@ import {
   CreateQuestionWindow,
   CreateWarningWindow,
   MainWindow,
-  CreateP11PinWindow,
+  P11PinWindow,
   CreateTokenWindow,
   KeyPinWindow,
 } from './windows';
@@ -282,7 +282,7 @@ async function InitService() {
         case 'pin': {
           params.pin = '';
 
-          CreateP11PinWindow({
+          P11PinWindow.create({
             params,
           });
           break;
