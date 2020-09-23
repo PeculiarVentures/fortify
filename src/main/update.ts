@@ -113,7 +113,7 @@ export async function CheckUpdate() {
       });
     } else {
       // await new Promise((resolve, reject) => {
-      //   CreateWarningWindow(``, () => {
+      //   WarningWindow.create(``, () => {
       //     resolve();
       //   });
       // });

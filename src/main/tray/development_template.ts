@@ -3,9 +3,9 @@ import { intl } from '../locale';
 import {
   ErrorWindow,
   QuestionWindow,
-  CreateWarningWindow,
+  WarningWindow,
   P11PinWindow,
-  CreateTokenWindow,
+  TokenWindow,
   KeyPinWindow,
 } from '../windows';
 
@@ -19,7 +19,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Token new',
         click: () => {
-          CreateTokenWindow({
+          TokenWindow.create({
             params: {
               type: 'token',
               text: intl('question.new.token'),
@@ -98,7 +98,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Warning SSL install',
         click: () => {
-          CreateWarningWindow({
+          WarningWindow.create({
             params: {
               type: 'warning',
               text: intl('warn.ssl.install'),
@@ -112,7 +112,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Warning cannot start',
         click: () => {
-          CreateWarningWindow({
+          WarningWindow.create({
             params: {
               type: 'warning',
               text: intl('warn.pcsc.cannot_start'),
@@ -129,7 +129,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Warning crypto not found',
         click: () => {
-          CreateWarningWindow({
+          WarningWindow.create({
             params: {
               type: 'warning',
               text: intl('warn.token.crypto_not_found', 'TEST'),
@@ -146,7 +146,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Warning crypto wrong',
         click: () => {
-          CreateWarningWindow({
+          WarningWindow.create({
             params: {
               type: 'warning',
               text: intl('warn.token.crypto_wrong', 'TEST'),

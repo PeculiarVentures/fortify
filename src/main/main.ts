@@ -41,10 +41,10 @@ import { CheckUpdate } from './update';
 import {
   ErrorWindow,
   QuestionWindow,
-  CreateWarningWindow,
+  WarningWindow,
   MainWindow,
   P11PinWindow,
-  CreateTokenWindow,
+  TokenWindow,
   KeyPinWindow,
 } from './windows';
 import { ServerStorage } from './server_storage';
@@ -178,7 +178,7 @@ async function InitService() {
       const atr = card.atr.toString('hex');
       winston.info(`New token was found reader: '${card.reader}' ATR: ${atr}`);
 
-      CreateTokenWindow({
+      TokenWindow.create({
         params: {
           type: 'token',
           text: intl('question.new.token'),
@@ -216,7 +216,7 @@ async function InitService() {
 
         switch (err.code) {
           case CODE.PCSC_CANNOT_START:
-            CreateWarningWindow({
+            WarningWindow.create({
               params: {
                 type: 'warning',
                 text: intl('warn.pcsc.cannot_start'),
@@ -232,7 +232,7 @@ async function InitService() {
             });
             break;
           case CODE.PROVIDER_CRYPTO_NOT_FOUND:
-            CreateWarningWindow({
+            WarningWindow.create({
               params: {
                 type: 'warning',
                 text: intl('warn.token.crypto_not_found', err.message),
@@ -249,7 +249,7 @@ async function InitService() {
             break;
           case CODE.PROVIDER_CRYPTO_WRONG:
           case CODE.PROVIDER_WRONG_LIBRARY:
-            CreateWarningWindow({
+            WarningWindow.create({
               params: {
                 type: 'warning',
                 text: intl('warn.token.crypto_wrong', err.message),

@@ -10,7 +10,7 @@ import * as c from '../const';
 import {
   CertificateGenerator, IName, SslCertInstaller, ValidityType,
 } from '../ssl';
-import { CreateWarningWindow } from '../windows';
+import { WarningWindow } from '../windows';
 import { intl } from '../locale';
 
 export enum CaCertificateStatus {
@@ -97,7 +97,7 @@ export class SslService {
     if (os.platform() === 'win32' && (status === CaCertificateStatus.renew || status === CaCertificateStatus.expired)) {
       // Show warning dialog
       // TODO: Move `text` to langs.
-      CreateWarningWindow({
+      WarningWindow.create({
         params: {
           type: 'warning',
           text: 'SSL certificate requires renew. Please run Fortify installer to renew a certificate.',
@@ -122,7 +122,7 @@ export class SslService {
       });
 
       await new Promise((resolve) => { // wrap callback
-        CreateWarningWindow({
+        WarningWindow.create({
           params: {
             type: 'warning',
             text: intl('warn.ssl.install'),

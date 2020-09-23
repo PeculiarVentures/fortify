@@ -30,31 +30,40 @@ export class WarningWindow extends BrowserWindow {
       title: options.params.title || intl('warning'),
     });
   }
-}
 
-export function CreateWarningWindow(options: WarningWindowOptionsType) {
-  if (options.params.id && options.params.showAgain && DialogsStorage.hasDialog(options.params.id)) {
-    winston.info(`Don't show dialog '${options.params.id}'. It's disabled`);
+  /**
+   * Create the browser window.
+   */
+  static create(options: WarningWindowOptionsType) {
+    if (
+      options.params.id
+      && options.params.showAgain
+      && DialogsStorage.hasDialog(options.params.id)
+    ) {
+      winston.info(`Don't show dialog '${options.params.id}'. It's disabled`);
 
-    return;
+      return;
+    }
+
+    /**
+     * Don't create if the window exists.
+     */
+    if (windows.warning) {
+      windows.warning.focus();
+      windows.warning.show();
+
+      return;
+    }
+
+    windows.warning = new WarningWindow({
+      ...options,
+      onClosed: () => {
+        DialogsStorage.onDialogClose(windows.warning.window);
+
+        options.onClosed();
+
+        delete windows.warning;
+      },
+    });
   }
-
-  // Create the browser window.
-  if (windows.warning) {
-    windows.warning.focus();
-    windows.warning.show();
-
-    return;
-  }
-
-  windows.warning = new WarningWindow({
-    ...options,
-    onClosed: () => {
-      DialogsStorage.onDialogClose(windows.warning.window);
-
-      options.onClosed();
-
-      delete windows.warning;
-    },
-  });
 }
