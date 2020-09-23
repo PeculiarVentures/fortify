@@ -29,18 +29,20 @@ export class KeyPinWindow extends BrowserWindow {
       },
     });
   }
-}
 
-export function CreateKeyPinWindow(options: IKeyPinWindowParams) {
-  // Create the browser window.
-  const window = new KeyPinWindow({
-    onClosed: () => {
-      options.params.resolve(options.params.accept);
-    },
-    ...options,
-  });
+  /**
+   * Create the browser window.
+   */
+  static create(options: IKeyPinWindowParams) {
+    const window = new KeyPinWindow({
+      onClosed: () => {
+        options.params.resolve(options.params.accept);
+      },
+      ...options,
+    });
 
-  window.window.on('ready-to-show', () => {
-    window.focus();
-  });
+    window.window.on('ready-to-show', () => {
+      window.focus();
+    });
+  }
 }

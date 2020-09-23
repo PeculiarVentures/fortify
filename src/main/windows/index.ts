@@ -1,5 +1,5 @@
 export { AboutWindow } from './about_window';
-export { CreateKeyPinWindow } from './key_pin_window';
+export { KeyPinWindow } from './key_pin_window';
 export { SettingsWindow } from './settings_window';
 export { CreateP11PinWindow } from './p11_pin_window';
 export { ErrorWindow } from './error_window';

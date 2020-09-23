@@ -45,7 +45,7 @@ import {
   MainWindow,
   CreateP11PinWindow,
   CreateTokenWindow,
-  CreateKeyPinWindow,
+  KeyPinWindow,
 } from './windows';
 import { ServerStorage } from './server_storage';
 
@@ -274,7 +274,7 @@ async function InitService() {
         case '2key': {
           params.accept = false;
 
-          CreateKeyPinWindow({
+          KeyPinWindow.create({
             params,
           });
           break;

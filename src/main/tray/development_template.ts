@@ -6,7 +6,7 @@ import {
   CreateWarningWindow,
   CreateP11PinWindow,
   CreateTokenWindow,
-  CreateKeyPinWindow,
+  KeyPinWindow,
 } from '../windows';
 
 export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
@@ -166,7 +166,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Key PIN',
         click: () => {
-          CreateKeyPinWindow({
+          KeyPinWindow.create({
             params: {
               pin: '123456',
               origin: 'https://TEST.com/',
