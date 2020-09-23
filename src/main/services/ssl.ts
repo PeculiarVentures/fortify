@@ -96,11 +96,10 @@ export class SslService {
 
     if (os.platform() === 'win32' && (status === CaCertificateStatus.renew || status === CaCertificateStatus.expired)) {
       // Show warning dialog
-      // TODO: Move `text` to langs.
       WarningWindow.create({
         params: {
           type: 'warning',
-          text: 'SSL certificate requires renew. Please run Fortify installer to renew a certificate.',
+          text: intl('warn.ssl.renew'),
           title: intl('warning.title.oh_no'),
           buttonLabel: intl('close'),
           id: 'ssl.renew',

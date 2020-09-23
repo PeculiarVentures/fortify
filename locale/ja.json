@@ -42,6 +42,7 @@
   "question.update.new": "本アプリの新バージョンが存在します。バージョン %1 をダウンロードしますか？",
   "warning.title.oh_no": "これは動作しませんでした！",
   "warn.ssl.install": "Fortify SSL証明書を信頼することが必要となります。信頼する際に管理者パスワードを聞かれます。",
+  "warn.ssl.renew": "SSL certificate requires renew. Please run the Fortify installer to renew a certificate.",
   "warn.token.crypto_not_found": "挿入されているスマートカードはFortifyによりサポートされていますが、カードのミドルウエアを見つけることができませんでした。 本スマートカードミドルウエアがインストールされていない場合、 (%1) が存在するかを確認し、再試行願います。",
   "warn.token.crypto_wrong": "セキュリティトークンもしくはスマートカードのミドルウエア (%1) のロード中に問題が発生しました。\n該当のミドルウエアが正しくインストールされているか確認し、再試行願います。",
   "warn.pcsc.cannot_start": "`Smart Card Resource Manager`が動作していないようにみえます。本サービスを開始し、再度Fortifyを起動してください。",

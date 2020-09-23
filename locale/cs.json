@@ -42,6 +42,7 @@
   "question.update.new": "Je k dispozici aktualizace. Přejete si stáhnout novější verzi %1 nyní?",
   "warning.title.oh_no": "Ale ne, něco se nepovedlo!",
   "warn.ssl.install": "Pro správnou funkci je nutné označit Fortify SSL certifikát jako důvěryhodný. Při nastavení můžete být vyzván k zadání hesla správce.",
+  "warn.ssl.renew": "SSL certificate requires renew. Please run the Fortify installer to renew a certificate.",
   "warn.token.crypto_not_found": "Vložená karta je aplikací Fortify podporována ale nepodařilo se zjistit správný ovladač. Ujistěte se, že soubor (%1) existuje. Pokud ne, nainstalujte ovladače pro čipovou kartu a zkuste znovu.",
   "warn.token.crypto_wrong": "Nepodařilo se spustit ovladače (%1) pro vaši čipovou kartu nebo token.\nUjistěte se, že je ovladač nainstalován správně a zkuste znovu.",
   "warn.pcsc.cannot_start": "Zdá se, že `Správce prostředků čipových karet` není spuštěn. Spusťte tuto službu a poté restartujte Fortify, prosím.",
