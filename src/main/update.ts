@@ -12,7 +12,7 @@ import * as jws from './jws';
 import { intl } from './locale';
 import { UpdateError } from './update_error';
 import { request } from './utils';
-import { CreateErrorWindow, CreateQuestionWindow } from './windows';
+import { ErrorWindow, QuestionWindow } from './windows';
 
 async function GetJWS() {
   try {
@@ -56,11 +56,17 @@ export async function CheckUpdate() {
     if (semver.lt(curVersion, update.version)) {
       winston.info('Update: New version was found');
       await new Promise((resolve) => {
-        CreateQuestionWindow(
-          intl('question.update.new', update.version),
-          { id: 'question.update.new', showAgain: true },
-          (res) => {
-            if (res) {
+        QuestionWindow.create({
+          params: {
+            type: 'question',
+            text: intl('question.update.new', update.version),
+            id: 'question.update.new',
+            result: 0,
+            showAgain: true,
+            showAgainValue: false,
+          },
+          onClosed: (result) => {
+            if (result) {
               // yes
               winston.info(`User agreed to download new version ${update.version}`);
               shell.openExternal(DOWNLOAD_LINK);
@@ -68,20 +74,25 @@ export async function CheckUpdate() {
               // no
               winston.info(`User refused to download new version ${update.version}`);
             }
+
             if (update.min && semver.lt(curVersion, update.min)) {
               winston.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
-              CreateErrorWindow(
-                intl('error.critical.update'),
-                () => {
+
+              ErrorWindow.create({
+                params: {
+                  type: 'error',
+                  text: intl('error.critical.update'),
+                },
+                onClosed: () => {
                   winston.info('Close application');
                   quit();
                 },
-              );
+              });
             } else {
               resolve();
             }
           },
-        );
+        });
       });
     } else {
       winston.info("Update: New version wasn't found");
@@ -90,16 +101,19 @@ export async function CheckUpdate() {
     winston.error(e.toString());
     if (e.type === 'UpdateError' && e.critical) {
       await new Promise(() => {
-        CreateErrorWindow(
-          e.toString(),
-          () => {
+        ErrorWindow.create({
+          params: {
+            type: 'error',
+            text: e.toString(),
+          },
+          onClosed: () => {
             quit();
           },
-        );
+        });
       });
     } else {
       // await new Promise((resolve, reject) => {
-      //   CreateWarningWindow(``, () => {
+      //   WarningWindow.create(``, () => {
       //     resolve();
       //   });
       // });

@@ -42,6 +42,7 @@
   "question.update.new": "Ein neues Update steht zur Verfügung. Möchten Sie Version %1 jetzt herunterladen?",
   "warning.title.oh_no": "Dies hat leider nicht funktioniert.",
   "warn.ssl.install": "Dem Fortify SSL-Zertifikat muss vertraut werden. Wenn dies ausgeführt wird, muss das Administrator Passwort eingegeben werden.",
+  "warn.ssl.renew": "SSL certificate requires renew. Please run the Fortify installer to renew a certificate.",
   "warn.token.crypto_not_found": "Die verwendete Smart Card wird von Fortify unterstützt, jedoch wurde die Middleware für diese Karte nicht gefunden. Stellen Sie sicher das (%1) existiert, falls nicht, installieren Sie die entsprechende Middleware der Karte und versuchen Sie es erneut.",
   "warn.token.crypto_wrong": "Ein Problem ist beim Laden der Middleware (%1) des Security Tokens oder Smart Card aufgetreten.  \nBitte stellen Sie sicher, dass die Middleware korrekt installiert wurde und versuchen Sie es erneut.",
   "warn.pcsc.cannot_start": "Der `Smart Card Resource Manager` ist möglicherweise nicht in Betrieb. Bitte starten Sie den Service und versuchen Sie es erneut.",

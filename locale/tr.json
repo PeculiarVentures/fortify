@@ -42,6 +42,7 @@
   "question.update.new": "Yeni sürüm mevcut. %1 numaralı yeni sürümü indirmek ister misiniz?",
   "warning.title.oh_no": "Üzgünüm, bu işe yaramadı!",
   "warn.ssl.install": "Fortify SSL sertifikasını bilgisayarınızda güvenilir sertifikalar listesine almamız gerekiyor. Bu nedenle size sistem yöneticisi şifresi sorulacaktır.",
+  "warn.ssl.renew": "SSL certificate requires renew. Please run the Fortify installer to renew a certificate.",
   "warn.token.crypto_not_found": "Takılan akıllı kart Fortify tarafından destekleniyor ancak bu kart için ara katman yazılımını bulumadık. (%1) bulunduğundan emin olun, bulunmuyorsa lütfen akıllı kart için ara katman yazılımını kurun ve tekrar deneyin.",
   "warn.token.crypto_wrong": "Güvenlik token'ı veya akıllı kart için (%1) ara katman yazılımının yüklenmesi sırasında hata oluştu.\nLütfen ara katman yazılımının doğru şekilde kurulu olduğundan emin olun ve tekrar deneyin.",
   "warn.pcsc.cannot_start": "`Smart Card Resource Manager` servisi çalışmıyor. Lütfen servisi çalıştırın ve sonrasında Fortify'ı tekrar açın.",

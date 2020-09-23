@@ -10,7 +10,7 @@ import * as winston from 'winston';
 import { ConfigureRead } from './config';
 import { APP_CONFIG_FILE, APP_LOG_FILE, APP_USER_DIR } from './const';
 import './crypto';
-import { BrowserWindowEx } from './windows';
+import { BrowserWindow } from './windows';
 
 const LOG_DEFAULT_PROVIDERS_ADD = 'Default:Providers:Add::';
 
@@ -20,7 +20,7 @@ if (!fs.existsSync(APP_USER_DIR)) {
 
 export let server: wsServer.LocalServer;
 export const configure = ConfigureRead(APP_CONFIG_FILE, initConfig);
-export const windows: Assoc<BrowserWindowEx> = {};
+export const windows: Assoc<BrowserWindow> = {};
 
 function initConfig() {
   const config: IConfigure = {

@@ -25,3 +25,5 @@ export async function request(url: string, encoding = 'utf8') {
     });
   });
 }
+
+export const isDevelopment = process.env.NODE_ENV === 'development';

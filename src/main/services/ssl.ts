@@ -10,7 +10,7 @@ import * as c from '../const';
 import {
   CertificateGenerator, IName, SslCertInstaller, ValidityType,
 } from '../ssl';
-import { CreateWarningWindow } from '../windows';
+import { WarningWindow } from '../windows';
 import { intl } from '../locale';
 
 export enum CaCertificateStatus {
@@ -96,9 +96,17 @@ export class SslService {
 
     if (os.platform() === 'win32' && (status === CaCertificateStatus.renew || status === CaCertificateStatus.expired)) {
       // Show warning dialog
-      CreateWarningWindow('SSL certificate requires renew. Please run Fortify installer to renew a certificate.', {
-        alwaysOnTop: true,
-        title: intl('warning.title.oh_no'),
+      WarningWindow.create({
+        params: {
+          type: 'warning',
+          text: intl('warn.ssl.renew'),
+          title: intl('warning.title.oh_no'),
+          buttonLabel: intl('close'),
+          id: 'ssl.renew',
+        },
+        onClosed: () => {
+          // nothing
+        },
       });
 
       status = CaCertificateStatus.valid;
@@ -113,9 +121,17 @@ export class SslService {
       });
 
       await new Promise((resolve) => { // wrap callback
-        CreateWarningWindow(intl('warn.ssl.install'), { alwaysOnTop: true, buttonLabel: intl('i_understand') }, () => {
-          winston.info('Warning window was closed');
-          resolve();
+        WarningWindow.create({
+          params: {
+            type: 'warning',
+            text: intl('warn.ssl.install'),
+            buttonLabel: intl('i_understand'),
+            id: 'ssl.install',
+          },
+          onClosed: () => {
+            winston.info('Warning window was closed');
+            resolve();
+          },
         });
       });
 
