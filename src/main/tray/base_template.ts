@@ -5,7 +5,7 @@ import {
 import { intl } from '../locale';
 import {
   AboutWindow,
-  CreateSettingsWindow,
+  SettingsWindow,
 } from '../windows';
 
 export const baseTemplate = (): MenuItemConstructorOptions[] => ([
@@ -18,7 +18,7 @@ export const baseTemplate = (): MenuItemConstructorOptions[] => ([
   {
     label: intl('settings'),
     click: () => {
-      CreateSettingsWindow();
+      SettingsWindow.create();
     },
   },
   {

@@ -11,20 +11,25 @@ export class SettingsWindow extends BrowserWindow {
       title: intl('settings'),
     });
   }
-}
 
-export function CreateSettingsWindow() {
-  // Create the browser window.
-  if (windows.settings) {
-    windows.settings.focus();
-    windows.settings.show();
+  /**
+   * Create the browser window.
+   */
+  static create() {
+    /**
+     * Don't create if the window exists.
+     */
+    if (windows.settings) {
+      windows.settings.focus();
+      windows.settings.show();
 
-    return;
+      return;
+    }
+
+    windows.settings = new SettingsWindow({
+      onClosed: () => {
+        delete windows.settings;
+      },
+    });
   }
-
-  windows.settings = new SettingsWindow({
-    onClosed: () => {
-      delete windows.settings;
-    },
-  });
 }
