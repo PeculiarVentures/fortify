@@ -8,7 +8,7 @@ import {
 import * as url from 'url';
 import * as winston from 'winston';
 
-import { HTML_PATH, windowSizes, icons } from '../const';
+import * as constants from '../constants';
 import { locale } from '../locale';
 import { isDevelopment } from '../utils';
 
@@ -23,7 +23,7 @@ export interface IBrowserWindow extends ElectronWindow {
 export interface IWindowOptions {
   app: WindowAppType;
   title: string;
-  size?: keyof typeof windowSizes;
+  size?: keyof typeof constants.windowSizes;
   params?: Assoc<any>;
   onClosed: (...args: any[]) => void;
   windowOptions?: {
@@ -58,7 +58,7 @@ export class BrowserWindow {
     winston.info(`Fortify: Create window ${options.app}`);
 
     this.window.loadURL(url.format({
-      pathname: HTML_PATH,
+      pathname: constants.HTML_PATH,
       protocol: 'file:',
       slashes: true,
     }));
@@ -104,7 +104,7 @@ export class BrowserWindow {
 
   private getWindowDefaultOptions(): Electron.BrowserWindowConstructorOptions {
     return {
-      icon: icons.favicon,
+      icon: constants.icons.favicon,
       autoHideMenuBar: true,
       minimizable: false,
       fullscreen: false,
@@ -121,12 +121,12 @@ export class BrowserWindow {
     };
   }
 
-  private getWindowSize(size: keyof typeof windowSizes = 'default') {
+  private getWindowSize(size: keyof typeof constants.windowSizes = 'default') {
     if (size === 'small') {
-      return windowSizes.small;
+      return constants.windowSizes.small;
     }
 
-    return windowSizes.default;
+    return constants.windowSizes.default;
   }
 
   public focus() {

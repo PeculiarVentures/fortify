@@ -5,9 +5,7 @@ import * as semver from 'semver';
 import * as winston from 'winston';
 
 import { quit } from './application';
-import {
-  APP_DIR, DOWNLOAD_LINK, JWS_LINK,
-} from './const';
+import * as constants from './constants';
 import * as jws from './jws';
 import { intl } from './locale';
 import { UpdateError } from './update_error';
@@ -16,11 +14,11 @@ import { ErrorWindow, QuestionWindow } from './windows';
 
 async function GetJWS() {
   try {
-    const resp = await request(JWS_LINK);
+    const resp = await request(constants.JWS_LINK);
 
     return resp.replace(/[\n\r]/g, '');
   } catch (e) {
-    winston.warn(`Cannot GET ${JWS_LINK}`);
+    winston.warn(`Cannot GET ${constants.JWS_LINK}`);
     winston.error(e);
     throw new UpdateError(intl('error.update.server'), false);
   }
@@ -49,7 +47,7 @@ export async function CheckUpdate() {
     winston.info('Update: Check for new update');
     const update = await GetUpdateInfo();
     // get current version
-    const packageJson = fs.readFileSync(path.join(APP_DIR, 'package.json')).toString();
+    const packageJson = fs.readFileSync(path.join(constants.APP_DIR, 'package.json')).toString();
     const curVersion = JSON.parse(packageJson).version;
 
     // compare versions
@@ -69,7 +67,7 @@ export async function CheckUpdate() {
             if (result) {
               // yes
               winston.info(`User agreed to download new version ${update.version}`);
-              shell.openExternal(DOWNLOAD_LINK);
+              shell.openExternal(constants.DOWNLOAD_LINK);
             } else {
               // no
               winston.info(`User refused to download new version ${update.version}`);

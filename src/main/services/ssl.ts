@@ -6,7 +6,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { PemConverter } from 'webcrypto-core';
 import * as winston from 'winston';
-import * as c from '../const';
+import * as constants from '../constants';
 import {
   CertificateGenerator, IName, SslCertInstaller, ValidityType,
 } from '../ssl';
@@ -52,8 +52,8 @@ export class SslService {
    * Returns CA certificate in PEM format
    */
   public getCaCert() {
-    if (fs.existsSync(c.APP_SSL_CERT_CA)) {
-      const pem = fs.readFileSync(c.APP_SSL_CERT_CA, { encoding: 'utf8' });
+    if (fs.existsSync(constants.APP_SSL_CERT_CA)) {
+      const pem = fs.readFileSync(constants.APP_SSL_CERT_CA, { encoding: 'utf8' });
 
       return pem;
     }
@@ -65,9 +65,9 @@ export class SslService {
    * Returns `true` if CA certificate requires renew
    */
   public getCaCertStatus() {
-    if (fs.existsSync(c.APP_SSL_CERT)
-      && fs.existsSync(c.APP_SSL_KEY)
-      && fs.existsSync(c.APP_SSL_CERT_CA)) {
+    if (fs.existsSync(constants.APP_SSL_CERT)
+      && fs.existsSync(constants.APP_SSL_KEY)
+      && fs.existsSync(constants.APP_SSL_CERT_CA)) {
       const pem = this.getCaCert();
       if (pem) {
         const der = PemConverter.toArrayBuffer(pem);
@@ -136,11 +136,11 @@ export class SslService {
       });
 
       // #region PublicData folder
-      if (!fs.existsSync(c.APP_DATA_DIR)) {
-        fs.mkdirSync(c.APP_DATA_DIR);
+      if (!fs.existsSync(constants.APP_DATA_DIR)) {
+        fs.mkdirSync(constants.APP_DATA_DIR);
         winston.warn('PublicData folder created. This folder should bew created from installer', {
           class: 'SslService',
-          folder: c.APP_DATA_DIR,
+          folder: constants.APP_DATA_DIR,
         });
       }
       // #endregion
@@ -249,14 +249,14 @@ export class SslService {
 
       // #region Install CA cert
       // Save CA file
-      fs.writeFileSync(c.APP_SSL_CERT_CA, caCert.cert, { flag: 'w+' });
+      fs.writeFileSync(constants.APP_SSL_CERT_CA, caCert.cert, { flag: 'w+' });
       winston.info('ca.pem file added to ProgramData folder', {
         class: 'SslService',
-        file: c.APP_SSL_CERT_CA,
+        file: constants.APP_SSL_CERT_CA,
       });
 
       try {
-        this.installer.install(c.APP_SSL_CERT_CA);
+        this.installer.install(constants.APP_SSL_CERT_CA);
 
         winston.info('SSL certificate added to trusted storages', {
           class: 'SslService',
@@ -266,22 +266,22 @@ export class SslService {
           class: 'SslService',
         });
 
-        fs.unlinkSync(c.APP_SSL_CERT_CA);
+        fs.unlinkSync(constants.APP_SSL_CERT_CA);
         winston.info('SSL certificate removed from ProgramData folder', {
           class: 'SslService',
-          file: c.APP_SSL_CERT_CA,
+          file: constants.APP_SSL_CERT_CA,
         });
         throw e;
       }
 
       // Save localhost cert
-      fs.writeFileSync(c.APP_SSL_CERT, localhostCert.cert, { flag: 'w+' });
+      fs.writeFileSync(constants.APP_SSL_CERT, localhostCert.cert, { flag: 'w+' });
       const pkcs8 = await crypto.subtle.exportKey('pkcs8', localhostKeys.privateKey);
-      fs.writeFileSync(c.APP_SSL_KEY, PemConverter.fromBufferSource(pkcs8, 'PRIVATE KEY'), { flag: 'w+' });
+      fs.writeFileSync(constants.APP_SSL_KEY, PemConverter.fromBufferSource(pkcs8, 'PRIVATE KEY'), { flag: 'w+' });
       // #endregion
     } else {
       try {
-        this.installer.installFirefox(c.APP_SSL_CERT_CA);
+        this.installer.installFirefox(constants.APP_SSL_CERT_CA);
       } catch (e) {
         winston.error(e.toString());
       }

@@ -1,5 +1,5 @@
 import { Menu, Tray } from 'electron';
-import { icons } from '../const';
+import * as constants from '../constants';
 import { baseTemplate } from './base_template';
 import { developmentTemplate } from './development_template';
 import { isDevelopment } from '../utils';
@@ -13,7 +13,7 @@ class TrayCreator {
 
   static create() {
     if (!TrayCreator.tray) {
-      TrayCreator.tray = new Tray(icons.tray);
+      TrayCreator.tray = new Tray(constants.icons.tray);
     }
 
     const menu = Menu.buildFromTemplate(TrayCreator.getTemplate());

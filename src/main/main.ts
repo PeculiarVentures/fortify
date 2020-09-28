@@ -26,11 +26,7 @@ import type { Cards } from '@webcrypto-local/cards';
 // PKI
 import * as application from './application';
 import { ConfigureWrite } from './config';
-import {
-  APP_CARD_JSON, APP_CARD_JSON_LINK, APP_CONFIG_FILE, APP_DIR, APP_SSL_CERT,
-  APP_SSL_KEY, APP_USER_DIR, CHECK_UPDATE, CHECK_UPDATE_INTERVAL,
-  SUPPORT_NEW_TOKEN_LINK, TEMPLATE_NEW_CARD_FILE, APP_LOG_FILE,
-} from './const';
+import * as constants from './constants';
 import * as appCrypto from './crypto';
 import * as jws from './jws';
 import { Locale, locale, intl } from './locale';
@@ -57,8 +53,8 @@ if (!gotTheLock) {
   app.quit();
 }
 
-if (!fs.existsSync(APP_USER_DIR)) {
-  fs.mkdirSync(APP_USER_DIR);
+if (!fs.existsSync(constants.APP_USER_DIR)) {
+  fs.mkdirSync(constants.APP_USER_DIR);
 }
 
 printInfo();
@@ -77,25 +73,25 @@ app.once('ready', async () => {
       const lang = app.getLocale().split('-')[0];
       application.configure.locale = (localeList.indexOf(lang) === -1) ? 'en' : lang;
       // save configure
-      ConfigureWrite(APP_CONFIG_FILE, application.configure);
+      ConfigureWrite(constants.APP_CONFIG_FILE, application.configure);
     }
 
     locale.setLang(application.configure.locale);
     locale.on('change', () => {
       application.configure.locale = locale.lang;
-      ConfigureWrite(APP_CONFIG_FILE, application.configure);
+      ConfigureWrite(constants.APP_CONFIG_FILE, application.configure);
     });
     // #endregion
 
     tray.create();
     MainWindow.create();
 
-    if (CHECK_UPDATE) {
+    if (constants.CHECK_UPDATE) {
       await CheckUpdate();
 
       setInterval(() => {
         CheckUpdate();
-      }, CHECK_UPDATE_INTERVAL);
+      }, constants.CHECK_UPDATE_INTERVAL);
     }
 
     await InitService();
@@ -139,8 +135,8 @@ async function InitService() {
   }
 
   const sslData: wsServer.IServerOptions = {
-    cert: fs.readFileSync(APP_SSL_CERT),
-    key: fs.readFileSync(APP_SSL_KEY),
+    cert: fs.readFileSync(constants.APP_SSL_CERT),
+    key: fs.readFileSync(constants.APP_SSL_KEY),
   } as any;
   winston.info('SSL certificate is loaded');
 
@@ -191,11 +187,11 @@ async function InitService() {
           if (result) {
             try {
               const title = `Add support for '${atr}' token`;
-              const body = fs.readFileSync(TEMPLATE_NEW_CARD_FILE, { encoding: 'utf8' })
+              const body = fs.readFileSync(constants.TEMPLATE_NEW_CARD_FILE, { encoding: 'utf8' })
                 .replace(/\$\{reader\}/g, card.reader)
                 .replace(/\$\{atr\}/g, atr.toUpperCase())
                 .replace(/\$\{driver\}/g, crypto.randomBytes(20).toString('hex').toUpperCase());
-              const url1 = `${SUPPORT_NEW_TOKEN_LINK}/issues/new?${querystring.stringify({
+              const url1 = `${constants.SUPPORT_NEW_TOKEN_LINK}/issues/new?${querystring.stringify({
                 title,
                 body,
               })}`;
@@ -299,7 +295,7 @@ async function InitService() {
 }
 
 async function PrepareConfig(config: IConfigure) {
-  config.cardConfigPath = APP_CARD_JSON;
+  config.cardConfigPath = constants.APP_CARD_JSON;
 
   if (!config.disableCardUpdate) {
     await PrepareCardJson();
@@ -311,8 +307,8 @@ async function PrepareConfig(config: IConfigure) {
 
 function PrepareProviders(config: IConfigure) {
   try {
-    if (fs.existsSync(APP_CONFIG_FILE)) {
-      const json = JSON.parse(fs.readFileSync(APP_CONFIG_FILE).toString());
+    if (fs.existsSync(constants.APP_CONFIG_FILE)) {
+      const json = JSON.parse(fs.readFileSync(constants.APP_CONFIG_FILE).toString());
       if (json.providers) {
         config.providers = json.providers;
       }
@@ -324,8 +320,8 @@ function PrepareProviders(config: IConfigure) {
 
 function PrepareCards(config: IConfigure) {
   try {
-    if (fs.existsSync(APP_CONFIG_FILE)) {
-      const json = JSON.parse(fs.readFileSync(APP_CONFIG_FILE).toString());
+    if (fs.existsSync(constants.APP_CONFIG_FILE)) {
+      const json = JSON.parse(fs.readFileSync(constants.APP_CONFIG_FILE).toString());
       if (json.cards) {
         config.cards = json.cards.map((card: any) => ({
           name: card.name,
@@ -342,27 +338,27 @@ function PrepareCards(config: IConfigure) {
 
 async function PrepareCardJson() {
   try {
-    if (!fs.existsSync(APP_CARD_JSON)) {
+    if (!fs.existsSync(constants.APP_CARD_JSON)) {
       // try to get the latest card.json from git
       try {
-        const message = await request(APP_CARD_JSON_LINK);
+        const message = await request(constants.APP_CARD_JSON_LINK);
 
         // try to parse
         const card: Cards = await jws.GetContent(message);
 
         // copy card.json to .fortify
-        fs.writeFileSync(APP_CARD_JSON, JSON.stringify(card, null, '  '), { flag: 'w+' });
-        winston.info(`card.json v${card.version} was copied to .fortify from ${APP_CARD_JSON_LINK}`);
+        fs.writeFileSync(constants.APP_CARD_JSON, JSON.stringify(card, null, '  '), { flag: 'w+' });
+        winston.info(`card.json v${card.version} was copied to .fortify from ${constants.APP_CARD_JSON_LINK}`);
 
         return;
       } catch (err) {
-        winston.error(`Cannot get card.json from ${APP_CARD_JSON_LINK}. ${err.stack}`);
+        winston.error(`Cannot get card.json from ${constants.APP_CARD_JSON_LINK}. ${err.stack}`);
       }
 
       // get original card.json from webcrypto-local
       // eslint-disable-next-line global-require
       const original: Cards = require('@webcrypto-local/cards/lib/card.json');
-      fs.writeFileSync(APP_CARD_JSON, JSON.stringify(original, null, '  '), { flag: 'w+' });
+      fs.writeFileSync(constants.APP_CARD_JSON, JSON.stringify(original, null, '  '), { flag: 'w+' });
       winston.info(`card.json v${original.version} was copied to .fortify from modules`);
     } else {
       // compare existing card.json version with remote
@@ -372,20 +368,20 @@ async function PrepareCardJson() {
       let remote: Cards | undefined;
 
       try {
-        const jwsString = await request(APP_CARD_JSON_LINK);
+        const jwsString = await request(constants.APP_CARD_JSON_LINK);
         remote = await jws.GetContent(jwsString);
       } catch (e) {
-        winston.error(`Cannot get get file ${APP_CARD_JSON_LINK}. ${e.message}`);
+        winston.error(`Cannot get get file ${constants.APP_CARD_JSON_LINK}. ${e.message}`);
       }
 
       const local: Cards = JSON.parse(
-        fs.readFileSync(APP_CARD_JSON, { encoding: 'utf8' }),
+        fs.readFileSync(constants.APP_CARD_JSON, { encoding: 'utf8' }),
       );
 
       if (remote && semver.lt(local.version || '0.0.0', remote.version || '0.0.0')) {
         // copy card.json to .fortify
-        fs.writeFileSync(APP_CARD_JSON, JSON.stringify(remote, null, '  '), { flag: 'w+' });
-        winston.info(`card.json v${remote.version} was copied to .fortify from ${APP_CARD_JSON_LINK}`);
+        fs.writeFileSync(constants.APP_CARD_JSON, JSON.stringify(remote, null, '  '), { flag: 'w+' });
+        winston.info(`card.json v${remote.version} was copied to .fortify from ${constants.APP_CARD_JSON_LINK}`);
       } else {
         winston.info(`card.json has the latest version v${local.version}`);
       }
@@ -423,7 +419,7 @@ function InitMainChanells() {
       });
     })
     .on('logging-open', () => {
-      shell.openItem(APP_LOG_FILE);
+      shell.openItem(constants.APP_LOG_FILE);
     })
     .on('logging-status', (event: IpcMainEvent) => {
       event.sender.send('logging-status', application.configure.logging);
@@ -431,7 +427,7 @@ function InitMainChanells() {
     .on('logging-status-change', (event: IpcMainEvent) => {
       application.configure.logging = !application.configure.logging;
 
-      ConfigureWrite(APP_CONFIG_FILE, application.configure);
+      ConfigureWrite(constants.APP_CONFIG_FILE, application.configure);
       application.LoggingSwitch(application.configure.logging);
 
       event.sender.send('logging-status', application.configure.logging);
@@ -455,7 +451,7 @@ function printInfo() {
   winston.info(`OS ${os.platform()} ${os.arch()} `);
 
   try {
-    const json = fs.readFileSync(path.join(APP_DIR, 'package.json'), 'utf8');
+    const json = fs.readFileSync(path.join(constants.APP_DIR, 'package.json'), 'utf8');
     const pkg = JSON.parse(json);
 
     winston.info(`Fortify v${pkg.version}`);

@@ -10,7 +10,7 @@ import * as winston from 'winston';
 import { PemConverter } from 'webcrypto-core';
 import { Firefox } from './firefox';
 import { NssCertUtils } from './nss';
-import { SRC_DIR } from '../const';
+import * as constants from '../constants';
 
 export interface ISslCertInstallerPolicy {
   /**
@@ -97,7 +97,7 @@ export class SslCertInstaller {
       };
       const { username } = os.userInfo();
       winston.info('SSL: Adding CA certificate to System KeyChain');
-      sudo.exec(`certPath="${certPath}" certName="${certName}" userDir="${os.homedir()}" USER="${username}" bash ${SRC_DIR}/resources/osx-ssl.sh`, options, (err) => {
+      sudo.exec(`certPath="${certPath}" certName="${certName}" userDir="${os.homedir()}" USER="${username}" bash ${constants.SRC_DIR}/resources/osx-ssl.sh`, options, (err) => {
         if (err) {
           reject(err);
         } else {

@@ -1,19 +1,19 @@
 import * as fs from 'fs';
 import * as winston from 'winston';
-import { APP_DIALOG_FILE } from '../const';
+import * as constants from '../constants';
 import { IBrowserWindow } from './window';
 
 export class DialogsStorage {
   static saveDialogs(dialogs: string[]) {
-    fs.writeFileSync(APP_DIALOG_FILE, JSON.stringify(dialogs, null, '  '), { flag: 'w+' });
+    fs.writeFileSync(constants.APP_DIALOG_FILE, JSON.stringify(dialogs, null, '  '), { flag: 'w+' });
   }
 
   static getDialogs() {
     let dialogs: string[] = [];
 
-    if (fs.existsSync(APP_DIALOG_FILE)) {
+    if (fs.existsSync(constants.APP_DIALOG_FILE)) {
       try {
-        const json = fs.readFileSync(APP_DIALOG_FILE).toString();
+        const json = fs.readFileSync(constants.APP_DIALOG_FILE).toString();
 
         dialogs = JSON.parse(json);
 
@@ -21,7 +21,7 @@ export class DialogsStorage {
           throw new TypeError('Bad JSON format. Must be Array of strings');
         }
       } catch (e) {
-        winston.error(`Cannot parse JSON file ${APP_DIALOG_FILE}`);
+        winston.error(`Cannot parse JSON file ${constants.APP_DIALOG_FILE}`);
         winston.error(e);
       }
     }

@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { APP_CONFIG_FILE } from './const';
+import * as constants from './constants';
 
 /**
  * Write config data to file
@@ -32,9 +32,9 @@ export function ConfigureRead(path: string, cb?: () => IConfigure) {
         logging: false,
       };
     }
-    ConfigureWrite(APP_CONFIG_FILE, res);
+    ConfigureWrite(constants.APP_CONFIG_FILE, res);
   } else {
-    const json = fs.readFileSync(APP_CONFIG_FILE, 'utf8');
+    const json = fs.readFileSync(constants.APP_CONFIG_FILE, 'utf8');
     res = JSON.parse(json);
   }
 
