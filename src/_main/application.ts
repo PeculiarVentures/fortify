@@ -3,9 +3,12 @@ import { autoUpdater } from './updater';
 import { l10n } from './l10n';
 import { tray } from './tray';
 import { CHECK_UPDATE, CHECK_UPDATE_INTERVAL } from './constants';
+import { setConfig, getConfig } from './config';
 
 export class Application {
   app = app;
+
+  config = getConfig();
 
   public start() {
     const gotTheLock = this.app.requestSingleInstanceLock();
@@ -34,15 +37,19 @@ export class Application {
   }
 
   private initLocalization() {
-    // TODO: Add handler.
-    // TODO: Add read/write to config.
     l10n.on('locale-change', (lang) => {
-      console.log(lang);
+      this.config.locale = lang;
+
+      setConfig(this.config);
     });
 
-    const appLang = this.app.getLocale().split('-')[0];
+    let lang = this.config.locale;
 
-    l10n.setLang(appLang);
+    if (!lang) {
+      lang = this.app.getLocale().split('-')[0];
+    }
+
+    l10n.setLang(lang);
   }
 
   // eslint-disable-next-line class-methods-use-this
