@@ -20,6 +20,11 @@ const create = () => {
   trayElectron.setContextMenu(menu);
 };
 
+const refresh = () => {
+  create();
+};
+
 export const tray = {
   create,
+  refresh,
 };

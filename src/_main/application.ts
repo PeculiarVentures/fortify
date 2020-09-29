@@ -40,7 +40,15 @@ export class Application {
     l10n.on('locale-change', (lang) => {
       this.config.locale = lang;
 
+      /**
+       * Save locale to config.
+       */
       setConfig(this.config);
+
+      /**
+       * Refresh tray.
+       */
+      tray.refresh();
     });
 
     let lang = this.config.locale;
