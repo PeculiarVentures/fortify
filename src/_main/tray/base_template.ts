@@ -2,7 +2,7 @@ import {
   shell,
   MenuItemConstructorOptions,
 } from 'electron';
-import { intl } from '../utils';
+import { l10n } from '../l10n';
 import { TOOLS_LINK } from '../constants';
 // import {
 //   AboutWindow,
@@ -11,14 +11,14 @@ import { TOOLS_LINK } from '../constants';
 
 export const baseTemplate = (): MenuItemConstructorOptions[] => ([
   {
-    label: intl('about'),
+    label: l10n.get('about'),
     click: () => {
       // TODO: Add handler.
       // AboutWindow.create();
     },
   },
   {
-    label: intl('settings'),
+    label: l10n.get('settings'),
     click: () => {
       // TODO: Add handler.
       // SettingsWindow.create();
@@ -28,13 +28,13 @@ export const baseTemplate = (): MenuItemConstructorOptions[] => ([
     type: 'separator',
   },
   {
-    label: intl('tools'),
+    label: l10n.get('tools'),
     click: () => {
       shell.openExternal(TOOLS_LINK);
     },
   },
   {
-    label: intl('exit'),
+    label: l10n.get('exit'),
     role: 'quit',
   },
 ]);

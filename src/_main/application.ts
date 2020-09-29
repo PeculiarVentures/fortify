@@ -1,5 +1,6 @@
 import { app } from 'electron';
 import { autoUpdater } from './updater';
+import { l10n } from './l10n';
 import { tray } from './tray';
 import { CHECK_UPDATE, CHECK_UPDATE_INTERVAL } from './constants';
 
@@ -27,9 +28,21 @@ export class Application {
   private async onReady() {
     await this.app.whenReady();
 
+    this.initLocalization();
     tray.create();
-
     await this.initAutoUpdater();
+  }
+
+  private initLocalization() {
+    // TODO: Add handler.
+    // TODO: Add read/write to config.
+    l10n.on('locale-change', (lang) => {
+      console.log(lang);
+    });
+
+    const appLang = this.app.getLocale().split('-')[0];
+
+    l10n.setLang(appLang);
   }
 
   // eslint-disable-next-line class-methods-use-this
