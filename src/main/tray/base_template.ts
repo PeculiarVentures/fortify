@@ -4,24 +4,22 @@ import {
 } from 'electron';
 import { l10n } from '../l10n';
 import { TOOLS_LINK } from '../constants';
-// import {
-//   AboutWindow,
-//   SettingsWindow,
-// } from '../windows';
+import {
+  AboutWindow,
+  SettingsWindow,
+} from '../windows';
 
 export const baseTemplate = (): MenuItemConstructorOptions[] => ([
   {
     label: l10n.get('about'),
     click: () => {
-      // TODO: Add handler.
-      // AboutWindow.create();
+      AboutWindow.create();
     },
   },
   {
     label: l10n.get('settings'),
     click: () => {
-      // TODO: Add handler.
-      // SettingsWindow.create();
+      SettingsWindow.create();
     },
   },
   {

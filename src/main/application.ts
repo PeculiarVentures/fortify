@@ -68,6 +68,11 @@ export class Application {
       app.dock.hide();
     }
 
+    /**
+     * Don't quit when all windows are closed.
+     */
+    app.on('window-all-closed', (e: Event) => e.preventDefault());
+
     this.onReady();
   }
 
