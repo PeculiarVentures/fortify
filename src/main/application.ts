@@ -15,8 +15,11 @@ import { setConfig, getConfig } from './config';
 import { loggingSwitch, logger } from './logger';
 import { Server } from './server';
 import { firefoxProviders } from './firefox_providers';
+import { ipcMessages } from './ipc_messages';
 
 export class Application {
+  server!: Server;
+
   config = getConfig();
 
   // eslint-disable-next-line class-methods-use-this
@@ -91,6 +94,9 @@ export class Application {
       await this.initAutoUpdater();
 
       await this.initServer();
+
+      // TODO: Think about server use in args.
+      ipcMessages.init(this.server.server.server);
     } catch (error) {
       logger.error(error.toString());
     }
@@ -163,9 +169,9 @@ export class Application {
   }
 
   private async initServer() {
-    const server = new Server(this.config);
+    this.server = new Server(this.config);
 
-    await server.init();
+    await this.server.init();
   }
 }
 
