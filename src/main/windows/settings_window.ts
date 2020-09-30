@@ -1,6 +1,6 @@
 import { BrowserWindow, IWindowOptions } from './window';
-import { l10n } from '../../_main/l10n';
-import { windows } from '../../_main/windows';
+import { l10n } from '../l10n';
+import { windows } from './list';
 
 export class SettingsWindow extends BrowserWindow {
   constructor(options: Pick<IWindowOptions, 'onClosed'>) {

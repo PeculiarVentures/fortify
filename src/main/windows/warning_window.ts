@@ -1,8 +1,8 @@
-import * as winston from 'winston';
+import { logger } from '../logger';
 import { BrowserWindow, IWindowOptions } from './window';
-import { l10n } from '../../_main/l10n';
-import { windows } from '../../_main/windows';
-import { DialogsStorage } from './utils';
+import { l10n } from '../l10n';
+import { windows } from './list';
+import { DialogsStorage } from './dialogs_storage';
 
 interface IWarningWindowParams {
   params: {
@@ -40,7 +40,7 @@ export class WarningWindow extends BrowserWindow {
       && options.params.showAgain
       && DialogsStorage.hasDialog(options.params.id)
     ) {
-      winston.info(`Don't show dialog '${options.params.id}'. It's disabled`);
+      logger.info(`Don't show dialog '${options.params.id}'. It's disabled`);
 
       return;
     }

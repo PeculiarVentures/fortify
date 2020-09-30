@@ -1,6 +1,6 @@
 import * as wsServer from '@webcrypto-local/server';
 import { BrowserWindow, IWindowOptions } from './window';
-import { l10n } from '../../_main/l10n';
+import { l10n } from '../l10n';
 
 interface IP11PinWindowParams {
   params: {

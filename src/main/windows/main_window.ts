@@ -1,5 +1,5 @@
 import { BrowserWindow } from './window';
-import { windows } from '../../_main/windows';
+import { windows } from './list';
 
 export class MainWindow extends BrowserWindow {
   constructor() {

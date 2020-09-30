@@ -5,8 +5,7 @@ const baseConfig = require('./webpack.base.config');
 module.exports = merge.smart(baseConfig, {
   target: 'electron-main',
   entry: {
-    // main: path.join(__dirname, '../src/main/main.ts'),
-    main: path.join(__dirname, '../src/_main/index.ts'),
+    main: path.join(__dirname, '../src/main/main.ts'),
   },
   externals: {
     pkcs11js: 'require("pkcs11js")',

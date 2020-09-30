@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { IntlContext, IIntlContext } from './intl_context';
-import { l10n } from '../../../_main/l10n';
+import { l10n } from '../../../main/l10n';
 
 interface IIntlProviderProps {
   children: React.ReactNode;

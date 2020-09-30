@@ -1,6 +1,6 @@
 import * as fs from 'fs';
-import * as winston from 'winston';
-import * as constants from '../../_main/constants';
+import { logger } from '../logger';
+import * as constants from '../constants';
 import { IBrowserWindow } from './window';
 
 export class DialogsStorage {
@@ -21,8 +21,8 @@ export class DialogsStorage {
           throw new TypeError('Bad JSON format. Must be Array of strings');
         }
       } catch (e) {
-        winston.error(`Cannot parse JSON file ${constants.APP_DIALOG_FILE}`);
-        winston.error(e);
+        logger.error(`Cannot parse JSON file ${constants.APP_DIALOG_FILE}`);
+        logger.error(e);
       }
     }
 
@@ -39,7 +39,7 @@ export class DialogsStorage {
 
       dialogs.push(window.params.id);
       DialogsStorage.saveDialogs(dialogs);
-      winston.info(`Disable dialog ${window.params.id}`);
+      logger.info(`Disable dialog ${window.params.id}`);
     }
   }
 }

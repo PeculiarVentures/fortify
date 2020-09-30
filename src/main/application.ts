@@ -5,15 +5,18 @@ import * as path from 'path';
 import { autoUpdater } from './updater';
 import { l10n } from './l10n';
 import { tray } from './tray';
-import { CHECK_UPDATE, CHECK_UPDATE_INTERVAL, APP_USER_DIR, APP_DIR } from './constants';
+import {
+  CHECK_UPDATE,
+  CHECK_UPDATE_INTERVAL,
+  APP_USER_DIR,
+  APP_DIR,
+} from './constants';
 import { setConfig, getConfig } from './config';
 import { loggingSwitch, logger } from './logger';
 import { Server } from './server';
 import { firefoxProviders } from './firefox_providers';
 
 export class Application {
-  app = app;
-
   config = getConfig();
 
   // eslint-disable-next-line class-methods-use-this
@@ -30,6 +33,9 @@ export class Application {
      */
     loggingSwitch(!!this.config.logging);
 
+    /**
+     * Print start information about system and application.
+     */
     this.printStartInfo();
 
     /**
@@ -52,26 +58,26 @@ export class Application {
   public start() {
     this.beforeStart();
 
-    const gotTheLock = this.app.requestSingleInstanceLock();
+    const gotTheLock = app.requestSingleInstanceLock();
 
     if (!gotTheLock) {
-      this.app.quit();
+      app.quit();
     }
 
-    if ('dock' in this.app) {
-      this.app.dock.hide();
+    if ('dock' in app) {
+      app.dock.hide();
     }
 
     this.onReady();
   }
 
   public exit() {
-    this.app.exit();
+    app.exit();
   }
 
   private async onReady() {
     try {
-      await this.app.whenReady();
+      await app.whenReady();
 
       this.initLocalization();
 
@@ -103,7 +109,7 @@ export class Application {
     let lang = this.config.locale;
 
     if (!lang) {
-      lang = this.app.getLocale().split('-')[0];
+      lang = app.getLocale().split('-')[0];
     }
 
     l10n.setLang(lang);
@@ -155,8 +161,6 @@ export class Application {
     const server = new Server(this.config);
 
     await server.init();
-
-    server.run();
   }
 }
 

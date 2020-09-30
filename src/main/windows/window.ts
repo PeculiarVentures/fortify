@@ -6,10 +6,9 @@ import {
   globalShortcut,
 } from 'electron';
 import * as url from 'url';
-import * as winston from 'winston';
-
-import * as constants from '../../_main/constants';
-import { l10n } from '../../_main/l10n';
+import { logger } from '../logger';
+import * as constants from '../constants';
+import { l10n } from '../l10n';
 
 type WindowAppType = 'about' | 'key-pin' | 'message' | 'p11-pin' | 'settings' | 'index';
 
@@ -54,7 +53,7 @@ export class BrowserWindow {
   }
 
   private onInit(options: IWindowOptions) {
-    winston.info(`Fortify: Create window ${options.app}`);
+    logger.info(`Fortify: Create window ${options.app}`);
 
     this.window.loadURL(url.format({
       pathname: constants.HTML_PATH,

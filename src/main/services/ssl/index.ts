@@ -6,7 +6,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { PemConverter } from 'webcrypto-core';
 import * as constants from '../../constants';
-import { WarningWindow } from '../../../main/windows';
+import { WarningWindow } from '../../windows';
 import { l10n } from '../../l10n';
 import { CertificateGenerator, ValidityType, IName } from './generator';
 import { SslCertInstaller } from './installer';

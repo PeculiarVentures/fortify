@@ -8,7 +8,7 @@ import * as semver from 'semver';
 import { SslService } from './services';
 import * as constants from './constants';
 import { logger } from './logger';
-import { ErrorWindow } from '../main/windows';
+import { ErrorWindow } from './windows';
 import { l10n } from './l10n';
 import * as jws from './jws';
 import { request } from './utils';
@@ -111,9 +111,12 @@ export class Server {
       logger.error(e.message);
       logger.error('LocalServer is empty. webcrypto-local module wasn\'t loaded');
     }
+
+    this.run();
   }
 
   run() {
+    // TODO: Add other events.
     this.server
       .on('listening', (e: any) => {
         logger.info(`Server: Started at ${e}`);

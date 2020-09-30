@@ -1,10 +1,10 @@
 import {
   BrowserWindow as ElectronWindow,
 } from 'electron';
-import * as winston from 'winston';
+import { logger } from '../logger';
 import { BrowserWindow } from './window';
-import { l10n } from '../../_main/l10n';
-import { DialogsStorage } from './utils';
+import { l10n } from '../l10n';
+import { DialogsStorage } from './dialogs_storage';
 
 interface IQuestionWindowParams {
   params: {
@@ -46,7 +46,7 @@ export class QuestionWindow extends BrowserWindow {
       && options.params.showAgain
       && DialogsStorage.hasDialog(options.params.id)
     ) {
-      winston.info(`Don't show dialog '${options.params.id}'. It's disabled`);
+      logger.info(`Don't show dialog '${options.params.id}'. It's disabled`);
 
       return;
     }

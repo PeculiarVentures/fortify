@@ -1,7 +1,7 @@
 import { screen } from 'electron';
 import { BrowserWindow, IWindowOptions } from './window';
-import { l10n } from '../../_main/l10n';
-import { windowSizes } from '../../_main/constants';
+import { l10n } from '../l10n';
+import { windowSizes } from '../constants';
 
 interface IKeyPinWindowParams {
   params: {
