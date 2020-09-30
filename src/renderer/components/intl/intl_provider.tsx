@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { ipcRenderer, IpcRendererEvent, remote } from 'electron';
+import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { IntlContext, IIntlContext } from './intl_context';
-import { locale, intl, Locale } from '../../../main/locale';
+import { l10n } from '../../../_main/l10n';
 
 interface IIntlProviderProps {
   children: React.ReactNode;
@@ -11,14 +11,14 @@ export default class IntlProvider extends React.Component<IIntlProviderProps, II
   constructor(props: IIntlProviderProps) {
     super(props);
 
-    const $window = remote.getCurrentWindow() as any;
+    // const $window = remote.getCurrentWindow() as any;
 
-    locale.setLang($window.lang || 'en');
+    // locale.setLang($window.lang || 'en');
 
     this.state = {
-      lang: locale.lang,
-      intl,
-      list: Locale.getLangList() as any,
+      lang: l10n.lang,
+      intl: l10n.get,
+      list: l10n.supportedLangs as any,
     };
   }
 
@@ -34,11 +34,11 @@ export default class IntlProvider extends React.Component<IIntlProviderProps, II
   }
 
   onLanguageListener = (_: IpcRendererEvent, lang: string) => {
-    locale.setLang(lang);
+    // locale.setLang(lang);
 
-    this.setState({
-      lang,
-    });
+    // this.setState({
+    //   lang,
+    // });
   };
 
   render() {

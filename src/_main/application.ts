@@ -1,16 +1,57 @@
 import { app } from 'electron';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 import { autoUpdater } from './updater';
 import { l10n } from './l10n';
 import { tray } from './tray';
-import { CHECK_UPDATE, CHECK_UPDATE_INTERVAL } from './constants';
+import { CHECK_UPDATE, CHECK_UPDATE_INTERVAL, APP_USER_DIR, APP_DIR } from './constants';
 import { setConfig, getConfig } from './config';
+import { loggingSwitch, logger } from './logger';
+import { Server } from './server';
+import { firefoxProviders } from './firefox_providers';
 
 export class Application {
   app = app;
 
   config = getConfig();
 
+  // eslint-disable-next-line class-methods-use-this
+  private beforeStart() {
+    /**
+     * Create application directory.
+     */
+    if (!fs.existsSync(APP_USER_DIR)) {
+      fs.mkdirSync(APP_USER_DIR);
+    }
+
+    /**
+     * Set logging from config.
+     */
+    loggingSwitch(!!this.config.logging);
+
+    this.printStartInfo();
+
+    /**
+     * Get firefox providers and save to config.
+     */
+    // TODO: Review solution.
+    if (!this.config.providers?.length) {
+      try {
+        const providers = firefoxProviders.create();
+
+        this.config.providers = this.config.providers!.concat(providers);
+
+        setConfig(this.config);
+      } catch (err) {
+        logger.error(err.stack);
+      }
+    }
+  }
+
   public start() {
+    this.beforeStart();
+
     const gotTheLock = this.app.requestSingleInstanceLock();
 
     if (!gotTheLock) {
@@ -29,11 +70,19 @@ export class Application {
   }
 
   private async onReady() {
-    await this.app.whenReady();
+    try {
+      await this.app.whenReady();
 
-    this.initLocalization();
-    tray.create();
-    await this.initAutoUpdater();
+      this.initLocalization();
+
+      tray.create();
+
+      await this.initAutoUpdater();
+
+      await this.initServer();
+    } catch (error) {
+      logger.error(error.toString());
+    }
   }
 
   private initLocalization() {
@@ -85,6 +134,29 @@ export class Application {
         CHECK_UPDATE_INTERVAL,
       );
     }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private printStartInfo() {
+    logger.info(`Application started at ${new Date()}`);
+    logger.info(`OS ${os.platform()} ${os.arch()} `);
+
+    try {
+      const json = fs.readFileSync(path.join(APP_DIR, 'package.json'), 'utf8');
+      const pkg = JSON.parse(json);
+
+      logger.info(`Fortify v${pkg.version}`);
+    } catch {
+      //
+    }
+  }
+
+  private async initServer() {
+    const server = new Server(this.config);
+
+    await server.init();
+
+    server.run();
   }
 }
 
