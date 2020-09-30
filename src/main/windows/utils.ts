@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as winston from 'winston';
-import * as constants from '../constants';
+import * as constants from '../../_main/constants';
 import { IBrowserWindow } from './window';
 
 export class DialogsStorage {

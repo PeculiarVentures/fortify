@@ -8,9 +8,8 @@ import {
 import * as url from 'url';
 import * as winston from 'winston';
 
-import * as constants from '../constants';
-import { locale } from '../locale';
-import { isDevelopment } from '../utils';
+import * as constants from '../../_main/constants';
+import { l10n } from '../../_main/l10n';
 
 type WindowAppType = 'about' | 'key-pin' | 'message' | 'p11-pin' | 'settings' | 'index';
 
@@ -63,7 +62,7 @@ export class BrowserWindow {
       slashes: true,
     }));
 
-    this.window.lang = locale.lang;
+    this.window.lang = l10n.lang;
     this.window.app = options.app;
     this.window.params = options.params || {};
 
@@ -110,13 +109,13 @@ export class BrowserWindow {
       fullscreen: false,
       fullscreenable: false,
       // Prevent resize window on production
-      resizable: isDevelopment,
+      resizable: constants.isDevelopment,
       show: false,
       ...this.getWindowSize(),
       webPreferences: {
         nodeIntegration: true,
         // Prevent open DevTools on production
-        devTools: isDevelopment,
+        devTools: constants.isDevelopment,
       },
     };
   }

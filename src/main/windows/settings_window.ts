@@ -1,6 +1,6 @@
 import { BrowserWindow, IWindowOptions } from './window';
-import { intl } from '../locale';
-import { windows } from '../application';
+import { l10n } from '../../_main/l10n';
+import { windows } from '../../_main/windows';
 
 export class SettingsWindow extends BrowserWindow {
   constructor(options: Pick<IWindowOptions, 'onClosed'>) {
@@ -8,7 +8,7 @@ export class SettingsWindow extends BrowserWindow {
       ...options,
       size: 'default',
       app: 'settings',
-      title: intl('settings'),
+      title: l10n.get('settings'),
     });
   }
 

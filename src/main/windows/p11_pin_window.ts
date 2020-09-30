@@ -1,6 +1,6 @@
 import * as wsServer from '@webcrypto-local/server';
 import { BrowserWindow, IWindowOptions } from './window';
-import { intl } from '../locale';
+import { l10n } from '../../_main/l10n';
 
 interface IP11PinWindowParams {
   params: {
@@ -21,7 +21,7 @@ export class P11PinWindow extends BrowserWindow {
       windowOptions: {
         alwaysOnTop: true,
       },
-      title: options.params.label || intl('p11-pin'),
+      title: options.params.label || l10n.get('p11-pin'),
     });
   }
 

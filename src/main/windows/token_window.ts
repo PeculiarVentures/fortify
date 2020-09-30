@@ -3,7 +3,7 @@ import {
 } from 'electron';
 import * as winston from 'winston';
 import { BrowserWindow } from './window';
-import { intl } from '../locale';
+import { l10n } from '../../_main/l10n';
 import { DialogsStorage } from './utils';
 
 interface ITokenWindowParams {
@@ -33,7 +33,7 @@ export class TokenWindow extends BrowserWindow {
         parent: options.parent,
         modal: !!options.parent,
       },
-      title: options.params.title || intl('question'),
+      title: options.params.title || l10n.get('question'),
     });
   }
 

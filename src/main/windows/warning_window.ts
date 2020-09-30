@@ -1,7 +1,7 @@
 import * as winston from 'winston';
 import { BrowserWindow, IWindowOptions } from './window';
-import { intl } from '../locale';
-import { windows } from '../application';
+import { l10n } from '../../_main/l10n';
+import { windows } from '../../_main/windows';
 import { DialogsStorage } from './utils';
 
 interface IWarningWindowParams {
@@ -27,7 +27,7 @@ export class WarningWindow extends BrowserWindow {
       windowOptions: {
         alwaysOnTop: true,
       },
-      title: options.params.title || intl('warning'),
+      title: options.params.title || l10n.get('warning'),
     });
   }
 

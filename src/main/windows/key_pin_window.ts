@@ -1,7 +1,7 @@
 import { screen } from 'electron';
 import { BrowserWindow, IWindowOptions } from './window';
-import { intl } from '../locale';
-import * as constants from '../constants';
+import { l10n } from '../../_main/l10n';
+import { windowSizes } from '../../_main/constants';
 
 interface IKeyPinWindowParams {
   params: {
@@ -20,12 +20,12 @@ export class KeyPinWindow extends BrowserWindow {
       ...options,
       size: 'default',
       app: 'key-pin',
-      title: intl('key-pin'),
+      title: l10n.get('key-pin'),
       windowOptions: {
         modal: true,
         alwaysOnTop: true,
-        x: width - constants.windowSizes.default.width,
-        y: height - constants.windowSizes.default.height,
+        x: width - windowSizes.default.width,
+        y: height - windowSizes.default.height,
       },
     });
   }

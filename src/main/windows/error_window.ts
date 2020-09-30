@@ -1,6 +1,6 @@
 import { BrowserWindow, IWindowOptions } from './window';
-import { intl } from '../locale';
-import { windows } from '../application';
+import { l10n } from '../../_main/l10n';
+import { windows } from '../../_main/windows';
 
 interface IErrorWindowParams {
   params: {
@@ -17,7 +17,7 @@ export class ErrorWindow extends BrowserWindow {
       ...options,
       app: 'message',
       size: 'small',
-      title: intl('error'),
+      title: l10n.get('error'),
       windowOptions: {
         alwaysOnTop: true,
       },
