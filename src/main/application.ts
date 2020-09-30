@@ -87,14 +87,29 @@ export class Application {
     try {
       await app.whenReady();
 
+      /**
+       * Init localization.
+       */
       this.initLocalization();
 
+      /**
+       * Create tray.
+       */
       tray.create();
 
+      /**
+       * Init check updates.
+       */
       await this.initAutoUpdater();
 
+      /**
+       * Init server service.
+       */
       await this.initServer();
 
+      /**
+       * Init Ipc events handle.
+       */
       // TODO: Think about server use in args.
       ipcMessages.init(this.server.server.server);
     } catch (error) {
