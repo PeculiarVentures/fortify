@@ -25,7 +25,6 @@ interface IKeyPinWindowParams {
 }
 
 interface ITokenWindowParams {
-  type: 'token';
   title?: string;
   id: string;
   showAgain?: boolean;
@@ -35,12 +34,10 @@ interface ITokenWindowParams {
 }
 
 interface IErrorWindowParams {
-  type: 'error';
   text: string;
 }
 
 interface IQuestionWindowParams {
-  type: 'question';
   title?: string;
   id: string;
   showAgain?: boolean;
@@ -50,7 +47,6 @@ interface IQuestionWindowParams {
 }
 
 interface IWarningWindowParams {
-  type: 'warning';
   title?: string;
   id: string;
   showAgain?: boolean;
@@ -174,7 +170,10 @@ class WindowsController {
     }
 
     const browserWindow = new BrowserWindow({
-      params,
+      params: {
+        type: 'token',
+        ...params,
+      },
       app: 'message',
       size: 'small',
       windowOptions: {
@@ -203,7 +202,10 @@ class WindowsController {
     }
 
     this.windows.error = new BrowserWindow({
-      params,
+      params: {
+        type: 'error',
+        ...params,
+      },
       app: 'message',
       size: 'small',
       title: l10n.get('error'),
@@ -235,7 +237,10 @@ class WindowsController {
     }
 
     const browserWindow = new BrowserWindow({
-      params,
+      params: {
+        type: 'question',
+        ...params,
+      },
       app: 'message',
       size: 'small',
       windowOptions: {
@@ -274,7 +279,10 @@ class WindowsController {
     }
 
     this.windows.warning = new BrowserWindow({
-      params,
+      params: {
+        type: 'warning',
+        ...params,
+      },
       app: 'message',
       size: 'small',
       windowOptions: {

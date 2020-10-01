@@ -33,7 +33,6 @@ const initServerEvents = (server: any) => {
     .on('ipc-2key-remove', (event: IpcMainEvent, arg: any) => {
       windowsController.showQuestionWindow(
         {
-          type: 'question',
           text: l10n.get('question.2key.remove', arg),
           id: 'question.2key.remove',
           result: 0,

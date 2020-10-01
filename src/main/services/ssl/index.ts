@@ -96,7 +96,6 @@ export class SslService {
     if (os.platform() === 'win32' && (status === CaCertificateStatus.renew || status === CaCertificateStatus.expired)) {
       windowsController.showWarningWindow(
         {
-          type: 'warning',
           text: l10n.get('warn.ssl.renew'),
           title: l10n.get('warning.title.oh_no'),
           buttonLabel: l10n.get('close'),
@@ -120,7 +119,6 @@ export class SslService {
       await new Promise((resolve) => { // wrap callback
         windowsController.showWarningWindow(
           {
-            type: 'warning',
             text: l10n.get('warn.ssl.install'),
             buttonLabel: l10n.get('i_understand'),
             id: 'ssl.install',

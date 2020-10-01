@@ -85,7 +85,6 @@ export class Server {
 
       windowsController.showErrorWindow(
         {
-          type: 'error',
           text: l10n.get('error.ssl.install'),
         },
         () => {
@@ -135,7 +134,6 @@ export class Server {
 
         windowsController.showTokenWindow(
           {
-            type: 'token',
             text: l10n.get('question.new.token'),
             id: 'question.new.token',
             showAgain: true,
@@ -173,7 +171,6 @@ export class Server {
             case CODE.PCSC_CANNOT_START:
               windowsController.showWarningWindow(
                 {
-                  type: 'warning',
                   text: l10n.get('warn.pcsc.cannot_start'),
                   title: l10n.get('warning.title.oh_no'),
                   buttonLabel: l10n.get('i_understand'),
@@ -187,7 +184,6 @@ export class Server {
             case CODE.PROVIDER_CRYPTO_NOT_FOUND:
               windowsController.showWarningWindow(
                 {
-                  type: 'warning',
                   text: l10n.get('warn.token.crypto_not_found', err.message),
                   title: l10n.get('warning.title.oh_no'),
                   buttonLabel: l10n.get('close'),
@@ -202,7 +198,6 @@ export class Server {
             case CODE.PROVIDER_WRONG_LIBRARY:
               windowsController.showWarningWindow(
                 {
-                  type: 'warning',
                   text: l10n.get('warn.token.crypto_wrong', err.message),
                   title: l10n.get('warning.title.oh_no'),
                   buttonLabel: l10n.get('close'),
