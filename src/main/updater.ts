@@ -42,8 +42,7 @@ class Updater extends EventEmitter {
       logger.warn(`Cannot GET ${JWS_LINK}`);
       logger.error(error);
 
-      // TODO: Add intl.
-      throw new UpdateError('error.update.server');
+      throw new UpdateError(l10n.get('error.update.server'));
     }
   }
 
@@ -62,8 +61,7 @@ class Updater extends EventEmitter {
         throw error;
       }
 
-      // TODO: Add intl.
-      throw new UpdateError('error.update.check');
+      throw new UpdateError(l10n.get('error.update.check'));
     }
   }
 
@@ -82,7 +80,6 @@ class Updater extends EventEmitter {
 
         this.emit('update-found', update.version);
 
-        // TODO: Add handlers for critical update.
         await new Promise((resolve) => {
           windowsController.showQuestionWindow(
             {

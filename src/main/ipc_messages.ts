@@ -22,7 +22,6 @@ const sendToRenderers = (channel: string, data: any) => {
 };
 
 // TODO: Maybe move to application.
-// TODO: Review messages.
 const initServerEvents = (server: any) => {
   ipcMain
     .on('ipc-2key-list-get', async (event: IpcMainEvent) => {
