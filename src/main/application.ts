@@ -185,7 +185,7 @@ export class Application {
   }
 
   private async initServer() {
-    this.server = new Server(this.config);
+    this.server = new Server();
 
     await this.server.init();
   }

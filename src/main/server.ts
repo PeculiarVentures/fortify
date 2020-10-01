@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import { shell } from 'electron';
+import { shell, app } from 'electron';
 import { setEngine } from '2key-ratchet';
 import * as wsServer from '@webcrypto-local/server';
 import type { Cards } from '@webcrypto-local/cards';
@@ -21,6 +21,7 @@ import {
 import { l10n } from './l10n';
 import * as jws from './jws';
 import { request } from './utils';
+import { getConfig } from './config';
 import './crypto';
 
 export class Server {
@@ -28,8 +29,8 @@ export class Server {
 
   config: IConfigure;
 
-  constructor(config: IConfigure) {
-    this.config = config;
+  constructor() {
+    this.config = getConfig();
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -94,11 +95,11 @@ export class Server {
           text: l10n.get('error.ssl.install'),
         },
         onClosed: () => {
-          // application.quit();
+          app.quit();
         },
       });
 
-      // application.quit();
+      app.quit();
     }
 
     const sslData: wsServer.IServerOptions = {
