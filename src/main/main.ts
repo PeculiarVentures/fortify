@@ -135,7 +135,7 @@ async function InitService() {
       },
     });
 
-    application.quit();
+    return;
   }
 
   const sslData: wsServer.IServerOptions = {
