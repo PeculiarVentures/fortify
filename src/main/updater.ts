@@ -89,8 +89,8 @@ class Updater extends EventEmitter {
               showAgain: true,
               showAgainValue: false,
             },
-            (result) => {
-              if (result) {
+            (params) => {
+              if (params.result) {
                 // yes
                 logger.info(`User agreed to download new version ${update.version}`);
 

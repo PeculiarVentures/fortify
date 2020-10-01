@@ -216,7 +216,7 @@ class WindowsController {
   // eslint-disable-next-line class-methods-use-this
   showQuestionWindow(
     params: IQuestionWindowParams,
-    onClosed: (result: number) => void,
+    onClosed: (params: IQuestionWindowParams) => void,
     parent?: ElectronWindow,
   ) {
     if (
@@ -245,7 +245,7 @@ class WindowsController {
       onClosed: () => {
         DialogsStorage.onDialogClose(browserWindow.window);
 
-        onClosed(params.result);
+        onClosed(browserWindow.window.params as IQuestionWindowParams);
       },
     });
   }

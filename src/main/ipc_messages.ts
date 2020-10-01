@@ -36,8 +36,8 @@ const initServerEvents = (server: any) => {
           id: 'question.2key.remove',
           result: 0,
         },
-        async (result) => {
-          if (result) {
+        async (params) => {
+          if (params.result) {
             logger.info(`Removing 2key session key ${arg}`);
 
             await ServerStorage.removeIdentity(server, arg);
