@@ -2,6 +2,7 @@ import {
   ipcMain,
   shell,
   IpcMainEvent,
+  BrowserWindow,
 } from 'electron';
 import { APP_LOG_FILE } from './constants';
 import { QuestionWindow, windows } from './windows';
@@ -10,7 +11,18 @@ import { logger, loggingSwitch } from './logger';
 import { ServerStorage } from './server_storage';
 import { setConfig, getConfig } from './config';
 
+const sendToRenderers = (channel: string, data: any) => {
+  const browserWindows = BrowserWindow.getAllWindows();
+
+  browserWindows.forEach((window) => {
+    if (window.webContents) {
+      window.webContents.send(channel, data);
+    }
+  });
+};
+
 // TODO: Maybe move to application.
+// TODO: Review messages.
 const init = (server: any) => {
   ipcMain
     .on('2key-list', async (event: IpcMainEvent) => {
@@ -57,13 +69,17 @@ const init = (server: any) => {
 
       event.sender.send('logging-status', config.logging);
     })
-    .on('language-change', (event: IpcMainEvent, lang: string) => {
+    .on('ipc-language-set', (_: IpcMainEvent, lang: string) => {
       l10n.setLang(lang);
 
-      event.sender.send('language-change', l10n.lang);
+      sendToRenderers('ipc-language-changed', l10n.lang);
     })
-    .on('language-get', (event: IpcMainEvent) => {
-      event.sender.send('language-get', l10n.lang);
+    .on('ipc-language-get', (event: IpcMainEvent) => {
+      event.returnValue = {
+        lang: l10n.lang,
+        data: l10n.data,
+        list: l10n.supportedLangs,
+      };
     })
     .on('error', (event: IpcMainEvent) => {
       logger.error(event.toString());

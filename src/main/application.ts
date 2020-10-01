@@ -79,6 +79,7 @@ export class Application {
     this.onReady();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public exit() {
     app.exit();
   }

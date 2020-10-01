@@ -89,7 +89,7 @@ class Root extends WindowProvider<IRootProps, IRootState> {
   };
 
   onLanguageChange = (lang: string) => {
-    ipcRenderer.send('language-change', lang);
+    ipcRenderer.send('ipc-language-set', lang);
   };
 
   render() {
