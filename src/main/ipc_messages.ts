@@ -23,7 +23,7 @@ const sendToRenderers = (channel: string, data: any) => {
 
 // TODO: Maybe move to application.
 // TODO: Review messages.
-const init = (server: any) => {
+const initServerEvents = (server: any) => {
   ipcMain
     .on('ipc-2key-list-get', async (event: IpcMainEvent) => {
       const identities = await ServerStorage.getIdentities(server);
@@ -51,7 +51,11 @@ const init = (server: any) => {
           }
         },
       );
-    })
+    });
+};
+
+const initEvents = () => {
+  ipcMain
     .on('ipc-logging-open', () => {
       shell.openItem(APP_LOG_FILE);
     })
@@ -89,5 +93,6 @@ const init = (server: any) => {
 };
 
 export const ipcMessages = {
-  init,
+  initServerEvents,
+  initEvents,
 };

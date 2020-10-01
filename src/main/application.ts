@@ -89,6 +89,11 @@ export class Application {
       await app.whenReady();
 
       /**
+       * Init ipc events.
+       */
+      ipcMessages.initEvents();
+
+      /**
        * Init localization.
        */
       this.initLocalization();
@@ -109,10 +114,10 @@ export class Application {
       await this.initServer();
 
       /**
-       * Init Ipc events handle.
+       * Init ipc server events.
        */
       // TODO: Think about server use in args.
-      ipcMessages.init(this.server.server.server);
+      ipcMessages.initServerEvents(this.server.server.server);
     } catch (error) {
       logger.error(error.toString());
     }

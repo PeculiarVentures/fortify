@@ -95,7 +95,7 @@ export class Server {
         },
       );
 
-      app.quit();
+      return;
     }
 
     const sslData: wsServer.IServerOptions = {
