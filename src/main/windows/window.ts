@@ -105,6 +105,7 @@ export class BrowserWindow {
       icon: constants.icons.favicon,
       autoHideMenuBar: true,
       minimizable: false,
+      maximizable: false,
       fullscreen: false,
       fullscreenable: false,
       // Prevent resize window on production
