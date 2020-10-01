@@ -96,13 +96,11 @@ export class SslService {
     if (os.platform() === 'win32' && (status === CaCertificateStatus.renew || status === CaCertificateStatus.expired)) {
       windowsController.showWarningWindow(
         {
-          params: {
-            type: 'warning',
-            text: l10n.get('warn.ssl.renew'),
-            title: l10n.get('warning.title.oh_no'),
-            buttonLabel: l10n.get('close'),
-            id: 'ssl.renew',
-          },
+          type: 'warning',
+          text: l10n.get('warn.ssl.renew'),
+          title: l10n.get('warning.title.oh_no'),
+          buttonLabel: l10n.get('close'),
+          id: 'ssl.renew',
         },
         () => {},
       );
@@ -122,12 +120,10 @@ export class SslService {
       await new Promise((resolve) => { // wrap callback
         windowsController.showWarningWindow(
           {
-            params: {
-              type: 'warning',
-              text: l10n.get('warn.ssl.install'),
-              buttonLabel: l10n.get('i_understand'),
-              id: 'ssl.install',
-            },
+            type: 'warning',
+            text: l10n.get('warn.ssl.install'),
+            buttonLabel: l10n.get('i_understand'),
+            id: 'ssl.install',
           },
           () => {
             logger.info('Warning window was closed');

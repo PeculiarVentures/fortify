@@ -85,10 +85,8 @@ export class Server {
 
       windowsController.showErrorWindow(
         {
-          params: {
-            type: 'error',
-            text: l10n.get('error.ssl.install'),
-          },
+          type: 'error',
+          text: l10n.get('error.ssl.install'),
         },
         () => {
           app.quit();
@@ -137,14 +135,12 @@ export class Server {
 
         windowsController.showTokenWindow(
           {
-            params: {
-              type: 'token',
-              text: l10n.get('question.new.token'),
-              id: 'question.new.token',
-              showAgain: true,
-              showAgainValue: false,
-              result: 0,
-            },
+            type: 'token',
+            text: l10n.get('question.new.token'),
+            id: 'question.new.token',
+            showAgain: true,
+            showAgainValue: false,
+            result: 0,
           },
           (result) => {
             if (result) {
@@ -177,15 +173,13 @@ export class Server {
             case CODE.PCSC_CANNOT_START:
               windowsController.showWarningWindow(
                 {
-                  params: {
-                    type: 'warning',
-                    text: l10n.get('warn.pcsc.cannot_start'),
-                    title: l10n.get('warning.title.oh_no'),
-                    buttonLabel: l10n.get('i_understand'),
-                    id: 'warn.pcsc.cannot_start',
-                    showAgain: true,
-                    showAgainValue: false,
-                  },
+                  type: 'warning',
+                  text: l10n.get('warn.pcsc.cannot_start'),
+                  title: l10n.get('warning.title.oh_no'),
+                  buttonLabel: l10n.get('i_understand'),
+                  id: 'warn.pcsc.cannot_start',
+                  showAgain: true,
+                  showAgainValue: false,
                 },
                 () => {},
               );
@@ -193,15 +187,13 @@ export class Server {
             case CODE.PROVIDER_CRYPTO_NOT_FOUND:
               windowsController.showWarningWindow(
                 {
-                  params: {
-                    type: 'warning',
-                    text: l10n.get('warn.token.crypto_not_found', err.message),
-                    title: l10n.get('warning.title.oh_no'),
-                    buttonLabel: l10n.get('close'),
-                    id: 'warn.token.crypto_not_found',
-                    showAgain: true,
-                    showAgainValue: false,
-                  },
+                  type: 'warning',
+                  text: l10n.get('warn.token.crypto_not_found', err.message),
+                  title: l10n.get('warning.title.oh_no'),
+                  buttonLabel: l10n.get('close'),
+                  id: 'warn.token.crypto_not_found',
+                  showAgain: true,
+                  showAgainValue: false,
                 },
                 () => {},
               );
@@ -210,15 +202,13 @@ export class Server {
             case CODE.PROVIDER_WRONG_LIBRARY:
               windowsController.showWarningWindow(
                 {
-                  params: {
-                    type: 'warning',
-                    text: l10n.get('warn.token.crypto_wrong', err.message),
-                    title: l10n.get('warning.title.oh_no'),
-                    buttonLabel: l10n.get('close'),
-                    id: 'warn.token.crypto_wrong',
-                    showAgain: true,
-                    showAgainValue: false,
-                  },
+                  type: 'warning',
+                  text: l10n.get('warn.token.crypto_wrong', err.message),
+                  title: l10n.get('warning.title.oh_no'),
+                  buttonLabel: l10n.get('close'),
+                  id: 'warn.token.crypto_wrong',
+                  showAgain: true,
+                  showAgainValue: false,
                 },
                 () => {},
               );
@@ -233,17 +223,13 @@ export class Server {
           case '2key': {
             params.accept = false;
 
-            windowsController.showKeyPinWindow({
-              params,
-            });
+            windowsController.showKeyPinWindow(params);
             break;
           }
           case 'pin': {
             params.pin = '';
 
-            windowsController.showP11PinWindow({
-              params,
-            });
+            windowsController.showP11PinWindow(params);
             break;
           }
           default:

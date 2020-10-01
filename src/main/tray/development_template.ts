@@ -14,14 +14,12 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         click: () => {
           windowsController.showTokenWindow(
             {
-              params: {
-                type: 'token',
-                text: l10n.get('question.new.token'),
-                id: 'question.new.token',
-                showAgain: true,
-                showAgainValue: false,
-                result: 0,
-              },
+              type: 'token',
+              text: l10n.get('question.new.token'),
+              id: 'question.new.token',
+              showAgain: true,
+              showAgainValue: false,
+              result: 0,
             },
             () => {},
           );
@@ -35,10 +33,8 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         click: () => {
           windowsController.showErrorWindow(
             {
-              params: {
-                type: 'error',
-                text: l10n.get('error.ssl.install'),
-              },
+              type: 'error',
+              text: l10n.get('error.ssl.install'),
             },
             () => {},
           );
@@ -49,10 +45,8 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         click: () => {
           windowsController.showErrorWindow(
             {
-              params: {
-                type: 'error',
-                text: l10n.get('error.critical.update'),
-              },
+              type: 'error',
+              text: l10n.get('error.critical.update'),
             },
             () => {},
           );
@@ -66,12 +60,10 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         click: () => {
           windowsController.showQuestionWindow(
             {
-              params: {
-                type: 'question',
-                text: l10n.get('question.2key.remove', 'TEST'),
-                id: 'question.2key.remove',
-                result: 0,
-              },
+              type: 'question',
+              text: l10n.get('question.2key.remove', 'TEST'),
+              id: 'question.2key.remove',
+              result: 0,
             },
             () => {},
           );
@@ -82,14 +74,12 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         click: () => {
           windowsController.showQuestionWindow(
             {
-              params: {
-                type: 'question',
-                text: l10n.get('question.update.new', 'TEST'),
-                id: 'question.update.new',
-                result: 0,
-                showAgain: true,
-                showAgainValue: false,
-              },
+              type: 'question',
+              text: l10n.get('question.update.new', 'TEST'),
+              id: 'question.update.new',
+              result: 0,
+              showAgain: true,
+              showAgainValue: false,
             },
             () => {},
           );
@@ -103,12 +93,10 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         click: () => {
           windowsController.showWarningWindow(
             {
-              params: {
-                type: 'warning',
-                text: l10n.get('warn.ssl.install'),
-                buttonLabel: l10n.get('i_understand'),
-                id: 'ssl.install',
-              },
+              type: 'warning',
+              text: l10n.get('warn.ssl.install'),
+              buttonLabel: l10n.get('i_understand'),
+              id: 'ssl.install',
             },
             () => {},
           );
@@ -119,15 +107,13 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         click: () => {
           windowsController.showWarningWindow(
             {
-              params: {
-                type: 'warning',
-                text: l10n.get('warn.pcsc.cannot_start'),
-                title: l10n.get('warning.title.oh_no'),
-                buttonLabel: l10n.get('i_understand'),
-                id: 'warn.pcsc.cannot_start',
-                showAgain: true,
-                showAgainValue: false,
-              },
+              type: 'warning',
+              text: l10n.get('warn.pcsc.cannot_start'),
+              title: l10n.get('warning.title.oh_no'),
+              buttonLabel: l10n.get('i_understand'),
+              id: 'warn.pcsc.cannot_start',
+              showAgain: true,
+              showAgainValue: false,
             },
             () => {},
           );
@@ -138,15 +124,13 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         click: () => {
           windowsController.showWarningWindow(
             {
-              params: {
-                type: 'warning',
-                text: l10n.get('warn.token.crypto_not_found', 'TEST'),
-                title: l10n.get('warning.title.oh_no'),
-                buttonLabel: l10n.get('close'),
-                id: 'warn.token.crypto_not_found',
-                showAgain: true,
-                showAgainValue: false,
-              },
+              type: 'warning',
+              text: l10n.get('warn.token.crypto_not_found', 'TEST'),
+              title: l10n.get('warning.title.oh_no'),
+              buttonLabel: l10n.get('close'),
+              id: 'warn.token.crypto_not_found',
+              showAgain: true,
+              showAgainValue: false,
             },
             () => {},
           );
@@ -157,15 +141,13 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         click: () => {
           windowsController.showWarningWindow(
             {
-              params: {
-                type: 'warning',
-                text: l10n.get('warn.token.crypto_wrong', 'TEST'),
-                title: l10n.get('warning.title.oh_no'),
-                buttonLabel: l10n.get('close'),
-                id: 'warn.token.crypto_wrong',
-                showAgain: true,
-                showAgainValue: false,
-              },
+              type: 'warning',
+              text: l10n.get('warn.token.crypto_wrong', 'TEST'),
+              title: l10n.get('warning.title.oh_no'),
+              buttonLabel: l10n.get('close'),
+              id: 'warn.token.crypto_wrong',
+              showAgain: true,
+              showAgainValue: false,
             },
             () => {},
           );
@@ -179,12 +161,10 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         click: () => {
           windowsController.showKeyPinWindow(
             {
-              params: {
-                pin: '123456',
-                origin: 'https://TEST.com/',
-                accept: true,
-                resolve: () => undefined,
-              },
+              pin: '123456',
+              origin: 'https://TEST.com/',
+              accept: true,
+              resolve: () => undefined,
             },
           );
         },
@@ -194,12 +174,10 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         click: () => {
           windowsController.showP11PinWindow(
             {
-              params: {
-                pin: '',
-                origin: 'https://TEST.com/',
-                resolve: () => undefined,
-                reject: () => undefined,
-              },
+              pin: '',
+              origin: 'https://TEST.com/',
+              resolve: () => undefined,
+              reject: () => undefined,
             },
           );
         },

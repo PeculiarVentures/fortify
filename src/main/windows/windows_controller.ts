@@ -10,67 +10,53 @@ import { logger } from '../logger';
 import { DialogsStorage } from './dialogs_storage';
 
 interface IP11PinWindowParams {
-  params: {
-    resolve: (pin: string) => void;
-    reject: (error: Error) => void;
-    pin: string,
-    origin: string,
-    label?: string;
-  };
+  resolve: (pin: string) => void;
+  reject: (error: Error) => void;
+  pin: string;
+  origin: string;
+  label?: string;
 }
 
 interface IKeyPinWindowParams {
-  params: {
-    accept: boolean;
-    resolve: (accept: boolean) => void;
-    pin: string,
-    origin: string,
-  };
+  accept: boolean;
+  resolve: (accept: boolean) => void;
+  pin: string;
+  origin: string;
 }
 
 interface ITokenWindowParams {
-  params: {
-    type: 'token';
-    title?: string;
-    id: string;
-    showAgain?: boolean;
-    showAgainValue?: boolean;
-    text: string;
-    result: number;
-  };
-  parent?: ElectronWindow;
+  type: 'token';
+  title?: string;
+  id: string;
+  showAgain?: boolean;
+  showAgainValue?: boolean;
+  text: string;
+  result: number;
 }
 
 interface IErrorWindowParams {
-  params: {
-    type: 'error';
-    text: string;
-  };
+  type: 'error';
+  text: string;
 }
 
 interface IQuestionWindowParams {
-  params: {
-    type: 'question';
-    title?: string;
-    id: string;
-    showAgain?: boolean;
-    showAgainValue?: boolean;
-    text: string;
-    result: number;
-  };
-  parent?: ElectronWindow;
+  type: 'question';
+  title?: string;
+  id: string;
+  showAgain?: boolean;
+  showAgainValue?: boolean;
+  text: string;
+  result: number;
 }
 
 interface IWarningWindowParams {
-  params: {
-    type: 'warning';
-    title?: string;
-    id: string;
-    showAgain?: boolean;
-    showAgainValue?: boolean;
-    text: string;
-    buttonLabel: string;
-  };
+  type: 'warning';
+  title?: string;
+  id: string;
+  showAgain?: boolean;
+  showAgainValue?: boolean;
+  text: string;
+  buttonLabel: string;
 }
 
 class WindowsController {
@@ -123,20 +109,20 @@ class WindowsController {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  showP11PinWindow(options: IP11PinWindowParams) {
+  showP11PinWindow(params: IP11PinWindowParams) {
     const browserWindow = new BrowserWindow({
-      ...options,
+      params,
       size: 'default',
       app: 'p11-pin',
       windowOptions: {
         alwaysOnTop: true,
       },
-      title: options.params.label || l10n.get('p11-pin'),
+      title: params.label || l10n.get('p11-pin'),
       onClosed: () => {
-        if (options.params.pin) {
-          options.params.resolve(options.params.pin);
+        if (params.pin) {
+          params.resolve(params.pin);
         } else {
-          options.params.reject(new wsServer.WebCryptoLocalError(10001, 'Incorrect PIN value. It cannot be empty.'));
+          params.reject(new wsServer.WebCryptoLocalError(10001, 'Incorrect PIN value. It cannot be empty.'));
         }
       },
     });
@@ -147,11 +133,11 @@ class WindowsController {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  showKeyPinWindow(options: IKeyPinWindowParams) {
+  showKeyPinWindow(params: IKeyPinWindowParams) {
     const { width, height } = WindowsController.getScreenSize();
 
     const browserWindow = new BrowserWindow({
-      ...options,
+      params,
       size: 'default',
       app: 'key-pin',
       title: l10n.get('key-pin'),
@@ -162,7 +148,7 @@ class WindowsController {
         y: height - windowSizes.default.height,
       },
       onClosed: () => {
-        options.params.resolve(options.params.accept);
+        params.resolve(params.accept);
       },
     });
 
@@ -172,36 +158,40 @@ class WindowsController {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  showTokenWindow(options: ITokenWindowParams, onClosed: (result: number) => void) {
+  showTokenWindow(
+    params: ITokenWindowParams,
+    onClosed: (result: number) => void,
+    parent?: ElectronWindow,
+  ) {
     if (
-      options.params.id
-      && options.params.showAgain
-      && DialogsStorage.hasDialog(options.params.id)
+      params.id
+      && params.showAgain
+      && DialogsStorage.hasDialog(params.id)
     ) {
-      logger.info(`Don't show dialog '${options.params.id}'. It's disabled`);
+      logger.info(`Don't show dialog '${params.id}'. It's disabled`);
 
       return;
     }
 
     const browserWindow = new BrowserWindow({
-      ...options,
+      params,
       app: 'message',
       size: 'small',
       windowOptions: {
         alwaysOnTop: true,
-        parent: options.parent,
-        modal: !!options.parent,
+        parent,
+        modal: !!parent,
       },
-      title: options.params.title || l10n.get('question'),
+      title: params.title || l10n.get('question'),
       onClosed: () => {
         DialogsStorage.onDialogClose(browserWindow.window);
 
-        onClosed(options.params.result);
+        onClosed(params.result);
       },
     });
   }
 
-  showErrorWindow(options: IErrorWindowParams, onClosed: () => void) {
+  showErrorWindow(params: IErrorWindowParams, onClosed: () => void) {
     /**
      * Don't create if the window exists.
      */
@@ -213,7 +203,7 @@ class WindowsController {
     }
 
     this.windows.error = new BrowserWindow({
-      ...options,
+      params,
       app: 'message',
       size: 'small',
       title: l10n.get('error'),
@@ -229,42 +219,46 @@ class WindowsController {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  showQuestionWindow(options: IQuestionWindowParams, onClosed: (result: number) => void) {
+  showQuestionWindow(
+    params: IQuestionWindowParams,
+    onClosed: (result: number) => void,
+    parent?: ElectronWindow,
+  ) {
     if (
-      options.params.id
-      && options.params.showAgain
-      && DialogsStorage.hasDialog(options.params.id)
+      params.id
+      && params.showAgain
+      && DialogsStorage.hasDialog(params.id)
     ) {
-      logger.info(`Don't show dialog '${options.params.id}'. It's disabled`);
+      logger.info(`Don't show dialog '${params.id}'. It's disabled`);
 
       return;
     }
 
     const browserWindow = new BrowserWindow({
-      ...options,
+      params,
       app: 'message',
       size: 'small',
       windowOptions: {
         alwaysOnTop: true,
-        parent: options.parent,
-        modal: !!options.parent,
+        parent,
+        modal: !!parent,
       },
-      title: options.params.title || l10n.get('question'),
+      title: params.title || l10n.get('question'),
       onClosed: () => {
         DialogsStorage.onDialogClose(browserWindow.window);
 
-        onClosed(options.params.result);
+        onClosed(params.result);
       },
     });
   }
 
-  showWarningWindow(options: IWarningWindowParams, onClosed: () => void) {
+  showWarningWindow(params: IWarningWindowParams, onClosed: () => void) {
     if (
-      options.params.id
-      && options.params.showAgain
-      && DialogsStorage.hasDialog(options.params.id)
+      params.id
+      && params.showAgain
+      && DialogsStorage.hasDialog(params.id)
     ) {
-      logger.info(`Don't show dialog '${options.params.id}'. It's disabled`);
+      logger.info(`Don't show dialog '${params.id}'. It's disabled`);
 
       return;
     }
@@ -280,13 +274,13 @@ class WindowsController {
     }
 
     this.windows.warning = new BrowserWindow({
-      ...options,
+      params,
       app: 'message',
       size: 'small',
       windowOptions: {
         alwaysOnTop: true,
       },
-      title: options.params.title || l10n.get('warning'),
+      title: params.title || l10n.get('warning'),
       onClosed: () => {
         DialogsStorage.onDialogClose(this.windows.warning.window);
 

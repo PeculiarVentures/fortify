@@ -33,13 +33,10 @@ const initServerEvents = (server: any) => {
     .on('ipc-2key-remove', (event: IpcMainEvent, arg: any) => {
       windowsController.showQuestionWindow(
         {
-          params: {
-            type: 'question',
-            text: l10n.get('question.2key.remove', arg),
-            id: 'question.2key.remove',
-            result: 0,
-          },
-          parent: windowsController.windows.settings.window,
+          type: 'question',
+          text: l10n.get('question.2key.remove', arg),
+          id: 'question.2key.remove',
+          result: 0,
         },
         async (result) => {
           if (result) {
@@ -50,6 +47,7 @@ const initServerEvents = (server: any) => {
             event.sender.send('ipc-2key-removed', arg);
           }
         },
+        windowsController.windows.settings.window,
       );
     });
 };
