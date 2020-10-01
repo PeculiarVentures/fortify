@@ -25,12 +25,12 @@ const sendToRenderers = (channel: string, data: any) => {
 // TODO: Review messages.
 const init = (server: any) => {
   ipcMain
-    .on('2key-list', async (event: IpcMainEvent) => {
+    .on('ipc-2key-list-get', async (event: IpcMainEvent) => {
       const identities = await ServerStorage.getIdentities(server);
 
-      event.sender.send('2key-list', identities);
+      event.returnValue = identities;
     })
-    .on('2key-remove', (event: IpcMainEvent, arg: any) => {
+    .on('ipc-2key-remove', (event: IpcMainEvent, arg: any) => {
       QuestionWindow.create({
         params: {
           type: 'question',
@@ -45,20 +45,20 @@ const init = (server: any) => {
 
             await ServerStorage.removeIdentity(server, arg);
 
-            event.sender.send('2key-remove', arg);
+            event.sender.send('ipc-2key-removed', arg);
           }
         },
       });
     })
-    .on('logging-open', () => {
+    .on('ipc-logging-open', () => {
       shell.openItem(APP_LOG_FILE);
     })
-    .on('logging-status', (event: IpcMainEvent) => {
+    .on('ipc-logging-status-get', (event: IpcMainEvent) => {
       const config = getConfig();
 
-      event.sender.send('logging-status', config.logging);
+      event.returnValue = config.logging;
     })
-    .on('logging-status-change', (event: IpcMainEvent) => {
+    .on('ipc-logging-status-change', (event: IpcMainEvent) => {
       const config = getConfig();
 
       config.logging = !config.logging;
@@ -67,7 +67,7 @@ const init = (server: any) => {
 
       loggingSwitch(config.logging);
 
-      event.sender.send('logging-status', config.logging);
+      event.sender.send('ipc-logging-status-changed', config.logging);
     })
     .on('ipc-language-set', (_: IpcMainEvent, lang: string) => {
       l10n.setLang(lang);

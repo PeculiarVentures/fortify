@@ -33,23 +33,35 @@ class Root extends WindowProvider<IRootProps, IRootState> {
   }
 
   componentWillMount() {
-    ipcRenderer.on('2key-list', this.onKeyListListener);
-    ipcRenderer.on('2key-remove', this.onKeyRemoveListener);
-    ipcRenderer.on('logging-status', this.onLoggingStatusListener);
+    this.handleKeysListGet();
+    this.handleLoggingGet();
 
-    // Call event for get sites list
-    ipcRenderer.send('2key-list');
-    // Call event for get logging status
-    ipcRenderer.send('logging-status');
+    ipcRenderer.on('ipc-2key-removed', this.onKeyRemovedListener);
+    ipcRenderer.on('ipc-logging-status-changed', this.onLoggingChangedListener);
   }
 
-  componentWillUnmount() {
-    ipcRenderer.removeAllListeners('2key-list');
-    ipcRenderer.removeAllListeners('2key-remove');
-    ipcRenderer.removeAllListeners('logging-status');
+  handleKeysListGet() {
+    const list = ipcRenderer.sendSync('ipc-2key-list-get');
+
+    this.setState({
+      keys: {
+        list,
+        isFetching: 'resolved',
+      },
+    });
   }
 
-  onLoggingStatusListener = (_: IpcRendererEvent, status: boolean) => {
+  handleLoggingGet() {
+    const status = ipcRenderer.sendSync('ipc-logging-status-get');
+
+    this.setState({
+      logging: {
+        status,
+      },
+    });
+  }
+
+  onLoggingChangedListener = (_: IpcRendererEvent, status: boolean) => {
     this.setState({
       logging: {
         status,
@@ -57,16 +69,7 @@ class Root extends WindowProvider<IRootProps, IRootState> {
     });
   };
 
-  onKeyListListener = (_: IpcRendererEvent, list: IKey[]) => {
-    this.setState({
-      keys: {
-        list,
-        isFetching: 'resolved',
-      },
-    });
-  };
-
-  onKeyRemoveListener = (_: IpcRendererEvent, origin: string) => {
+  onKeyRemovedListener = (_: IpcRendererEvent, origin: string) => {
     this.setState((prevState) => ({
       keys: {
         ...prevState.keys,
@@ -77,15 +80,15 @@ class Root extends WindowProvider<IRootProps, IRootState> {
   };
 
   onKeyRemove = (origin: string) => {
-    ipcRenderer.send('2key-remove', origin);
+    ipcRenderer.send('ipc-2key-remove', origin);
   };
 
   onLoggingOpen = () => {
-    ipcRenderer.send('logging-open');
+    ipcRenderer.send('ipc-logging-open');
   };
 
   onLoggingStatusChange = () => {
-    ipcRenderer.send('logging-status-change');
+    ipcRenderer.send('ipc-logging-status-change');
   };
 
   onLanguageChange = (lang: string) => {
