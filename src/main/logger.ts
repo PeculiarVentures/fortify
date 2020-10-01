@@ -7,9 +7,9 @@ export const loggingSwitch = (enabled: boolean) => {
   if (enabled) {
     const options = { flag: 'w+' };
 
-    winston.add(new winston.transports.File({ filename: APP_LOG_FILE, options }));
-    winston.add(new winston.transports.Console());
+    logger.add(new winston.transports.File({ filename: APP_LOG_FILE, options }));
+    logger.add(new winston.transports.Console());
   } else {
-    winston.clear();
+    logger.clear();
   }
 };
