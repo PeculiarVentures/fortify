@@ -1,12 +1,1 @@
-export { AboutWindow } from './about_window';
-export { KeyPinWindow } from './key_pin_window';
-export { SettingsWindow } from './settings_window';
-export { P11PinWindow } from './p11_pin_window';
-export { ErrorWindow } from './error_window';
-export { DialogsStorage } from './dialogs_storage';
-export { IBrowserWindow, BrowserWindow } from './window';
-export { WarningWindow } from './warning_window';
-export { QuestionWindow } from './question_window';
-export { TokenWindow } from './token_window';
-export { MainWindow } from './main_window';
-export * from './list';
+export * from './windows_controller';

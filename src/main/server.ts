@@ -11,13 +11,7 @@ import * as semver from 'semver';
 import { SslService } from './services';
 import * as constants from './constants';
 import { logger } from './logger';
-import {
-  ErrorWindow,
-  P11PinWindow,
-  KeyPinWindow,
-  WarningWindow,
-  TokenWindow,
-} from './windows';
+import { windowsController } from './windows';
 import { l10n } from './l10n';
 import * as jws from './jws';
 import { request } from './utils';
@@ -89,15 +83,17 @@ export class Server {
     } catch (e) {
       logger.error(e.toString());
 
-      ErrorWindow.create({
-        params: {
-          type: 'error',
-          text: l10n.get('error.ssl.install'),
+      windowsController.showErrorWindow(
+        {
+          params: {
+            type: 'error',
+            text: l10n.get('error.ssl.install'),
+          },
         },
-        onClosed: () => {
+        () => {
           app.quit();
         },
-      });
+      );
 
       app.quit();
     }
@@ -139,16 +135,18 @@ export class Server {
 
         logger.info(`New token was found reader: '${card.reader}' ATR: ${atr}`);
 
-        TokenWindow.create({
-          params: {
-            type: 'token',
-            text: l10n.get('question.new.token'),
-            id: 'question.new.token',
-            showAgain: true,
-            showAgainValue: false,
-            result: 0,
+        windowsController.showTokenWindow(
+          {
+            params: {
+              type: 'token',
+              text: l10n.get('question.new.token'),
+              id: 'question.new.token',
+              showAgain: true,
+              showAgainValue: false,
+              result: 0,
+            },
           },
-          onClosed: (result) => {
+          (result) => {
             if (result) {
               try {
                 const title = `Add support for '${atr}' token`;
@@ -166,7 +164,7 @@ export class Server {
               }
             }
           },
-        });
+        );
       })
       .on('error', (e: Error) => {
         logger.error(e.stack || e.toString());
@@ -177,53 +175,53 @@ export class Server {
 
           switch (err.code) {
             case CODE.PCSC_CANNOT_START:
-              WarningWindow.create({
-                params: {
-                  type: 'warning',
-                  text: l10n.get('warn.pcsc.cannot_start'),
-                  title: l10n.get('warning.title.oh_no'),
-                  buttonLabel: l10n.get('i_understand'),
-                  id: 'warn.pcsc.cannot_start',
-                  showAgain: true,
-                  showAgainValue: false,
+              windowsController.showWarningWindow(
+                {
+                  params: {
+                    type: 'warning',
+                    text: l10n.get('warn.pcsc.cannot_start'),
+                    title: l10n.get('warning.title.oh_no'),
+                    buttonLabel: l10n.get('i_understand'),
+                    id: 'warn.pcsc.cannot_start',
+                    showAgain: true,
+                    showAgainValue: false,
+                  },
                 },
-                onClosed: () => {
-                  // nothing
-                },
-              });
+                () => {},
+              );
               break;
             case CODE.PROVIDER_CRYPTO_NOT_FOUND:
-              WarningWindow.create({
-                params: {
-                  type: 'warning',
-                  text: l10n.get('warn.token.crypto_not_found', err.message),
-                  title: l10n.get('warning.title.oh_no'),
-                  buttonLabel: l10n.get('close'),
-                  id: 'warn.token.crypto_not_found',
-                  showAgain: true,
-                  showAgainValue: false,
+              windowsController.showWarningWindow(
+                {
+                  params: {
+                    type: 'warning',
+                    text: l10n.get('warn.token.crypto_not_found', err.message),
+                    title: l10n.get('warning.title.oh_no'),
+                    buttonLabel: l10n.get('close'),
+                    id: 'warn.token.crypto_not_found',
+                    showAgain: true,
+                    showAgainValue: false,
+                  },
                 },
-                onClosed: () => {
-                  // nothing
-                },
-              });
+                () => {},
+              );
               break;
             case CODE.PROVIDER_CRYPTO_WRONG:
             case CODE.PROVIDER_WRONG_LIBRARY:
-              WarningWindow.create({
-                params: {
-                  type: 'warning',
-                  text: l10n.get('warn.token.crypto_wrong', err.message),
-                  title: l10n.get('warning.title.oh_no'),
-                  buttonLabel: l10n.get('close'),
-                  id: 'warn.token.crypto_wrong',
-                  showAgain: true,
-                  showAgainValue: false,
+              windowsController.showWarningWindow(
+                {
+                  params: {
+                    type: 'warning',
+                    text: l10n.get('warn.token.crypto_wrong', err.message),
+                    title: l10n.get('warning.title.oh_no'),
+                    buttonLabel: l10n.get('close'),
+                    id: 'warn.token.crypto_wrong',
+                    showAgain: true,
+                    showAgainValue: false,
+                  },
                 },
-                onClosed: () => {
-                  // nothing
-                },
-              });
+                () => {},
+              );
               break;
             default:
             // nothing
@@ -235,7 +233,7 @@ export class Server {
           case '2key': {
             params.accept = false;
 
-            KeyPinWindow.create({
+            windowsController.showKeyPinWindow({
               params,
             });
             break;
@@ -243,7 +241,7 @@ export class Server {
           case 'pin': {
             params.pin = '';
 
-            P11PinWindow.create({
+            windowsController.showP11PinWindow({
               params,
             });
             break;

@@ -5,7 +5,7 @@ import {
   BrowserWindow,
 } from 'electron';
 import { APP_LOG_FILE } from './constants';
-import { QuestionWindow, windows } from './windows';
+import { windowsController } from './windows';
 import { l10n } from './l10n';
 import { logger, loggingSwitch } from './logger';
 import { ServerStorage } from './server_storage';
@@ -31,15 +31,17 @@ const init = (server: any) => {
       event.returnValue = identities;
     })
     .on('ipc-2key-remove', (event: IpcMainEvent, arg: any) => {
-      QuestionWindow.create({
-        params: {
-          type: 'question',
-          text: l10n.get('question.2key.remove', arg),
-          id: 'question.2key.remove',
-          result: 0,
+      windowsController.showQuestionWindow(
+        {
+          params: {
+            type: 'question',
+            text: l10n.get('question.2key.remove', arg),
+            id: 'question.2key.remove',
+            result: 0,
+          },
+          parent: windowsController.windows.settings.window,
         },
-        parent: windows.settings.window,
-        onClosed: async (result) => {
+        async (result) => {
           if (result) {
             logger.info(`Removing 2key session key ${arg}`);
 
@@ -48,7 +50,7 @@ const init = (server: any) => {
             event.sender.send('ipc-2key-removed', arg);
           }
         },
-      });
+      );
     })
     .on('ipc-logging-open', () => {
       shell.openItem(APP_LOG_FILE);

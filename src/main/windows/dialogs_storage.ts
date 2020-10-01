@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { logger } from '../logger';
 import * as constants from '../constants';
-import { IBrowserWindow } from './window';
+import type { IBrowserWindow } from './browser_window';
 
 export class DialogsStorage {
   static saveDialogs(dialogs: string[]) {

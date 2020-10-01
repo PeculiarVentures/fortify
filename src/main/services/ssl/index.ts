@@ -6,7 +6,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { PemConverter } from 'webcrypto-core';
 import * as constants from '../../constants';
-import { WarningWindow } from '../../windows';
+import { windowsController } from '../../windows';
 import { l10n } from '../../l10n';
 import { CertificateGenerator, ValidityType, IName } from './generator';
 import { SslCertInstaller } from './installer';
@@ -94,19 +94,18 @@ export class SslService {
     logger.info('Get SSL certificate status', { status: CaCertificateStatus[status] });
 
     if (os.platform() === 'win32' && (status === CaCertificateStatus.renew || status === CaCertificateStatus.expired)) {
-      // Show warning dialog
-      WarningWindow.create({
-        params: {
-          type: 'warning',
-          text: l10n.get('warn.ssl.renew'),
-          title: l10n.get('warning.title.oh_no'),
-          buttonLabel: l10n.get('close'),
-          id: 'ssl.renew',
+      windowsController.showWarningWindow(
+        {
+          params: {
+            type: 'warning',
+            text: l10n.get('warn.ssl.renew'),
+            title: l10n.get('warning.title.oh_no'),
+            buttonLabel: l10n.get('close'),
+            id: 'ssl.renew',
+          },
         },
-        onClosed: () => {
-          // nothing
-        },
-      });
+        () => {},
+      );
 
       status = CaCertificateStatus.valid;
     }
@@ -121,18 +120,20 @@ export class SslService {
       });
 
       await new Promise((resolve) => { // wrap callback
-        WarningWindow.create({
-          params: {
-            type: 'warning',
-            text: l10n.get('warn.ssl.install'),
-            buttonLabel: l10n.get('i_understand'),
-            id: 'ssl.install',
+        windowsController.showWarningWindow(
+          {
+            params: {
+              type: 'warning',
+              text: l10n.get('warn.ssl.install'),
+              buttonLabel: l10n.get('i_understand'),
+              id: 'ssl.install',
+            },
           },
-          onClosed: () => {
+          () => {
             logger.info('Warning window was closed');
             resolve();
           },
-        });
+        );
       });
 
       // #region PublicData folder
