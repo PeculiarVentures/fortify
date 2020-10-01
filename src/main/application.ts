@@ -150,21 +150,6 @@ export class Application {
   // eslint-disable-next-line class-methods-use-this
   private async initAutoUpdater() {
     if (CHECK_UPDATE) {
-      // TODO: Add handler.
-      autoUpdater.on('update-found', (version) => {
-        console.log('update-found', version);
-      });
-
-      // TODO: Add handler.
-      autoUpdater.on('update-not-found', () => {
-        console.log('update-not-found');
-      });
-
-      // TODO: Add handler.
-      autoUpdater.on('error', (error) => {
-        console.log('error', error);
-      });
-
       await autoUpdater.checkForUpdates();
 
       setInterval(

@@ -24,15 +24,6 @@ interface IKeyPinWindowParams {
   origin: string;
 }
 
-interface ITokenWindowParams {
-  title?: string;
-  id: string;
-  showAgain?: boolean;
-  showAgainValue?: boolean;
-  text: string;
-  result: number;
-}
-
 interface IErrorWindowParams {
   text: string;
 }
@@ -155,10 +146,17 @@ class WindowsController {
 
   // eslint-disable-next-line class-methods-use-this
   showTokenWindow(
-    params: ITokenWindowParams,
     onClosed: (result: number) => void,
-    parent?: ElectronWindow,
   ) {
+    const params = {
+      type: 'token',
+      text: l10n.get('question.new.token'),
+      id: 'question.new.token',
+      showAgain: true,
+      showAgainValue: false,
+      result: 0,
+    };
+
     if (
       params.id
       && params.showAgain
@@ -170,18 +168,13 @@ class WindowsController {
     }
 
     const browserWindow = new BrowserWindow({
-      params: {
-        type: 'token',
-        ...params,
-      },
+      params,
       app: 'message',
       size: 'small',
       windowOptions: {
         alwaysOnTop: true,
-        parent,
-        modal: !!parent,
       },
-      title: params.title || l10n.get('question'),
+      title: l10n.get('question'),
       onClosed: () => {
         DialogsStorage.onDialogClose(browserWindow.window);
 

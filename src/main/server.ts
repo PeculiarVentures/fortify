@@ -133,13 +133,6 @@ export class Server {
         logger.info(`New token was found reader: '${card.reader}' ATR: ${atr}`);
 
         windowsController.showTokenWindow(
-          {
-            text: l10n.get('question.new.token'),
-            id: 'question.new.token',
-            showAgain: true,
-            showAgainValue: false,
-            result: 0,
-          },
           (result) => {
             if (result) {
               try {

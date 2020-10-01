@@ -13,13 +13,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         label: 'Token new',
         click: () => {
           windowsController.showTokenWindow(
-            {
-              text: l10n.get('question.new.token'),
-              id: 'question.new.token',
-              showAgain: true,
-              showAgainValue: false,
-              result: 0,
-            },
             () => {},
           );
         },

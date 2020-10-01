@@ -1,19 +1,22 @@
 import { EventEmitter } from 'events';
+import { shell, app } from 'electron';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as fs from 'fs';
 import { request } from './utils';
-import { JWS_LINK, APP_DIR } from './constants';
+import { JWS_LINK, APP_DIR, DOWNLOAD_LINK } from './constants';
 import { logger } from './logger';
 import * as jws from './jws';
 import { UpdateError } from './errors';
+import { windowsController } from './windows';
+import { l10n } from './l10n';
 
 class Updater extends EventEmitter {
   on(event: 'update-found', cb: (version: string) => void): this;
 
   on(event: 'update-not-found', cb: () => void): this;
 
-  on(event: 'error', cb: (error: UpdateError) => void): this;
+  on(event: 'update-error', cb: (error: UpdateError) => void): this;
 
   on(event: string, cb: (...args: any[]) => void) {
     return super.on(event, cb);
@@ -23,7 +26,7 @@ class Updater extends EventEmitter {
 
   emit(event: 'update-not-found'): boolean;
 
-  emit(event: 'error', error: UpdateError): boolean;
+  emit(event: 'update-error', error: UpdateError): boolean;
 
   emit(event: string, ...args: any[]) {
     return super.emit(event, ...args);
@@ -80,45 +83,45 @@ class Updater extends EventEmitter {
         this.emit('update-found', update.version);
 
         // TODO: Add handlers for critical update.
-        // await new Promise((resolve) => {
-        //   QuestionWindow.create({
-        //     params: {
-        //       type: 'question',
-        //       text: intl('question.update.new', update.version),
-        //       id: 'question.update.new',
-        //       result: 0,
-        //       showAgain: true,
-        //       showAgainValue: false,
-        //     },
-        //     onClosed: (result) => {
-        //       if (result) {
-        //         // yes
-        //         winston.info(`User agreed to download new version ${update.version}`);
-        //         shell.openExternal(constants.DOWNLOAD_LINK);
-        //       } else {
-        //         // no
-        //         winston.info(`User refused to download new version ${update.version}`);
-        //       }
+        await new Promise((resolve) => {
+          windowsController.showQuestionWindow(
+            {
+              text: l10n.get('question.update.new', update.version),
+              id: 'question.update.new',
+              result: 0,
+              showAgain: true,
+              showAgainValue: false,
+            },
+            (result) => {
+              if (result) {
+                // yes
+                logger.info(`User agreed to download new version ${update.version}`);
 
-        //       if (update.min && semver.lt(curVersion, update.min)) {
-        //         winston.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
+                shell.openExternal(DOWNLOAD_LINK);
+              } else {
+                // no
+                logger.info(`User refused to download new version ${update.version}`);
+              }
 
-        //         ErrorWindow.create({
-        //           params: {
-        //             type: 'error',
-        //             text: intl('error.critical.update'),
-        //           },
-        //           onClosed: () => {
-        //             winston.info('Close application');
-        //             quit();
-        //           },
-        //         });
-        //       } else {
-        //         resolve();
-        //       }
-        //     },
-        //   });
-        // });
+              if (update.min && semver.lt(curVersion, update.min)) {
+                logger.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
+
+                windowsController.showErrorWindow(
+                  {
+                    text: l10n.get('error.critical.update'),
+                  },
+                  () => {
+                    logger.info('Close application');
+
+                    app.quit();
+                  },
+                );
+              } else {
+                resolve();
+              }
+            },
+          );
+        });
       } else {
         logger.info('Update: New version wasn\'t found');
 
@@ -128,7 +131,7 @@ class Updater extends EventEmitter {
       logger.error(error.toString());
 
       if (error instanceof UpdateError) {
-        this.emit('error', error);
+        this.emit('update-error', error);
       }
     }
   }
