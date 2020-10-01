@@ -1,11 +1,11 @@
 /**
-   * Print formatted data
-   *
-   * Example:
-   * printf("Some text %1 must be %2", 1, "here")
-   * @param text string template
-   * @param args arguments
-   */
+ * Print formatted data
+ *
+ * Example:
+ * printf("Some text %1 must be %2", 1, "here")
+ * @param text string template
+ * @param args arguments
+ */
 export const printf = (text: string, ...args: any[]) => {
   let msg: string = text;
   let match: RegExpExecArray | null;
@@ -23,7 +23,7 @@ export const printf = (text: string, ...args: any[]) => {
     const arg = item.arg.substring(1);
     const { index } = item;
 
-    msg = msg.substring(0, index) + args[+arg] + msg.substring(index + 1 + arg.length);
+    msg = msg.substring(0, index) + args[i] + msg.substring(index + 1 + arg.length);
   }
 
   // convert %% -> %
