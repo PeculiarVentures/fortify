@@ -18,8 +18,6 @@ export interface IContainerProps {
 export default class Container extends React.Component<IContainerProps> {
   static contextType = IntlContext;
 
-  context!: React.ContextType<typeof IntlContext>;
-
   checkboxRef = React.createRef<any>();
 
   onKeyDown = (e: KeyboardEvent) => {

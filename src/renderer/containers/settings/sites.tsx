@@ -55,8 +55,6 @@ export class Sites extends React.Component<ISitesProps, ISitesState> {
 
   static contextType = IntlContext;
 
-  context!: React.ContextType<typeof IntlContext>;
-
   constructor(props: ISitesProps) {
     super(props);
 

@@ -4,7 +4,6 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import WindowProvider from '../../components/window_provider';
 import Container from './container';
-import { IntlProvider } from '../../components/intl';
 
 const PACKAGE_PATH = path.join(__dirname, '../../package.json');
 
@@ -24,14 +23,12 @@ class Root extends WindowProvider<{}, {}> {
     return data.version;
   }
 
-  render() {
+  renderChildrens() {
     return (
-      <IntlProvider>
-        <Container
-          version={this.version}
-          onClose={this.close}
-        />
-      </IntlProvider>
+      <Container
+        version={this.version}
+        onClose={this.close}
+      />
     );
   }
 }

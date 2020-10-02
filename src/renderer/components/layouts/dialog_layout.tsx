@@ -17,8 +17,6 @@ export interface IDialogLayoutProps {
 export default class DialogLayout extends React.Component<IDialogLayoutProps> {
   static contextType = IntlContext;
 
-  context!: React.ContextType<typeof IntlContext>;
-
   renderButtons() {
     const {
       onReject,

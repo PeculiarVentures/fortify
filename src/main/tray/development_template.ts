@@ -95,7 +95,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
           windowsController.showWarningWindow(
             {
               text: l10n.get('warn.pcsc.cannot_start'),
-              title: l10n.get('warning.title.oh_no'),
+              title: 'warning.title.oh_no',
               buttonLabel: l10n.get('i_understand'),
               id: 'warn.pcsc.cannot_start',
               showAgain: true,
@@ -111,7 +111,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
           windowsController.showWarningWindow(
             {
               text: l10n.get('warn.token.crypto_not_found', 'TEST'),
-              title: l10n.get('warning.title.oh_no'),
+              title: 'warning.title.oh_no',
               buttonLabel: l10n.get('close'),
               id: 'warn.token.crypto_not_found',
               showAgain: true,
@@ -127,7 +127,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
           windowsController.showWarningWindow(
             {
               text: l10n.get('warn.token.crypto_wrong', 'TEST'),
-              title: l10n.get('warning.title.oh_no'),
+              title: 'warning.title.oh_no',
               buttonLabel: l10n.get('close'),
               id: 'warn.token.crypto_wrong',
               showAgain: true,

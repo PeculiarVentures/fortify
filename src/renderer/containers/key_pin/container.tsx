@@ -16,8 +16,6 @@ export interface IContainerProps {
 export default class Container extends React.Component<IContainerProps> {
   static contextType = IntlContext;
 
-  context!: React.ContextType<typeof IntlContext>;
-
   onKeyDown = (e: KeyboardEvent) => {
     const { onApprove, onReject } = this.props;
 

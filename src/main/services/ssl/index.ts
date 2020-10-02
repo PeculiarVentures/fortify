@@ -97,7 +97,7 @@ export class SslService {
       windowsController.showWarningWindow(
         {
           text: l10n.get('warn.ssl.renew'),
-          title: l10n.get('warning.title.oh_no'),
+          title: 'warning.title.oh_no',
           buttonLabel: l10n.get('close'),
           id: 'ssl.renew',
         },
