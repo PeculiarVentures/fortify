@@ -10,6 +10,9 @@ import { l10n } from './l10n';
 import { logger, loggingSwitch } from './logger';
 import { ServerStorage } from './server_storage';
 import { setConfig, getConfig } from './config';
+import container from './container';
+
+const serverStorage = container.resolve(ServerStorage);
 
 const sendToRenderers = (channel: string, data: any) => {
   const browserWindows = BrowserWindow.getAllWindows();
@@ -22,10 +25,10 @@ const sendToRenderers = (channel: string, data: any) => {
 };
 
 // TODO: Maybe move to application.
-const initServerEvents = (server: any) => {
+const initServerEvents = () => {
   ipcMain
     .on('ipc-2key-list-get', async (event: IpcMainEvent) => {
-      const identities = await ServerStorage.getIdentities(server);
+      const identities = await serverStorage.getIdentities();
 
       event.returnValue = identities;
     })
@@ -40,7 +43,7 @@ const initServerEvents = (server: any) => {
           if (params.result) {
             logger.info(`Removing 2key session key ${arg}`);
 
-            await ServerStorage.removeIdentity(server, arg);
+            await serverStorage.removeIdentity(arg);
 
             event.sender.send('ipc-2key-removed', arg);
           }

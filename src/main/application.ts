@@ -2,6 +2,10 @@ import { app } from 'electron';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
+import {
+  inject,
+  injectable,
+} from 'tsyringe';
 import { autoUpdater } from './updater';
 import { l10n } from './l10n';
 import { tray } from './tray';
@@ -17,10 +21,13 @@ import { Server } from './server';
 import { firefoxProviders } from './firefox_providers';
 import { ipcMessages } from './ipc_messages';
 
+@injectable()
 export class Application {
-  server!: Server;
-
   config = getConfig();
+
+  constructor(
+    @inject('server') public server: Server
+  ) {}
 
   // eslint-disable-next-line class-methods-use-this
   private beforeStart() {
@@ -117,7 +124,7 @@ export class Application {
        * Init ipc server events.
        */
       // TODO: Think about server use in args.
-      ipcMessages.initServerEvents(this.server.server.server);
+      ipcMessages.initServerEvents();
     } catch (error) {
       logger.error(error.toString());
     }
@@ -175,10 +182,6 @@ export class Application {
   }
 
   private async initServer() {
-    this.server = new Server();
-
     await this.server.init();
   }
 }
-
-export const application = new Application();

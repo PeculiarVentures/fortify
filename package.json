@@ -81,9 +81,11 @@
     "pvtsutils": "^1.0.10",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
     "semver": "^6.3.0",
     "sudo-prompt": "^9.2.1",
+    "tsyringe": "^4.3.0",
     "webcrypto-core": "^1.1.1",
     "winston": "^3.3.3"
   },
