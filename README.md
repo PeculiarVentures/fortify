@@ -7,6 +7,7 @@
 <h4 align="center">Fortify enables web applications to use smart cards, local certificate stores and do certificate enrollment. For Mac, Windows, and Linux.</h4>
 
 <p align="center">
+  <a href="https://github.com/PeculiarVentures/fortify/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" alt="License: AGPL v3"></a>
   <a href="https://github.com/PeculiarVentures/fortify-web/releases"><img src="https://img.shields.io/github/v/release/PeculiarVentures/fortify-web.svg" alt="github release version"></a>
   <a href="https://github.com/PeculiarVentures/fortify-web/releases"><img src="https://img.shields.io/github/downloads/PeculiarVentures/fortify-web/total.svg" alt="github release downloads"></a>
 </p>
