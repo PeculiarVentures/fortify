@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import WindowProvider from '../../components/window_provider';
-import { IntlProvider } from '../../components/intl';
 import Container from './container';
 
 interface IRootProps {}
@@ -95,26 +94,24 @@ class Root extends WindowProvider<IRootProps, IRootState> {
     ipcRenderer.send('ipc-language-set', lang);
   };
 
-  render() {
+  renderChildrens() {
     const { keys, logging } = this.state;
 
     return (
-      <IntlProvider>
-        <Container
-          logging={{
-            onLoggingOpen: this.onLoggingOpen,
-            onLoggingStatusChange: this.onLoggingStatusChange,
-            ...logging,
-          }}
-          language={{
-            onLanguageChange: this.onLanguageChange,
-          }}
-          keys={{
-            ...keys,
-            onKeyRemove: this.onKeyRemove,
-          }}
-        />
-      </IntlProvider>
+      <Container
+        logging={{
+          onLoggingOpen: this.onLoggingOpen,
+          onLoggingStatusChange: this.onLoggingStatusChange,
+          ...logging,
+        }}
+        language={{
+          onLanguageChange: this.onLanguageChange,
+        }}
+        keys={{
+          ...keys,
+          onKeyRemove: this.onKeyRemove,
+        }}
+      />
     );
   }
 }

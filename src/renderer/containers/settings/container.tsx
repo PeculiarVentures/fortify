@@ -42,8 +42,6 @@ export interface IContainerState {
 export default class Container extends React.Component<IContainerProps, IContainerState> {
   static contextType = IntlContext;
 
-  context!: React.ContextType<typeof IntlContext>;
-
   constructor(props: IContainerProps) {
     super(props);
 

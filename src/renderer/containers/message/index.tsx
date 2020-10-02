@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import WindowProvider from '../../components/window_provider';
 import Container from './container';
-import { IntlProvider } from '../../components/intl';
 
 class Root extends WindowProvider<{}, {}> {
   onApprove = () => {
@@ -16,18 +15,16 @@ class Root extends WindowProvider<{}, {}> {
     }
   };
 
-  render() {
+  renderChildrens() {
     return (
-      <IntlProvider>
-        <Container
-          type={this.params.type}
-          text={this.params.text}
-          onClose={this.close}
-          onApprove={this.onApprove}
-          hasShowAgain={this.params.id && this.params.showAgain}
-          textClose={this.params.buttonLabel}
-        />
-      </IntlProvider>
+      <Container
+        type={this.params.type}
+        text={this.params.text}
+        onClose={this.close}
+        onApprove={this.onApprove}
+        hasShowAgain={this.params.id && this.params.showAgain}
+        textClose={this.params.buttonLabel}
+      />
     );
   }
 }

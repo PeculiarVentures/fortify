@@ -29,7 +29,6 @@ interface IErrorWindowParams {
 }
 
 interface IQuestionWindowParams {
-  title?: string;
   id: string;
   showAgain?: boolean;
   showAgainValue?: boolean;
@@ -65,6 +64,9 @@ class WindowsController {
     }
 
     this.windows.about = new BrowserWindow({
+      params: {
+        titleKey: 'about',
+      },
       app: 'about',
       size: 'small',
       title: l10n.get('about'),
@@ -86,6 +88,9 @@ class WindowsController {
     }
 
     this.windows.settings = new BrowserWindow({
+      params: {
+        titleKey: 'settings',
+      },
       size: 'default',
       app: 'settings',
       title: l10n.get('settings'),
@@ -98,7 +103,10 @@ class WindowsController {
   // eslint-disable-next-line class-methods-use-this
   showP11PinWindow(params: IP11PinWindowParams) {
     const browserWindow = new BrowserWindow({
-      params,
+      params: {
+        titleKey: params.label || 'p11-pin',
+        ...params,
+      },
       size: 'default',
       app: 'p11-pin',
       windowOptions: {
@@ -124,7 +132,10 @@ class WindowsController {
     const { width, height } = WindowsController.getScreenSize();
 
     const browserWindow = new BrowserWindow({
-      params,
+      params: {
+        titleKey: 'key-pin',
+        ...params,
+      },
       size: 'default',
       app: 'key-pin',
       title: l10n.get('key-pin'),
@@ -168,7 +179,10 @@ class WindowsController {
     }
 
     const browserWindow = new BrowserWindow({
-      params,
+      params: {
+        titleKey: 'question',
+        ...params,
+      },
       app: 'message',
       size: 'small',
       windowOptions: {
@@ -197,6 +211,7 @@ class WindowsController {
     this.windows.error = new BrowserWindow({
       params: {
         type: 'error',
+        titleKey: 'error',
         ...params,
       },
       app: 'message',
@@ -232,6 +247,7 @@ class WindowsController {
     const browserWindow = new BrowserWindow({
       params: {
         type: 'question',
+        titleKey: 'question',
         ...params,
       },
       app: 'message',
@@ -241,7 +257,7 @@ class WindowsController {
         parent,
         modal: !!parent,
       },
-      title: params.title || l10n.get('question'),
+      title: l10n.get('question'),
       onClosed: () => {
         DialogsStorage.onDialogClose(browserWindow.window);
 
@@ -274,6 +290,7 @@ class WindowsController {
     this.windows.warning = new BrowserWindow({
       params: {
         type: 'warning',
+        titleKey: params.title || 'warning',
         ...params,
       },
       app: 'message',
