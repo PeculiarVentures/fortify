@@ -13,7 +13,7 @@
 </p>
 
 - [Background](#background)
-- [What is it's Architecture?](#what-is-its-architecture)
+- [Architecture](#architecture)
 - [How does it work?](#how-does-it-work)
 - [How can I use it?](#how-can-i-use-it)
 - [Download](https://fortifyapp.com/#download)
@@ -28,7 +28,7 @@ Fortify is a client application that you install that runs in the background as 
 
 It does this by binding to 127.0.0.1 and listening to a high-order well-known port for incoming requests. Browsers allow web applications to initiate sessions to this address, over that session a Fortify enabled application establishes a secure session and if approved by the user is allowed to access these missing capabilities.
 
-## What is it's Architecture?
+## Architecture
 Fortify is a Node.js application based on Electron and it accesses all cryptographic implementations via node-webcrypto-p11. This library was designed to provide a WebCrypto compatible API to Node.js applications but it also extends the WebCrypto API to provide basic access to certificate stores.
 
 It uses another Peculiar Ventures project called PVPKCS11 to access the OSX KeyStore, Mozilla NSS or Windows CryptoAPI via this PKCS#11 wrapper.
