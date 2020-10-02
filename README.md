@@ -48,6 +48,17 @@ The protocol used by Fortify use a /.wellknown/ (not yet registered) location fo
 
 We call this protocol webcrypto-socket. You can think of the protocol as a Remote Procedure Call or (RPC) to the local cryptographic and certificate implementations in your operating system.
 
+## Howe can I use it
+
+Since the client SDK that implements the `webcrypto-socket` protocol is a superset of WebCrypto, with slight modifications, if you have an web application that uses WebCrypto you can also use locally enrolled certificates and/or smart cards.
+
+We have also created a number of web componentss that make using it easy, for example:
+
+- [Certificate Enrollment](https://fortifyapp.com/examples/certificate-enrollment)
+- [Certificate Selection](https://fortifyapp.com/examples/certificate-management)
+- [Signing](https://fortifyapp.com/examples/signing)
+
+
 ## Installing
 
 ### Binaries
