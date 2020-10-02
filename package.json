@@ -19,7 +19,7 @@
   },
   "keywords": [],
   "author": "PeculiarVentures Team",
-  "license": "MIT",
+  "license": "AGPL",
   "devDependencies": {
     "@types/asn1js": "0.0.1",
     "@types/classnames": "^2.2.10",
