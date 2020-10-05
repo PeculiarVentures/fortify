@@ -102,22 +102,24 @@ class WindowsController {
 
   // eslint-disable-next-line class-methods-use-this
   showP11PinWindow(params: IP11PinWindowParams) {
+    const windowParams = {
+      titleKey: params.label || 'p11-pin',
+      ...params,
+    };
+
     const browserWindow = new BrowserWindow({
-      params: {
-        titleKey: params.label || 'p11-pin',
-        ...params,
-      },
+      params: windowParams,
       size: 'default',
       app: 'p11-pin',
       windowOptions: {
         alwaysOnTop: true,
       },
-      title: params.label || l10n.get('p11-pin'),
+      title: windowParams.label || l10n.get('p11-pin'),
       onClosed: () => {
-        if (params.pin) {
-          params.resolve(params.pin);
+        if (windowParams.pin) {
+          windowParams.resolve(windowParams.pin);
         } else {
-          params.reject(new wsServer.WebCryptoLocalError(10001, 'Incorrect PIN value. It cannot be empty.'));
+          windowParams.reject(new wsServer.WebCryptoLocalError(10001, 'Incorrect PIN value. It cannot be empty.'));
         }
       },
     });
@@ -130,12 +132,13 @@ class WindowsController {
   // eslint-disable-next-line class-methods-use-this
   showKeyPinWindow(params: IKeyPinWindowParams) {
     const { width, height } = WindowsController.getScreenSize();
+    const windowParams = {
+      titleKey: 'key-pin',
+      ...params,
+    };
 
     const browserWindow = new BrowserWindow({
-      params: {
-        titleKey: 'key-pin',
-        ...params,
-      },
+      params: windowParams,
       size: 'default',
       app: 'key-pin',
       title: l10n.get('key-pin'),
@@ -146,7 +149,7 @@ class WindowsController {
         y: height - windowSizes.default.height,
       },
       onClosed: () => {
-        params.resolve(params.accept);
+        windowParams.resolve(windowParams.accept);
       },
     });
 
