@@ -32,24 +32,25 @@ const initServerEvents = () => {
 
       event.returnValue = identities;
     })
-    .on('ipc-2key-remove', (event: IpcMainEvent, arg: any) => {
-      windowsController.showQuestionWindow(
-        {
+    .on('ipc-2key-remove', async (event: IpcMainEvent, arg: any) => {
+
+      try {
+        const questionWindowResult = await windowsController.showQuestionWindow({
           text: l10n.get('question.2key.remove', arg),
           id: 'question.2key.remove',
           result: 0,
-        },
-        async (params) => {
-          if (params.result) {
-            logger.info(`Removing 2key session key ${arg}`);
+        }, windowsController.windows.settings.window);
 
-            await serverStorage.removeIdentity(arg);
+        if (questionWindowResult.result) {
+          logger.info(`Removing 2key session key ${arg}`);
 
-            event.sender.send('ipc-2key-removed', arg);
-          }
-        },
-        windowsController.windows.settings.window,
-      );
+          await serverStorage.removeIdentity(arg);
+
+          event.sender.send('ipc-2key-removed', arg);
+        }
+      } catch {
+        //
+      }
     });
 };
 

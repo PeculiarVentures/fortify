@@ -80,45 +80,35 @@ class Updater extends EventEmitter {
 
         this.emit('update-found', update.version);
 
-        await new Promise((resolve) => {
-          windowsController.showQuestionWindow(
-            {
-              text: l10n.get('question.update.new', update.version),
-              id: 'question.update.new',
-              result: 0,
-              showAgain: true,
-              showAgainValue: false,
-            },
-            (params) => {
-              if (params.result) {
-                // yes
-                logger.info(`User agreed to download new version ${update.version}`);
+        try {
+          const questionWindowResult = await windowsController.showQuestionWindow({
+            text: l10n.get('question.update.new', update.version),
+            id: 'question.update.new',
+            result: 0,
+            showAgain: true,
+            showAgainValue: false,
+          });
 
-                shell.openExternal(DOWNLOAD_LINK);
-              } else {
-                // no
-                logger.info(`User refused to download new version ${update.version}`);
-              }
+          if (questionWindowResult.result) { // yes
+            logger.info(`User agreed to download new version ${update.version}`);
 
-              if (update.min && semver.lt(curVersion, update.min)) {
-                logger.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
+            shell.openExternal(DOWNLOAD_LINK);
+          } else { // no
+            logger.info(`User refused to download new version ${update.version}`);
+          }
+        } catch {
+          //
+        }
 
-                windowsController.showErrorWindow(
-                  {
-                    text: l10n.get('error.critical.update'),
-                  },
-                  () => {
-                    logger.info('Close application');
+        if (update.min && semver.lt(curVersion, update.min)) {
+          logger.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
 
-                    app.quit();
-                  },
-                );
-              } else {
-                resolve();
-              }
-            },
-          );
-        });
+          await windowsController.showErrorWindow({
+            text: l10n.get('error.critical.update'),
+          });
+
+          app.quit();
+        }
       } else {
         logger.info('Update: New version wasn\'t found');
 

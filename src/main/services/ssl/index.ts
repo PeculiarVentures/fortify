@@ -101,7 +101,6 @@ export class SslService {
           buttonLabel: l10n.get('close'),
           id: 'ssl.renew',
         },
-        () => {},
       );
 
       status = CaCertificateStatus.valid;
@@ -116,19 +115,17 @@ export class SslService {
         status: CaCertificateStatus[status],
       });
 
-      await new Promise((resolve) => { // wrap callback
-        windowsController.showWarningWindow(
-          {
-            text: l10n.get('warn.ssl.install'),
-            buttonLabel: l10n.get('i_understand'),
-            id: 'ssl.install',
-          },
-          () => {
-            logger.info('Warning window was closed');
-            resolve();
-          },
-        );
-      });
+      try {
+        await windowsController.showWarningWindow({
+          text: l10n.get('warn.ssl.install'),
+          buttonLabel: l10n.get('i_understand'),
+          id: 'ssl.install',
+        });
+
+        logger.info('Warning window was closed');
+      } catch {
+        //
+      }
 
       // #region PublicData folder
       if (!fs.existsSync(constants.APP_DATA_DIR)) {

@@ -83,14 +83,11 @@ export class Server {
     } catch (e) {
       logger.error(e.toString());
 
-      windowsController.showErrorWindow(
-        {
-          text: l10n.get('error.ssl.install'),
-        },
-        () => {
-          app.quit();
-        },
-      );
+      await windowsController.showErrorWindow({
+        text: l10n.get('error.ssl.install'),
+      });
+
+      app.quit();
 
       return;
     }
@@ -119,7 +116,6 @@ export class Server {
   }
 
   run() {
-    // TODO: Think how to organize events.
     this.server
       .on('listening', (e: any) => {
         logger.info(`Server: Started at ${e}`);
@@ -127,31 +123,30 @@ export class Server {
       .on('info', (message) => {
         logger.info(message);
       })
-      .on('token_new', (card) => {
+      .on('token_new', async (card) => {
         const atr = card.atr.toString('hex');
 
         logger.info(`New token was found reader: '${card.reader}' ATR: ${atr}`);
 
-        windowsController.showTokenWindow(
-          (result) => {
-            if (result) {
-              try {
-                const title = `Add support for '${atr}' token`;
-                const body = fs.readFileSync(constants.TEMPLATE_NEW_CARD_FILE, { encoding: 'utf8' })
-                  .replace(/\$\{reader\}/g, card.reader)
-                  .replace(/\$\{atr\}/g, atr.toUpperCase())
-                  .replace(/\$\{driver\}/g, crypto.randomBytes(20).toString('hex').toUpperCase());
-                const url1 = `${constants.SUPPORT_NEW_TOKEN_LINK}/issues/new?${querystring.stringify({
-                  title,
-                  body,
-                })}`;
-                shell.openExternal(url1);
-              } catch (e) {
-                logger.error(e.message);
-              }
-            }
-          },
-        );
+        try {
+          const tokenWindowResult = await windowsController.showTokenWindow();
+
+          if (tokenWindowResult) {
+            const title = `Add support for '${atr}' token`;
+            const body = fs.readFileSync(constants.TEMPLATE_NEW_CARD_FILE, { encoding: 'utf8' })
+              .replace(/\$\{reader\}/g, card.reader)
+              .replace(/\$\{atr\}/g, atr.toUpperCase())
+              .replace(/\$\{driver\}/g, crypto.randomBytes(20).toString('hex').toUpperCase());
+            const url = `${constants.SUPPORT_NEW_TOKEN_LINK}/issues/new?${querystring.stringify({
+              title,
+              body,
+            })}`;
+
+            shell.openExternal(url);
+          }
+        } catch (error) {
+          logger.error(error.message);
+        }
       })
       .on('error', (e: Error) => {
         logger.error(e.stack || e.toString());
@@ -171,7 +166,6 @@ export class Server {
                   showAgain: true,
                   showAgainValue: false,
                 },
-                () => {},
               );
               break;
             case CODE.PROVIDER_CRYPTO_NOT_FOUND:
@@ -184,7 +178,6 @@ export class Server {
                   showAgain: true,
                   showAgainValue: false,
                 },
-                () => {},
               );
               break;
             case CODE.PROVIDER_CRYPTO_WRONG:
@@ -198,7 +191,6 @@ export class Server {
                   showAgain: true,
                   showAgainValue: false,
                 },
-                () => {},
               );
               break;
             default:
@@ -206,20 +198,34 @@ export class Server {
           }
         }
       })
-      .on('notify', (params: any) => {
+      .on('notify', async (params: any) => {
         switch (params.type) {
           case '2key': {
-            params.accept = false;
+            const keyPinWindowResult = await windowsController.showKeyPinWindow({
+              ...params,
+              accept: false,
+            });
 
-            windowsController.showKeyPinWindow(params);
+            params.resolve(keyPinWindowResult.accept);
+
             break;
           }
+
           case 'pin': {
-            params.pin = '';
+            const p11PinWindowResult = await windowsController.showP11PinWindow({
+              ...params,
+              pin: '',
+            });
 
-            windowsController.showP11PinWindow(params);
+            if (p11PinWindowResult.pin) {
+              params.resolve(p11PinWindowResult.pin);
+            } else {
+              params.reject(new wsServer.WebCryptoLocalError(10001, 'Incorrect PIN value. It cannot be empty.'));
+            }
+
             break;
           }
+
           default:
             throw new Error('Unknown Notify param');
         }

@@ -1,4 +1,3 @@
-import * as wsServer from '@webcrypto-local/server';
 import {
   screen,
   BrowserWindow as ElectronWindow,
@@ -10,8 +9,6 @@ import { logger } from '../logger';
 import { DialogsStorage } from './dialogs_storage';
 
 interface IP11PinWindowParams {
-  resolve: (pin: string) => void;
-  reject: (error: Error) => void;
   pin: string;
   origin: string;
   label?: string;
@@ -19,7 +16,6 @@ interface IP11PinWindowParams {
 
 interface IKeyPinWindowParams {
   accept: boolean;
-  resolve: (accept: boolean) => void;
   pin: string;
   origin: string;
 }
@@ -53,259 +49,278 @@ class WindowsController {
   }
 
   showAboutWindow() {
-    /**
-     * Don't create if the window exists.
-     */
-    if (this.windows.about) {
-      this.windows.about.focus();
-      this.windows.about.show();
+    return new Promise((resolve) => {
+      /**
+       * Don't create if the window exists.
+       */
+      if (this.windows.about) {
+        this.windows.about.focus();
+        this.windows.about.show();
 
-      return;
-    }
+        resolve();
 
-    this.windows.about = new BrowserWindow({
-      params: {
-        titleKey: 'about',
-      },
-      app: 'about',
-      size: 'small',
-      title: l10n.get('about'),
-      onClosed: () => {
-        delete this.windows.about;
-      },
+        return;
+      }
+
+      this.windows.about = new BrowserWindow({
+        params: {
+          titleKey: 'about',
+        },
+        app: 'about',
+        size: 'small',
+        title: l10n.get('about'),
+        onClosed: () => {
+          delete this.windows.about;
+
+          resolve();
+        },
+      });
     });
   }
 
   showSettingsWindow() {
-    /**
-     * Don't create if the window exists.
-     */
-    if (this.windows.settings) {
-      this.windows.settings.focus();
-      this.windows.settings.show();
+    return new Promise((resolve) => {
+      /**
+       * Don't create if the window exists.
+       */
+      if (this.windows.settings) {
+        this.windows.settings.focus();
+        this.windows.settings.show();
 
-      return;
-    }
+        resolve();
 
-    this.windows.settings = new BrowserWindow({
-      params: {
-        titleKey: 'settings',
-      },
-      size: 'default',
-      app: 'settings',
-      title: l10n.get('settings'),
-      onClosed: () => {
-        delete this.windows.settings;
-      },
+        return;
+      }
+
+      this.windows.settings = new BrowserWindow({
+        params: {
+          titleKey: 'settings',
+        },
+        size: 'default',
+        app: 'settings',
+        title: l10n.get('settings'),
+        onClosed: () => {
+          delete this.windows.settings;
+
+          resolve();
+        },
+      });
     });
   }
 
   // eslint-disable-next-line class-methods-use-this
-  showP11PinWindow(params: IP11PinWindowParams) {
-    const browserWindow = new BrowserWindow({
-      params: {
-        titleKey: params.label || 'p11-pin',
-        ...params,
-      },
-      size: 'default',
-      app: 'p11-pin',
-      windowOptions: {
-        alwaysOnTop: true,
-      },
-      title: params.label || l10n.get('p11-pin'),
-      onClosed: () => {
-        if (browserWindow.window.params.pin) {
-          browserWindow.window.params.resolve(browserWindow.window.params.pin);
-        } else {
-          browserWindow.window.params.reject(new wsServer.WebCryptoLocalError(10001, 'Incorrect PIN value. It cannot be empty.'));
-        }
-      },
-    });
-
-    browserWindow.window.on('ready-to-show', () => {
-      browserWindow.focus();
+  showP11PinWindow(params: IP11PinWindowParams): Promise<IP11PinWindowParams> {
+    return new Promise((resolve) => {
+      const browserWindow = new BrowserWindow({
+        params: {
+          titleKey: params.label || 'p11-pin',
+          ...params,
+        },
+        size: 'default',
+        app: 'p11-pin',
+        windowOptions: {
+          alwaysOnTop: true,
+        },
+        title: params.label || l10n.get('p11-pin'),
+        onClosed: () => {
+          resolve(browserWindow.window.params as IP11PinWindowParams);
+        },
+      });
     });
   }
 
   // eslint-disable-next-line class-methods-use-this
-  showKeyPinWindow(params: IKeyPinWindowParams) {
-    const { width, height } = WindowsController.getScreenSize();
+  showKeyPinWindow(params: IKeyPinWindowParams): Promise<IKeyPinWindowParams> {
+    return new Promise((resolve) => {
+      const { width, height } = WindowsController.getScreenSize();
 
-    const browserWindow = new BrowserWindow({
-      params: {
-        titleKey: 'key-pin',
-        ...params,
-      },
-      size: 'default',
-      app: 'key-pin',
-      title: l10n.get('key-pin'),
-      windowOptions: {
-        modal: true,
-        alwaysOnTop: true,
-        x: width - windowSizes.default.width,
-        y: height - windowSizes.default.height,
-      },
-      onClosed: () => {
-        browserWindow.window.params.resolve(browserWindow.window.params.accept);
-      },
-    });
-
-    browserWindow.window.on('ready-to-show', () => {
-      browserWindow.focus();
+      const browserWindow = new BrowserWindow({
+        params: {
+          titleKey: 'key-pin',
+          ...params,
+        },
+        size: 'default',
+        app: 'key-pin',
+        title: l10n.get('key-pin'),
+        windowOptions: {
+          modal: true,
+          alwaysOnTop: true,
+          x: width - windowSizes.default.width,
+          y: height - windowSizes.default.height,
+        },
+        onClosed: () => {
+          resolve(browserWindow.window.params as IKeyPinWindowParams);
+        },
+      });
     });
   }
 
   // eslint-disable-next-line class-methods-use-this
-  showTokenWindow(
-    onClosed: (result: number) => void,
-  ) {
-    const params = {
-      type: 'token',
-      text: l10n.get('question.new.token'),
-      id: 'question.new.token',
-      showAgain: true,
-      showAgainValue: false,
-      result: 0,
-    };
+  showTokenWindow(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const params = {
+        type: 'token',
+        text: l10n.get('question.new.token'),
+        id: 'question.new.token',
+        showAgain: true,
+        showAgainValue: false,
+        result: 0,
+      };
 
-    if (
-      params.id
-      && params.showAgain
-      && DialogsStorage.hasDialog(params.id)
-    ) {
-      logger.info(`Don't show dialog '${params.id}'. It's disabled`);
+      if (
+        params.id
+        && params.showAgain
+        && DialogsStorage.hasDialog(params.id)
+      ) {
+        logger.info(`Don't show dialog '${params.id}'. It's disabled`);
 
-      return;
-    }
+        reject(new Error(`'${params.id}' window disabled`));
 
-    const browserWindow = new BrowserWindow({
-      params: {
-        titleKey: 'question',
-        ...params,
-      },
-      app: 'message',
-      size: 'small',
-      windowOptions: {
-        alwaysOnTop: true,
-      },
-      title: l10n.get('question'),
-      onClosed: () => {
-        DialogsStorage.onDialogClose(browserWindow.window);
+        return;
+      }
 
-        onClosed(params.result);
-      },
+      const browserWindow = new BrowserWindow({
+        params: {
+          titleKey: 'question',
+          ...params,
+        },
+        app: 'message',
+        size: 'small',
+        windowOptions: {
+          alwaysOnTop: true,
+        },
+        title: l10n.get('question'),
+        onClosed: () => {
+          DialogsStorage.onDialogClose(browserWindow.window);
+
+          resolve(params.result);
+        },
+      });
     });
   }
 
-  showErrorWindow(params: IErrorWindowParams, onClosed: () => void) {
-    /**
-     * Don't create if the window exists.
-     */
-    if (this.windows.error) {
-      this.windows.error.focus();
-      this.windows.error.show();
+  showErrorWindow(params: IErrorWindowParams) {
+    return new Promise((resolve) => {
+      /**
+       * Don't create if the window exists.
+       */
+      if (this.windows.error) {
+        this.windows.error.focus();
+        this.windows.error.show();
 
-      return;
-    }
+        resolve();
 
-    this.windows.error = new BrowserWindow({
-      params: {
-        type: 'error',
-        titleKey: 'error',
-        ...params,
-      },
-      app: 'message',
-      size: 'small',
-      title: l10n.get('error'),
-      windowOptions: {
-        alwaysOnTop: true,
-      },
-      onClosed: () => {
-        onClosed();
+        return;
+      }
 
-        delete this.windows.error;
-      },
+      this.windows.error = new BrowserWindow({
+        params: {
+          type: 'error',
+          titleKey: 'error',
+          ...params,
+        },
+        app: 'message',
+        size: 'small',
+        title: l10n.get('error'),
+        windowOptions: {
+          alwaysOnTop: true,
+        },
+        onClosed: () => {
+          delete this.windows.error;
+
+          resolve();
+        },
+      });
     });
   }
 
   // eslint-disable-next-line class-methods-use-this
   showQuestionWindow(
     params: IQuestionWindowParams,
-    onClosed: (params: IQuestionWindowParams) => void,
     parent?: ElectronWindow,
-  ) {
-    if (
-      params.id
-      && params.showAgain
-      && DialogsStorage.hasDialog(params.id)
-    ) {
-      logger.info(`Don't show dialog '${params.id}'. It's disabled`);
+  ): Promise<IQuestionWindowParams> {
+    return new Promise((resolve, reject) => {
+      if (
+        params.id
+        && params.showAgain
+        && DialogsStorage.hasDialog(params.id)
+      ) {
+        logger.info(`Don't show dialog '${params.id}'. It's disabled`);
 
-      return;
-    }
+        reject(new Error(`'${params.id}' window disabled`));
 
-    const browserWindow = new BrowserWindow({
-      params: {
-        type: 'question',
-        titleKey: 'question',
-        ...params,
-      },
-      app: 'message',
-      size: 'small',
-      windowOptions: {
-        alwaysOnTop: true,
-        parent,
-        modal: !!parent,
-      },
-      title: l10n.get('question'),
-      onClosed: () => {
-        DialogsStorage.onDialogClose(browserWindow.window);
+        return;
+      }
 
-        onClosed(browserWindow.window.params as IQuestionWindowParams);
-      },
+      const browserWindow = new BrowserWindow({
+        params: {
+          type: 'question',
+          titleKey: 'question',
+          ...params,
+        },
+        app: 'message',
+        size: 'small',
+        windowOptions: {
+          alwaysOnTop: true,
+          parent,
+          modal: !!parent,
+        },
+        title: l10n.get('question'),
+        onClosed: () => {
+          DialogsStorage.onDialogClose(browserWindow.window);
+
+          resolve(browserWindow.window.params as IQuestionWindowParams);
+        },
+      });
     });
   }
 
-  showWarningWindow(params: IWarningWindowParams, onClosed: () => void) {
-    if (
-      params.id
-      && params.showAgain
-      && DialogsStorage.hasDialog(params.id)
-    ) {
-      logger.info(`Don't show dialog '${params.id}'. It's disabled`);
+  showWarningWindow(params: IWarningWindowParams) {
+    return new Promise((resolve, reject) => {
+      if (
+        params.id
+        && params.showAgain
+        && DialogsStorage.hasDialog(params.id)
+      ) {
+        logger.info(`Don't show dialog '${params.id}'. It's disabled`);
 
-      return;
-    }
+        reject(new Error(`'${params.id}' window disabled`));
 
-    /**
-     * Don't create if the window exists.
-     */
-    if (this.windows.warning) {
-      this.windows.warning.focus();
-      this.windows.warning.show();
+        return;
+      }
 
-      return;
-    }
+      /**
+       * Don't create if the window exists.
+       */
+      if (this.windows.warning) {
+        this.windows.warning.focus();
+        this.windows.warning.show();
 
-    this.windows.warning = new BrowserWindow({
-      params: {
-        type: 'warning',
-        titleKey: params.title || 'warning',
-        ...params,
-      },
-      app: 'message',
-      size: 'small',
-      windowOptions: {
-        alwaysOnTop: true,
-      },
-      title: params.title || l10n.get('warning'),
-      onClosed: () => {
-        DialogsStorage.onDialogClose(this.windows.warning.window);
+        resolve();
 
-        onClosed();
+        return;
+      }
 
-        delete this.windows.warning;
-      },
+      this.windows.warning = new BrowserWindow({
+        params: {
+          type: 'warning',
+          titleKey: params.title || 'warning',
+          ...params,
+        },
+        app: 'message',
+        size: 'small',
+        windowOptions: {
+          alwaysOnTop: true,
+        },
+        title: params.title || l10n.get('warning'),
+        onClosed: () => {
+          DialogsStorage.onDialogClose(this.windows.warning.window);
+
+          delete this.windows.warning;
+
+          resolve();
+        },
+      });
     });
   }
 }

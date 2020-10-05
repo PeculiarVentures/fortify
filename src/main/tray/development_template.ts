@@ -12,9 +12,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
       {
         label: 'Token new',
         click: () => {
-          windowsController.showTokenWindow(
-            () => {},
-          );
+          windowsController.showTokenWindow();
         },
       },
       {
@@ -27,7 +25,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
             {
               text: l10n.get('error.ssl.install'),
             },
-            () => {},
           );
         },
       },
@@ -38,7 +35,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
             {
               text: l10n.get('error.critical.update'),
             },
-            () => {},
           );
         },
       },
@@ -54,7 +50,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               id: 'question.2key.remove',
               result: 0,
             },
-            () => {},
           );
         },
       },
@@ -69,7 +64,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               showAgain: true,
               showAgainValue: false,
             },
-            () => {},
           );
         },
       },
@@ -85,7 +79,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               buttonLabel: l10n.get('i_understand'),
               id: 'ssl.install',
             },
-            () => {},
           );
         },
       },
@@ -101,7 +94,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               showAgain: true,
               showAgainValue: false,
             },
-            () => {},
           );
         },
       },
@@ -117,7 +109,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               showAgain: true,
               showAgainValue: false,
             },
-            () => {},
           );
         },
       },
@@ -133,7 +124,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               showAgain: true,
               showAgainValue: false,
             },
-            () => {},
           );
         },
       },
@@ -148,7 +138,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               pin: '123456',
               origin: 'https://TEST.com/',
               accept: true,
-              resolve: () => undefined,
             },
           );
         },
@@ -160,8 +149,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
             {
               pin: '',
               origin: 'https://TEST.com/',
-              resolve: () => undefined,
-              reject: () => undefined,
             },
           );
         },
