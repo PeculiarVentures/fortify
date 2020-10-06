@@ -113,7 +113,6 @@ class WindowsController {
     return new Promise((resolve) => {
       const browserWindow = new BrowserWindow({
         params: {
-          titleKey: params.label || 'p11-pin',
           ...params,
         },
         size: 'default',
