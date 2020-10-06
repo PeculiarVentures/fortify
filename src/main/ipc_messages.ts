@@ -14,7 +14,7 @@ import container from './container';
 
 const serverStorage = container.resolve(ServerStorage);
 
-const sendToRenderers = (channel: string, data: any) => {
+const sendToRenderers = (channel: string, data?: any) => {
   const browserWindows = BrowserWindow.getAllWindows();
 
   browserWindows.forEach((window) => {
@@ -32,8 +32,10 @@ const initServerEvents = () => {
 
       event.returnValue = identities;
     })
+    .on('ipc-identity-changed', () => {
+      sendToRenderers('ipc-2key-changed');
+    })
     .on('ipc-2key-remove', async (event: IpcMainEvent, arg: any) => {
-
       try {
         const questionWindowResult = await windowsController.showQuestionWindow({
           text: l10n.get('question.2key.remove', arg),
@@ -46,7 +48,7 @@ const initServerEvents = () => {
 
           await serverStorage.removeIdentity(arg);
 
-          event.sender.send('ipc-2key-removed', arg);
+          event.sender.send('ipc-2key-changed');
         }
       } catch {
         //

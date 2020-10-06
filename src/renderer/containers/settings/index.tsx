@@ -35,11 +35,11 @@ class Root extends WindowProvider<IRootProps, IRootState> {
     this.handleKeysListGet();
     this.handleLoggingGet();
 
-    ipcRenderer.on('ipc-2key-removed', this.onKeyRemovedListener);
+    ipcRenderer.on('ipc-2key-changed', this.handleKeysListGet);
     ipcRenderer.on('ipc-logging-status-changed', this.onLoggingChangedListener);
   }
 
-  handleKeysListGet() {
+  handleKeysListGet = () => {
     const list = ipcRenderer.sendSync('ipc-2key-list-get');
 
     this.setState({
@@ -48,7 +48,7 @@ class Root extends WindowProvider<IRootProps, IRootState> {
         isFetching: 'resolved',
       },
     });
-  }
+  };
 
   handleLoggingGet() {
     const status = ipcRenderer.sendSync('ipc-logging-status-get');
@@ -66,16 +66,6 @@ class Root extends WindowProvider<IRootProps, IRootState> {
         status,
       },
     });
-  };
-
-  onKeyRemovedListener = (_: IpcRendererEvent, origin: string) => {
-    this.setState((prevState) => ({
-      keys: {
-        ...prevState.keys,
-        list: prevState.keys.list
-          .filter((key) => key.origin !== origin),
-      },
-    }));
   };
 
   onKeyRemove = (origin: string) => {

@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import { shell, app } from 'electron';
+import { shell, app, ipcMain } from 'electron';
 import { setEngine } from '2key-ratchet';
 import * as wsServer from '@webcrypto-local/server';
 import type { Cards } from '@webcrypto-local/cards';
@@ -232,6 +232,9 @@ export class Server {
       })
       .on('close', (e: any) => {
         logger.info(`Close: ${e}`);
+      })
+      .on('identity_changed', () => {
+        ipcMain.emit('ipc-identity-changed');
       });
 
     this.server.listen('127.0.0.1:31337');
