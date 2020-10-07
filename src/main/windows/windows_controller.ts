@@ -171,7 +171,7 @@ class WindowsController {
         && params.showAgain
         && DialogsStorage.hasDialog(params.id)
       ) {
-        logger.info(`Don't show dialog '${params.id}'. It's disabled`);
+        logger.info(`Windows: Don't show dialog '${params.id}'. It's disabled`);
 
         reject(new Error(`'${params.id}' window disabled`));
 
@@ -244,7 +244,7 @@ class WindowsController {
         && params.showAgain
         && DialogsStorage.hasDialog(params.id)
       ) {
-        logger.info(`Don't show dialog '${params.id}'. It's disabled`);
+        logger.info(`Windows: Don't show dialog '${params.id}'. It's disabled`);
 
         reject(new Error(`'${params.id}' window disabled`));
 
@@ -281,7 +281,7 @@ class WindowsController {
         && params.showAgain
         && DialogsStorage.hasDialog(params.id)
       ) {
-        logger.info(`Don't show dialog '${params.id}'. It's disabled`);
+        logger.info(`Windows: Don't show dialog '${params.id}'. It's disabled`);
 
         reject(new Error(`'${params.id}' window disabled`));
 

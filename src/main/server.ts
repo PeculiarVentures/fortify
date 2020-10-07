@@ -97,7 +97,7 @@ export class Server {
       key: fs.readFileSync(constants.APP_SSL_KEY),
     } as any;
 
-    logger.info('SSL certificate is loaded');
+    logger.info('SSL: Certificate is loaded');
 
     await this.prepareConfig();
 
@@ -109,7 +109,7 @@ export class Server {
       this.load(sslData);
     } catch (e) {
       logger.error(e.message);
-      logger.error('LocalServer is empty. webcrypto-local module wasn\'t loaded');
+      logger.error('Server: LocalServer is empty. webcrypto-local module wasn\'t loaded');
     }
 
     this.run();
@@ -118,7 +118,7 @@ export class Server {
   run() {
     this.server
       .on('listening', (e: any) => {
-        logger.info(`Server: Started at ${e}`);
+        logger.info(`Server: Started at '${e}'`);
       })
       .on('info', (message) => {
         logger.info(message);
@@ -126,7 +126,7 @@ export class Server {
       .on('token_new', async (card) => {
         const atr = card.atr.toString('hex');
 
-        logger.info(`New token was found reader: '${card.reader}' ATR: ${atr}`);
+        logger.info('Server: New token was found reader', { reader: card.reader, atr });
 
         try {
           const tokenWindowResult = await windowsController.showTokenWindow();
@@ -231,7 +231,7 @@ export class Server {
         }
       })
       .on('close', (e: any) => {
-        logger.info(`Close: ${e}`);
+        logger.info(`Server: Close ${e}`);
       })
       .on('identity_changed', () => {
         ipcMain.emit('ipc-identity-changed');
@@ -262,7 +262,7 @@ export class Server {
         }
       }
     } catch (err) {
-      logger.error(`Cannot prepare config data. ${err.stack}`);
+      logger.error(`Server: Cannot prepare config data. ${err.stack}`);
     }
   }
 
@@ -282,7 +282,7 @@ export class Server {
         }
       }
     } catch (err) {
-      logger.error(`Cannot prepare config data. ${err.stack}`);
+      logger.error(`Server: Cannot prepare config data. ${err.stack}`);
     }
   }
 
@@ -299,22 +299,22 @@ export class Server {
 
           // copy card.json to .fortify
           fs.writeFileSync(constants.APP_CARD_JSON, JSON.stringify(card, null, '  '), { flag: 'w+' });
-          logger.info(`card.json v${card.version} was copied to .fortify from ${constants.APP_CARD_JSON_LINK}`);
+          logger.info(`Server: card.json v${card.version} was copied to .fortify from ${constants.APP_CARD_JSON_LINK}`);
 
           return;
         } catch (err) {
-          logger.error(`Cannot get card.json from ${constants.APP_CARD_JSON_LINK}. ${err.stack}`);
+          logger.error(`Server: Cannot get card.json from ${constants.APP_CARD_JSON_LINK}. ${err.stack}`);
         }
 
         // get original card.json from webcrypto-local
         // eslint-disable-next-line global-require
         const original: Cards = require('@webcrypto-local/cards/lib/card.json');
         fs.writeFileSync(constants.APP_CARD_JSON, JSON.stringify(original, null, '  '), { flag: 'w+' });
-        logger.info(`card.json v${original.version} was copied to .fortify from modules`);
+        logger.info(`Server: card.json v${original.version} was copied to .fortify from modules`);
       } else {
         // compare existing card.json version with remote
         // if remote version is higher then upload and remove local file
-        logger.info('Comparing current version of card.json file with remote');
+        logger.info('Server: Comparing current version of card.json file with remote');
 
         let remote: Cards | undefined;
 
@@ -322,7 +322,7 @@ export class Server {
           const jwsString = await request(constants.APP_CARD_JSON_LINK);
           remote = await jws.getContent(jwsString);
         } catch (e) {
-          logger.error(`Cannot get get file ${constants.APP_CARD_JSON_LINK}. ${e.message}`);
+          logger.error(`Server: Cannot get get file ${constants.APP_CARD_JSON_LINK}. ${e.message}`);
         }
 
         const local: Cards = JSON.parse(
@@ -333,13 +333,13 @@ export class Server {
           // copy card.json to .fortify
           fs.writeFileSync(constants.APP_CARD_JSON, JSON.stringify(remote, null, '  '), { flag: 'w+' });
 
-          logger.info(`card.json v${remote.version} was copied to .fortify from ${constants.APP_CARD_JSON_LINK}`);
+          logger.info(`Server: card.json v${remote.version} was copied to .fortify from ${constants.APP_CARD_JSON_LINK}`);
         } else {
-          logger.info(`card.json has the latest version v${local.version}`);
+          logger.info(`Server: card.json has the latest version v${local.version}`);
         }
       }
     } catch (err) {
-      logger.error(`Cannot prepare card.json data. ${err.stack}`);
+      logger.error(`Server: Cannot prepare card.json data. ${err.stack}`);
     }
   }
 }

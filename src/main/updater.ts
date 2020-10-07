@@ -39,7 +39,7 @@ class Updater extends EventEmitter {
 
       return response.replace(/[\n\r]/g, '');
     } catch (error) {
-      logger.warn(`Cannot GET ${JWS_LINK}`);
+      logger.warn(`Update: Cannot GET ${JWS_LINK}`);
       logger.error(error);
 
       throw new UpdateError(l10n.get('error.update.server'));
@@ -55,7 +55,7 @@ class Updater extends EventEmitter {
 
       return jws.getContent(jwsString);
     } catch (error) {
-      logger.error(`GetUpdateInfo: ${error.toString()}`);
+      logger.error(`Update: Get info error ${error.toString()}`);
 
       if (error instanceof UpdateError) {
         throw error;
@@ -90,18 +90,18 @@ class Updater extends EventEmitter {
           });
 
           if (questionWindowResult.result) { // yes
-            logger.info(`User agreed to download new version ${update.version}`);
+            logger.info(`Update: User agreed to download new version ${update.version}`);
 
             shell.openExternal(DOWNLOAD_LINK);
           } else { // no
-            logger.info(`User refused to download new version ${update.version}`);
+            logger.info(`Update: User refused to download new version ${update.version}`);
           }
         } catch {
           //
         }
 
         if (update.min && semver.lt(curVersion, update.min)) {
-          logger.info(`Update ${update.version} is critical. App is not matching to minimal criteria`);
+          logger.info(`Update: ${update.version} is critical. App is not matching to minimal criteria`);
 
           await windowsController.showErrorWindow({
             text: l10n.get('error.critical.update'),

@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, screen } from 'electron';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -23,10 +23,12 @@ import { ipcMessages } from './ipc_messages';
 
 @injectable()
 export class Application {
+  private readonly startTime = new Date();
+
   config = getConfig();
 
   constructor(
-    @inject('server') public server: Server
+    @inject('server') public server: Server,
   ) {}
 
   // eslint-disable-next-line class-methods-use-this
@@ -51,7 +53,6 @@ export class Application {
     /**
      * Get firefox providers and save to config.
      */
-    // TODO: Review solution.
     if (!this.config.providers?.length) {
       try {
         const providers = firefoxProviders.create();
@@ -96,6 +97,11 @@ export class Application {
       await app.whenReady();
 
       /**
+       * Print screen size after app is ready.
+       */
+      this.printScreenSize();
+
+      /**
        * Init ipc events.
        */
       ipcMessages.initEvents();
@@ -123,11 +129,15 @@ export class Application {
       /**
        * Init ipc server events.
        */
-      // TODO: Think about server use in args.
       ipcMessages.initServerEvents();
     } catch (error) {
       logger.error(error.toString());
     }
+
+    /**
+     * Print load information about load time.
+     */
+    this.printLoadInfo();
   }
 
   private initLocalization() {
@@ -168,17 +178,46 @@ export class Application {
 
   // eslint-disable-next-line class-methods-use-this
   private printStartInfo() {
-    logger.info(`Application started at ${new Date()}`);
-    logger.info(`OS ${os.platform()} ${os.arch()} `);
+    logger.info(`Start time: ${this.startTime}`);
 
     try {
       const json = fs.readFileSync(path.join(APP_DIR, 'package.json'), 'utf8');
       const pkg = JSON.parse(json);
 
-      logger.info(`Fortify v${pkg.version}`);
+      logger.info('App', {
+        version: pkg.version,
+      });
     } catch {
       //
     }
+
+    logger.info('System', {
+      type: os.type(),
+      platform: os.platform(),
+      arch: os.arch(),
+      cpus: os.cpus().length,
+      version: process.getSystemVersion(),
+      totalmem: os.totalmem(),
+      freemem: os.freemem(),
+    });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private printScreenSize() {
+    const { width, height } = screen.getPrimaryDisplay().bounds;
+
+    logger.info('Screen', {
+      width,
+      height,
+    });
+  }
+
+  private printLoadInfo() {
+    const loadTime = new Date();
+    const loadDuration = loadTime.getTime() - this.startTime.getTime();
+
+    logger.info(`Load time: ${loadTime}`);
+    logger.info(`Load duration: ${loadDuration}ms`);
   }
 
   private async initServer() {

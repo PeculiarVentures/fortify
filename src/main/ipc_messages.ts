@@ -44,7 +44,7 @@ const initServerEvents = () => {
         }, windowsController.windows.settings.window);
 
         if (questionWindowResult.result) {
-          logger.info(`Removing 2key session key ${arg}`);
+          logger.info(`IPC: Removing 2key session key '${arg}'`);
 
           await serverStorage.removeIdentity(arg);
 

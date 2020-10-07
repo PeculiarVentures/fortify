@@ -53,7 +53,7 @@ export class BrowserWindow {
   }
 
   private onInit(options: IWindowOptions) {
-    logger.info(`Fortify: Create window ${options.app}`);
+    logger.info(`Windows: Create window '${options.app}'`);
 
     this.window.loadURL(url.format({
       pathname: constants.HTML_PATH,
@@ -94,6 +94,8 @@ export class BrowserWindow {
     });
 
     this.window.on('close', () => {
+      logger.info(`Windows: Close window '${options.app}'`);
+
       globalShortcut.unregisterAll();
     });
 

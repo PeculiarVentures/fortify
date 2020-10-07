@@ -21,7 +21,7 @@ export class DialogsStorage {
           throw new TypeError('Bad JSON format. Must be Array of strings');
         }
       } catch (e) {
-        logger.error(`Cannot parse JSON file ${constants.APP_DIALOG_FILE}`);
+        logger.error(`Dialog storage: Cannot parse JSON file ${constants.APP_DIALOG_FILE}`);
         logger.error(e);
       }
     }
@@ -39,7 +39,7 @@ export class DialogsStorage {
 
       dialogs.push(window.params.id);
       DialogsStorage.saveDialogs(dialogs);
-      logger.info(`Disable dialog ${window.params.id}`);
+      logger.info(`Dialog storage: Disable dialog ${window.params.id}`);
     }
   }
 }

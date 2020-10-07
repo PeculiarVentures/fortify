@@ -148,7 +148,6 @@ async function win32() {
 async function linux() {
   const openscUrl = 'https://github.com/PeculiarVentures/fortify/releases/download/binaries/opensc-linux.zip';
 
-  
   if (!fs.existsSync(nssFolder)) {
     fs.mkdirSync(nssFolder);
     Logger.info(`Folder '${nssFolder}' created`);

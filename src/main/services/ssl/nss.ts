@@ -516,7 +516,7 @@ export class NssCertUtils {
     }
     const execCommand = `"${this.app}" ${command} ${args2.join(' ')}`;
 
-    logger.debug('NSS run', { command: execCommand, shell });
+    logger.debug('NSS: Run', { command: execCommand, shell });
 
     return execSync(execCommand, { shell }).toString();
   }

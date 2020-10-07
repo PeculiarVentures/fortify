@@ -1,15 +1,34 @@
 import * as winston from 'winston';
-import { APP_LOG_FILE } from './constants';
+import { APP_LOG_FILE, isDevelopment } from './constants';
 
-export const logger = winston.createLogger();
+const transportConsole = new winston.transports.Console({
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.padLevels(),
+    winston.format.simple(),
+  ),
+});
+
+const transportFileGet = () => new winston.transports.File({
+  filename: APP_LOG_FILE,
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+  ),
+});
+
+export const logger = winston.createLogger({
+  exitOnError: false,
+});
 
 export const loggingSwitch = (enabled: boolean) => {
-  if (enabled) {
-    const options = { flag: 'w+' };
+  logger.clear();
 
-    logger.add(new winston.transports.File({ filename: APP_LOG_FILE, options }));
-    logger.add(new winston.transports.Console());
-  } else {
-    logger.clear();
+  if (isDevelopment || enabled) {
+    logger.add(transportConsole);
+  }
+
+  if (enabled) {
+    logger.add(transportFileGet());
   }
 };

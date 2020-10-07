@@ -91,7 +91,7 @@ export class SslService {
 
   public async run() {
     let status = this.getCaCertStatus();
-    logger.info('Get SSL certificate status', { status: CaCertificateStatus[status] });
+    logger.info('SSL: Get certificate status', { status: CaCertificateStatus[status] });
 
     if (os.platform() === 'win32' && (status === CaCertificateStatus.renew || status === CaCertificateStatus.expired)) {
       windowsController.showWarningWindow(
@@ -109,7 +109,7 @@ export class SslService {
     if (status !== CaCertificateStatus.valid) {
       const pem = this.getCaCert();
 
-      logger.info('SSL certificate enrollment is required', {
+      logger.info('SSL: Certificate enrollment is required', {
         class: 'SslService',
         pem,
         status: CaCertificateStatus[status],
@@ -122,7 +122,7 @@ export class SslService {
           id: 'ssl.install',
         });
 
-        logger.info('Warning window was closed');
+        logger.info('SSL: Warning window was closed');
       } catch {
         //
       }
@@ -130,7 +130,7 @@ export class SslService {
       // #region PublicData folder
       if (!fs.existsSync(constants.APP_DATA_DIR)) {
         fs.mkdirSync(constants.APP_DATA_DIR);
-        logger.warn('PublicData folder created. This folder should bew created from installer', {
+        logger.warn('SSL: PublicData folder created. This folder should bew created from installer', {
           class: 'SslService',
           folder: constants.APP_DATA_DIR,
         });
@@ -242,7 +242,7 @@ export class SslService {
       // #region Install CA cert
       // Save CA file
       fs.writeFileSync(constants.APP_SSL_CERT_CA, caCert.cert, { flag: 'w+' });
-      logger.info('ca.pem file added to ProgramData folder', {
+      logger.info('SSL: ca.pem file added to ProgramData folder', {
         class: 'SslService',
         file: constants.APP_SSL_CERT_CA,
       });
@@ -250,16 +250,16 @@ export class SslService {
       try {
         this.installer.install(constants.APP_SSL_CERT_CA);
 
-        logger.info('SSL certificate added to trusted storages', {
+        logger.info('SSL: Certificate added to trusted storages', {
           class: 'SslService',
         });
       } catch (e) {
-        logger.error('Cannot install SSL certificate', {
+        logger.error('SSL: Cannot install SSL certificate', {
           class: 'SslService',
         });
 
         fs.unlinkSync(constants.APP_SSL_CERT_CA);
-        logger.info('SSL certificate removed from ProgramData folder', {
+        logger.info('SSL: Certificate removed from ProgramData folder', {
           class: 'SslService',
           file: constants.APP_SSL_CERT_CA,
         });
