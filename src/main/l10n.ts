@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import * as fs from 'fs';
 import * as path from 'path';
-import { logger } from './logger';
+import logger from './logger';
 import { printf } from './utils';
 
 const LANG_DIR = path.join(__dirname, typeof navigator === 'undefined' ? '' : '..', '..', 'locale');
@@ -71,7 +71,9 @@ class Localization extends EventEmitter {
       return;
     }
 
-    logger.info(`Localization: Set language to '${lang}'`);
+    logger.info('l10n', 'Change language', {
+      lang,
+    });
 
     const data = this.loadLang(lang);
 

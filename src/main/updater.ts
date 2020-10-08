@@ -5,7 +5,7 @@ import * as semver from 'semver';
 import * as fs from 'fs';
 import { request } from './utils';
 import { JWS_LINK, APP_DIR, DOWNLOAD_LINK } from './constants';
-import { logger } from './logger';
+import logger from './logger';
 import * as jws from './jws';
 import { UpdateError } from './errors';
 import { windowsController } from './windows';
@@ -39,8 +39,10 @@ class Updater extends EventEmitter {
 
       return response.replace(/[\n\r]/g, '');
     } catch (error) {
-      logger.warn(`Update: Cannot GET ${JWS_LINK}`);
-      logger.error(error);
+      logger.error('update', 'Cannot GET', {
+        jwsLink: JWS_LINK,
+      });
+      logger.error('update', error.toString());
 
       throw new UpdateError(l10n.get('error.update.server'));
     }
@@ -55,7 +57,9 @@ class Updater extends EventEmitter {
 
       return jws.getContent(jwsString);
     } catch (error) {
-      logger.error(`Update: Get info error ${error.toString()}`);
+      logger.error('update', 'Get info error', {
+        err: error.toString(),
+      });
 
       if (error instanceof UpdateError) {
         throw error;
@@ -67,7 +71,7 @@ class Updater extends EventEmitter {
 
   async checkForUpdates() {
     try {
-      logger.info('Update: Check for new update');
+      logger.info('update', 'Check for new update');
 
       const update = await this.getUpdateInfo();
       // Get current version
@@ -76,7 +80,7 @@ class Updater extends EventEmitter {
 
       // Compare versions
       if (semver.lt(curVersion, update.version)) {
-        logger.info('Update: New version was found');
+        logger.info('update', 'New version was found');
 
         this.emit('update-found', update.version);
 
@@ -90,18 +94,24 @@ class Updater extends EventEmitter {
           });
 
           if (questionWindowResult.result) { // yes
-            logger.info(`Update: User agreed to download new version ${update.version}`);
+            logger.info('update', 'User agreed to download new version', {
+              version: update.version,
+            });
 
             shell.openExternal(DOWNLOAD_LINK);
           } else { // no
-            logger.info(`Update: User refused to download new version ${update.version}`);
+            logger.info('update', 'User refused to download new version', {
+              version: update.version,
+            });
           }
         } catch {
           //
         }
 
         if (update.min && semver.lt(curVersion, update.min)) {
-          logger.info(`Update: ${update.version} is critical. App is not matching to minimal criteria`);
+          logger.info('update', 'Version is critical. App is not matching to minimal criteria', {
+            version: update.version,
+          });
 
           await windowsController.showErrorWindow({
             text: l10n.get('error.critical.update'),
@@ -110,12 +120,12 @@ class Updater extends EventEmitter {
           app.quit();
         }
       } else {
-        logger.info('Update: New version wasn\'t found');
+        logger.info('update', 'New version wasn\'t found');
 
         this.emit('update-not-found');
       }
     } catch (error) {
-      logger.error(error.toString());
+      logger.error('update', error.toString());
 
       if (error instanceof UpdateError) {
         this.emit('update-error', error);

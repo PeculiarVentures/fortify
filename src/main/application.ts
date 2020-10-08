@@ -16,7 +16,7 @@ import {
   APP_DIR,
 } from './constants';
 import { setConfig, getConfig } from './config';
-import { loggingSwitch, logger } from './logger';
+import logger, { loggingSwitch } from './logger';
 import { Server } from './server';
 import { firefoxProviders } from './firefox_providers';
 import { ipcMessages } from './ipc_messages';
@@ -61,7 +61,7 @@ export class Application {
 
         setConfig(this.config);
       } catch (err) {
-        logger.error(err.stack);
+        logger.error('providers', err.stack);
       }
     }
   }
@@ -131,7 +131,7 @@ export class Application {
        */
       ipcMessages.initServerEvents();
     } catch (error) {
-      logger.error(error.toString());
+      logger.error('application', error.toString());
     }
 
     /**
@@ -178,20 +178,22 @@ export class Application {
 
   // eslint-disable-next-line class-methods-use-this
   private printStartInfo() {
-    logger.info(`Start time: ${this.startTime}`);
+    logger.info('application', 'Starting', {
+      time: this.startTime,
+    });
 
     try {
       const json = fs.readFileSync(path.join(APP_DIR, 'package.json'), 'utf8');
       const pkg = JSON.parse(json);
 
-      logger.info('App', {
+      logger.info('application', 'Env', {
         version: pkg.version,
       });
     } catch {
       //
     }
 
-    logger.info('System', {
+    logger.info('system', 'Env', {
       type: os.type(),
       platform: os.platform(),
       arch: os.arch(),
@@ -206,9 +208,10 @@ export class Application {
   private printScreenSize() {
     const { width, height } = screen.getPrimaryDisplay().bounds;
 
-    logger.info('Screen', {
+    logger.info('system', 'Screen size', {
       width,
       height,
+      points: 'px',
     });
   }
 
@@ -216,8 +219,11 @@ export class Application {
     const loadTime = new Date();
     const loadDuration = loadTime.getTime() - this.startTime.getTime();
 
-    logger.info(`Load time: ${loadTime}`);
-    logger.info(`Load duration: ${loadDuration}ms`);
+    logger.info('application', 'Loaded', {
+      time: loadTime,
+      duration: loadDuration,
+      points: 'ms',
+    });
   }
 
   private async initServer() {

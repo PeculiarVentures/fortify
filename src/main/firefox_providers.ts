@@ -1,9 +1,7 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { logger } from './logger';
-
-const LOG_DEFAULT_PROVIDERS_ADD = 'Default:Providers:Add::';
+import logger from './logger';
 
 const create = () => {
   const providers: IConfigureProvider[] = [];
@@ -32,13 +30,17 @@ const create = () => {
   }
 
   if (!firefoxProfilesDir) {
-    logger.info(`${LOG_DEFAULT_PROVIDERS_ADD} Cannot get default Firefox profiles folder for OS '${os.platform()}'`);
+    logger.info('firefox-providers', 'Cannot get default Firefox profiles folder for OS', {
+      platform: os.platform(),
+    });
 
     return providers;
   }
 
   if (!fs.existsSync(firefoxProfilesDir)) {
-    logger.info(`${LOG_DEFAULT_PROVIDERS_ADD} ${firefoxProfilesDir} does not exist`);
+    logger.info('firefox-providers', 'Provider does not exist', {
+      dir: firefoxProfilesDir,
+    });
 
     return providers;
   }
@@ -52,7 +54,9 @@ const create = () => {
     const pkcs11File = path.join(profileDir, 'pkcs11.txt');
 
     if (!fs.existsSync(pkcs11File)) {
-      logger.info(`${LOG_DEFAULT_PROVIDERS_ADD} Cannot get pkcs11.txt from ${profileDir}`);
+      logger.info('firefox-providers', 'Cannot get pkcs11.txt', {
+        dir: profileDir,
+      });
 
       continue;
     }
@@ -62,7 +66,7 @@ const create = () => {
     const params = /parameters=(.+)/g.exec(pkcs11);
 
     if (!params) {
-      logger.info(`${LOG_DEFAULT_PROVIDERS_ADD} Cannot get parameters from pkcs11.txt`);
+      logger.info('firefox-providers', 'Cannot get parameters from pkcs11.txt');
 
       continue;
     }

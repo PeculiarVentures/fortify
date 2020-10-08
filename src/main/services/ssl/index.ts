@@ -10,7 +10,7 @@ import { windowsController } from '../../windows';
 import { l10n } from '../../l10n';
 import { CertificateGenerator, ValidityType, IName } from './generator';
 import { SslCertInstaller } from './installer';
-import { logger } from '../../logger';
+import logger from '../../logger';
 
 export enum CaCertificateStatus {
   none,
@@ -91,7 +91,8 @@ export class SslService {
 
   public async run() {
     let status = this.getCaCertStatus();
-    logger.info('SSL: Get certificate status', { status: CaCertificateStatus[status] });
+
+    logger.info('ssl-service', 'Get certificate status', { status: CaCertificateStatus[status] });
 
     if (os.platform() === 'win32' && (status === CaCertificateStatus.renew || status === CaCertificateStatus.expired)) {
       windowsController.showWarningWindow(
@@ -109,8 +110,7 @@ export class SslService {
     if (status !== CaCertificateStatus.valid) {
       const pem = this.getCaCert();
 
-      logger.info('SSL: Certificate enrollment is required', {
-        class: 'SslService',
+      logger.info('ssl-service', 'Certificate enrollment is required', {
         pem,
         status: CaCertificateStatus[status],
       });
@@ -122,7 +122,7 @@ export class SslService {
           id: 'ssl.install',
         });
 
-        logger.info('SSL: Warning window was closed');
+        logger.info('ssl-service', 'Warning window was closed');
       } catch {
         //
       }
@@ -130,8 +130,8 @@ export class SslService {
       // #region PublicData folder
       if (!fs.existsSync(constants.APP_DATA_DIR)) {
         fs.mkdirSync(constants.APP_DATA_DIR);
-        logger.warn('SSL: PublicData folder created. This folder should bew created from installer', {
-          class: 'SslService',
+
+        logger.warn('ssl-service', 'PublicData folder created. This folder should bew created from installer', {
           folder: constants.APP_DATA_DIR,
         });
       }
@@ -242,25 +242,21 @@ export class SslService {
       // #region Install CA cert
       // Save CA file
       fs.writeFileSync(constants.APP_SSL_CERT_CA, caCert.cert, { flag: 'w+' });
-      logger.info('SSL: ca.pem file added to ProgramData folder', {
-        class: 'SslService',
+
+      logger.info('ssl-service', 'ca.pem file added to ProgramData folder', {
         file: constants.APP_SSL_CERT_CA,
       });
 
       try {
         this.installer.install(constants.APP_SSL_CERT_CA);
 
-        logger.info('SSL: Certificate added to trusted storages', {
-          class: 'SslService',
-        });
+        logger.info('ssl-service', 'Certificate added to trusted storages');
       } catch (e) {
-        logger.error('SSL: Cannot install SSL certificate', {
-          class: 'SslService',
-        });
+        logger.error('ssl-service', 'Cannot install SSL certificate');
 
         fs.unlinkSync(constants.APP_SSL_CERT_CA);
-        logger.info('SSL: Certificate removed from ProgramData folder', {
-          class: 'SslService',
+
+        logger.info('ssl-service', 'Certificate removed from ProgramData folder', {
           file: constants.APP_SSL_CERT_CA,
         });
         throw e;
@@ -275,7 +271,7 @@ export class SslService {
       try {
         this.installer.installFirefox(constants.APP_SSL_CERT_CA);
       } catch (e) {
-        logger.error(e.toString());
+        logger.error('ssl-service', e.toString());
       }
     }
   }

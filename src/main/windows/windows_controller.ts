@@ -5,7 +5,7 @@ import {
 import { BrowserWindow } from './browser_window';
 import { l10n } from '../l10n';
 import { windowSizes } from '../constants';
-import { logger } from '../logger';
+import logger from '../logger';
 import { DialogsStorage } from './dialogs_storage';
 
 interface IP11PinWindowParams {
@@ -171,7 +171,9 @@ class WindowsController {
         && params.showAgain
         && DialogsStorage.hasDialog(params.id)
       ) {
-        logger.info(`Windows: Don't show dialog '${params.id}'. It's disabled`);
+        logger.info('windows', 'Don\'t show dialog It\'s disabled', {
+          id: params.id,
+        });
 
         reject(new Error(`'${params.id}' window disabled`));
 
@@ -244,7 +246,9 @@ class WindowsController {
         && params.showAgain
         && DialogsStorage.hasDialog(params.id)
       ) {
-        logger.info(`Windows: Don't show dialog '${params.id}'. It's disabled`);
+        logger.info('windows', 'Don\'t show dialog It\'s disabled', {
+          id: params.id,
+        });
 
         reject(new Error(`'${params.id}' window disabled`));
 
@@ -281,7 +285,9 @@ class WindowsController {
         && params.showAgain
         && DialogsStorage.hasDialog(params.id)
       ) {
-        logger.info(`Windows: Don't show dialog '${params.id}'. It's disabled`);
+        logger.info('windows', 'Don\'t show dialog It\'s disabled', {
+          id: params.id,
+        });
 
         reject(new Error(`'${params.id}' window disabled`));
 
