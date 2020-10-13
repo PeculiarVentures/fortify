@@ -122,8 +122,8 @@ export class Server {
           time: e,
         });
       })
-      .on('info', (message) => {
-        logger.info('server', message);
+      .on('info', (level, source, message, data) => {
+        logger.log(level, source, message, data);
       })
       .on('token_new', async (card) => {
         const atr = card.atr.toString('hex');

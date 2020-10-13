@@ -12,7 +12,11 @@ const transportConsole = new winston.transports.Console({
         ...other
       } = info;
 
-      return `${level}: [${source}]  ${message} ${JSON.stringify(other)}`;
+      if (other && Object.keys(other).length) {
+        return `${level}: [${source}]  ${message} ${JSON.stringify(other)}`;
+      }
+
+      return `${level}: [${source}]  ${message}`;
     }),
   ),
 });
@@ -42,6 +46,12 @@ export const loggingSwitch = (enabled: boolean) => {
 };
 
 export default {
+  log: (level: string, source: string, message: string, params: object = {}) => {
+    winstonlogger.log(level, message, {
+      source,
+      ...params,
+    });
+  },
   info: (source: string, message: string, params: object = {}) => {
     winstonlogger.info(message, {
       source,
