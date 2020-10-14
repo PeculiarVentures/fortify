@@ -16,7 +16,7 @@ import {
   APP_DIR,
 } from './constants';
 import { setConfig, getConfig } from './config';
-import { loggingSwitch, logger } from './logger';
+import logger, { loggingSwitch } from './logger';
 import { Server } from './server';
 import { firefoxProviders } from './firefox_providers';
 import { ipcMessages } from './ipc_messages';
@@ -53,17 +53,7 @@ export class Application {
     /**
      * Get firefox providers and save to config.
      */
-    if (!this.config.providers?.length) {
-      try {
-        const providers = firefoxProviders.create();
-
-        this.config.providers = this.config.providers!.concat(providers);
-
-        setConfig(this.config);
-      } catch (err) {
-        logger.error(err.stack);
-      }
-    }
+    this.initFirefoxProviders();
   }
 
   public start() {
@@ -78,6 +68,8 @@ export class Application {
     if ('dock' in app) {
       app.dock.hide();
     }
+
+    app.allowRendererProcessReuse = true;
 
     /**
      * Don't quit when all windows are closed.
@@ -131,7 +123,9 @@ export class Application {
        */
       ipcMessages.initServerEvents();
     } catch (error) {
-      logger.error(error.toString());
+      logger.error('application', 'On ready error', {
+        stack: error.stack,
+      });
     }
 
     /**
@@ -178,20 +172,13 @@ export class Application {
 
   // eslint-disable-next-line class-methods-use-this
   private printStartInfo() {
-    logger.info(`Start time: ${this.startTime}`);
-
-    try {
-      const json = fs.readFileSync(path.join(APP_DIR, 'package.json'), 'utf8');
-      const pkg = JSON.parse(json);
-
-      logger.info('App', {
-        version: pkg.version,
-      });
-    } catch {
-      //
-    }
-
-    logger.info('System', {
+    logger.info('application', 'Starting', {
+      time: this.startTime,
+    });
+    logger.info('application', 'Env', {
+      version: app.getVersion(),
+    });
+    logger.info('system', 'Env', {
       type: os.type(),
       platform: os.platform(),
       arch: os.arch(),
@@ -206,9 +193,10 @@ export class Application {
   private printScreenSize() {
     const { width, height } = screen.getPrimaryDisplay().bounds;
 
-    logger.info('Screen', {
+    logger.info('system', 'Screen size', {
       width,
       height,
+      points: 'px',
     });
   }
 
@@ -216,11 +204,30 @@ export class Application {
     const loadTime = new Date();
     const loadDuration = loadTime.getTime() - this.startTime.getTime();
 
-    logger.info(`Load time: ${loadTime}`);
-    logger.info(`Load duration: ${loadDuration}ms`);
+    logger.info('application', 'Loaded', {
+      time: loadTime,
+      duration: loadDuration,
+      points: 'ms',
+    });
   }
 
   private async initServer() {
     await this.server.init();
+  }
+
+  private initFirefoxProviders() {
+    if (!this.config.providers?.length) {
+      try {
+        const providers = firefoxProviders.create();
+
+        this.config.providers = this.config.providers!.concat(providers);
+
+        setConfig(this.config);
+      } catch (error) {
+        logger.error('application', 'Firefox providers create error', {
+          stack: error.stack,
+        });
+      }
+    }
   }
 }

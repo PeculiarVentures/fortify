@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { logger } from '../logger';
+import logger from '../logger';
 import * as constants from '../constants';
 import type { IBrowserWindow } from './browser_window';
 
@@ -20,9 +20,11 @@ export class DialogsStorage {
         if (!Array.isArray(dialogs)) {
           throw new TypeError('Bad JSON format. Must be Array of strings');
         }
-      } catch (e) {
-        logger.error(`Dialog storage: Cannot parse JSON file ${constants.APP_DIALOG_FILE}`);
-        logger.error(e);
+      } catch (error) {
+        logger.error('dialog-storage', 'Cannot parse JSON file', {
+          file: constants.APP_DIALOG_FILE,
+          stack: error.stack,
+        });
       }
     }
 
@@ -39,7 +41,10 @@ export class DialogsStorage {
 
       dialogs.push(window.params.id);
       DialogsStorage.saveDialogs(dialogs);
-      logger.info(`Dialog storage: Disable dialog ${window.params.id}`);
+
+      logger.info('dialog-storage', 'Disable dialog', {
+        id: window.params.id,
+      });
     }
   }
 }

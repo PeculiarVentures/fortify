@@ -10,7 +10,7 @@ import * as path from 'path';
 import * as semver from 'semver';
 import { SslService } from './services';
 import * as constants from './constants';
-import { logger } from './logger';
+import logger from './logger';
 import { windowsController } from './windows';
 import { l10n } from './l10n';
 import * as jws from './jws';
@@ -80,8 +80,10 @@ export class Server {
 
     try {
       await sslService.run();
-    } catch (e) {
-      logger.error(e.toString());
+    } catch (error) {
+      logger.error('server', 'SSL service run', {
+        stack: error.stack,
+      });
 
       await windowsController.showErrorWindow({
         text: l10n.get('error.ssl.install'),
@@ -97,7 +99,7 @@ export class Server {
       key: fs.readFileSync(constants.APP_SSL_KEY),
     } as any;
 
-    logger.info('SSL: Certificate is loaded');
+    logger.info('server', 'Certificate is loaded');
 
     await this.prepareConfig();
 
@@ -107,9 +109,10 @@ export class Server {
 
     try {
       this.load(sslData);
-    } catch (e) {
-      logger.error(e.message);
-      logger.error('Server: LocalServer is empty. webcrypto-local module wasn\'t loaded');
+    } catch (error) {
+      logger.error('server', 'LocalServer is empty. webcrypto-local module wasn\'t loaded', {
+        stack: error.stack,
+      });
     }
 
     this.run();
@@ -118,15 +121,20 @@ export class Server {
   run() {
     this.server
       .on('listening', (e: any) => {
-        logger.info(`Server: Started at '${e}'`);
+        logger.info('server', 'Started', {
+          time: e,
+        });
       })
-      .on('info', (message) => {
-        logger.info(message);
+      .on('info', (level, source, message, data) => {
+        logger.log(level, source, message, data);
       })
       .on('token_new', async (card) => {
         const atr = card.atr.toString('hex');
 
-        logger.info('Server: New token was found reader', { reader: card.reader, atr });
+        logger.info('server', 'New token was found reader', {
+          reader: card.reader,
+          atr,
+        });
 
         try {
           const tokenWindowResult = await windowsController.showTokenWindow();
@@ -145,14 +153,18 @@ export class Server {
             shell.openExternal(url);
           }
         } catch (error) {
-          logger.error(error.message);
+          logger.error('server', 'Token window', {
+            stack: error.stack,
+          });
         }
       })
-      .on('error', (e: Error) => {
-        logger.error(e.stack || e.toString());
+      .on('error', (error: Error) => {
+        logger.error('server', 'Event error', {
+          stack: error.stack,
+        });
 
-        if (e.hasOwnProperty('code') && e.hasOwnProperty('type')) {
-          const err = e as wsServer.WebCryptoLocalError;
+        if (error.hasOwnProperty('code') && error.hasOwnProperty('type')) {
+          const err = error as wsServer.WebCryptoLocalError;
           const { CODE } = wsServer.WebCryptoLocalError;
 
           switch (err.code) {
@@ -231,7 +243,9 @@ export class Server {
         }
       })
       .on('close', (e: any) => {
-        logger.info(`Server: Close ${e}`);
+        logger.info('server', 'Close', {
+          e,
+        });
       })
       .on('identity_changed', () => {
         ipcMain.emit('ipc-identity-changed');
@@ -261,8 +275,10 @@ export class Server {
           this.config.providers = json.providers;
         }
       }
-    } catch (err) {
-      logger.error(`Server: Cannot prepare config data. ${err.stack}`);
+    } catch (error) {
+      logger.error('server', 'Cannot prepare config data', {
+        stack: error.stack,
+      });
     }
   }
 
@@ -281,8 +297,10 @@ export class Server {
           }));
         }
       }
-    } catch (err) {
-      logger.error(`Server: Cannot prepare config data. ${err.stack}`);
+    } catch (error) {
+      logger.error('server', 'Cannot prepare config data', {
+        stack: error.stack,
+      });
     }
   }
 
@@ -299,30 +317,43 @@ export class Server {
 
           // copy card.json to .fortify
           fs.writeFileSync(constants.APP_CARD_JSON, JSON.stringify(card, null, '  '), { flag: 'w+' });
-          logger.info(`Server: card.json v${card.version} was copied to .fortify from ${constants.APP_CARD_JSON_LINK}`);
+
+          logger.info('server', 'card.json was copied to .fortify', {
+            version: card.version,
+            from: constants.APP_CARD_JSON_LINK,
+          });
 
           return;
-        } catch (err) {
-          logger.error(`Server: Cannot get card.json from ${constants.APP_CARD_JSON_LINK}. ${err.stack}`);
+        } catch (error) {
+          logger.error('server', 'Cannot get card.json', {
+            from: constants.APP_CARD_JSON_LINK,
+            stack: error.stack,
+          });
         }
 
         // get original card.json from webcrypto-local
         // eslint-disable-next-line global-require
         const original: Cards = require('@webcrypto-local/cards/lib/card.json');
         fs.writeFileSync(constants.APP_CARD_JSON, JSON.stringify(original, null, '  '), { flag: 'w+' });
-        logger.info(`Server: card.json v${original.version} was copied to .fortify from modules`);
+
+        logger.info('server', 'card.json was copied to .fortify from modules', {
+          version: original.version,
+        });
       } else {
         // compare existing card.json version with remote
         // if remote version is higher then upload and remove local file
-        logger.info('Server: Comparing current version of card.json file with remote');
+        logger.info('server', 'Comparing current version of card.json file with remote');
 
         let remote: Cards | undefined;
 
         try {
           const jwsString = await request(constants.APP_CARD_JSON_LINK);
           remote = await jws.getContent(jwsString);
-        } catch (e) {
-          logger.error(`Server: Cannot get get file ${constants.APP_CARD_JSON_LINK}. ${e.message}`);
+        } catch (error) {
+          logger.error('server', 'Cannot get get file', {
+            file: constants.APP_CARD_JSON_LINK,
+            stack: error.stack,
+          });
         }
 
         const local: Cards = JSON.parse(
@@ -333,13 +364,20 @@ export class Server {
           // copy card.json to .fortify
           fs.writeFileSync(constants.APP_CARD_JSON, JSON.stringify(remote, null, '  '), { flag: 'w+' });
 
-          logger.info(`Server: card.json v${remote.version} was copied to .fortify from ${constants.APP_CARD_JSON_LINK}`);
+          logger.info('server', 'card.json was copied to .fortify', {
+            version: remote.version,
+            from: constants.APP_CARD_JSON_LINK,
+          });
         } else {
-          logger.info(`Server: card.json has the latest version v${local.version}`);
+          logger.info('server', 'card.json has the latest version', {
+            version: local.version,
+          });
         }
       }
-    } catch (err) {
-      logger.error(`Server: Cannot prepare card.json data. ${err.stack}`);
+    } catch (error) {
+      logger.error('server', 'Cannot prepare card.json data', {
+        stack: error.stack,
+      });
     }
   }
 }

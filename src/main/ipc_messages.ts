@@ -7,7 +7,7 @@ import {
 import { APP_LOG_FILE } from './constants';
 import { windowsController } from './windows';
 import { l10n } from './l10n';
-import { logger, loggingSwitch } from './logger';
+import logger, { loggingSwitch } from './logger';
 import { ServerStorage } from './server_storage';
 import { setConfig, getConfig } from './config';
 import container from './container';
@@ -44,7 +44,9 @@ const initServerEvents = () => {
         }, windowsController.windows.settings.window);
 
         if (questionWindowResult.result) {
-          logger.info(`IPC: Removing 2key session key '${arg}'`);
+          logger.info('ipc-messages', 'Removing 2key session key', {
+            arg,
+          });
 
           await serverStorage.removeIdentity(arg);
 
@@ -90,7 +92,9 @@ const initEvents = () => {
       };
     })
     .on('error', (event: IpcMainEvent) => {
-      logger.error(event.toString());
+      logger.error('ipc-messages', 'Event error', {
+        event: event.toString(),
+      });
     });
 };
 

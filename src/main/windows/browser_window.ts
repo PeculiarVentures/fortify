@@ -6,7 +6,7 @@ import {
   globalShortcut,
 } from 'electron';
 import * as url from 'url';
-import { logger } from '../logger';
+import logger from '../logger';
 import * as constants from '../constants';
 import { l10n } from '../l10n';
 
@@ -53,7 +53,9 @@ export class BrowserWindow {
   }
 
   private onInit(options: IWindowOptions) {
-    logger.info(`Windows: Create window '${options.app}'`);
+    logger.info('windows', 'Create window', {
+      name: options.app,
+    });
 
     this.window.loadURL(url.format({
       pathname: constants.HTML_PATH,
@@ -94,7 +96,9 @@ export class BrowserWindow {
     });
 
     this.window.on('close', () => {
-      logger.info(`Windows: Close window '${options.app}'`);
+      logger.info('windows', 'Close window', {
+        name: options.app,
+      });
 
       globalShortcut.unregisterAll();
     });

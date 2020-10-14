@@ -1,5 +1,5 @@
 import * as jose from 'jose-jwe-jws';
-import { logger } from './logger';
+import logger from './logger';
 import { crypto } from './crypto';
 
 jose.setCrypto(crypto);
@@ -18,7 +18,6 @@ async function getPublicKey() {
 }
 
 export async function getContent(jws: string) {
-  const fName = 'GetContent';
   const joseKey = await getPublicKey();
 
   let joseCrypto: IWebCryptographer;
@@ -30,8 +29,10 @@ export async function getContent(jws: string) {
     joseCrypto.setContentSignAlgorithm('RS256');
 
     verifier = new jose.JoseJWS.Verifier(joseCrypto, jws.replace(/[\n\r]/g, ''));
-  } catch (e) {
-    logger.error(`${fName}: ${e.toString()}`);
+  } catch (error) {
+    logger.error('jws', 'Malformed update metadata', {
+      stack: error.stack,
+    });
 
     throw new Error('Unable to check JWS. Malformed update metadata.');
   }
@@ -40,8 +41,10 @@ export async function getContent(jws: string) {
 
   try {
     verifyRes = await verifier.verify();
-  } catch (e) {
-    logger.error(`${fName}: ${e.toString()}`);
+  } catch (error) {
+    logger.error('jws', 'Cannot verify JWS signature', {
+      stack: error.stack,
+    });
 
     throw new Error('Unable to check JWS. Cannot verify JWS signature.');
   }
