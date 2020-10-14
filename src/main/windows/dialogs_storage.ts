@@ -20,11 +20,11 @@ export class DialogsStorage {
         if (!Array.isArray(dialogs)) {
           throw new TypeError('Bad JSON format. Must be Array of strings');
         }
-      } catch (e) {
+      } catch (error) {
         logger.error('dialog-storage', 'Cannot parse JSON file', {
           file: constants.APP_DIALOG_FILE,
+          stack: error.stack,
         });
-        logger.error('dialog-storage', e.toString());
       }
     }
 

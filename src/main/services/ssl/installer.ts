@@ -125,6 +125,7 @@ export class SslCertInstaller {
     for (const profile of profiles) {
       try {
         const nss = new NssCertUtils(certUtil, `sql:${profile}`);
+
         if (nss.exists(certName, caDer)) {
           continue;
         }
@@ -132,6 +133,7 @@ export class SslCertInstaller {
         if (nss.exists(certName)) {
           // Remove a prev SSL certificate
           const pem = nss.get(certName);
+
           nss.remove(certName);
 
           logger.info('ssl-installer', 'SSL certificate removed from Mozilla Firefox profile', {
@@ -148,8 +150,10 @@ export class SslCertInstaller {
           certName,
         });
         installed = true;
-      } catch (e) {
-        logger.error('ssl-installer', e.toString());
+      } catch (error) {
+        logger.error('ssl-installer', 'Error', {
+          stack: error.stack,
+        });
       }
     }
 

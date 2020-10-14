@@ -53,17 +53,7 @@ export class Application {
     /**
      * Get firefox providers and save to config.
      */
-    if (!this.config.providers?.length) {
-      try {
-        const providers = firefoxProviders.create();
-
-        this.config.providers = this.config.providers!.concat(providers);
-
-        setConfig(this.config);
-      } catch (err) {
-        logger.error('providers', err.stack);
-      }
-    }
+    this.initFirefoxProviders();
   }
 
   public start() {
@@ -78,6 +68,8 @@ export class Application {
     if ('dock' in app) {
       app.dock.hide();
     }
+
+    app.allowRendererProcessReuse = true;
 
     /**
      * Don't quit when all windows are closed.
@@ -131,7 +123,9 @@ export class Application {
        */
       ipcMessages.initServerEvents();
     } catch (error) {
-      logger.error('application', error.toString());
+      logger.error('application', 'On ready error', {
+        stack: error.stack,
+      });
     }
 
     /**
@@ -181,18 +175,9 @@ export class Application {
     logger.info('application', 'Starting', {
       time: this.startTime,
     });
-
-    try {
-      const json = fs.readFileSync(path.join(APP_DIR, 'package.json'), 'utf8');
-      const pkg = JSON.parse(json);
-
-      logger.info('application', 'Env', {
-        version: pkg.version,
-      });
-    } catch {
-      //
-    }
-
+    logger.info('application', 'Env', {
+      version: app.getVersion(),
+    });
     logger.info('system', 'Env', {
       type: os.type(),
       platform: os.platform(),
@@ -228,5 +213,21 @@ export class Application {
 
   private async initServer() {
     await this.server.init();
+  }
+
+  private initFirefoxProviders() {
+    if (!this.config.providers?.length) {
+      try {
+        const providers = firefoxProviders.create();
+
+        this.config.providers = this.config.providers!.concat(providers);
+
+        setConfig(this.config);
+      } catch (error) {
+        logger.error('application', 'Firefox providers create error', {
+          stack: error.stack,
+        });
+      }
+    }
   }
 }

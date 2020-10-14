@@ -251,15 +251,18 @@ export class SslService {
         this.installer.install(constants.APP_SSL_CERT_CA);
 
         logger.info('ssl-service', 'Certificate added to trusted storages');
-      } catch (e) {
-        logger.error('ssl-service', 'Cannot install SSL certificate');
+      } catch (error) {
+        logger.error('ssl-service', 'Cannot install SSL certificate', {
+          stack: error.stack,
+        });
 
         fs.unlinkSync(constants.APP_SSL_CERT_CA);
 
         logger.info('ssl-service', 'Certificate removed from ProgramData folder', {
           file: constants.APP_SSL_CERT_CA,
         });
-        throw e;
+
+        throw error;
       }
 
       // Save localhost cert
@@ -270,8 +273,10 @@ export class SslService {
     } else {
       try {
         this.installer.installFirefox(constants.APP_SSL_CERT_CA);
-      } catch (e) {
-        logger.error('ssl-service', e.toString());
+      } catch (error) {
+        logger.error('ssl-service', 'Install Firefox', {
+          stack: error.stack,
+        });
       }
     }
   }

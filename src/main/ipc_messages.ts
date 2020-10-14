@@ -92,7 +92,9 @@ const initEvents = () => {
       };
     })
     .on('error', (event: IpcMainEvent) => {
-      logger.error('ipc-messages', event.toString());
+      logger.error('ipc-messages', 'Event error', {
+        event: event.toString(),
+      });
     });
 };
 

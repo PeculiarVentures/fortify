@@ -29,8 +29,10 @@ export async function getContent(jws: string) {
     joseCrypto.setContentSignAlgorithm('RS256');
 
     verifier = new jose.JoseJWS.Verifier(joseCrypto, jws.replace(/[\n\r]/g, ''));
-  } catch (e) {
-    logger.error('jws', e.toString());
+  } catch (error) {
+    logger.error('jws', 'Malformed update metadata', {
+      stack: error.stack,
+    });
 
     throw new Error('Unable to check JWS. Malformed update metadata.');
   }
@@ -39,8 +41,10 @@ export async function getContent(jws: string) {
 
   try {
     verifyRes = await verifier.verify();
-  } catch (e) {
-    logger.error('jws', e.toString());
+  } catch (error) {
+    logger.error('jws', 'Cannot verify JWS signature', {
+      stack: error.stack,
+    });
 
     throw new Error('Unable to check JWS. Cannot verify JWS signature.');
   }

@@ -80,8 +80,10 @@ export class Server {
 
     try {
       await sslService.run();
-    } catch (e) {
-      logger.error('server', e.toString());
+    } catch (error) {
+      logger.error('server', 'SSL service run', {
+        stack: error.stack,
+      });
 
       await windowsController.showErrorWindow({
         text: l10n.get('error.ssl.install'),
@@ -107,9 +109,10 @@ export class Server {
 
     try {
       this.load(sslData);
-    } catch (e) {
-      logger.error('server', 'LocalServer is empty. webcrypto-local module wasn\'t loaded');
-      logger.error('server', e.message);
+    } catch (error) {
+      logger.error('server', 'LocalServer is empty. webcrypto-local module wasn\'t loaded', {
+        stack: error.stack,
+      });
     }
 
     this.run();
@@ -150,14 +153,18 @@ export class Server {
             shell.openExternal(url);
           }
         } catch (error) {
-          logger.error('server', error.message);
+          logger.error('server', 'Token window', {
+            stack: error.stack,
+          });
         }
       })
-      .on('error', (e: Error) => {
-        logger.error('server', e.stack || e.toString());
+      .on('error', (error: Error) => {
+        logger.error('server', 'Event error', {
+          stack: error.stack,
+        });
 
-        if (e.hasOwnProperty('code') && e.hasOwnProperty('type')) {
-          const err = e as wsServer.WebCryptoLocalError;
+        if (error.hasOwnProperty('code') && error.hasOwnProperty('type')) {
+          const err = error as wsServer.WebCryptoLocalError;
           const { CODE } = wsServer.WebCryptoLocalError;
 
           switch (err.code) {
@@ -268,9 +275,9 @@ export class Server {
           this.config.providers = json.providers;
         }
       }
-    } catch (err) {
+    } catch (error) {
       logger.error('server', 'Cannot prepare config data', {
-        err: err.stack,
+        stack: error.stack,
       });
     }
   }
@@ -290,9 +297,9 @@ export class Server {
           }));
         }
       }
-    } catch (err) {
+    } catch (error) {
       logger.error('server', 'Cannot prepare config data', {
-        err: err.stack,
+        stack: error.stack,
       });
     }
   }
@@ -317,10 +324,10 @@ export class Server {
           });
 
           return;
-        } catch (err) {
+        } catch (error) {
           logger.error('server', 'Cannot get card.json', {
             from: constants.APP_CARD_JSON_LINK,
-            err: err.stack,
+            stack: error.stack,
           });
         }
 
@@ -342,10 +349,10 @@ export class Server {
         try {
           const jwsString = await request(constants.APP_CARD_JSON_LINK);
           remote = await jws.getContent(jwsString);
-        } catch (e) {
+        } catch (error) {
           logger.error('server', 'Cannot get get file', {
             file: constants.APP_CARD_JSON_LINK,
-            err: e.message,
+            stack: error.stack,
           });
         }
 
@@ -367,9 +374,9 @@ export class Server {
           });
         }
       }
-    } catch (err) {
+    } catch (error) {
       logger.error('server', 'Cannot prepare card.json data', {
-        err: err.stack,
+        stack: error.stack,
       });
     }
   }

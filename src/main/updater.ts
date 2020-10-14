@@ -41,8 +41,8 @@ class Updater extends EventEmitter {
     } catch (error) {
       logger.error('update', 'Cannot GET', {
         jwsLink: JWS_LINK,
+        stack: error.stack,
       });
-      logger.error('update', error.toString());
 
       throw new UpdateError(l10n.get('error.update.server'));
     }
@@ -58,7 +58,7 @@ class Updater extends EventEmitter {
       return jws.getContent(jwsString);
     } catch (error) {
       logger.error('update', 'Get info error', {
-        err: error.toString(),
+        stack: error.stack,
       });
 
       if (error instanceof UpdateError) {
@@ -125,7 +125,9 @@ class Updater extends EventEmitter {
         this.emit('update-not-found');
       }
     } catch (error) {
-      logger.error('update', error.toString());
+      logger.error('update', 'Error', {
+        stack: error.stack,
+      });
 
       if (error instanceof UpdateError) {
         this.emit('update-error', error);
