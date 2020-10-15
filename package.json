@@ -31,6 +31,7 @@
     "@types/request": "^2.48.5",
     "@types/rimraf": "^2.0.4",
     "@types/semver": "^6.2.1",
+    "@types/universal-analytics": "^0.4.4",
     "@types/websocket": "^0.0.40",
     "@types/ws": "^7.2.6",
     "@types/xmldom": "^0.1.30",
@@ -86,8 +87,10 @@
     "semver": "^6.3.0",
     "sudo-prompt": "^9.2.1",
     "tsyringe": "^4.3.0",
+    "universal-analytics": "^0.4.23",
     "webcrypto-core": "^1.1.8",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "winston-transport": "^4.4.0"
   },
   "mocha": {
     "require": [
