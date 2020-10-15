@@ -1,26 +1,30 @@
 import { Menu, Tray } from 'electron';
-import { icons } from '../const';
+import { isDevelopment, icons } from '../constants';
 import { baseTemplate } from './base_template';
 import { developmentTemplate } from './development_template';
-import { isDevelopment } from '../utils';
 
-class TrayCreator {
-  static tray: Electron.Tray;
+let trayElectron: Electron.Tray;
 
-  static getTemplate() {
-    return baseTemplate().concat(isDevelopment ? developmentTemplate() : []);
+const getTemplate = () => (
+  baseTemplate().concat(isDevelopment ? developmentTemplate() : [])
+);
+
+const create = () => {
+  if (!trayElectron) {
+    trayElectron = new Tray(icons.tray);
   }
 
-  static create() {
-    if (!TrayCreator.tray) {
-      TrayCreator.tray = new Tray(icons.tray);
-    }
+  const menu = Menu.buildFromTemplate(getTemplate());
 
-    const menu = Menu.buildFromTemplate(TrayCreator.getTemplate());
+  trayElectron.setToolTip('Fortify');
+  trayElectron.setContextMenu(menu);
+};
 
-    TrayCreator.tray.setToolTip('Fortify');
-    TrayCreator.tray.setContextMenu(menu);
-  }
-}
+const refresh = () => {
+  create();
+};
 
-export const tray = TrayCreator;
+export const tray = {
+  create,
+  refresh,
+};

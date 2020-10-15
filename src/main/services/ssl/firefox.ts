@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import * as winston from 'winston';
 import { execSync } from 'child_process';
+import logger from '../../logger';
 
 export class Firefox {
   public static profiles() {
@@ -33,7 +33,7 @@ export class Firefox {
         }
       }
     } else {
-      winston.debug('Firefox: Profiles folder does not exist', { path: profilesFolder });
+      logger.info('firefox', 'Profiles folder does not exist', { path: profilesFolder });
     }
 
     return res;

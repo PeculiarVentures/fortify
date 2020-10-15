@@ -1,12 +1,12 @@
 import { getProxySettings } from 'get-proxy-settings';
-import * as request2 from 'request';
+import * as requestInt from 'request';
 
 /**
  * Sends GET request
  * @param url URL
  */
 export async function request(url: string, encoding = 'utf8') {
-  const options: request2.CoreOptions = {
+  const options: requestInt.CoreOptions = {
     encoding,
   };
   const proxySettings = await getProxySettings();
@@ -15,8 +15,9 @@ export async function request(url: string, encoding = 'utf8') {
   }
 
   return new Promise<string>((resolve, reject) => {
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "1";
-    request2.get(url, options, (error: Error, response, body) => {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1';
+
+    requestInt.get(url, options, (error: Error, response, body) => {
       if (error) {
         reject(error);
       } else {
@@ -25,5 +26,3 @@ export async function request(url: string, encoding = 'utf8') {
     });
   });
 }
-
-export const isDevelopment = process.env.NODE_ENV === 'development';

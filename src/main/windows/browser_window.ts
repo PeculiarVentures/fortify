@@ -6,11 +6,9 @@ import {
   globalShortcut,
 } from 'electron';
 import * as url from 'url';
-import * as winston from 'winston';
-
-import { HTML_PATH, windowSizes, icons } from '../const';
-import { locale } from '../locale';
-import { isDevelopment } from '../utils';
+import logger from '../logger';
+import * as constants from '../constants';
+import { l10n } from '../l10n';
 
 type WindowAppType = 'about' | 'key-pin' | 'message' | 'p11-pin' | 'settings' | 'index';
 
@@ -23,7 +21,7 @@ export interface IBrowserWindow extends ElectronWindow {
 export interface IWindowOptions {
   app: WindowAppType;
   title: string;
-  size?: keyof typeof windowSizes;
+  size?: keyof typeof constants.windowSizes;
   params?: Assoc<any>;
   onClosed: (...args: any[]) => void;
   windowOptions?: {
@@ -55,15 +53,17 @@ export class BrowserWindow {
   }
 
   private onInit(options: IWindowOptions) {
-    winston.info(`Fortify: Create window ${options.app}`);
+    logger.info('windows', 'Create window', {
+      name: options.app,
+    });
 
     this.window.loadURL(url.format({
-      pathname: HTML_PATH,
+      pathname: constants.HTML_PATH,
       protocol: 'file:',
       slashes: true,
     }));
 
-    this.window.lang = locale.lang;
+    this.window.lang = l10n.lang;
     this.window.app = options.app;
     this.window.params = options.params || {};
 
@@ -96,6 +96,10 @@ export class BrowserWindow {
     });
 
     this.window.on('close', () => {
+      logger.info('windows', 'Close window', {
+        name: options.app,
+      });
+
       globalShortcut.unregisterAll();
     });
 
@@ -104,29 +108,30 @@ export class BrowserWindow {
 
   private getWindowDefaultOptions(): Electron.BrowserWindowConstructorOptions {
     return {
-      icon: icons.favicon,
+      icon: constants.icons.favicon,
       autoHideMenuBar: true,
       minimizable: false,
+      maximizable: false,
       fullscreen: false,
       fullscreenable: false,
       // Prevent resize window on production
-      resizable: isDevelopment,
+      resizable: constants.isDevelopment,
       show: false,
       ...this.getWindowSize(),
       webPreferences: {
         nodeIntegration: true,
         // Prevent open DevTools on production
-        devTools: isDevelopment,
+        devTools: constants.isDevelopment,
       },
     };
   }
 
-  private getWindowSize(size: keyof typeof windowSizes = 'default') {
+  private getWindowSize(size: keyof typeof constants.windowSizes = 'default') {
     if (size === 'small') {
-      return windowSizes.small;
+      return constants.windowSizes.small;
     }
 
-    return windowSizes.default;
+    return constants.windowSizes.default;
   }
 
   public focus() {

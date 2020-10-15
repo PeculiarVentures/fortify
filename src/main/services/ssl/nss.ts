@@ -2,9 +2,9 @@
 /* eslint-disable guard-for-in */
 import { execSync } from 'child_process';
 import * as os from 'os';
-import * as winston from 'winston';
 import { BufferSourceConverter, Convert } from 'pvtsutils';
 import { PemConverter } from 'webcrypto-core';
+import logger from '../../logger';
 
 export interface INssCertUtilArguments {
   [key: string]: string | undefined;
@@ -511,11 +511,14 @@ export class NssCertUtils {
   public run(command: string, args: INssCertUtilArguments = {}) {
     const shell = os.platform() === 'win32' ? 'cmd' : 'bash';
     const args2: string[] = [];
+
     for (const key in args) {
       args2.push(`-${key} "${args[key]}"`);
     }
+
     const execCommand = `"${this.app}" ${command} ${args2.join(' ')}`;
-    winston.debug('NSS run', { command: execCommand, shell });
+
+    logger.info('nss', 'Run', { command: execCommand, shell });
 
     return execSync(execCommand, { shell }).toString();
   }

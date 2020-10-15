@@ -1,5 +1,9 @@
 import * as wsServer from '@webcrypto-local/server';
-import * as application from './application';
+import {
+  inject,
+  injectable,
+} from 'tsyringe';
+import { Server } from './server';
 
 interface Identity {
   browser: string;
@@ -45,9 +49,14 @@ function PrepareIdentity(identity: wsServer.RemoteIdentity) {
   return res;
 }
 
+@injectable()
 export class ServerStorage {
-  static async getIdentities() {
-    const storage = application.server.server.storage as wsServer.FileStorage;
+  constructor(
+    @inject('server') public server: Server,
+  ) {}
+
+  async getIdentities() {
+    const storage = this.server.server.server.storage as wsServer.FileStorage;
 
     if (!Object.keys(storage.remoteIdentities).length) {
       // NOTE: call protected method of the storage
@@ -117,8 +126,8 @@ export class ServerStorage {
     return res;
   }
 
-  static async removeIdentity(origin: string) {
-    const storage = application.server.server.storage as wsServer.FileStorage;
+  async removeIdentity(origin: string) {
+    const storage = this.server.server.server.storage as wsServer.FileStorage;
     const remList = [];
 
     for (const i in storage.remoteIdentities) {

@@ -1,8 +1,8 @@
 import * as assert from 'assert';
 import * as os from 'os';
 import * as path from 'path';
-import { NssCertUtils } from '../src/main/ssl/nss';
-import { Firefox } from '../src/main/ssl/firefox';
+import { NssCertUtils } from '../src/main/services/ssl/nss';
+import { Firefox } from '../src/main/services/ssl/firefox';
 
 context('NssCertUtils', () => {
   const resourcesFolder = path.join(__dirname, 'resources');

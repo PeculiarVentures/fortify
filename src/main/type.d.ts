@@ -32,12 +32,3 @@ interface IConfigure {
 declare module 'sudo-prompt' {
   export function exec(script: string, options: any, cb: (err: Error, stdout: Buffer) => void): void;
 }
-
-interface ICreateWindowOptions {
-  title?: string;
-  alwaysOnTop?: boolean;
-  parent?: any;
-  dock?: boolean;
-  id?: string;
-  showAgain?: boolean;
-}

@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { APP_CONFIG_FILE } from './const';
+import { APP_CONFIG_FILE } from './constants';
 
 /**
  * Write config data to file
@@ -7,9 +7,10 @@ import { APP_CONFIG_FILE } from './const';
  * @param path    Path to config file
  * @param config  Config data
  */
-export function ConfigureWrite(path: string, config: IConfigure) {
+export function setConfig(config: IConfigure) {
   const json = JSON.stringify(config, null, '  ');
-  fs.writeFileSync(path, json, { flag: 'w+' });
+
+  fs.writeFileSync(APP_CONFIG_FILE, json, { flag: 'w+' });
 }
 
 /**
@@ -18,23 +19,22 @@ export function ConfigureWrite(path: string, config: IConfigure) {
  * @param path Path to file config
  * @param cb   Callback for configure creation
  */
-export function ConfigureRead(path: string, cb?: () => IConfigure) {
+export function getConfig() {
   let res: IConfigure;
-  if (!fs.existsSync(path)) {
+
+  if (!fs.existsSync(APP_CONFIG_FILE)) {
     // Create config with default data
-    if (cb) {
-      res = cb();
-    } else {
-      res = {
-        providers: [],
-        cards: [],
-        disableCardUpdate: false,
-        logging: false,
-      };
-    }
-    ConfigureWrite(APP_CONFIG_FILE, res);
+    res = {
+      providers: [],
+      cards: [],
+      disableCardUpdate: false,
+      logging: false,
+    };
+
+    setConfig(res);
   } else {
     const json = fs.readFileSync(APP_CONFIG_FILE, 'utf8');
+
     res = JSON.parse(json);
   }
 

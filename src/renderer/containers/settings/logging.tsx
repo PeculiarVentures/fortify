@@ -16,8 +16,6 @@ interface ILoggingProps {
 export class Logging extends React.Component<ILoggingProps> {
   static contextType = IntlContext;
 
-  context!: React.ContextType<typeof IntlContext>;
-
   render() {
     const { logging } = this.props;
     const { intl } = this.context;

@@ -16,8 +16,6 @@ export interface IModalLayoutProps {
 export default class ModalLayout extends React.Component<IModalLayoutProps> {
   static contextType = IntlContext;
 
-  context!: React.ContextType<typeof IntlContext>;
-
   renderButtons() {
     const {
       onReject,

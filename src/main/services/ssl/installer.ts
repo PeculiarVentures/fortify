@@ -6,11 +6,11 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as sudo from 'sudo-prompt';
-import * as winston from 'winston';
 import { PemConverter } from 'webcrypto-core';
 import { Firefox } from './firefox';
 import { NssCertUtils } from './nss';
-import { SRC_DIR } from '../const';
+import { SRC_DIR } from '../../constants';
+import logger from '../../logger';
 
 export interface ISslCertInstallerPolicy {
   /**
@@ -67,22 +67,23 @@ export class SslCertInstaller {
     const USER_HOME = os.homedir();
     const CHROME_DIR = path.normalize(`${USER_HOME}/.pki/nssdb`);
     const certName = this.policy.nssCertName;
-
     const nss = new NssCertUtils(this.policy.nssCertUtil, `sql:${CHROME_DIR}`);
+
     if (nss.exists(certName)) {
       // Remove a prev SSL certificate
       const pem = nss.get(certName);
       nss.remove(certName);
-      winston.info('SSL certificate removed from Chrome profile', {
-        class: 'SslCertInstaller',
+
+      logger.info('ssl-installer', 'SSL certificate removed from Chrome profile', {
         profile: CHROME_DIR,
         certName,
         pem,
       });
     }
+
     nss.add(cert, certName, 'CT,c,');
-    winston.info('SSL certificate added to Chrome profile', {
-      class: 'SslCertInstaller',
+
+    logger.info('ssl-installer', 'SSL certificate added to Chrome profile', {
       profile: CHROME_DIR,
       certName,
     });
@@ -96,7 +97,9 @@ export class SslCertInstaller {
         icons: this.policy.osxAppIcons || '/Applications/Fortify.app/Contents/Resources/static/icons/tray/mac/icon.icns',
       };
       const { username } = os.userInfo();
-      winston.info('SSL: Adding CA certificate to System KeyChain');
+
+      logger.info('ssl-installer', 'Adding CA certificate to System KeyChain');
+
       sudo.exec(`certPath="${certPath}" certName="${certName}" userDir="${os.homedir()}" USER="${username}" bash ${SRC_DIR}/resources/osx-ssl.sh`, options, (err) => {
         if (err) {
           reject(err);
@@ -104,8 +107,8 @@ export class SslCertInstaller {
           resolve();
         }
       });
-      winston.info('SSL certificate added to System KeyChain', {
-        class: 'SslCertInstaller',
+
+      logger.info('ssl-installer', 'SSL certificate added to System KeyChain', {
         certName,
       });
     });
@@ -116,21 +119,24 @@ export class SslCertInstaller {
     const certUtil = this.policy.nssCertUtil;
     const caPem = fs.readFileSync(certPath, { encoding: 'utf8' });
     const caDer = PemConverter.toArrayBuffer(caPem);
-
     const profiles = Firefox.profiles();
     let installed = false;
+
     for (const profile of profiles) {
       try {
         const nss = new NssCertUtils(certUtil, `sql:${profile}`);
+
         if (nss.exists(certName, caDer)) {
           continue;
         }
+
         if (nss.exists(certName)) {
           // Remove a prev SSL certificate
           const pem = nss.get(certName);
+
           nss.remove(certName);
-          winston.info('SSL certificate removed from Mozilla Firefox profile', {
-            class: 'SslCertInstaller',
+
+          logger.info('ssl-installer', 'SSL certificate removed from Mozilla Firefox profile', {
             profile,
             certName,
             pem,
@@ -138,14 +144,16 @@ export class SslCertInstaller {
         }
         // Add cert to NSS
         nss.add(certPath, certName, 'CT,c,');
-        winston.info('SSL certificate added to Mozilla Firefox profile', {
-          class: 'SslCertInstaller',
+
+        logger.info('ssl-installer', 'SSL certificate added to Mozilla Firefox profile', {
           profile,
           certName,
         });
         installed = true;
-      } catch (e) {
-        winston.error(e.toString());
+      } catch (error) {
+        logger.error('ssl-installer', 'Error', {
+          stack: error.stack,
+        });
       }
     }
 

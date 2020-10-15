@@ -1,14 +1,13 @@
-const ERROR_NAME = 'UpdateError';
-
 export class UpdateError extends Error {
-  public type: string;
+  public type = 'UpdateError';
 
-  public critical = false;
+  public name = 'UpdateError';
+
+  public critical: boolean;
 
   constructor(message: string, critical = false) {
     super(message);
-    this.type = ERROR_NAME;
-    this.name = ERROR_NAME;
+
     this.critical = critical;
   }
 }

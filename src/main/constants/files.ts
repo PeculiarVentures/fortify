@@ -40,21 +40,11 @@ export const TEMPLATE_NEW_CARD_FILE = path.join(RESOURCES_DIR, 'new_card.tmpl');
 export const JWS_LINK = 'https://fortifyapp.com/packages/update.jws';
 export const DOWNLOAD_LINK = 'https://fortifyapp.com/#download_app';
 export const SUPPORT_NEW_TOKEN_LINK = 'https://github.com/PeculiarVentures/fortify';
+export const TOOLS_LINK = 'https://tools.fortifyapp.com/';
 export const CHECK_UPDATE = true;
 export const CHECK_UPDATE_INTERVAL = 24 * 60 * 60e3; // 24h
 
 export const icons = {
   tray: path.join(ICON_DIR, 'tray/png', 'icon.png'),
   favicon: path.join(ICON_DIR, 'tray/png', 'icon@2x.png'),
-};
-
-export const windowSizes = {
-  small: {
-    width: 500,
-    height: 300,
-  },
-  default: {
-    width: 600,
-    height: 500,
-  },
 };
