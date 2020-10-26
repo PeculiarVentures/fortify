@@ -81,7 +81,7 @@ export class Server {
     try {
       await sslService.run();
     } catch (error) {
-      logger.error('server', 'SSL service run', {
+      logger.error('server', 'SSL service run error', {
         stack: error.stack,
       });
 
@@ -99,7 +99,7 @@ export class Server {
       key: fs.readFileSync(constants.APP_SSL_KEY),
     } as any;
 
-    logger.info('server', 'Certificate is loaded');
+    logger.info('server', 'SSL certificate is loaded');
 
     await this.prepareConfig();
 
@@ -243,7 +243,7 @@ export class Server {
         }
       })
       .on('close', (e: any) => {
-        logger.info('server', 'Close', {
+        logger.info('server', 'Close event', {
           e,
         });
       })
@@ -276,7 +276,7 @@ export class Server {
         }
       }
     } catch (error) {
-      logger.error('server', 'Cannot prepare config data', {
+      logger.error('server', 'Cannot prepare config data error', {
         stack: error.stack,
       });
     }
@@ -298,7 +298,7 @@ export class Server {
         }
       }
     } catch (error) {
-      logger.error('server', 'Cannot prepare config data', {
+      logger.error('server', 'Cannot prepare config data error', {
         stack: error.stack,
       });
     }
@@ -325,7 +325,7 @@ export class Server {
 
           return;
         } catch (error) {
-          logger.error('server', 'Cannot get card.json', {
+          logger.error('server', 'Cannot get card.json error', {
             from: constants.APP_CARD_JSON_LINK,
             stack: error.stack,
           });
@@ -350,7 +350,7 @@ export class Server {
           const jwsString = await request(constants.APP_CARD_JSON_LINK);
           remote = await jws.getContent(jwsString);
         } catch (error) {
-          logger.error('server', 'Cannot get get file', {
+          logger.error('server', 'Cannot get file error', {
             file: constants.APP_CARD_JSON_LINK,
             stack: error.stack,
           });
@@ -375,7 +375,7 @@ export class Server {
         }
       }
     } catch (error) {
-      logger.error('server', 'Cannot prepare card.json data', {
+      logger.error('server', 'Cannot prepare card.json data error', {
         stack: error.stack,
       });
     }

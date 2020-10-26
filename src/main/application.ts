@@ -1,7 +1,6 @@
 import { app, screen } from 'electron';
 import * as fs from 'fs';
 import * as os from 'os';
-import * as path from 'path';
 import {
   inject,
   injectable,
@@ -13,7 +12,6 @@ import {
   CHECK_UPDATE,
   CHECK_UPDATE_INTERVAL,
   APP_USER_DIR,
-  APP_DIR,
 } from './constants';
 import { setConfig, getConfig } from './config';
 import logger, { loggingSwitch } from './logger';
@@ -175,10 +173,10 @@ export class Application {
     logger.info('application', 'Starting', {
       time: this.startTime,
     });
-    logger.info('application', 'Env', {
+    logger.info('application', 'Info', {
       version: app.getVersion(),
     });
-    logger.info('system', 'Env', {
+    logger.info('system', 'Info', {
       type: os.type(),
       platform: os.platform(),
       arch: os.arch(),
