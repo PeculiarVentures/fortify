@@ -27,8 +27,14 @@ interface IConfigure {
   cardConfigPath?: string;
   providers?: IConfigureProvider[];
   cards: ICard[];
+  userId: string;
+  telemetry?: boolean;
 }
 
 declare module 'sudo-prompt' {
-  export function exec(script: string, options: any, cb: (err: Error, stdout: Buffer) => void): void;
+  export function exec(
+    script: string,
+    options: any,
+    cb: (err: Error, stdout: Buffer) => void,
+  ): void;
 }

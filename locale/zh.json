@@ -48,5 +48,7 @@
   "warn.pcsc.cannot_start": "看起来“智能卡资源管理器”没有运行。 请启动此服务并再次启动Fortify。",
   "keys.empty.search": "There are no websites matching that search.",
   "remove": "Remove",
-  "settings": "Settings"
+  "settings": "Settings",
+  "telemetry.title": "Telemetry",
+  "telemetry.enable": "Enable usage data and crash reports to be sent to improve the application"
 }

@@ -48,5 +48,7 @@
   "warn.pcsc.cannot_start": "Het lijkt erop dat de 'Smart Card Resource Manager' niet actief is. Start deze service en herstart Fortify.",
   "keys.empty.search": "There are no websites matching that search.",
   "remove": "Remove",
-  "settings": "Settings"
+  "settings": "Settings",
+  "telemetry.title": "Telemetry",
+  "telemetry.enable": "Enable usage data and crash reports to be sent to improve the application"
 }

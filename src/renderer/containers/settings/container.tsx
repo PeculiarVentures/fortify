@@ -9,6 +9,7 @@ import classnames from 'classnames';
 import { Sites } from './sites';
 import { Logging } from './logging';
 import { Language } from './language';
+import { Telemetry } from './telemetry';
 import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/container.sass');
@@ -17,12 +18,17 @@ enum TabType {
   sites = 1,
   logging,
   language,
+  telemetry,
 }
 
 export interface IContainerProps {
   logging: {
     onLoggingOpen: () => void;
     onLoggingStatusChange: () => void;
+    status: boolean;
+  };
+  telemetry: {
+    onTelemetryStatusChange: () => void;
     status: boolean;
   };
   language: {
@@ -57,7 +63,12 @@ export default class Container extends React.Component<IContainerProps, IContain
   };
 
   render() {
-    const { language, keys, logging } = this.props;
+    const {
+      language,
+      keys,
+      logging,
+      telemetry,
+    } = this.props;
     const { tab } = this.state;
     const { intl } = this.context;
 
@@ -90,6 +101,13 @@ export default class Container extends React.Component<IContainerProps, IContain
               {intl('logging')}
             </Tab>
             <Tab
+              value={TabType.telemetry}
+              className={classnames(s.tab, 'b3')}
+              color="grey_4"
+            >
+              {intl('telemetry.title')}
+            </Tab>
+            <Tab
               value={TabType.language}
               className={classnames(s.tab, 'b3')}
               color="grey_4"
@@ -111,6 +129,10 @@ export default class Container extends React.Component<IContainerProps, IContain
             <Language
               name={TabType.language}
               language={language}
+            />
+            <Telemetry
+              name={TabType.telemetry}
+              telemetry={telemetry}
             />
           </SegueHandler>
         </div>

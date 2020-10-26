@@ -48,5 +48,7 @@
   "warn.pcsc.cannot_start": "`Smart Card Resource Manager` servisi çalışmıyor. Lütfen servisi çalıştırın ve sonrasında Fortify'ı tekrar açın.",
   "keys.empty.search": "Arama kriterlerine uyan web sitesi bulunamadı.",
   "remove": "Kaldır",
-  "settings": "Ayarlar"
+  "settings": "Ayarlar",
+  "telemetry.title": "Telemetry",
+  "telemetry.enable": "Enable usage data and crash reports to be sent to improve the application"
 }

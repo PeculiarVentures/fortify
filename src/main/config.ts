@@ -1,10 +1,18 @@
 import * as fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
 import { APP_CONFIG_FILE } from './constants';
 
+const defaultConfig = {
+  userId: uuidv4(),
+  providers: [],
+  cards: [],
+  disableCardUpdate: false,
+  logging: false,
+  telemetry: false,
+};
+
 /**
- * Write config data to file
- *
- * @param path    Path to config file
+ * Set application config.
  * @param config  Config data
  */
 export function setConfig(config: IConfigure) {
@@ -14,29 +22,28 @@ export function setConfig(config: IConfigure) {
 }
 
 /**
- * Read config file by path
- *
- * @param path Path to file config
- * @param cb   Callback for configure creation
+ * Get application config.
  */
-export function getConfig() {
-  let res: IConfigure;
+export function getConfig(): IConfigure {
+  const isConfigExist = fs.existsSync(APP_CONFIG_FILE);
 
-  if (!fs.existsSync(APP_CONFIG_FILE)) {
-    // Create config with default data
-    res = {
-      providers: [],
-      cards: [],
-      disableCardUpdate: false,
-      logging: false,
-    };
-
-    setConfig(res);
-  } else {
+  if (isConfigExist) {
     const json = fs.readFileSync(APP_CONFIG_FILE, 'utf8');
+    const config = JSON.parse(json) as IConfigure;
 
-    res = JSON.parse(json);
+    // Add `userId` key if exist.
+    if (!config.userId) {
+      config.userId = uuidv4();
+
+      // Save config with new keys.
+      setConfig(config);
+    }
+
+    return config;
   }
 
-  return res;
+  // Save default config.
+  setConfig(defaultConfig);
+
+  return defaultConfig;
 }

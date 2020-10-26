@@ -91,6 +91,20 @@ const initEvents = () => {
         list: l10n.supportedLangs,
       };
     })
+    .on('ipc-telemetry-status-get', (event: IpcMainEvent) => {
+      const config = getConfig();
+
+      event.returnValue = config.telemetry;
+    })
+    .on('ipc-telemetry-status-change', (event: IpcMainEvent) => {
+      const config = getConfig();
+
+      config.telemetry = !config.telemetry;
+
+      setConfig(config);
+
+      event.sender.send('ipc-telemetry-status-changed', config.telemetry);
+    })
     .on('error', (event: IpcMainEvent) => {
       logger.error('ipc-messages', 'Event error', {
         event: event.toString(),
