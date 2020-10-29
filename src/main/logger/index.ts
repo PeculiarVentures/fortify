@@ -1,51 +1,66 @@
 import * as winston from 'winston';
 import { AnalyticsTransport } from './analytics_transport';
 import { APP_LOG_FILE, isDevelopment } from '../constants';
+import { getConfig } from '../config';
 
-// const transportConsole = new winston.transports.Console({
-//   format: winston.format.combine(
-//     winston.format.colorize(),
-//     winston.format.printf((info) => {
-//       const {
-//         level,
-//         message,
-//         source,
-//         ...other
-//       } = info;
+const config = getConfig();
 
-//       if (other && Object.keys(other).length) {
-//         return `${level}: [${source}]  ${message} ${JSON.stringify(other)}`;
-//       }
+const transportConsole = new winston.transports.Console({
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.printf((info) => {
+      const {
+        level,
+        message,
+        source,
+        ...other
+      } = info;
 
-//       return `${level}: [${source}]  ${message}`;
-//     }),
-//   ),
-// });
+      if (other && Object.keys(other).length) {
+        return `${level}: [${source}]  ${message} ${JSON.stringify(other)}`;
+      }
 
-// const transportFileGet = () => new winston.transports.File({
-//   filename: APP_LOG_FILE,
-//   format: winston.format.combine(
-//     winston.format.timestamp(),
-//     winston.format.json(),
-//   ),
-// });
+      return `${level}: [${source}]  ${message}`;
+    }),
+  ),
+});
+
+const transportFile = new winston.transports.File({
+  filename: APP_LOG_FILE,
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+  ),
+});
+
+const transportAnalytics = new AnalyticsTransport({
+  userId: config.userId,
+});
 
 const winstonlogger = winston.createLogger({
   exitOnError: false,
+  transports: [
+    transportConsole,
+    transportFile,
+    transportAnalytics,
+  ],
 });
 
 export const loggingSwitch = (enabled: boolean) => {
-  winstonlogger.clear();
+  if (isDevelopment) {
+    transportConsole.silent = false;
+    transportFile.silent = false;
 
-  if (isDevelopment || enabled) {
-    // winstonlogger.add(transportConsole);
+    return;
   }
 
   if (enabled) {
-    // winstonlogger.add(transportFileGet());
+    transportConsole.silent = false;
+    transportFile.silent = false;
+  } else {
+    transportConsole.silent = true;
+    transportFile.silent = true;
   }
-
-  winstonlogger.add(new AnalyticsTransport());
 };
 
 export default {

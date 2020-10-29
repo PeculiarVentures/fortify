@@ -1,67 +1,28 @@
-import * as ua from 'universal-analytics';
+import * as Mixpanel from 'mixpanel';
+import { MIXPANEL_TOKEN } from '../constants';
 
-interface IEvent {
+const mixpanel = Mixpanel.init(MIXPANEL_TOKEN);
+
+export interface IAnalyticsOptions {
   userId: string;
-  category: string;
-  action: string;
-  timestamp: number;
-  params?: Object;
 }
 
 /**
- * https://www.npmjs.com/package/universal-analytics
+ * https://www.npmjs.com/package/mixpanel
  */
 
 export class Analytics {
-  // private queue: IEvent[] = [];
+  private userId: string;
 
-  private visitor: ua.Visitor;
+  constructor(options: IAnalyticsOptions) {
+    this.userId = options.userId;
+  }
 
-  constructor(accountId: string, userId: string) {
-    console.log(userId);
-
-    this.visitor = ua(accountId, {
-      uid: userId,
+  event(category: string, action: string, params: Record<string, any>) {
+    mixpanel.track(action, {
+      distinct_id: this.userId,
+      category,
+      ...params,
     });
   }
-
-  // private enqueue(category: string, action: string, params?: Object) {
-  //   this.queue.push({
-  //     // userId: this.userId,
-  //     category,
-  //     action,
-  //     timestamp: new Date().getTime(),
-  //     params,
-  //   });
-  // }
-
-  // private resetQueue() {
-  //   this.queue = [];
-  // }
-
-  // getQueue() {
-  //   return this.queue;
-  // }
-
-  event(category: string, action: string, label: string, params: Object = {}) {
-    // this.enqueue(category, action, params);
-
-    // console.log(this.accountId, this.userId, category, action, params);
-    // console.log('=========');
-    // console.log(params);
-
-
-    this.visitor.event(category, action, label, '', params).send();
-
-    // visitor.event(category, action, '', '', params).send();
-
-    // return this;
-  }
-
-  // TODO: Add service for send events.
-  // send() {
-  //   console.log('queue send:', this.getQueue());
-
-  //   this.resetQueue();
-  // }
 }
