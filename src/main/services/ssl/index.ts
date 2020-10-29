@@ -253,6 +253,7 @@ export class SslService {
         logger.info('ssl-service', 'Certificate added to trusted storages');
       } catch (error) {
         logger.error('ssl-service', 'Cannot install SSL certificate', {
+          error: error.message,
           stack: error.stack,
         });
 
@@ -275,6 +276,7 @@ export class SslService {
         this.installer.installFirefox(constants.APP_SSL_CERT_CA);
       } catch (error) {
         logger.error('ssl-service', 'Install Firefox', {
+          error: error.message,
           stack: error.stack,
         });
       }

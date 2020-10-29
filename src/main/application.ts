@@ -122,6 +122,7 @@ export class Application {
       ipcMessages.initServerEvents();
     } catch (error) {
       logger.error('application', 'On ready error', {
+        error: error.message,
         stack: error.stack,
       });
     }
@@ -173,10 +174,10 @@ export class Application {
     logger.info('application', 'Starting', {
       time: this.startTime,
     });
-    logger.info('application', 'Info', {
+    logger.info('application', 'Application info', {
       version: app.getVersion(),
     });
-    logger.info('system', 'Info', {
+    logger.info('system', 'System info', {
       type: os.type(),
       platform: os.platform(),
       arch: os.arch(),
@@ -194,7 +195,6 @@ export class Application {
     logger.info('system', 'Screen size', {
       width,
       height,
-      points: 'px',
     });
   }
 
@@ -205,7 +205,6 @@ export class Application {
     logger.info('application', 'Loaded', {
       time: loadTime,
       duration: loadDuration,
-      points: 'ms',
     });
   }
 
@@ -223,6 +222,7 @@ export class Application {
         setConfig(this.config);
       } catch (error) {
         logger.error('application', 'Firefox providers create error', {
+          error: error.message,
           stack: error.stack,
         });
       }

@@ -82,6 +82,7 @@ export class Server {
       await sslService.run();
     } catch (error) {
       logger.error('server', 'SSL service run error', {
+        error: error.message,
         stack: error.stack,
       });
 
@@ -111,6 +112,7 @@ export class Server {
       this.load(sslData);
     } catch (error) {
       logger.error('server', 'LocalServer is empty. webcrypto-local module wasn\'t loaded', {
+        error: error.message,
         stack: error.stack,
       });
     }
@@ -120,9 +122,9 @@ export class Server {
 
   run() {
     this.server
-      .on('listening', (e: any) => {
+      .on('listening', (address: string) => {
         logger.info('server', 'Started', {
-          time: e,
+          address,
         });
       })
       .on('info', (level, source, message, data) => {
@@ -154,12 +156,14 @@ export class Server {
           }
         } catch (error) {
           logger.error('server', 'Token window', {
+            error: error.message,
             stack: error.stack,
           });
         }
       })
       .on('error', (error: Error) => {
-        logger.error('server', 'Event error', {
+        logger.error('server', 'Server event error', {
+          error: error.message,
           stack: error.stack,
         });
 
@@ -277,6 +281,7 @@ export class Server {
       }
     } catch (error) {
       logger.error('server', 'Cannot prepare config data error', {
+        error: error.message,
         stack: error.stack,
       });
     }
@@ -327,6 +332,7 @@ export class Server {
         } catch (error) {
           logger.error('server', 'Cannot get card.json error', {
             from: constants.APP_CARD_JSON_LINK,
+            error: error.message,
             stack: error.stack,
           });
         }
@@ -352,6 +358,7 @@ export class Server {
         } catch (error) {
           logger.error('server', 'Cannot get file error', {
             file: constants.APP_CARD_JSON_LINK,
+            error: error.message,
             stack: error.stack,
           });
         }
@@ -376,6 +383,7 @@ export class Server {
       }
     } catch (error) {
       logger.error('server', 'Cannot prepare card.json data error', {
+        error: error.message,
         stack: error.stack,
       });
     }
