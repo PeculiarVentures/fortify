@@ -8,7 +8,8 @@ const defaultConfig = {
   cards: [],
   disableCardUpdate: false,
   logging: false,
-  telemetry: false,
+  telemetry: true,
+  locale: 'en',
 };
 
 /**
@@ -29,13 +30,15 @@ export function getConfig(): IConfigure {
 
   if (isConfigExist) {
     const json = fs.readFileSync(APP_CONFIG_FILE, 'utf8');
-    const config = JSON.parse(json) as IConfigure;
+    let config = JSON.parse(json) as IConfigure;
 
-    // Add `userId` key if exist.
-    if (!config.userId) {
-      config.userId = uuidv4();
+    // Add existing keys to config.
+    if (Object.keys(defaultConfig).join('') !== Object.keys(config).join('')) {
+      config = {
+        ...defaultConfig,
+        ...config,
+      };
 
-      // Save config with new keys.
       setConfig(config);
     }
 
