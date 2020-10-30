@@ -1,4 +1,4 @@
-import { app, screen } from 'electron';
+import { app, screen, ipcMain } from 'electron';
 import * as fs from 'fs';
 import * as os from 'os';
 import {
@@ -14,10 +14,11 @@ import {
   APP_USER_DIR,
 } from './constants';
 import { setConfig, getConfig } from './config';
-import logger, { loggingSwitch } from './logger';
+import logger, { loggingSwitch, loggingAnalyticsSwitch } from './logger';
 import { Server } from './server';
 import { firefoxProviders } from './firefox_providers';
 import { ipcMessages } from './ipc_messages';
+import { windowsController } from './windows';
 
 @injectable()
 export class Application {
@@ -42,6 +43,7 @@ export class Application {
      * Set logging from config.
      */
     loggingSwitch(!!this.config.logging);
+    loggingAnalyticsSwitch(!!this.config.telemetry);
 
     /**
      * Print start information about system and application.
@@ -105,6 +107,11 @@ export class Application {
        * Create tray.
        */
       tray.create();
+
+      /**
+       * Init show telemetry allow dialog.
+       */
+      await this.initTelemetryDialogShow();
 
       /**
        * Init check updates.
@@ -225,6 +232,32 @@ export class Application {
           error: error.message,
           stack: error.stack,
         });
+      }
+    }
+  }
+
+  private async initTelemetryDialogShow() {
+    if (this.config.telemetry) {
+      try {
+        const questionWindowResult = await windowsController.showQuestionWindow({
+          text: l10n.get('question.telemetry.enable'),
+          id: 'question.telemetry.enable',
+          result: 0,
+          showAgain: true,
+          showAgainValue: true,
+          buttonRejectLabel: 'disable',
+          buttonApproveLabel: 'ok',
+        });
+
+        if (questionWindowResult.result) { // yes
+          logger.info('telemetry-dialog', 'User agreed to use telemetry');
+        } else { // no
+          logger.info('telemetry-dialog', 'User disagreed to use telemetry');
+
+          ipcMain.emit('ipc-telemetry-status-change');
+        }
+      } catch {
+        //
       }
     }
   }

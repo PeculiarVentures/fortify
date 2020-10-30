@@ -7,7 +7,7 @@ import {
 import { APP_LOG_FILE } from './constants';
 import { windowsController } from './windows';
 import { l10n } from './l10n';
-import logger, { loggingSwitch } from './logger';
+import logger, { loggingSwitch, loggingAnalyticsSwitch } from './logger';
 import { ServerStorage } from './server_storage';
 import { setConfig, getConfig } from './config';
 import container from './container';
@@ -77,6 +77,10 @@ const initEvents = () => {
 
       loggingSwitch(config.logging);
 
+      logger.info('logging', 'Logging status changed', {
+        value: config.logging,
+      });
+
       event.sender.send('ipc-logging-status-changed', config.logging);
     })
     .on('ipc-language-set', (_: IpcMainEvent, lang: string) => {
@@ -102,6 +106,12 @@ const initEvents = () => {
       config.telemetry = !config.telemetry;
 
       setConfig(config);
+
+      loggingAnalyticsSwitch(config.telemetry);
+
+      logger.info('telemetry', 'Telemetry status changed', {
+        value: config.telemetry,
+      });
 
       event.sender.send('ipc-telemetry-status-changed', config.telemetry);
     })
