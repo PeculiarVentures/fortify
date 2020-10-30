@@ -46,11 +46,11 @@
 	"warn.token.crypto_not_found": "Fortify支持插入的智能卡，但我们无法找到该卡的中间件请确保（％1）存在。如果没有安装智能卡中间件，请重新尝试。",
 	"warn.token.crypto_wrong": "加载安全令牌或智能卡的中间件（％1）时出现问题。\n请确保中间件安装正确并重试.",
   "warn.pcsc.cannot_start": "看起来“智能卡资源管理器”没有运行。 请启动此服务并再次启动Fortify。",
-  "keys.empty.search": "There are no websites matching that search.",
-  "remove": "Remove",
-  "settings": "Settings",
-  "telemetry.title": "Telemetry",
-  "telemetry.enable": "Enable usage data and crash reports to be sent to improve the application",
-  "question.telemetry.enable": "We enabled usage data and crash reports to be sent to improve the application.\nYou can disable it at any time in the application settings.",
-  "disable": "Disable"
+  "keys.empty.search": "沒有與該搜索匹配的網站。",
+  "remove": "去掉",
+  "settings": "設定值",
+  "telemetry.title": "遙測",
+  "telemetry.enable": "啟用發送使用情況數據和崩潰報告以改進應用程序",
+  "question.telemetry.enable": "我們啟用了使用情況數據和崩潰報告，以改進應用程序。\n您可以隨時在應用程序設置中將其禁用。",
+  "disable": "禁用"
 }

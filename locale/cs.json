@@ -46,11 +46,11 @@
   "warn.token.crypto_not_found": "Vložená karta je aplikací Fortify podporována ale nepodařilo se zjistit správný ovladač. Ujistěte se, že soubor (%1) existuje. Pokud ne, nainstalujte ovladače pro čipovou kartu a zkuste znovu.",
   "warn.token.crypto_wrong": "Nepodařilo se spustit ovladače (%1) pro vaši čipovou kartu nebo token.\nUjistěte se, že je ovladač nainstalován správně a zkuste znovu.",
   "warn.pcsc.cannot_start": "Zdá se, že `Správce prostředků čipových karet` není spuštěn. Spusťte tuto službu a poté restartujte Fortify, prosím.",
-  "keys.empty.search": "There are no websites matching that search.",
-  "remove": "Remove",
-  "settings": "Settings",
-  "telemetry.title": "Telemetry",
-  "telemetry.enable": "Enable usage data and crash reports to be sent to improve the application",
-  "question.telemetry.enable": "We enabled usage data and crash reports to be sent to improve the application.\nYou can disable it at any time in the application settings.",
-  "disable": "Disable"
+  "keys.empty.search": "Tomuto vyhledávání neodpovídají žádné webové stránky.",
+  "remove": "Odstranit",
+  "settings": "Nastavení",
+  "telemetry.title": "Telemetrie",
+  "telemetry.enable": "Chcete-li aplikaci vylepšit, povolte odesílání údajů o využití a zpráv o selhání",
+  "question.telemetry.enable": "Abychom vylepšili aplikaci, povolili jsme odesílání údajů o používání a zpráv o selhání.\nMůžete ji kdykoli deaktivovat v nastavení aplikace.",
+  "disable": "Zakázat"
 }

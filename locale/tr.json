@@ -49,8 +49,8 @@
   "keys.empty.search": "Arama kriterlerine uyan web sitesi bulunamadı.",
   "remove": "Kaldır",
   "settings": "Ayarlar",
-  "telemetry.title": "Telemetry",
-  "telemetry.enable": "Enable usage data and crash reports to be sent to improve the application",
-  "question.telemetry.enable": "We enabled usage data and crash reports to be sent to improve the application.\nYou can disable it at any time in the application settings.",
-  "disable": "Disable"
+  "telemetry.title": "Telemetri",
+  "telemetry.enable": "Uygulamayı iyileştirmek için kullanım verilerinin ve kilitlenme raporlarının gönderilmesini etkinleştirin",
+  "question.telemetry.enable": "Uygulamayı iyileştirmek için kullanım verilerinin ve kilitlenme raporlarının gönderilmesini etkinleştirdik.\nUygulama ayarlarından istediğiniz zaman devre dışı bırakabilirsiniz.",
+  "disable": "Devre dışı bırak"
 }

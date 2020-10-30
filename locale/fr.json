@@ -46,11 +46,11 @@
   "warn.token.crypto_not_found": "La smartcard insérée est prise en charge par Fortify mais nous n'arrivons pas à trouver le middleware pour cette smartcard. Assurez-vous que (%1) existe, sinon installez le middleware de la smartcard et essayez à nouveau.",
   "warn.token.crypto_wrong": "Un problème s'est produit au chargement du middleware (%1) de votre token ou smartcard.\nVeuillez vérifier que le middleware est installé correctement et essayez à nouveau.",
   "warn.pcsc.cannot_start": "Il semble que `Smart Card Resource Manager` ne soit pas lancé. Veuillez démarrer le service puis redémarrer Fortify.",
-  "keys.empty.search": "There are no websites matching that search.",
-  "remove": "Remove",
-  "settings": "Settings",
-  "telemetry.title": "Telemetry",
-  "telemetry.enable": "Enable usage data and crash reports to be sent to improve the application",
-  "question.telemetry.enable": "We enabled usage data and crash reports to be sent to improve the application.\nYou can disable it at any time in the application settings.",
-  "disable": "Disable"
+  "keys.empty.search": "Aucun site Web ne correspond à cette recherche.",
+  "remove": "Retirer",
+  "settings": "Réglages",
+  "telemetry.title": "Télémétrie",
+  "telemetry.enable": "Permettre l'envoi des données d'utilisation et des rapports d'erreur pour améliorer l'application",
+  "question.telemetry.enable": "Nous avons activé l'envoi de données d'utilisation et de rapports d'erreur pour améliorer l'application.\nVous pouvez le désactiver à tout moment dans les paramètres de l'application.",
+  "disable": "Désactiver"
 }
