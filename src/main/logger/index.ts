@@ -63,6 +63,20 @@ export const loggingSwitch = (enabled: boolean) => {
   }
 };
 
+export const loggingAnalyticsSwitch = (enabled: boolean) => {
+  if (isDevelopment) {
+    transportAnalytics.silent = true;
+
+    return;
+  }
+
+  if (enabled) {
+    transportAnalytics.silent = false;
+  } else {
+    transportAnalytics.silent = true;
+  }
+};
+
 export default {
   log: (level: string, source: string, message: string, params: object = {}) => {
     winstonlogger.log(level, message, {
