@@ -50,5 +50,7 @@
   "remove": "Kaldır",
   "settings": "Ayarlar",
   "telemetry.title": "Telemetry",
-  "telemetry.enable": "Enable usage data and crash reports to be sent to improve the application"
+  "telemetry.enable": "Enable usage data and crash reports to be sent to improve the application",
+  "question.telemetry.enable": "We enabled usage data and crash reports to be sent to improve the application.\nYou can disable it at any time in the application settings.",
+  "disable": "Disable"
 }
