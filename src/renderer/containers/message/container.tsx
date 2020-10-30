@@ -10,9 +10,11 @@ export interface IContainerProps {
   type: 'error' | 'warning' | 'question' | 'token';
   text: string;
   onClose: (showAgain?: boolean) => void;
-  onApprove?: () => void;
+  onApprove?: (showAgain?: boolean) => void;
   hasShowAgain?: boolean;
-  textClose?: string;
+  defaultShowAgainValue?: boolean;
+  buttonRejectLabel?: string;
+  buttonApproveLabel?: string;
 }
 
 export default class Container extends React.Component<IContainerProps> {
@@ -21,12 +23,12 @@ export default class Container extends React.Component<IContainerProps> {
   checkboxRef = React.createRef<any>();
 
   onKeyDown = (e: KeyboardEvent) => {
-    const { type, onApprove } = this.props;
+    const { type } = this.props;
 
     switch (e.keyCode) {
       case 13: // enter
-        if (['question', 'token'].includes(type) && onApprove) {
-          onApprove();
+        if (['question', 'token'].includes(type)) {
+          this.onApprove();
         }
 
         break;
@@ -47,12 +49,22 @@ export default class Container extends React.Component<IContainerProps> {
     onClose(checkboxRef?.current?.state.checkedState);
   };
 
+  onApprove = () => {
+    const { onApprove } = this.props;
+    const { checkboxRef } = this;
+
+    if (onApprove) {
+      onApprove(checkboxRef?.current?.state.checkedState);
+    }
+  };
+
   getDialogProps() {
     const {
       type,
-      textClose,
-      onApprove,
+      buttonRejectLabel,
+      buttonApproveLabel,
       hasShowAgain,
+      defaultShowAgainValue,
     } = this.props;
     const { intl } = this.context;
     const props: Omit<IDialogLayoutProps, 'children'> = {
@@ -64,7 +76,7 @@ export default class Container extends React.Component<IContainerProps> {
         />
       ),
       onReject: this.onClose,
-      textReject: textClose,
+      textReject: buttonRejectLabel && intl(buttonRejectLabel),
     };
 
     if (hasShowAgain) {
@@ -77,6 +89,7 @@ export default class Container extends React.Component<IContainerProps> {
           colorOn="grey_4"
           iconColorOn="black"
           ref={this.checkboxRef}
+          defaultChecked={defaultShowAgainValue}
           labelProps={{
             type: 'b3',
             color: 'grey_4',
@@ -105,9 +118,9 @@ export default class Container extends React.Component<IContainerProps> {
           />
         );
 
-        props.onApprove = onApprove;
-        props.textReject = intl('no');
-        props.textApprove = intl('yes');
+        props.onApprove = this.onApprove;
+        props.textReject = intl(buttonRejectLabel || 'no');
+        props.textApprove = intl(buttonApproveLabel || 'yes');
         break;
 
       case 'token':
@@ -119,9 +132,9 @@ export default class Container extends React.Component<IContainerProps> {
           />
         );
 
-        props.onApprove = onApprove;
-        props.textReject = intl('no');
-        props.textApprove = intl('yes');
+        props.onApprove = this.onApprove;
+        props.textReject = intl(buttonRejectLabel || 'no');
+        props.textApprove = intl(buttonApproveLabel || 'yes');
         break;
 
       default:

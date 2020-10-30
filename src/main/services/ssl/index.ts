@@ -99,7 +99,7 @@ export class SslService {
         {
           text: l10n.get('warn.ssl.renew'),
           title: 'warning.title.oh_no',
-          buttonLabel: l10n.get('close'),
+          buttonRejectLabel: 'close',
           id: 'ssl.renew',
         },
       );
@@ -118,7 +118,7 @@ export class SslService {
       try {
         await windowsController.showWarningWindow({
           text: l10n.get('warn.ssl.install'),
-          buttonLabel: l10n.get('i_understand'),
+          buttonRejectLabel: 'i_understand',
           id: 'ssl.install',
         });
 

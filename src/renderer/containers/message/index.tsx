@@ -4,9 +4,9 @@ import WindowProvider from '../../components/window_provider';
 import Container from './container';
 
 class Root extends WindowProvider<{}, {}> {
-  onApprove = () => {
+  onApprove = (showAgain?: boolean) => {
     this.params.result = 1;
-    this.close();
+    this.close(showAgain);
   };
 
   onClose = (showAgain?: boolean) => {
@@ -23,7 +23,9 @@ class Root extends WindowProvider<{}, {}> {
         onClose={this.close}
         onApprove={this.onApprove}
         hasShowAgain={this.params.id && this.params.showAgain}
-        textClose={this.params.buttonLabel}
+        defaultShowAgainValue={this.params.showAgainValue}
+        buttonRejectLabel={this.params.buttonRejectLabel}
+        buttonApproveLabel={this.params.buttonApproveLabel}
       />
     );
   }

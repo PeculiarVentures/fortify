@@ -177,7 +177,7 @@ export class Server {
                 {
                   text: l10n.get('warn.pcsc.cannot_start'),
                   title: 'warning.title.oh_no',
-                  buttonLabel: l10n.get('i_understand'),
+                  buttonRejectLabel: 'i_understand',
                   id: 'warn.pcsc.cannot_start',
                   showAgain: true,
                   showAgainValue: false,
@@ -189,7 +189,7 @@ export class Server {
                 {
                   text: l10n.get('warn.token.crypto_not_found', err.message),
                   title: 'warning.title.oh_no',
-                  buttonLabel: l10n.get('close'),
+                  buttonRejectLabel: 'close',
                   id: 'warn.token.crypto_not_found',
                   showAgain: true,
                   showAgainValue: false,
@@ -202,7 +202,7 @@ export class Server {
                 {
                   text: l10n.get('warn.token.crypto_wrong', err.message),
                   title: 'warning.title.oh_no',
-                  buttonLabel: l10n.get('close'),
+                  buttonRejectLabel: 'close',
                   id: 'warn.token.crypto_wrong',
                   showAgain: true,
                   showAgainValue: false,
