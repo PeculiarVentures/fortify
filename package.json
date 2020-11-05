@@ -2,7 +2,7 @@
   "name": "fortify",
   "productName": "Fortify",
   "version": "1.4.0",
-  "description": "",
+  "description": "Fortify enables web applications to use smart cards, local certificate stores and do certificate enrollment",
   "main": "out/main.js",
   "scripts": {
     "postinstall": "ts-node scripts/postinstall",
@@ -18,7 +18,10 @@
     "test": "mocha"
   },
   "keywords": [],
-  "author": "PeculiarVentures Team",
+  "author": {
+    "name": "Peculiar Ventures",
+    "email": "info@peculiarventures.com"
+  },
   "license": "AGPL",
   "devDependencies": {
     "@types/asn1js": "0.0.1",
