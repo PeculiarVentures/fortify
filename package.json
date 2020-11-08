@@ -2,7 +2,7 @@
   "name": "fortify",
   "productName": "Fortify",
   "version": "1.5.0",
-  "description": "",
+  "description": "Fortify enables web applications to use smart cards, local certificate stores and do certificate enrollment",
   "main": "out/main.js",
   "scripts": {
     "postinstall": "ts-node scripts/postinstall",
@@ -18,7 +18,10 @@
     "test": "mocha"
   },
   "keywords": [],
-  "author": "PeculiarVentures Team",
+  "author": {
+    "name": "Peculiar Ventures",
+    "email": "info@peculiarventures.com"
+  },
   "license": "AGPL",
   "devDependencies": {
     "@types/asn1js": "0.0.1",
@@ -72,7 +75,7 @@
     "@peculiar/asn1-x509": "^2.0.10",
     "@peculiar/webcrypto": "1.0.22",
     "@webcrypto-local/cards": "^1.3.0",
-    "@webcrypto-local/server": "^1.3.0",
+    "@webcrypto-local/server": "^1.4.1",
     "asn1js": "^2.0.26",
     "classnames": "^2.2.6",
     "get-proxy-settings": "^0.1.11",
