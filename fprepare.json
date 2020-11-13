@@ -4,7 +4,7 @@
   "include": [
     // node_modules
     "node_modules/pkcs11js/**/{*.js,*.json,*.node}",
-    "node_modules/@pokusew/pcsclite/**/{*.js,*.json,*.node}",
+    "node_modules/pcsclite/**/{*.js,*.json,*.node}",
     "node_modules/bindings/**/{*.js,*.json,*.node}",
     // "node_modules/bufferutil/**/{*.js,*.json,*.node}",
     "node_modules/file-uri-to-path/**/{*.js,*.json,*.node}",
