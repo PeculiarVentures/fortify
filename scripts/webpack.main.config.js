@@ -9,6 +9,6 @@ module.exports = merge.smart(baseConfig, {
   },
   externals: {
     pkcs11js: 'require("pkcs11js")',
-    'pcsclite': 'require("pcsclite")',
+    '@pokusew/pcsclite': 'require("@pokusew/pcsclite")',
   },
 });
