@@ -74,7 +74,7 @@
     "@peculiar/asn1-x509": "^2.0.25",
     "@peculiar/webcrypto": "1.0.22",
     "@webcrypto-local/cards": "^1.5.0",
-    "@webcrypto-local/server": "^1.5.0",
+    "@webcrypto-local/server": "^1.5.1",
     "asn1js": "^2.0.26",
     "classnames": "^2.2.6",
     "get-proxy-settings": "^0.1.11",
