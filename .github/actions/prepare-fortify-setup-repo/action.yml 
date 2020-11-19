@@ -1,0 +1,8 @@
+name: Prepare fortify-setup repository
+runs:
+  using: "composite"
+  steps:
+    - run: git clone https://$ACCESS_TOKEN:x-oauth-basic@github.com/PeculiarVentures/fortify-setup.git --depth=1 --branch=master
+      shell: bash
+    - run: npm ci --prefix ./fortify-setup
+      shell: bash
