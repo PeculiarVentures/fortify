@@ -111,7 +111,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Draft release: ${{ github.ref }}
+          release_name: Draft release ${{ github.ref }}
           draft: true
           prerelease: false
       - name: Get artifact names
