@@ -1,0 +1,163 @@
+name: Create installers and draft release
+
+on:
+  push:
+    branches:
+      - master
+      - canary
+
+jobs:
+  macos:
+    runs-on: macos-10.15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare app repository
+        uses: ./.github/actions/prepare-app-repo
+      - name: Prepare fortify-setup repository
+        uses: ./.github/actions/prepare-fortify-setup-repo
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      - name: Create installer
+        run: npm run build --prefix ./fortify-setup
+        env:
+          APP_REPO_FOLDER: ../
+          RELEASE_FOLDER: ../release
+      - name: Get artifact names
+        id: getmacosfilename
+        run: |
+          echo "::set-output name=pkgPath::$(ls release/*.pkg)"
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: installers
+          path: ${{ steps.getmacosfilename.outputs.pkgPath }}
+
+  ubuntu:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install OS dependencies
+        run: sudo apt-get install libpcsclite-dev
+      - name: Prepare app repository
+        uses: ./.github/actions/prepare-app-repo
+      - name: Prepare fortify-setup repository
+        uses: ./.github/actions/prepare-fortify-setup-repo
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      - name: Create installer
+        run: npm run build --prefix ./fortify-setup
+        env:
+          APP_REPO_FOLDER: ../
+          RELEASE_FOLDER: ../release
+      - name: Get artifact names
+        id: getubuntufilename
+        run: |
+          echo "::set-output name=debPath::$(ls release/*.deb)"
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: installers
+          path: ${{ steps.getubuntufilename.outputs.debPath }}
+
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        platform: [x86, x64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup msbuild
+        uses: microsoft/setup-msbuild@v1
+      - name: Setup NuGet.exe for use with actions
+        uses: nuget/setup-nuget@v1.0.5
+      - name: Prepare app repository
+        uses: ./.github/actions/prepare-app-repo
+      - name: Prepare fortify-setup repository
+        uses: ./.github/actions/prepare-fortify-setup-repo
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      - name: Create installer
+        run: npm run build --prefix ./fortify-setup
+        env:
+          Platform: ${{ matrix.platform }}
+          APP_REPO_FOLDER: ../
+          RELEASE_FOLDER: ../release
+      - name: Get artifact names
+        id: getwindowsfilename
+        run: |
+          Write-Host "::set-output name=msiPath::release/$(Get-ChildItem -Name .\release\ | Select-String msi)"
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: installers
+          path: ${{ steps.getwindowsfilename.outputs.msiPath }}
+
+  create_release:
+    name: Prepare and create draft  release
+    runs-on: ubuntu-18.04
+    needs: [macos, ubuntu, windows]
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: installers
+      - name: Create draft release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Draft release ${{ github.ref }}
+          draft: true
+          prerelease: false
+      - name: Get artifact names
+        id: getfilename
+        run: |
+          echo "::set-output name=pkgName::$(ls installers/*.pkg | cut -d'/' -f2)"
+          echo "::set-output name=debName::$(ls installers/*.deb | cut -d'/' -f2)"
+          echo "::set-output name=msi64Name::$(ls installers/*x64*.msi | cut -d'/' -f2)"
+          echo "::set-output name=msi86Name::$(ls installers/*x86*.msi | cut -d'/' -f2)"
+
+      - name: Upload .pkg
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: installers/${{ steps.getfilename.outputs.pkgName }}
+          asset_name: ${{ steps.getfilename.outputs.pkgName }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload .deb
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: installers/${{ steps.getfilename.outputs.debName }}
+          asset_name: ${{ steps.getfilename.outputs.debName }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload .msi (x64)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: installers/${{ steps.getfilename.outputs.msi64Name }}
+          asset_name: ${{ steps.getfilename.outputs.msi64Name }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload .msi (x86)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: installers/${{ steps.getfilename.outputs.msi86Name }}
+          asset_name: ${{ steps.getfilename.outputs.msi86Name }}
+          asset_content_type: application/octet-stream
