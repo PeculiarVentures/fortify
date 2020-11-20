@@ -84,4 +84,9 @@ async function main() {
   // fs.writeFileSync('card.jws', jwsCard, { flag: 'w+' });
 }
 
-main();
+main()
+  .catch((error) => {
+    console.log(error);
+
+    process.exit(1);
+  });
