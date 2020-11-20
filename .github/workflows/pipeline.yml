@@ -30,7 +30,7 @@ jobs:
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: installers
+          name: artifacts
           path: ${{ steps.getmacosfilename.outputs.pkgPath }}
 
   ubuntu:
@@ -58,7 +58,7 @@ jobs:
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: installers
+          name: artifacts
           path: ${{ steps.getubuntufilename.outputs.debPath }}
 
   windows:
@@ -92,7 +92,7 @@ jobs:
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: installers
+          name: artifacts
           path: ${{ steps.getwindowsfilename.outputs.msiPath }}
 
   create_release:
@@ -103,7 +103,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v1
         with:
-          name: installers
+          name: artifacts
       - name: Create draft release
         id: create_release
         uses: actions/create-release@v1
@@ -117,10 +117,10 @@ jobs:
       - name: Get artifact names
         id: getfilename
         run: |
-          echo "::set-output name=pkgName::$(ls installers/*.pkg | cut -d'/' -f2)"
-          echo "::set-output name=debName::$(ls installers/*.deb | cut -d'/' -f2)"
-          echo "::set-output name=msi64Name::$(ls installers/*x64*.msi | cut -d'/' -f2)"
-          echo "::set-output name=msi86Name::$(ls installers/*x86*.msi | cut -d'/' -f2)"
+          echo "::set-output name=pkgName::$(ls artifacts/*.pkg | cut -d'/' -f2)"
+          echo "::set-output name=debName::$(ls artifacts/*.deb | cut -d'/' -f2)"
+          echo "::set-output name=msi64Name::$(ls artifacts/*x64*.msi | cut -d'/' -f2)"
+          echo "::set-output name=msi86Name::$(ls artifacts/*x86*.msi | cut -d'/' -f2)"
 
       - name: Upload .pkg
         uses: actions/upload-release-asset@v1
@@ -128,7 +128,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: installers/${{ steps.getfilename.outputs.pkgName }}
+          asset_path: artifacts/${{ steps.getfilename.outputs.pkgName }}
           asset_name: ${{ steps.getfilename.outputs.pkgName }}
           asset_content_type: application/octet-stream
 
@@ -138,7 +138,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: installers/${{ steps.getfilename.outputs.debName }}
+          asset_path: artifacts/${{ steps.getfilename.outputs.debName }}
           asset_name: ${{ steps.getfilename.outputs.debName }}
           asset_content_type: application/octet-stream
 
@@ -148,7 +148,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: installers/${{ steps.getfilename.outputs.msi64Name }}
+          asset_path: artifacts/${{ steps.getfilename.outputs.msi64Name }}
           asset_name: ${{ steps.getfilename.outputs.msi64Name }}
           asset_content_type: application/octet-stream
 
@@ -158,6 +158,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: installers/${{ steps.getfilename.outputs.msi86Name }}
+          asset_path: artifacts/${{ steps.getfilename.outputs.msi86Name }}
           asset_name: ${{ steps.getfilename.outputs.msi86Name }}
           asset_content_type: application/octet-stream
