@@ -16,11 +16,16 @@ jobs:
       - name: Prepare app repository
         uses: ./.github/actions/prepare-app-repo
       - name: Sign data
-        run: npm run sign:data
+        run: npm run sign_data
         env:
           PRIVATE_KEY_BASE64: ${{ secrets.PRIVATE_KEY_BASE64 }}
           PUBLIC_KEY_BASE64: ${{ secrets.PUBLIC_KEY_BASE64 }}
           OUTPUT_FOLDER_PATH: ./release
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: ./release/*.jws
 
   # macos:
   #   runs-on: macos-10.15
@@ -42,11 +47,11 @@ jobs:
   #       id: getmacosfilename
   #       run: |
   #         echo "::set-output name=pkgPath::$(ls release/*.pkg)"
-  #     - name: Archive build artifacts
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: artifacts
-  #         path: ${{ steps.getmacosfilename.outputs.pkgPath }}
+      # - name: Archive build artifacts
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: artifacts
+      #     path: ${{ steps.getmacosfilename.outputs.pkgPath }}
 
   # ubuntu:
   #   runs-on: ubuntu-18.04
