@@ -8,13 +8,22 @@ on:
       - prepare-sign-artifacts
 
 jobs:
-  sign_data:
+  macos:
     runs-on: macos-10.15
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Prepare app repository
         uses: ./.github/actions/prepare-app-repo
+      - name: Prepare fortify-setup repository
+        uses: ./.github/actions/prepare-fortify-setup-repo
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      - name: Create installer
+        run: npm run build --prefix ./fortify-setup
+        env:
+          APP_REPO_FOLDER: ../
+          RELEASE_FOLDER: ../release
       - name: Sign data
         run: npm run sign_data
         env:
@@ -25,33 +34,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: artifacts
-          path: ./release/*.jws
-
-  # macos:
-  #   runs-on: macos-10.15
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-  #     - name: Prepare app repository
-  #       uses: ./.github/actions/prepare-app-repo
-  #     - name: Prepare fortify-setup repository
-  #       uses: ./.github/actions/prepare-fortify-setup-repo
-  #       env:
-  #         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  #     - name: Create installer
-  #       run: npm run build --prefix ./fortify-setup
-  #       env:
-  #         APP_REPO_FOLDER: ../
-  #         RELEASE_FOLDER: ../release
-  #     - name: Get artifact names
-  #       id: getmacosfilename
-  #       run: |
-  #         echo "::set-output name=pkgPath::$(ls release/*.pkg)"
-      # - name: Archive build artifacts
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: artifacts
-      #     path: ${{ steps.getmacosfilename.outputs.pkgPath }}
+          path: |
+            ./release/*.jws
+            ./release/*.pkg
 
   # ubuntu:
   #   runs-on: ubuntu-18.04
@@ -71,15 +56,11 @@ jobs:
   #       env:
   #         APP_REPO_FOLDER: ../
   #         RELEASE_FOLDER: ../release
-  #     - name: Get artifact names
-  #       id: getubuntufilename
-  #       run: |
-  #         echo "::set-output name=debPath::$(ls release/*.deb)"
   #     - name: Archive build artifacts
   #       uses: actions/upload-artifact@v2
   #       with:
   #         name: artifacts
-  #         path: ${{ steps.getubuntufilename.outputs.debPath }}
+  #         path: ./release/*.deb
 
   # windows:
   #   runs-on: windows-latest
@@ -105,15 +86,11 @@ jobs:
   #         Platform: ${{ matrix.platform }}
   #         APP_REPO_FOLDER: ../
   #         RELEASE_FOLDER: ../release
-  #     - name: Get artifact names
-  #       id: getwindowsfilename
-  #       run: |
-  #         Write-Host "::set-output name=msiPath::release/$(Get-ChildItem -Name .\release\ | Select-String msi)"
   #     - name: Archive build artifacts
   #       uses: actions/upload-artifact@v2
   #       with:
   #         name: artifacts
-  #         path: ${{ steps.getwindowsfilename.outputs.msiPath }}
+  #         path: ./release/*.msi
 
   # create_release:
   #   name: Prepare and create draft  release
