@@ -7,15 +7,16 @@ import { crypto } from './crypto';
 import { getKeyPair } from './keys';
 
 const {
-  SIGN_BASE64,
-  VERIFY_BASE64,
+  PRIVATE_KEY_BASE64,
+  PUBLIC_KEY_BASE64,
+  OUTPUT_FOLDER_PATH,
 } = process.env;
 
-async function signData(keys: CryptoKeyPair, data: any) {
+async function signData(keys: CryptoKeyPairEx, data: any) {
   const cryptographer = new jose.Jose.WebCryptographer();
   cryptographer.setContentSignAlgorithm('RS256');
   const signer = new jose.JoseJWS.Signer(cryptographer);
-  await signer.addSigner(keys.privateKey, keys.privateKey.kid);
+  await signer.addSigner(keys.privateKey, keys.kid);
 
   const doc = await signer.sign(data);
   const jws = doc.CompactSerialize();
@@ -23,17 +24,17 @@ async function signData(keys: CryptoKeyPair, data: any) {
   return jws;
 }
 
-async function verifyData(keys: CryptoKeyPair, jws: string) {
+async function verifyData(keys: CryptoKeyPairEx, jws: string) {
   const cryptographer = new jose.Jose.WebCryptographer();
   cryptographer.setContentSignAlgorithm('RS256');
 
   const verifier = new jose.JoseJWS.Verifier(cryptographer, jws);
-  await verifier.addRecipient(keys.publicKey, keys.publicKey.kid);
+  await verifier.addRecipient(keys.publicKey, keys.kid);
 
   return verifier.verify();
 }
 
-async function signUpdateJSON(keys: CryptoKeyPair, info: IUpdateInfoJson) {
+async function signUpdateJSON(keys: CryptoKeyPairEx, info: IUpdateInfoJson) {
   const jws = await signData(keys, info);
 
   if (!await verifyData(keys, jws)) {
@@ -43,7 +44,7 @@ async function signUpdateJSON(keys: CryptoKeyPair, info: IUpdateInfoJson) {
   return jws;
 }
 
-async function signCardJSON(keys: CryptoKeyPair, path: string) {
+async function signCardJSON(keys: CryptoKeyPairEx, path: string) {
   // Read card.json
   const json = fs.readFileSync(path, 'utf8');
   const card = JSON.parse(json);
@@ -57,31 +58,36 @@ async function signCardJSON(keys: CryptoKeyPair, path: string) {
 async function main() {
   const { version } = require('../../package.json');
 
-  if (!SIGN_BASE64) {
-    throw new Error('Missed required env variable "SIGN_BASE64".');
+  if (!PRIVATE_KEY_BASE64) {
+    throw new Error('Missed required env variable "PRIVATE_KEY_BASE64".');
   }
 
-  if (!VERIFY_BASE64) {
-    throw new Error('Missed required env variable "VERIFY_BASE64".');
+  if (!PUBLIC_KEY_BASE64) {
+    throw new Error('Missed required env variable "PUBLIC_KEY_BASE64".');
+  }
+
+  if (!OUTPUT_FOLDER_PATH) {
+    throw new Error('Missed required env variable "OUTPUT_FOLDER_PATH".');
   }
 
   jose.setCrypto(crypto as any);
 
-  const keys = await getKeyPair(SIGN_BASE64, VERIFY_BASE64);
+  const keys = await getKeyPair(PRIVATE_KEY_BASE64, PUBLIC_KEY_BASE64);
   const jws = await signUpdateJSON(keys, { version });
-
-  console.log('\nupdate.jws');
-  console.log(jws);
-
-  // console.log('\nupdate.jws');
-  // fs.writeFileSync('update.jws', jws, { flag: 'w+' });
-
   const jwsCard = await signCardJSON(keys, path.resolve('./node_modules/@webcrypto-local/cards/lib/card.json'));
+  const outPath = path.resolve(OUTPUT_FOLDER_PATH);
+  const outPathUpdateJws = path.join(outPath, './update.jws');
+  const outPathCardJws = path.join(outPath, './card.jws')
 
-  console.log('\ncard.jws');
-  console.log(jwsCard);
+  if (!fs.existsSync(outPath)) {
+    fs.mkdirSync(outPath);
+  }
 
-  // fs.writeFileSync('card.jws', jwsCard, { flag: 'w+' });
+  fs.writeFileSync(outPathUpdateJws, jws, { flag: 'w+' });
+  console.log('\nupdate.jws created successfully:', outPathUpdateJws);
+
+  fs.writeFileSync(outPathCardJws, jwsCard, { flag: 'w+' });
+  console.log('\ncard.jws created successfully:', outPathCardJws);
 }
 
 main()

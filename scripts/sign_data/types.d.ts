@@ -15,3 +15,7 @@ interface IUpdateInfoJson {
   version: string;
   min?: string;
 }
+
+interface CryptoKeyPairEx extends CryptoKeyPair {
+  kid: string;
+}

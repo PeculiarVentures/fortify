@@ -1,39 +1,39 @@
+/// <reference path="./types.d.ts" />
+
 import { Convert } from 'pvtsutils';
 import { crypto } from './crypto';
 
 async function getKID(pubKey: CryptoKey) {
   const raw = await crypto.subtle.exportKey('spki', pubKey);
-
-  console.log('\nPublic key:');
-  console.log(Convert.ToBase64(raw));
-
   const hash = await crypto.subtle.digest('SHA-256', raw);
 
-  return Buffer.from(hash).toString('base64');
+  return Convert.ToBase64(hash);
 }
 
-async function getPrivateKey(keyJson: any) {
-  const key = await crypto.subtle.importKey('jwk', keyJson.keyJwk, keyJson.algorithm, false, ['sign']);
+async function getPrivateKey(privateKey: string) {
+  const json = JSON.parse(Convert.ToString(Convert.FromBase64(privateKey)));
+  const key = await crypto.subtle.importKey('jwk', json.keyJwk, json.algorithm, false, ['sign']);
 
   return key;
 }
 
-async function getPublicKey(keyJson: any) {
-  const key = await crypto.subtle.importKey('jwk', keyJson.keyJwk, keyJson.algorithm, true, ['verify']);
+async function getPublicKey(publicKey: any) {
+  const json = JSON.parse(Convert.ToString(Convert.FromBase64(publicKey)));
+  const key = await crypto.subtle.importKey('jwk', json.keyJwk, json.algorithm, true, ['verify']);
 
   return key;
 }
 
-export async function getKeyPair(privateKeyJson: any, publicKeyJson: any) {
-  const keyPair: CryptoKeyPair = {
-    privateKey: await getPrivateKey(privateKeyJson),
-    publicKey: await getPublicKey(publicKeyJson),
+export async function getKeyPair(privateKey: any, publicKey: any) {
+  const keyPair: CryptoKeyPairEx = {
+    privateKey: await getPrivateKey(privateKey),
+    publicKey: await getPublicKey(publicKey),
+    kid: '',
   };
   const kid = await getKID(keyPair.publicKey);
 
   // Update keys structure
-  keyPair.privateKey.kid = kid;
-  keyPair.publicKey.kid = kid;
+  keyPair.kid = kid;
 
   return keyPair;
 }
