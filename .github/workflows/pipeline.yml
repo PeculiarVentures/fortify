@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - canary
+      - prepare-sign-artifacts
 
 jobs:
   macos:
@@ -23,15 +24,19 @@ jobs:
         env:
           APP_REPO_FOLDER: ../
           RELEASE_FOLDER: ../release
-      - name: Get artifact names
-        id: getmacosfilename
-        run: |
-          echo "::set-output name=pkgPath::$(ls release/*.pkg)"
+      - name: Sign data
+        run: npm run sign_data
+        env:
+          PRIVATE_KEY_BASE64: ${{ secrets.PRIVATE_KEY_BASE64 }}
+          PUBLIC_KEY_BASE64: ${{ secrets.PUBLIC_KEY_BASE64 }}
+          OUTPUT_FOLDER_PATH: ./release
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: installers
-          path: ${{ steps.getmacosfilename.outputs.pkgPath }}
+          name: artifacts
+          path: |
+            ./release/*.jws
+            ./release/*.pkg
 
   ubuntu:
     runs-on: ubuntu-18.04
@@ -51,15 +56,11 @@ jobs:
         env:
           APP_REPO_FOLDER: ../
           RELEASE_FOLDER: ../release
-      - name: Get artifact names
-        id: getubuntufilename
-        run: |
-          echo "::set-output name=debPath::$(ls release/*.deb)"
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: installers
-          path: ${{ steps.getubuntufilename.outputs.debPath }}
+          name: artifacts
+          path: ./release/*.deb
 
   windows:
     runs-on: windows-latest
@@ -85,15 +86,11 @@ jobs:
           Platform: ${{ matrix.platform }}
           APP_REPO_FOLDER: ../
           RELEASE_FOLDER: ../release
-      - name: Get artifact names
-        id: getwindowsfilename
-        run: |
-          Write-Host "::set-output name=msiPath::release/$(Get-ChildItem -Name .\release\ | Select-String msi)"
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: installers
-          path: ${{ steps.getwindowsfilename.outputs.msiPath }}
+          name: artifacts
+          path: ./release/*.msi
 
   create_release:
     name: Prepare and create draft  release
@@ -103,7 +100,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v1
         with:
-          name: installers
+          name: artifacts
       - name: Create draft release
         id: create_release
         uses: actions/create-release@v1
@@ -117,10 +114,10 @@ jobs:
       - name: Get artifact names
         id: getfilename
         run: |
-          echo "::set-output name=pkgName::$(ls installers/*.pkg | cut -d'/' -f2)"
-          echo "::set-output name=debName::$(ls installers/*.deb | cut -d'/' -f2)"
-          echo "::set-output name=msi64Name::$(ls installers/*x64*.msi | cut -d'/' -f2)"
-          echo "::set-output name=msi86Name::$(ls installers/*x86*.msi | cut -d'/' -f2)"
+          echo "::set-output name=pkgName::$(ls artifacts/*.pkg | cut -d'/' -f2)"
+          echo "::set-output name=debName::$(ls artifacts/*.deb | cut -d'/' -f2)"
+          echo "::set-output name=msi64Name::$(ls artifacts/*x64*.msi | cut -d'/' -f2)"
+          echo "::set-output name=msi86Name::$(ls artifacts/*x86*.msi | cut -d'/' -f2)"
 
       - name: Upload .pkg
         uses: actions/upload-release-asset@v1
@@ -128,7 +125,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: installers/${{ steps.getfilename.outputs.pkgName }}
+          asset_path: artifacts/${{ steps.getfilename.outputs.pkgName }}
           asset_name: ${{ steps.getfilename.outputs.pkgName }}
           asset_content_type: application/octet-stream
 
@@ -138,7 +135,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: installers/${{ steps.getfilename.outputs.debName }}
+          asset_path: artifacts/${{ steps.getfilename.outputs.debName }}
           asset_name: ${{ steps.getfilename.outputs.debName }}
           asset_content_type: application/octet-stream
 
@@ -148,7 +145,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: installers/${{ steps.getfilename.outputs.msi64Name }}
+          asset_path: artifacts/${{ steps.getfilename.outputs.msi64Name }}
           asset_name: ${{ steps.getfilename.outputs.msi64Name }}
           asset_content_type: application/octet-stream
 
@@ -158,6 +155,26 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: installers/${{ steps.getfilename.outputs.msi86Name }}
+          asset_path: artifacts/${{ steps.getfilename.outputs.msi86Name }}
           asset_name: ${{ steps.getfilename.outputs.msi86Name }}
           asset_content_type: application/octet-stream
+
+      - name: Upload update.jws
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/update.jws
+          asset_name: update.jws
+          asset_content_type: application/jose
+
+      - name: Upload card.jws
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/card.jws
+          asset_name: card.jws
+          asset_content_type: application/jose
