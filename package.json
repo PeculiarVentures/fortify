@@ -6,7 +6,7 @@
   "main": "out/main.js",
   "scripts": {
     "postinstall": "ts-node scripts/postinstall",
-    "sign:data": "ts-node scripts/sign_data/index",
+    "sign_data": "ts-node scripts/sign_data",
     "start": "electron .",
     "build:main": "webpack --config scripts/webpack.main.config.js",
     "build:renderer": "webpack --config scripts/webpack.renderer.config.js",
