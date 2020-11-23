@@ -18,8 +18,9 @@ jobs:
       - name: Sign data
         run: npm run sign:data
         env:
-          SIGN_BASE64: ${{ secrets.SIGN_BASE64 }}
-          VERIFY_BASE64: ${{ secrets.VERIFY_BASE64 }}
+          PRIVATE_KEY_BASE64: ${{ secrets.PRIVATE_KEY_BASE64 }}
+          PUBLIC_KEY_BASE64: ${{ secrets.PUBLIC_KEY_BASE64 }}
+          OUTPUT_FOLDER_PATH: ./release
 
   # macos:
   #   runs-on: macos-10.15
