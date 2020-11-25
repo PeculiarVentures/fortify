@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - canary
-      - prepare-sign-artifacts
+      - analytics-implementation
 
 jobs:
   macos:
