@@ -50,7 +50,7 @@
   "remove": "Kaldır",
   "settings": "Ayarlar",
   "telemetry.title": "Telemetri",
-  "telemetry.enable": "Uygulamayı iyileştirmek için kullanım verilerinin ve kilitlenme raporlarının gönderilmesini etkinleştirin",
-  "question.telemetry.enable": "Uygulamayı iyileştirmek için kullanım verilerinin ve kilitlenme raporlarının gönderilmesini etkinleştirdik.\nUygulama ayarlarından istediğiniz zaman devre dışı bırakabilirsiniz.",
+  "telemetry.enable": "Fortify'ın gelecekteki sürümlerinin karşılaşabileceğiniz sorunları ele almasını sağlamamıza yardımcı olmak için kullanım ve kilitlenme raporlarını etkinleştirin",
+  "question.telemetry.enable": "Kullanım ve kilitlenme raporları, Fortify'ın gelecekteki sürümlerinin karşılaşabileceğiniz sorunları ele almasını sağlamamıza yardımcı olur.\nKullanım ve kilitlenme raporlaması etkin mi bırakılsın?",
   "disable": "Devre dışı bırak"
 }

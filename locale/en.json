@@ -50,7 +50,7 @@
   "remove": "Remove",
   "settings": "Settings",
   "telemetry.title": "Telemetry",
-  "telemetry.enable": "Enable usage data and crash reports to be sent to improve the application",
-  "question.telemetry.enable": "We enabled usage data and crash reports to be sent to improve the application.\nYou can disable it at any time in the application settings.",
+  "telemetry.enable": "Enable usage and crash reports to help us ensure future versions of Fortify address the issues you may experience",
+  "question.telemetry.enable": "Usage and crash reports help us ensure future versions of Fortify address the issues you may experience.\nLeave usage and crash reporting enabled?",
   "disable": "Disable"
 }

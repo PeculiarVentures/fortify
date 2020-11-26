@@ -246,7 +246,6 @@ export class Application {
           showAgain: true,
           showAgainValue: true,
           buttonRejectLabel: 'disable',
-          buttonApproveLabel: 'ok',
         });
 
         if (questionWindowResult.result) { // yes

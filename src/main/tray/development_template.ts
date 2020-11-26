@@ -68,6 +68,21 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         },
       },
       {
+        label: 'Question telemetry enable',
+        click: () => {
+          windowsController.showQuestionWindow(
+            {
+              text: l10n.get('question.telemetry.enable'),
+              id: 'question.telemetry.enable',
+              result: 0,
+              showAgain: true,
+              showAgainValue: false,
+              buttonRejectLabel: 'disable',
+            },
+          );
+        },
+      },
+      {
         type: 'separator',
       },
       {

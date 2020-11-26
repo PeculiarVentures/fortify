@@ -50,7 +50,7 @@
   "remove": "去掉",
   "settings": "設定值",
   "telemetry.title": "遙測",
-  "telemetry.enable": "啟用發送使用情況數據和崩潰報告以改進應用程序",
-  "question.telemetry.enable": "我們啟用了使用情況數據和崩潰報告，以改進應用程序。\n您可以隨時在應用程序設置中將其禁用。",
+  "telemetry.enable": "啟用使用情況和崩潰報告以幫助我們確保Fortify的未來版本能夠解決您可能遇到的問題",
+  "question.telemetry.enable": "使用情況和崩潰報告有助於我們確保Fortify的未來版本能夠解決您可能遇到的問題。\n是否啟用使用情況和崩潰報告？",
   "disable": "禁用"
 }

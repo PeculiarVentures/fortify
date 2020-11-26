@@ -50,7 +50,7 @@
   "remove": "Remover",
   "settings": "Definições",
   "telemetry.title": "Telemetria",
-  "telemetry.enable": "Permitir o envio de dados de uso e relatórios de falhas para melhorar o aplicativo",
-  "question.telemetry.enable": "Permitimos o envio de dados de uso e relatórios de falhas para melhorar o aplicativo.\nVocê pode desativá-lo a qualquer momento nas configurações do aplicativo.",
+  "telemetry.enable": "Habilite relatórios de uso e falhas para nos ajudar a garantir que versões futuras do Fortify resolvam os problemas que você pode enfrentar",
+  "question.telemetry.enable": "Os relatórios de uso e falhas nos ajudam a garantir que versões futuras do Fortify resolvam os problemas que você pode enfrentar.\nDeixar os relatórios de uso e falha ativados?",
   "disable": "Desabilitar"
 }

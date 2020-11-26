@@ -50,7 +50,7 @@
   "remove": "Verwijderen",
   "settings": "Instellingen",
   "telemetry.title": "Telemetrie",
-  "telemetry.enable": "Schakel gebruiksgegevens en crashrapporten in om de applicatie te verbeteren",
-  "question.telemetry.enable": "We hebben het mogelijk gemaakt om gebruiksgegevens en crashrapporten te verzenden om de applicatie te verbeteren.\nU kunt het op elk moment uitschakelen in de applicatie-instellingen.",
+  "telemetry.enable": "Schakel gebruiks- en crashrapporten in om ons te helpen ervoor te zorgen dat toekomstige versies van Fortify de problemen aanpakken die u mogelijk ondervindt",
+  "question.telemetry.enable": "Gebruiks- en crashrapporten helpen ons ervoor te zorgen dat toekomstige versies van Fortify de problemen aanpakken die u mogelijk ondervindt.\nGebruiks- en crashrapportage ingeschakeld laten?",
   "disable": "Uitschakelen"
 }

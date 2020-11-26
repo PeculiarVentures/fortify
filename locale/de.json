@@ -50,7 +50,7 @@
   "remove": "Entfernen",
   "settings": "die Einstellungen",
   "telemetry.title": "Telemetrie",
-  "telemetry.enable": "Aktivieren Sie das Senden von Nutzungsdaten und Absturzberichten, um die Anwendung zu verbessern",
-  "question.telemetry.enable": "Wir haben das Senden von Nutzungsdaten und Absturzberichten aktiviert, um die Anwendung zu verbessern.\nSie können es jederzeit in den Anwendungseinstellungen deaktivieren.",
+  "telemetry.enable": "Aktivieren Sie Verwendungs- und Absturzberichte, um sicherzustellen, dass zukünftige Versionen von Fortify die Probleme beheben, die möglicherweise auftreten",
+  "question.telemetry.enable": "Mithilfe von Verwendungs- und Absturzberichten können wir sicherstellen, dass zukünftige Versionen von Fortify die möglicherweise auftretenden Probleme beheben.\nNutzung und Absturzberichterstattung aktiviert lassen?",
   "disable": "Deaktivieren"
 }

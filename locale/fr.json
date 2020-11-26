@@ -50,7 +50,7 @@
   "remove": "Retirer",
   "settings": "Réglages",
   "telemetry.title": "Télémétrie",
-  "telemetry.enable": "Permettre l'envoi des données d'utilisation et des rapports d'erreur pour améliorer l'application",
-  "question.telemetry.enable": "Nous avons activé l'envoi de données d'utilisation et de rapports d'erreur pour améliorer l'application.\nVous pouvez le désactiver à tout moment dans les paramètres de l'application.",
+  "telemetry.enable": "Activez l'utilisation et les rapports d'erreur pour nous aider à nous assurer que les futures versions de Fortify résoudront les problèmes que vous pourriez rencontrer",
+  "question.telemetry.enable": "Les rapports d'utilisation et d'erreur nous aident à nous assurer que les futures versions de Fortify résoudront les problèmes que vous pourriez rencontrer.\nLaisser les rapports d'utilisation et de plantage activés?",
   "disable": "Désactiver"
 }

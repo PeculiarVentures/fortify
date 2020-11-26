@@ -50,7 +50,7 @@
   "remove": "Rimuovi",
   "settings": "Impostazioni",
   "telemetry.title": "Telemetria",
-  "telemetry.enable": "Abilita l'invio di dati sull'utilizzo e rapporti sugli arresti anomali per migliorare l'applicazione",
-  "question.telemetry.enable": "Abbiamo abilitato l'invio di dati sull'utilizzo e rapporti sugli arresti anomali per migliorare l'applicazione.\nPuoi disabilitarlo in qualsiasi momento nelle impostazioni dell'applicazione.",
+  "telemetry.enable": "Abilita i rapporti sull'utilizzo e sugli arresti anomali per assicurarci che le versioni future di Fortify risolvano i problemi che potresti riscontrare",
+  "question.telemetry.enable": "I rapporti sull'utilizzo e sugli arresti anomali ci aiutano a garantire che le versioni future di Fortify risolvano i problemi che potresti riscontrare.\nLasciare abilitati i rapporti sull'utilizzo e sugli arresti anomali?",
   "disable": "Disattivare"
 }

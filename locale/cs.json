@@ -50,7 +50,7 @@
   "remove": "Odstranit",
   "settings": "Nastavení",
   "telemetry.title": "Telemetrie",
-  "telemetry.enable": "Chcete-li aplikaci vylepšit, povolte odesílání údajů o využití a zpráv o selhání",
-  "question.telemetry.enable": "Abychom vylepšili aplikaci, povolili jsme odesílání údajů o používání a zpráv o selhání.\nMůžete ji kdykoli deaktivovat v nastavení aplikace.",
+  "telemetry.enable": "Povolte zprávy o použití a selhání, které nám pomohou zajistit, aby budoucí verze Fortify řešily problémy, se kterými se můžete setkat",
+  "question.telemetry.enable": "Zprávy o použití a selhání nám pomáhají zajistit, aby budoucí verze Fortify řešily problémy, se kterými se můžete setkat.\nNechat povoleno hlášení o využití a selhání?",
   "disable": "Zakázat"
 }
