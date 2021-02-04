@@ -23,6 +23,7 @@ export class DialogsStorage {
       } catch (error) {
         logger.error('dialog-storage', 'Cannot parse JSON file', {
           file: constants.APP_DIALOG_FILE,
+          error: error.message,
           stack: error.stack,
         });
       }

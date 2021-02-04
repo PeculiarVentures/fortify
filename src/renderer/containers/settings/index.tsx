@@ -11,9 +11,8 @@ interface IRootState {
     list: IKey[];
     isFetching: IsFetchingType;
   };
-  logging: {
-    status: boolean;
-  };
+  logging: boolean;
+  telemetry: boolean;
 }
 
 class Root extends WindowProvider<IRootProps, IRootState> {
@@ -25,18 +24,19 @@ class Root extends WindowProvider<IRootProps, IRootState> {
         list: [],
         isFetching: 'pending',
       },
-      logging: {
-        status: false,
-      },
+      logging: false,
+      telemetry: false,
     };
   }
 
   componentWillMount() {
     this.handleKeysListGet();
     this.handleLoggingGet();
+    this.handleTelemetryGet();
 
     ipcRenderer.on('ipc-2key-changed', this.handleKeysListGet);
     ipcRenderer.on('ipc-logging-status-changed', this.onLoggingChangedListener);
+    ipcRenderer.on('ipc-telemetry-status-changed', this.onTelemetryChangedListener);
   }
 
   handleKeysListGet = () => {
@@ -54,17 +54,27 @@ class Root extends WindowProvider<IRootProps, IRootState> {
     const status = ipcRenderer.sendSync('ipc-logging-status-get');
 
     this.setState({
-      logging: {
-        status,
-      },
+      logging: status,
+    });
+  }
+
+  handleTelemetryGet() {
+    const status = ipcRenderer.sendSync('ipc-telemetry-status-get');
+
+    this.setState({
+      telemetry: status,
     });
   }
 
   onLoggingChangedListener = (_: IpcRendererEvent, status: boolean) => {
     this.setState({
-      logging: {
-        status,
-      },
+      logging: status,
+    });
+  };
+
+  onTelemetryChangedListener = (_: IpcRendererEvent, status: boolean) => {
+    this.setState({
+      telemetry: status,
     });
   };
 
@@ -84,15 +94,23 @@ class Root extends WindowProvider<IRootProps, IRootState> {
     ipcRenderer.send('ipc-language-set', lang);
   };
 
+  onTelemetryStatusChange = () => {
+    ipcRenderer.send('ipc-telemetry-status-change');
+  };
+
   renderChildrens() {
-    const { keys, logging } = this.state;
+    const { keys, logging, telemetry } = this.state;
 
     return (
       <Container
         logging={{
           onLoggingOpen: this.onLoggingOpen,
           onLoggingStatusChange: this.onLoggingStatusChange,
-          ...logging,
+          status: logging,
+        }}
+        telemetry={{
+          onTelemetryStatusChange: this.onTelemetryStatusChange,
+          status: telemetry,
         }}
         language={{
           onLanguageChange: this.onLanguageChange,

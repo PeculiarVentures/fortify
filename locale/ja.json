@@ -46,7 +46,11 @@
   "warn.token.crypto_not_found": "挿入されているスマートカードはFortifyによりサポートされていますが、カードのミドルウエアを見つけることができませんでした。 本スマートカードミドルウエアがインストールされていない場合、 (%1) が存在するかを確認し、再試行願います。",
   "warn.token.crypto_wrong": "セキュリティトークンもしくはスマートカードのミドルウエア (%1) のロード中に問題が発生しました。\n該当のミドルウエアが正しくインストールされているか確認し、再試行願います。",
   "warn.pcsc.cannot_start": "`Smart Card Resource Manager`が動作していないようにみえます。本サービスを開始し、再度Fortifyを起動してください。",
-  "keys.empty.search": "There are no websites matching that search.",
-  "remove": "Remove",
-  "settings": "Settings"
+  "keys.empty.search": "その検索に一致するウェブサイトはありません。",
+  "remove": "削除する",
+  "settings": "設定",
+  "telemetry.title": "テレメトリー",
+  "telemetry.enable": "使用状況とクラッシュレポートを有効にして、Fortifyの将来のバージョンで発生する可能性のある問題に確実に対処できるようにします",
+  "question.telemetry.enable": "使用状況とクラッシュレポートは、Fortifyの将来のバージョンが発生する可能性のある問題に確実に対処するのに役立ちます。\n使用状況とクラッシュレポートを有効のままにしますか？。",
+  "disable": "無効にする"
 }

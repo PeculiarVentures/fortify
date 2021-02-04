@@ -68,6 +68,21 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         },
       },
       {
+        label: 'Question telemetry enable',
+        click: () => {
+          windowsController.showQuestionWindow(
+            {
+              text: l10n.get('question.telemetry.enable'),
+              id: 'question.telemetry.enable',
+              result: 0,
+              showAgain: true,
+              showAgainValue: false,
+              buttonRejectLabel: 'disable',
+            },
+          );
+        },
+      },
+      {
         type: 'separator',
       },
       {
@@ -76,7 +91,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
           windowsController.showWarningWindow(
             {
               text: l10n.get('warn.ssl.install'),
-              buttonLabel: l10n.get('i_understand'),
+              buttonRejectLabel: 'i_understand',
               id: 'ssl.install',
             },
           );
@@ -89,7 +104,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
             {
               text: l10n.get('warn.pcsc.cannot_start'),
               title: 'warning.title.oh_no',
-              buttonLabel: l10n.get('i_understand'),
+              buttonRejectLabel: 'i_understand',
               id: 'warn.pcsc.cannot_start',
               showAgain: true,
               showAgainValue: false,
@@ -104,7 +119,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
             {
               text: l10n.get('warn.token.crypto_not_found', 'TEST'),
               title: 'warning.title.oh_no',
-              buttonLabel: l10n.get('close'),
+              buttonRejectLabel: 'close',
               id: 'warn.token.crypto_not_found',
               showAgain: true,
               showAgainValue: false,
@@ -119,7 +134,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
             {
               text: l10n.get('warn.token.crypto_wrong', 'TEST'),
               title: 'warning.title.oh_no',
-              buttonLabel: l10n.get('close'),
+              buttonRejectLabel: 'close',
               id: 'warn.token.crypto_wrong',
               showAgain: true,
               showAgainValue: false,

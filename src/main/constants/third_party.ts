@@ -1,0 +1,1 @@
+export const MIXPANEL_TOKEN = '124773c76c7622781c7bbef371a07c93';

@@ -55,6 +55,7 @@ export class BrowserWindow {
   private onInit(options: IWindowOptions) {
     logger.info('windows', 'Create window', {
       name: options.app,
+      id: options.params?.id,
     });
 
     this.window.loadURL(url.format({
@@ -98,6 +99,7 @@ export class BrowserWindow {
     this.window.on('close', () => {
       logger.info('windows', 'Close window', {
         name: options.app,
+        id: options.params?.id,
       });
 
       globalShortcut.unregisterAll();
