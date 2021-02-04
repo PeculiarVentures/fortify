@@ -1,7 +1,7 @@
 {
   "name": "fortify",
   "productName": "Fortify",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Fortify enables web applications to use smart cards, local certificate stores and do certificate enrollment",
   "main": "out/main.js",
   "scripts": {
