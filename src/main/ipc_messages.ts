@@ -61,7 +61,7 @@ const initServerEvents = () => {
 const initEvents = () => {
   ipcMain
     .on('ipc-logging-open', () => {
-      shell.openItem(APP_LOG_FILE);
+      shell.openPath(APP_LOG_FILE);
     })
     .on('ipc-logging-status-get', (event: IpcMainEvent) => {
       const config = getConfig();
