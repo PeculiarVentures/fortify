@@ -183,6 +183,9 @@ export class Application {
     });
     logger.info('application', 'Application info', {
       version: app.getVersion(),
+      versionChrome: process.versions.chrome,
+      versionElectron: process.versions.electron,
+      versionNode: process.versions.node,
     });
     logger.info('system', 'System info', {
       type: os.type(),
