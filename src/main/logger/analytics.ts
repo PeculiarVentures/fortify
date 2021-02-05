@@ -1,5 +1,5 @@
 import * as Mixpanel from 'mixpanel';
-import publicIp from 'public-ip';
+import * as publicIp from 'public-ip';
 import { MIXPANEL_TOKEN } from '../constants';
 
 const mixpanel = Mixpanel.init(MIXPANEL_TOKEN);
