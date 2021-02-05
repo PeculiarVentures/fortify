@@ -46,7 +46,7 @@ export default class Container extends React.Component<IContainerProps> {
     const { onClose } = this.props;
     const { checkboxRef } = this;
 
-    onClose(checkboxRef?.current?.state.checkedState);
+    onClose(checkboxRef?.current?.isChecked());
   };
 
   onApprove = () => {
@@ -54,7 +54,7 @@ export default class Container extends React.Component<IContainerProps> {
     const { checkboxRef } = this;
 
     if (onApprove) {
-      onApprove(checkboxRef?.current?.state.checkedState);
+      onApprove(checkboxRef?.current?.isChecked());
     }
   };
 
