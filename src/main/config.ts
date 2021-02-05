@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { APP_CONFIG_FILE } from './constants';
 
@@ -18,6 +19,11 @@ const defaultConfig = {
  */
 export function setConfig(config: IConfigure) {
   const json = JSON.stringify(config, null, '  ');
+  const parentDirname = path.dirname(APP_CONFIG_FILE);
+
+  if (!fs.existsSync(parentDirname)) {
+    fs.mkdirSync(parentDirname);
+  }
 
   fs.writeFileSync(APP_CONFIG_FILE, json, { flag: 'w+' });
 }
