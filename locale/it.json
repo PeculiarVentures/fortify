@@ -48,5 +48,9 @@
   "warn.pcsc.cannot_start": "Sembra che lo `Smart Card Resource Manager` non funzioni. Imposta questo servizio e riavvia Fortify.",
   "keys.empty.search": "Non ci sono siti che corrispondono alla ricerca.",
   "remove": "Rimuovi",
-  "settings": "Impostazioni"
+  "settings": "Impostazioni",
+  "telemetry.title": "Telemetria",
+  "telemetry.enable": "Abilita i rapporti sull'utilizzo e sugli arresti anomali per assicurarci che le versioni future di Fortify risolvano i problemi che potresti riscontrare",
+  "question.telemetry.enable": "I rapporti sull'utilizzo e sugli arresti anomali ci aiutano a garantire che le versioni future di Fortify risolvano i problemi che potresti riscontrare.\nLasciare abilitati i rapporti sull'utilizzo e sugli arresti anomali?",
+  "disable": "Disattivare"
 }

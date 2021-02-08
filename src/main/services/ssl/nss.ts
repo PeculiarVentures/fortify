@@ -518,7 +518,7 @@ export class NssCertUtils {
 
     const execCommand = `"${this.app}" ${command} ${args2.join(' ')}`;
 
-    logger.info('nss', 'Run', { command: execCommand, shell });
+    logger.info('nss', 'Run certutil command', { command: execCommand, shell });
 
     return execSync(execCommand, { shell }).toString();
   }

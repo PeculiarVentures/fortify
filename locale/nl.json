@@ -46,7 +46,11 @@
   "warn.token.crypto_not_found": "De ingestoken Smart Card wordt ondersteund door Fortify, maar de middleware kan niet worden gelokaliseerd. Controleer of deze is geïnstalleerd, zo niet, installeer deze en probeer het nogmaals.",
   "warn.token.crypto_wrong": "Er is een probleem opgetreden bij het laden van de middleware (%1) voor uw beveiligde token of Smart Card.\nControleer of de middelware correct is geïnstalleerd en probeer het nogmaals.",
   "warn.pcsc.cannot_start": "Het lijkt erop dat de 'Smart Card Resource Manager' niet actief is. Start deze service en herstart Fortify.",
-  "keys.empty.search": "There are no websites matching that search.",
-  "remove": "Remove",
-  "settings": "Settings"
+  "keys.empty.search": "Er zijn geen websites die overeenkomen met die zoekopdracht.",
+  "remove": "Verwijderen",
+  "settings": "Instellingen",
+  "telemetry.title": "Telemetrie",
+  "telemetry.enable": "Schakel gebruiks- en crashrapporten in om ons te helpen ervoor te zorgen dat toekomstige versies van Fortify de problemen aanpakken die u mogelijk ondervindt",
+  "question.telemetry.enable": "Gebruiks- en crashrapporten helpen ons ervoor te zorgen dat toekomstige versies van Fortify de problemen aanpakken die u mogelijk ondervindt.\nGebruiks- en crashrapportage ingeschakeld laten?",
+  "disable": "Uitschakelen"
 }

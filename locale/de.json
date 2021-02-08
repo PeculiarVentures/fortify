@@ -46,7 +46,11 @@
   "warn.token.crypto_not_found": "Die verwendete Smart Card wird von Fortify unterstützt, jedoch wurde die Middleware für diese Karte nicht gefunden. Stellen Sie sicher das (%1) existiert, falls nicht, installieren Sie die entsprechende Middleware der Karte und versuchen Sie es erneut.",
   "warn.token.crypto_wrong": "Ein Problem ist beim Laden der Middleware (%1) des Security Tokens oder Smart Card aufgetreten.  \nBitte stellen Sie sicher, dass die Middleware korrekt installiert wurde und versuchen Sie es erneut.",
   "warn.pcsc.cannot_start": "Der `Smart Card Resource Manager` ist möglicherweise nicht in Betrieb. Bitte starten Sie den Service und versuchen Sie es erneut.",
-  "keys.empty.search": "There are no websites matching that search.",
-  "remove": "Remove",
-  "settings": "Settings"
+  "keys.empty.search": "Es gibt keine Websites, die dieser Suche entsprechen.",
+  "remove": "Entfernen",
+  "settings": "die Einstellungen",
+  "telemetry.title": "Telemetrie",
+  "telemetry.enable": "Aktivieren Sie Verwendungs- und Absturzberichte, um sicherzustellen, dass zukünftige Versionen von Fortify die Probleme beheben, die möglicherweise auftreten",
+  "question.telemetry.enable": "Mithilfe von Verwendungs- und Absturzberichten können wir sicherstellen, dass zukünftige Versionen von Fortify die möglicherweise auftretenden Probleme beheben.\nNutzung und Absturzberichterstattung aktiviert lassen?",
+  "disable": "Deaktivieren"
 }

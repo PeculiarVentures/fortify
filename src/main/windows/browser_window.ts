@@ -43,7 +43,7 @@ export class BrowserWindow {
 
   constructor(options: IWindowOptions) {
     this.window = new ElectronWindow({
-      title: options.title,
+      title: options.title ? `Fortify - ${options.title}` : 'Fortify',
       ...this.getWindowDefaultOptions(),
       ...this.getWindowSize(options.size),
       ...options.windowOptions,
@@ -55,6 +55,7 @@ export class BrowserWindow {
   private onInit(options: IWindowOptions) {
     logger.info('windows', 'Create window', {
       name: options.app,
+      id: options.params?.id,
     });
 
     this.window.loadURL(url.format({
@@ -98,6 +99,7 @@ export class BrowserWindow {
     this.window.on('close', () => {
       logger.info('windows', 'Close window', {
         name: options.app,
+        id: options.params?.id,
       });
 
       globalShortcut.unregisterAll();

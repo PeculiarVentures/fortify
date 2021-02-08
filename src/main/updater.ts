@@ -39,8 +39,9 @@ class Updater extends EventEmitter {
 
       return response.replace(/[\n\r]/g, '');
     } catch (error) {
-      logger.error('update', 'Cannot GET', {
+      logger.error('update', 'JWS GET error', {
         jwsLink: JWS_LINK,
+        error: error.message,
         stack: error.stack,
       });
 
@@ -58,6 +59,7 @@ class Updater extends EventEmitter {
       return jws.getContent(jwsString);
     } catch (error) {
       logger.error('update', 'Get info error', {
+        error: error.message,
         stack: error.stack,
       });
 
@@ -125,7 +127,8 @@ class Updater extends EventEmitter {
         this.emit('update-not-found');
       }
     } catch (error) {
-      logger.error('update', 'Error', {
+      logger.error('update', 'Update error', {
+        error: error.message,
         stack: error.stack,
       });
 

@@ -81,7 +81,8 @@ export class Server {
     try {
       await sslService.run();
     } catch (error) {
-      logger.error('server', 'SSL service run', {
+      logger.error('server', 'SSL service run error', {
+        error: error.message,
         stack: error.stack,
       });
 
@@ -99,7 +100,7 @@ export class Server {
       key: fs.readFileSync(constants.APP_SSL_KEY),
     } as any;
 
-    logger.info('server', 'Certificate is loaded');
+    logger.info('server', 'SSL certificate is loaded');
 
     await this.prepareConfig();
 
@@ -111,6 +112,7 @@ export class Server {
       this.load(sslData);
     } catch (error) {
       logger.error('server', 'LocalServer is empty. webcrypto-local module wasn\'t loaded', {
+        error: error.message,
         stack: error.stack,
       });
     }
@@ -120,9 +122,9 @@ export class Server {
 
   run() {
     this.server
-      .on('listening', (e: any) => {
+      .on('listening', (address: string) => {
         logger.info('server', 'Started', {
-          time: e,
+          address,
         });
       })
       .on('info', (level, source, message, data) => {
@@ -154,12 +156,14 @@ export class Server {
           }
         } catch (error) {
           logger.error('server', 'Token window', {
+            error: error.message,
             stack: error.stack,
           });
         }
       })
       .on('error', (error: Error) => {
-        logger.error('server', 'Event error', {
+        logger.error('server', 'Server event error', {
+          error: error.message,
           stack: error.stack,
         });
 
@@ -173,7 +177,7 @@ export class Server {
                 {
                   text: l10n.get('warn.pcsc.cannot_start'),
                   title: 'warning.title.oh_no',
-                  buttonLabel: l10n.get('i_understand'),
+                  buttonRejectLabel: 'i_understand',
                   id: 'warn.pcsc.cannot_start',
                   showAgain: true,
                   showAgainValue: false,
@@ -185,7 +189,7 @@ export class Server {
                 {
                   text: l10n.get('warn.token.crypto_not_found', err.message),
                   title: 'warning.title.oh_no',
-                  buttonLabel: l10n.get('close'),
+                  buttonRejectLabel: 'close',
                   id: 'warn.token.crypto_not_found',
                   showAgain: true,
                   showAgainValue: false,
@@ -198,7 +202,7 @@ export class Server {
                 {
                   text: l10n.get('warn.token.crypto_wrong', err.message),
                   title: 'warning.title.oh_no',
-                  buttonLabel: l10n.get('close'),
+                  buttonRejectLabel: 'close',
                   id: 'warn.token.crypto_wrong',
                   showAgain: true,
                   showAgainValue: false,
@@ -243,7 +247,7 @@ export class Server {
         }
       })
       .on('close', (e: any) => {
-        logger.info('server', 'Close', {
+        logger.info('server', 'Close event', {
           e,
         });
       })
@@ -276,7 +280,8 @@ export class Server {
         }
       }
     } catch (error) {
-      logger.error('server', 'Cannot prepare config data', {
+      logger.error('server', 'Cannot prepare config data error', {
+        error: error.message,
         stack: error.stack,
       });
     }
@@ -298,7 +303,7 @@ export class Server {
         }
       }
     } catch (error) {
-      logger.error('server', 'Cannot prepare config data', {
+      logger.error('server', 'Cannot prepare config data error', {
         stack: error.stack,
       });
     }
@@ -325,8 +330,9 @@ export class Server {
 
           return;
         } catch (error) {
-          logger.error('server', 'Cannot get card.json', {
+          logger.error('server', 'Cannot get card.json error', {
             from: constants.APP_CARD_JSON_LINK,
+            error: error.message,
             stack: error.stack,
           });
         }
@@ -350,8 +356,9 @@ export class Server {
           const jwsString = await request(constants.APP_CARD_JSON_LINK);
           remote = await jws.getContent(jwsString);
         } catch (error) {
-          logger.error('server', 'Cannot get get file', {
+          logger.error('server', 'Cannot get file error', {
             file: constants.APP_CARD_JSON_LINK,
+            error: error.message,
             stack: error.stack,
           });
         }
@@ -375,7 +382,8 @@ export class Server {
         }
       }
     } catch (error) {
-      logger.error('server', 'Cannot prepare card.json data', {
+      logger.error('server', 'Cannot prepare card.json data error', {
+        error: error.message,
         stack: error.stack,
       });
     }

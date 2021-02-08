@@ -30,6 +30,8 @@ interface IQuestionWindowParams {
   showAgainValue?: boolean;
   text: string;
   result: number;
+  buttonRejectLabel?: string;
+  buttonApproveLabel?: string;
 }
 
 interface IWarningWindowParams {
@@ -38,7 +40,7 @@ interface IWarningWindowParams {
   showAgain?: boolean;
   showAgainValue?: boolean;
   text: string;
-  buttonLabel: string;
+  buttonRejectLabel: string;
 }
 
 class WindowsController {

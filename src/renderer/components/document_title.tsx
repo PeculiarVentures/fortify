@@ -26,7 +26,9 @@ export default class DocumentTitle extends React.Component<IDocumentTitleProps> 
       }
 
       if (title) {
-        document.title = title;
+        document.title = `Fortify - ${title}`;
+      } else {
+        document.title = 'Fortify';
       }
     }
 

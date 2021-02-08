@@ -151,7 +151,8 @@ export class SslCertInstaller {
         });
         installed = true;
       } catch (error) {
-        logger.error('ssl-installer', 'Error', {
+        logger.error('ssl-installer', 'SSL install error', {
+          error: error.message,
           stack: error.stack,
         });
       }

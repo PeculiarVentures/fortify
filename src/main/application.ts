@@ -1,7 +1,6 @@
-import { app, screen } from 'electron';
+import { app, screen, ipcMain } from 'electron';
 import * as fs from 'fs';
 import * as os from 'os';
-import * as path from 'path';
 import {
   inject,
   injectable,
@@ -13,13 +12,13 @@ import {
   CHECK_UPDATE,
   CHECK_UPDATE_INTERVAL,
   APP_USER_DIR,
-  APP_DIR,
 } from './constants';
 import { setConfig, getConfig } from './config';
-import logger, { loggingSwitch } from './logger';
+import logger, { loggingSwitch, loggingAnalyticsSwitch } from './logger';
 import { Server } from './server';
 import { firefoxProviders } from './firefox_providers';
 import { ipcMessages } from './ipc_messages';
+import { windowsController } from './windows';
 
 @injectable()
 export class Application {
@@ -44,6 +43,7 @@ export class Application {
      * Set logging from config.
      */
     loggingSwitch(!!this.config.logging);
+    loggingAnalyticsSwitch(!!this.config.telemetry);
 
     /**
      * Print start information about system and application.
@@ -109,6 +109,11 @@ export class Application {
       tray.create();
 
       /**
+       * Init show telemetry allow dialog.
+       */
+      await this.initTelemetryDialogShow();
+
+      /**
        * Init check updates.
        */
       await this.initAutoUpdater();
@@ -124,6 +129,7 @@ export class Application {
       ipcMessages.initServerEvents();
     } catch (error) {
       logger.error('application', 'On ready error', {
+        error: error.message,
         stack: error.stack,
       });
     }
@@ -175,10 +181,13 @@ export class Application {
     logger.info('application', 'Starting', {
       time: this.startTime,
     });
-    logger.info('application', 'Env', {
+    logger.info('application', 'Application info', {
       version: app.getVersion(),
+      versionChrome: process.versions.chrome,
+      versionElectron: process.versions.electron,
+      versionNode: process.versions.node,
     });
-    logger.info('system', 'Env', {
+    logger.info('system', 'System info', {
       type: os.type(),
       platform: os.platform(),
       arch: os.arch(),
@@ -196,7 +205,6 @@ export class Application {
     logger.info('system', 'Screen size', {
       width,
       height,
-      points: 'px',
     });
   }
 
@@ -207,7 +215,6 @@ export class Application {
     logger.info('application', 'Loaded', {
       time: loadTime,
       duration: loadDuration,
-      points: 'ms',
     });
   }
 
@@ -225,8 +232,34 @@ export class Application {
         setConfig(this.config);
       } catch (error) {
         logger.error('application', 'Firefox providers create error', {
+          error: error.message,
           stack: error.stack,
         });
+      }
+    }
+  }
+
+  private async initTelemetryDialogShow() {
+    if (this.config.telemetry) {
+      try {
+        const questionWindowResult = await windowsController.showQuestionWindow({
+          text: l10n.get('question.telemetry.enable'),
+          id: 'question.telemetry.enable',
+          result: 0,
+          showAgain: true,
+          showAgainValue: true,
+          buttonRejectLabel: 'disable',
+        });
+
+        if (questionWindowResult.result) { // yes
+          logger.info('telemetry-dialog', 'User agreed to use telemetry');
+        } else { // no
+          logger.info('telemetry-dialog', 'User disagreed to use telemetry');
+
+          ipcMain.emit('ipc-telemetry-status-change');
+        }
+      } catch {
+        //
       }
     }
   }
