@@ -43,7 +43,7 @@ export class BrowserWindow {
 
   constructor(options: IWindowOptions) {
     this.window = new ElectronWindow({
-      title: options.title,
+      title: options.title ? `Fortify - ${options.title}` : 'Fortify',
       ...this.getWindowDefaultOptions(),
       ...this.getWindowSize(options.size),
       ...options.windowOptions,
