@@ -73,7 +73,7 @@ async function main() {
   jose.setCrypto(crypto as any);
 
   const keys = await getKeyPair(PRIVATE_KEY_BASE64, PUBLIC_KEY_BASE64);
-  const jws = await signUpdateJSON(keys, { version });
+  const jws = await signUpdateJSON(keys, { version, createdAt: Date.now() });
   const jwsCard = await signCardJSON(keys, path.resolve('./node_modules/@webcrypto-local/cards/lib/card.json'));
   const outPath = path.resolve(OUTPUT_FOLDER_PATH);
   const outPathUpdateJws = path.join(outPath, './update.jws');
