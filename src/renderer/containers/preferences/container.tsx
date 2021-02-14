@@ -7,19 +7,14 @@ import {
 } from 'lib-react-components';
 import classnames from 'classnames';
 import { Sites } from './sites';
-import { Logging } from './logging';
-import { Language } from './language';
-import { Telemetry } from './telemetry';
+import { About } from './about';
+import { Settings } from './settings';
+import { Updates } from './updates';
 import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/container.sass');
 
-enum TabType {
-  sites = 1,
-  logging,
-  language,
-  telemetry,
-}
+type TabType = 'sites' | 'settings' | 'updates' | 'about';
 
 export interface IContainerProps {
   logging: {
@@ -39,6 +34,8 @@ export interface IContainerProps {
     isFetching: IsFetchingType;
     onKeyRemove: (origin: string) => void;
   };
+  version: string;
+  defaultTab?: TabType;
 }
 
 export interface IContainerState {
@@ -52,7 +49,7 @@ export default class Container extends React.Component<IContainerProps, IContain
     super(props);
 
     this.state = {
-      tab: TabType.sites,
+      tab: props.defaultTab || 'sites',
     };
   }
 
@@ -68,6 +65,7 @@ export default class Container extends React.Component<IContainerProps, IContain
       keys,
       logging,
       telemetry,
+      version,
     } = this.props;
     const { tab } = this.state;
     const { intl } = this.context;
@@ -85,54 +83,54 @@ export default class Container extends React.Component<IContainerProps, IContain
             value={tab}
             align="left"
             onChange={this.onChangeTab}
+            className={s.tabs}
+            color="grey_4"
+            colorOn="black"
           >
             <Tab
-              value={TabType.sites}
+              value="sites"
               className={classnames(s.tab, 'b3')}
-              color="grey_4"
             >
               {intl('sites')}
             </Tab>
             <Tab
-              value={TabType.logging}
+              value="settings"
               className={classnames(s.tab, 'b3')}
-              color="grey_4"
             >
-              {intl('logging')}
+              Settings
             </Tab>
             <Tab
-              value={TabType.telemetry}
+              value="updates"
               className={classnames(s.tab, 'b3')}
-              color="grey_4"
             >
-              {intl('telemetry.title')}
+              Updates
             </Tab>
             <Tab
-              value={TabType.language}
+              value="about"
               className={classnames(s.tab, 'b3')}
-              color="grey_4"
             >
-              {intl('language')}
+              {intl('about')}
             </Tab>
           </Tabs>
         </Box>
         <div className={s.content}>
           <SegueHandler value={tab}>
             <Sites
-              name={TabType.sites}
+              name="sites"
               keys={keys}
             />
-            <Logging
-              name={TabType.logging}
-              logging={logging}
-            />
-            <Language
-              name={TabType.language}
+            <Settings
+              name="settings"
               language={language}
-            />
-            <Telemetry
-              name={TabType.telemetry}
+              logging={logging}
               telemetry={telemetry}
+            />
+            <Updates
+              name="language"
+            />
+            <About
+              name="about"
+              version={version}
             />
           </SegueHandler>
         </div>

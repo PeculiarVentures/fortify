@@ -1,10 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
+import * as path from 'path';
+import * as fs from 'fs';
 import WindowProvider from '../../components/window_provider';
 import Container from './container';
 
-interface IRootProps {}
+const PACKAGE_PATH = path.join(__dirname, '../../package.json');
 
 interface IRootState {
   keys: {
@@ -15,8 +17,10 @@ interface IRootState {
   telemetry: boolean;
 }
 
-class Root extends WindowProvider<IRootProps, IRootState> {
-  constructor(props: IRootProps) {
+class Root extends WindowProvider<{}, IRootState> {
+  version: string;
+
+  constructor(props: {}) {
     super(props);
 
     this.state = {
@@ -27,6 +31,8 @@ class Root extends WindowProvider<IRootProps, IRootState> {
       logging: false,
       telemetry: false,
     };
+
+    this.version = Root.getVersion();
   }
 
   componentWillMount() {
@@ -37,6 +43,13 @@ class Root extends WindowProvider<IRootProps, IRootState> {
     ipcRenderer.on('ipc-2key-changed', this.handleKeysListGet);
     ipcRenderer.on('ipc-logging-status-changed', this.onLoggingChangedListener);
     ipcRenderer.on('ipc-telemetry-status-changed', this.onTelemetryChangedListener);
+  }
+
+  static getVersion() {
+    const json = fs.readFileSync(PACKAGE_PATH, { encoding: 'utf8' });
+    const data = JSON.parse(json);
+
+    return data.version;
   }
 
   handleKeysListGet = () => {
@@ -119,6 +132,8 @@ class Root extends WindowProvider<IRootProps, IRootState> {
           ...keys,
           onKeyRemove: this.onKeyRemove,
         }}
+        version={this.version}
+        defaultTab={this.params.defaultTab}
       />
     );
   }
