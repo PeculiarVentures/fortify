@@ -50,59 +50,29 @@ class WindowsController {
     return screen.getPrimaryDisplay().bounds;
   }
 
-  showAboutWindow() {
+  showPreferencesWindow(defaultTab?: 'about') {
     return new Promise((resolve) => {
       /**
        * Don't create if the window exists.
        */
-      if (this.windows.about) {
-        this.windows.about.focus();
-        this.windows.about.show();
+      if (this.windows.preferences) {
+        this.windows.preferences.focus();
+        this.windows.preferences.show();
 
         resolve();
 
         return;
       }
 
-      this.windows.about = new BrowserWindow({
-        params: {
-          titleKey: 'about',
-        },
-        app: 'about',
-        size: 'small',
-        title: l10n.get('about'),
-        onClosed: () => {
-          delete this.windows.about;
-
-          resolve();
-        },
-      });
-    });
-  }
-
-  showSettingsWindow() {
-    return new Promise((resolve) => {
-      /**
-       * Don't create if the window exists.
-       */
-      if (this.windows.settings) {
-        this.windows.settings.focus();
-        this.windows.settings.show();
-
-        resolve();
-
-        return;
-      }
-
-      this.windows.settings = new BrowserWindow({
-        params: {
-          titleKey: 'settings',
-        },
+      this.windows.preferences = new BrowserWindow({
         size: 'default',
-        app: 'settings',
-        title: l10n.get('settings'),
+        app: 'preferences',
+        title: '',
+        params: {
+          defaultTab,
+        },
         onClosed: () => {
-          delete this.windows.settings;
+          delete this.windows.preferences;
 
           resolve();
         },

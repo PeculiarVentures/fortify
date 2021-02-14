@@ -41,7 +41,7 @@ const initServerEvents = () => {
           text: l10n.get('question.2key.remove', arg),
           id: 'question.2key.remove',
           result: 0,
-        }, windowsController.windows.settings.window);
+        }, windowsController.windows.preferences.window);
 
         if (questionWindowResult.result) {
           logger.info('ipc-messages', 'Removing 2key session key', {

@@ -2,34 +2,43 @@ import {
   shell,
   MenuItemConstructorOptions,
 } from 'electron';
-import { l10n } from '../l10n';
 import { TOOLS_LINK } from '../constants';
 import { windowsController } from '../windows';
 
 export const baseTemplate = (): MenuItemConstructorOptions[] => ([
   {
-    label: l10n.get('about'),
+    label: 'About Fortify',
     click: () => {
-      windowsController.showAboutWindow();
-    },
-  },
-  {
-    label: l10n.get('settings'),
-    click: () => {
-      windowsController.showSettingsWindow();
+      windowsController.showPreferencesWindow('about');
     },
   },
   {
     type: 'separator',
   },
   {
-    label: l10n.get('tools'),
+    label: 'Preferences...',
+    click: () => {
+      windowsController.showPreferencesWindow();
+    },
+  },
+  {
+    label: 'Tools',
     click: () => {
       shell.openExternal(TOOLS_LINK);
     },
   },
   {
-    label: l10n.get('exit'),
+    type: 'separator',
+  },
+  {
+    label: 'Check For Updates',
+    click: () => {},
+  },
+  {
+    type: 'separator',
+  },
+  {
+    label: 'Quit Fortify',
     role: 'quit',
   },
 ]);
