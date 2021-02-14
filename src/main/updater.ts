@@ -1,14 +1,12 @@
 import { EventEmitter } from 'events';
-import { shell, app } from 'electron';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as fs from 'fs';
 import { request } from './utils';
-import { JWS_LINK, APP_DIR, DOWNLOAD_LINK } from './constants';
+import { JWS_LINK, APP_DIR } from './constants';
 import logger from './logger';
 import * as jws from './jws';
 import { UpdateError } from './errors';
-import { windowsController } from './windows';
 import { l10n } from './l10n';
 
 class Updater extends EventEmitter {
@@ -85,42 +83,6 @@ class Updater extends EventEmitter {
         logger.info('update', 'New version was found');
 
         this.emit('update-found', update.version);
-
-        try {
-          const questionWindowResult = await windowsController.showQuestionWindow({
-            text: l10n.get('question.update.new', update.version),
-            id: 'question.update.new',
-            result: 0,
-            showAgain: true,
-            showAgainValue: false,
-          });
-
-          if (questionWindowResult.result) { // yes
-            logger.info('update', 'User agreed to download new version', {
-              version: update.version,
-            });
-
-            shell.openExternal(DOWNLOAD_LINK);
-          } else { // no
-            logger.info('update', 'User refused to download new version', {
-              version: update.version,
-            });
-          }
-        } catch {
-          //
-        }
-
-        if (update.min && semver.lt(curVersion, update.min)) {
-          logger.info('update', 'Version is critical. App is not matching to minimal criteria', {
-            version: update.version,
-          });
-
-          await windowsController.showErrorWindow({
-            text: l10n.get('error.critical.update'),
-          });
-
-          app.quit();
-        }
       } else {
         logger.info('update', 'New version wasn\'t found');
 

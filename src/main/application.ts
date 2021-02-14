@@ -1,16 +1,13 @@
-import { app, screen, ipcMain } from 'electron';
+import { app, screen } from 'electron';
 import * as fs from 'fs';
 import * as os from 'os';
 import {
   inject,
   injectable,
 } from 'tsyringe';
-import { autoUpdater } from './updater';
 import { l10n } from './l10n';
 import { tray } from './tray';
 import {
-  CHECK_UPDATE,
-  CHECK_UPDATE_INTERVAL,
   APP_USER_DIR,
 } from './constants';
 import { setConfig, getConfig } from './config';
@@ -18,7 +15,6 @@ import logger, { loggingSwitch, loggingAnalyticsSwitch } from './logger';
 import { Server } from './server';
 import { firefoxProviders } from './firefox_providers';
 import { ipcMessages } from './ipc_messages';
-import { windowsController } from './windows';
 
 @injectable()
 export class Application {
@@ -109,16 +105,6 @@ export class Application {
       tray.create();
 
       /**
-       * Init show telemetry allow dialog.
-       */
-      await this.initTelemetryDialogShow();
-
-      /**
-       * Init check updates.
-       */
-      await this.initAutoUpdater();
-
-      /**
        * Init server service.
        */
       await this.initServer();
@@ -162,18 +148,6 @@ export class Application {
     }
 
     l10n.setLang(lang);
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  private async initAutoUpdater() {
-    if (CHECK_UPDATE) {
-      await autoUpdater.checkForUpdates();
-
-      setInterval(
-        () => autoUpdater.checkForUpdates(),
-        CHECK_UPDATE_INTERVAL,
-      );
-    }
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -235,31 +209,6 @@ export class Application {
           error: error.message,
           stack: error.stack,
         });
-      }
-    }
-  }
-
-  private async initTelemetryDialogShow() {
-    if (this.config.telemetry) {
-      try {
-        const questionWindowResult = await windowsController.showQuestionWindow({
-          text: l10n.get('question.telemetry.enable'),
-          id: 'question.telemetry.enable',
-          result: 0,
-          showAgain: true,
-          showAgainValue: true,
-          buttonRejectLabel: 'disable',
-        });
-
-        if (questionWindowResult.result) { // yes
-          logger.info('telemetry-dialog', 'User agreed to use telemetry');
-        } else { // no
-          logger.info('telemetry-dialog', 'User disagreed to use telemetry');
-
-          ipcMain.emit('ipc-telemetry-status-change');
-        }
-      } catch {
-        //
       }
     }
   }
