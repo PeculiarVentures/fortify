@@ -14,8 +14,6 @@ import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/container.sass');
 
-type TabType = 'sites' | 'settings' | 'updates' | 'about';
-
 export interface IContainerProps {
   logging: {
     onLoggingOpen: () => void;
@@ -35,11 +33,18 @@ export interface IContainerProps {
     onKeyRemove: (origin: string) => void;
   };
   theme: {
-    value: ('system' | 'dark' | 'light');
-    onThemeChange: (theme: ('system' | 'dark' | 'light')) => void;
+    value: ThemeType;
+    onThemeChange: (theme: ThemeType) => void;
+  };
+  update: {
+    isFetching: IsFetchingType;
+    info?: UpdateInfoType;
   };
   version: string;
-  defaultTab?: TabType;
+  tab: {
+    value: TabType;
+    onChange: (value: TabType) => void;
+  };
 }
 
 export interface IContainerState {
@@ -49,18 +54,10 @@ export interface IContainerState {
 export default class Container extends React.Component<IContainerProps, IContainerState> {
   static contextType = IntlContext;
 
-  constructor(props: IContainerProps) {
-    super(props);
+  handleChangeTab = (_: Event, value: string | number) => {
+    const { tab } = this.props;
 
-    this.state = {
-      tab: props.defaultTab || 'sites',
-    };
-  }
-
-  onChangeTab = (e: Event, value: string | number) => {
-    this.setState({
-      tab: value as TabType,
-    });
+    tab.onChange(value as TabType);
   };
 
   render() {
@@ -71,8 +68,9 @@ export default class Container extends React.Component<IContainerProps, IContain
       telemetry,
       version,
       theme,
+      update,
+      tab,
     } = this.props;
-    const { tab } = this.state;
     const { intl } = this.context;
 
     return (
@@ -85,9 +83,9 @@ export default class Container extends React.Component<IContainerProps, IContain
           strokeType="bottom"
         >
           <Tabs
-            value={tab}
+            value={tab.value}
             align="left"
-            onChange={this.onChangeTab}
+            onChange={this.handleChangeTab}
             className={s.tabs}
             color="grey_4"
             colorOn="black"
@@ -119,7 +117,7 @@ export default class Container extends React.Component<IContainerProps, IContain
           </Tabs>
         </Box>
         <div className={s.content}>
-          <SegueHandler value={tab}>
+          <SegueHandler value={tab.value}>
             <Sites
               name="sites"
               keys={keys}
@@ -133,6 +131,7 @@ export default class Container extends React.Component<IContainerProps, IContain
             />
             <Updates
               name="updates"
+              update={update}
             />
             <About
               name="about"

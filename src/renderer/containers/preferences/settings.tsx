@@ -28,8 +28,8 @@ interface ISettingsProps {
     status: boolean;
   };
   theme: {
-    value: ('system' | 'dark' | 'light');
-    onThemeChange: (theme: ('system' | 'dark' | 'light')) => void;
+    value: ThemeType;
+    onThemeChange: (theme: ThemeType) => void;
   };
 }
 
@@ -47,7 +47,7 @@ export class Settings extends React.Component<ISettingsProps> {
   handleChangeTheme = (_: Event, value: string | number) => {
     const { theme } = this.props;
 
-    theme.onThemeChange(value as ('system' | 'dark' | 'light'));
+    theme.onThemeChange(value as ThemeType);
   };
 
   render() {
@@ -173,6 +173,7 @@ export class Settings extends React.Component<ISettingsProps> {
               size="small"
               style={{
                 padding: '0px 5px',
+                marginLeft: '-5px',
               }}
               onClick={logging.onLoggingOpen}
             >

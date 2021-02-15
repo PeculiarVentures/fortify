@@ -5,3 +5,12 @@ interface IKey {
 }
 
 type IsFetchingType = 'pending' | 'resolved' | 'rejected';
+
+type ThemeType = ('system' | 'dark' | 'light');
+
+type UpdateInfoType = {
+  version: string;
+  createdAt: number;
+};
+
+type TabType = 'sites' | 'settings' | 'updates' | 'about';
