@@ -9,22 +9,32 @@ import * as jws from './jws';
 import { UpdateError } from './errors';
 import { l10n } from './l10n';
 
+type UpdateInfo = {
+  version: string;
+  createdAt: number;
+  min?: string;
+};
+
 class Updater extends EventEmitter {
-  on(event: 'update-found', cb: (version: string) => void): this;
+  on(event: 'update-available', cb: (info: UpdateInfo) => void): this;
 
-  on(event: 'update-not-found', cb: () => void): this;
+  on(event: 'update-not-available', cb: () => void): this;
 
-  on(event: 'update-error', cb: (error: UpdateError) => void): this;
+  on(event: 'checking-for-update', cb: () => void): this;
+
+  on(event: 'error', cb: (error: UpdateError) => void): this;
 
   on(event: string, cb: (...args: any[]) => void) {
     return super.on(event, cb);
   }
 
-  emit(event: 'update-found', version: string): boolean;
+  emit(event: 'update-available', info: UpdateInfo): boolean;
 
-  emit(event: 'update-not-found'): boolean;
+  emit(event: 'update-not-available'): boolean;
 
-  emit(event: 'update-error', error: UpdateError): boolean;
+  emit(event: 'checking-for-update'): boolean;
+
+  emit(event: 'error', error: UpdateError): boolean;
 
   emit(event: string, ...args: any[]) {
     return super.emit(event, ...args);
@@ -50,7 +60,7 @@ class Updater extends EventEmitter {
   /**
    * Get info from trusted update.jws
    */
-  private async getUpdateInfo() {
+  private async getUpdateInfo(): Promise<UpdateInfo> {
     try {
       const jwsString = await this.getJWS();
 
@@ -70,23 +80,24 @@ class Updater extends EventEmitter {
   }
 
   async checkForUpdates() {
-    try {
-      logger.info('update', 'Check for new update');
+    this.emit('checking-for-update');
+    logger.info('update', 'Check for new update');
 
-      const update = await this.getUpdateInfo();
+    try {
+      const info = await this.getUpdateInfo();
       // Get current version
       const packageJson = fs.readFileSync(path.join(APP_DIR, 'package.json')).toString();
       const curVersion = JSON.parse(packageJson).version;
 
       // Compare versions
-      if (semver.lt(curVersion, update.version)) {
+      if (semver.lt(curVersion, info.version)) {
         logger.info('update', 'New version was found');
 
-        this.emit('update-found', update.version);
+        this.emit('update-available', info);
       } else {
         logger.info('update', 'New version wasn\'t found');
 
-        this.emit('update-not-found');
+        this.emit('update-not-available');
       }
     } catch (error) {
       logger.error('update', 'Update error', {
@@ -95,7 +106,7 @@ class Updater extends EventEmitter {
       });
 
       if (error instanceof UpdateError) {
-        this.emit('update-error', error);
+        this.emit('error', error);
       }
     }
   }
