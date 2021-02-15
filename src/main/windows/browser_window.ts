@@ -136,6 +136,16 @@ export class BrowserWindow {
     return constants.windowSizes.default;
   }
 
+  public setParams(params: Assoc<any>) {
+    this.window.params = params || {};
+
+    this.window.webContents.send('window-params-changed', params);
+  }
+
+  public getParams() {
+    return this.window.params || {};
+  }
+
   public focus() {
     this.window.focus();
   }
@@ -146,5 +156,13 @@ export class BrowserWindow {
 
   public hide() {
     this.window.hide();
+  }
+
+  public reload() {
+    this.window.reload();
+  }
+
+  public close() {
+    this.window.close();
   }
 }
