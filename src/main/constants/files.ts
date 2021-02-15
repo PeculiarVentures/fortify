@@ -33,14 +33,8 @@ export const APP_SSL_CERT_CA = path.join(APP_DATA_DIR, 'ca.pem');
 export const APP_SSL_CERT = path.join(APP_DATA_DIR, 'cert.pem');
 export const APP_SSL_KEY = path.join(APP_DATA_DIR, 'cert.key');
 export const APP_CARD_JSON = path.join(APP_USER_DIR, 'card.json');
-export const APP_CARD_JSON_LINK = 'https://fortifyapp.com/packages/card.jws';
-
 export const TEMPLATE_NEW_CARD_FILE = path.join(RESOURCES_DIR, 'new_card.tmpl');
 
-export const JWS_LINK = 'https://fortifyapp.com/packages/update.jws';
-export const DOWNLOAD_LINK = 'https://fortifyapp.com/#download_app';
-export const SUPPORT_NEW_TOKEN_LINK = 'https://github.com/PeculiarVentures/fortify';
-export const TOOLS_LINK = 'https://tools.fortifyapp.com/';
 export const CHECK_UPDATE = true;
 export const CHECK_UPDATE_INTERVAL = 24 * 60 * 60e3; // 24h
 
