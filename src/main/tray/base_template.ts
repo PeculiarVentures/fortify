@@ -4,6 +4,7 @@ import {
 } from 'electron';
 import { TOOLS_LINK } from '../constants';
 import { windowsController } from '../windows';
+import { autoUpdater } from '../updater';
 
 export const baseTemplate = (): MenuItemConstructorOptions[] => ([
   {
@@ -13,12 +14,19 @@ export const baseTemplate = (): MenuItemConstructorOptions[] => ([
     },
   },
   {
+    label: 'Check For Updates...',
+    click: async () => {
+      windowsController.showPreferencesWindow('updates');
+      autoUpdater.checkForUpdates();
+    },
+  },
+  {
     type: 'separator',
   },
   {
     label: 'Preferences...',
     click: () => {
-      windowsController.showPreferencesWindow();
+      windowsController.showPreferencesWindow('settings');
     },
   },
   {
@@ -26,13 +34,6 @@ export const baseTemplate = (): MenuItemConstructorOptions[] => ([
     click: () => {
       shell.openExternal(TOOLS_LINK);
     },
-  },
-  {
-    type: 'separator',
-  },
-  {
-    label: 'Check For Updates',
-    click: () => {},
   },
   {
     type: 'separator',
