@@ -14,7 +14,8 @@ import { setConfig, getConfig } from './config';
 import logger, { loggingSwitch, loggingAnalyticsSwitch } from './logger';
 import { Server } from './server';
 import { firefoxProviders } from './firefox_providers';
-import { ipcMessages } from './ipc_messages';
+import { ipcMessages, sendToRenderers } from './ipc_messages';
+import { autoUpdater } from './updater';
 
 @injectable()
 export class Application {
@@ -118,6 +119,11 @@ export class Application {
        * Init ipc server events.
        */
       ipcMessages.initServerEvents();
+
+      /**
+       * Init application auto updater.
+       */
+      this.initAutoUpdater();
     } catch (error) {
       logger.error('application', 'On ready error', {
         error: error.message,
@@ -220,5 +226,24 @@ export class Application {
 
   private initTheme() {
     nativeTheme.themeSource = this.config.theme || 'system';
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private initAutoUpdater() {
+    autoUpdater.on('checking-for-update', () => {
+      sendToRenderers('ipc-checking-for-update');
+    });
+
+    autoUpdater.on('update-available', (info) => {
+      sendToRenderers('ipc-update-available', info);
+    });
+
+    autoUpdater.on('update-not-available', () => {
+      sendToRenderers('ipc-update-not-available');
+    });
+
+    autoUpdater.on('error', () => {
+      sendToRenderers('ipc-update-error');
+    });
   }
 }

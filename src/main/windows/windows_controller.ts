@@ -50,14 +50,24 @@ class WindowsController {
     return screen.getPrimaryDisplay().bounds;
   }
 
-  showPreferencesWindow(defaultTab?: 'about') {
+  showPreferencesWindow(defaultTab?: ('about' | 'updates' | 'settings')) {
     return new Promise((resolve) => {
+      const params = {
+        defaultTab,
+      };
+
       /**
        * Don't create if the window exists.
        */
       if (this.windows.preferences) {
         this.windows.preferences.focus();
         this.windows.preferences.show();
+
+        this.windows.preferences.setParams(params);
+
+        if (this.windows.question) {
+          this.windows.question.close();
+        }
 
         resolve();
 
@@ -68,9 +78,7 @@ class WindowsController {
         size: 'default',
         app: 'preferences',
         title: '',
-        params: {
-          defaultTab,
-        },
+        params,
         onClosed: () => {
           delete this.windows.preferences;
 
@@ -94,7 +102,7 @@ class WindowsController {
         },
         title: params.label || l10n.get('p11-pin'),
         onClosed: () => {
-          resolve(browserWindow.window.params as IP11PinWindowParams);
+          resolve(browserWindow.getParams() as IP11PinWindowParams);
         },
       });
     });
@@ -120,7 +128,7 @@ class WindowsController {
           y: height - windowSizes.default.height,
         },
         onClosed: () => {
-          resolve(browserWindow.window.params as IKeyPinWindowParams);
+          resolve(browserWindow.getParams() as IKeyPinWindowParams);
         },
       });
     });
@@ -244,9 +252,13 @@ class WindowsController {
         onClosed: () => {
           DialogsStorage.onDialogClose(browserWindow.window);
 
-          resolve(browserWindow.window.params as IQuestionWindowParams);
+          delete this.windows.question;
+
+          resolve(browserWindow.getParams() as IQuestionWindowParams);
         },
       });
+
+      this.windows.question = browserWindow;
     });
   }
 

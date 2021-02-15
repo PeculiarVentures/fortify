@@ -12,10 +12,11 @@ import logger, { loggingSwitch, loggingAnalyticsSwitch } from './logger';
 import { ServerStorage } from './server_storage';
 import { setConfig, getConfig } from './config';
 import container from './container';
+import { autoUpdater } from './updater';
 
 const serverStorage = container.resolve(ServerStorage);
 
-const sendToRenderers = (channel: string, data?: any) => {
+export const sendToRenderers = (channel: string, data?: any) => {
   const browserWindows = BrowserWindow.getAllWindows();
 
   browserWindows.forEach((window) => {
@@ -133,6 +134,9 @@ const initEvents = () => {
 
       nativeTheme.themeSource = theme;
       event.sender.send('ipc-theme-changed', theme);
+    })
+    .on('ipc-update-check', () => {
+      autoUpdater.checkForUpdates();
     })
     .on('error', (event: IpcMainEvent) => {
       logger.error('ipc-messages', 'Event error', {
