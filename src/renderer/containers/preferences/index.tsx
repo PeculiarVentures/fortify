@@ -15,6 +15,7 @@ interface IRootState {
   };
   logging: boolean;
   telemetry: boolean;
+  theme: ('system' | 'dark' | 'light');
 }
 
 class Root extends WindowProvider<{}, IRootState> {
@@ -30,6 +31,7 @@ class Root extends WindowProvider<{}, IRootState> {
       },
       logging: false,
       telemetry: false,
+      theme: 'system',
     };
 
     this.version = Root.getVersion();
@@ -39,10 +41,12 @@ class Root extends WindowProvider<{}, IRootState> {
     this.handleKeysListGet();
     this.handleLoggingGet();
     this.handleTelemetryGet();
+    this.handleThemeGet();
 
     ipcRenderer.on('ipc-2key-changed', this.handleKeysListGet);
     ipcRenderer.on('ipc-logging-status-changed', this.onLoggingChangedListener);
     ipcRenderer.on('ipc-telemetry-status-changed', this.onTelemetryChangedListener);
+    ipcRenderer.on('ipc-theme-changed', this.onThemeChangedListener);
   }
 
   static getVersion() {
@@ -79,6 +83,14 @@ class Root extends WindowProvider<{}, IRootState> {
     });
   }
 
+  handleThemeGet() {
+    const theme = ipcRenderer.sendSync('ipc-theme-get');
+
+    this.setState({
+      theme,
+    });
+  }
+
   onLoggingChangedListener = (_: IpcRendererEvent, status: boolean) => {
     this.setState({
       logging: status,
@@ -88,6 +100,12 @@ class Root extends WindowProvider<{}, IRootState> {
   onTelemetryChangedListener = (_: IpcRendererEvent, status: boolean) => {
     this.setState({
       telemetry: status,
+    });
+  };
+
+  onThemeChangedListener = (_: IpcRendererEvent, theme: ('system' | 'dark' | 'light')) => {
+    this.setState({
+      theme,
     });
   };
 
@@ -111,8 +129,12 @@ class Root extends WindowProvider<{}, IRootState> {
     ipcRenderer.send('ipc-telemetry-status-change');
   };
 
+  onThemeChange = (theme: ('system' | 'dark' | 'light')) => {
+    ipcRenderer.send('ipc-theme-set', theme);
+  };
+
   renderChildrens() {
-    const { keys, logging, telemetry } = this.state;
+    const { keys, logging, telemetry, theme } = this.state;
 
     return (
       <Container
@@ -131,6 +153,10 @@ class Root extends WindowProvider<{}, IRootState> {
         keys={{
           ...keys,
           onKeyRemove: this.onKeyRemove,
+        }}
+        theme={{
+          value: theme,
+          onThemeChange: this.onThemeChange,
         }}
         version={this.version}
         defaultTab={this.params.defaultTab}

@@ -34,6 +34,10 @@ export interface IContainerProps {
     isFetching: IsFetchingType;
     onKeyRemove: (origin: string) => void;
   };
+  theme: {
+    value: ('system' | 'dark' | 'light');
+    onThemeChange: (theme: ('system' | 'dark' | 'light')) => void;
+  };
   version: string;
   defaultTab?: TabType;
 }
@@ -66,6 +70,7 @@ export default class Container extends React.Component<IContainerProps, IContain
       logging,
       telemetry,
       version,
+      theme,
     } = this.props;
     const { tab } = this.state;
     const { intl } = this.context;
@@ -124,9 +129,10 @@ export default class Container extends React.Component<IContainerProps, IContain
               language={language}
               logging={logging}
               telemetry={telemetry}
+              theme={theme}
             />
             <Updates
-              name="language"
+              name="updates"
             />
             <About
               name="about"

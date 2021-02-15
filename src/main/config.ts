@@ -3,7 +3,7 @@ import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { APP_CONFIG_FILE } from './constants';
 
-const defaultConfig = {
+const defaultConfig: IConfigure = {
   userId: uuidv4(),
   providers: [],
   cards: [],
@@ -11,6 +11,7 @@ const defaultConfig = {
   logging: false,
   telemetry: true,
   locale: 'en',
+  theme: 'system',
 };
 
 /**

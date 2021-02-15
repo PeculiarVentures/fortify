@@ -1,4 +1,4 @@
-import { app, screen } from 'electron';
+import { app, screen, nativeTheme } from 'electron';
 import * as fs from 'fs';
 import * as os from 'os';
 import {
@@ -40,6 +40,11 @@ export class Application {
      */
     loggingSwitch(!!this.config.logging);
     loggingAnalyticsSwitch(!!this.config.telemetry);
+
+    /**
+     * Init application theme.
+     */
+    this.initTheme();
 
     /**
      * Print start information about system and application.
@@ -211,5 +216,9 @@ export class Application {
         });
       }
     }
+  }
+
+  private initTheme() {
+    nativeTheme.themeSource = this.config.theme || 'system';
   }
 }

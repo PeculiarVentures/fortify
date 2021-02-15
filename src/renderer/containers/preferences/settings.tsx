@@ -27,6 +27,10 @@ interface ISettingsProps {
     onTelemetryStatusChange: () => void;
     status: boolean;
   };
+  theme: {
+    value: ('system' | 'dark' | 'light');
+    onThemeChange: (theme: ('system' | 'dark' | 'light')) => void;
+  };
 }
 
 export class Settings extends React.Component<ISettingsProps> {
@@ -40,8 +44,14 @@ export class Settings extends React.Component<ISettingsProps> {
     language.onLanguageChange(value as string);
   };
 
+  handleChangeTheme = (_: Event, value: string | number) => {
+    const { theme } = this.props;
+
+    theme.onThemeChange(value as ('system' | 'dark' | 'light'));
+  };
+
   render() {
-    const { telemetry, logging } = this.props;
+    const { telemetry, logging, theme } = this.props;
     const { list, lang } = this.context;
 
     return (
@@ -58,7 +68,7 @@ export class Settings extends React.Component<ISettingsProps> {
           </Typography>
           <div className={s.actions}>
             <Select
-              value={lang}
+              defaultValue={lang}
               size="large"
               bgType="stroke"
               color="grey_2"
@@ -95,7 +105,8 @@ export class Settings extends React.Component<ISettingsProps> {
               size="large"
               bgType="stroke"
               color="grey_2"
-              defaultValue="system"
+              defaultValue={theme.value}
+              onChange={this.handleChangeTheme}
             >
               <SelectItem
                 value="system"

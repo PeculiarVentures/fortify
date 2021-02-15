@@ -3,6 +3,7 @@ import {
   shell,
   IpcMainEvent,
   BrowserWindow,
+  nativeTheme,
 } from 'electron';
 import { APP_LOG_FILE } from './constants';
 import { windowsController } from './windows';
@@ -70,18 +71,20 @@ const initEvents = () => {
     })
     .on('ipc-logging-status-change', (event: IpcMainEvent) => {
       const config = getConfig();
+      const value = !config.logging;
 
-      config.logging = !config.logging;
-
-      setConfig(config);
-
-      loggingSwitch(config.logging);
-
-      logger.info('logging', 'Logging status changed', {
-        value: config.logging,
+      setConfig({
+        ...config,
+        logging: value,
       });
 
-      event.sender.send('ipc-logging-status-changed', config.logging);
+      loggingSwitch(value);
+
+      logger.info('logging', 'Logging status changed', {
+        value,
+      });
+
+      event.sender.send('ipc-logging-status-changed', value);
     })
     .on('ipc-language-set', (_: IpcMainEvent, lang: string) => {
       l10n.setLang(lang);
@@ -102,18 +105,34 @@ const initEvents = () => {
     })
     .on('ipc-telemetry-status-change', (event: IpcMainEvent) => {
       const config = getConfig();
+      const value = !config.telemetry;
 
-      config.telemetry = !config.telemetry;
-
-      setConfig(config);
-
-      loggingAnalyticsSwitch(config.telemetry);
-
-      logger.info('telemetry', 'Telemetry status changed', {
-        value: config.telemetry,
+      setConfig({
+        ...config,
+        telemetry: value,
       });
 
-      event.sender.send('ipc-telemetry-status-changed', config.telemetry);
+      loggingAnalyticsSwitch(value);
+
+      logger.info('telemetry', 'Telemetry status changed', {
+        value,
+      });
+
+      event.sender.send('ipc-telemetry-status-changed', value);
+    })
+    .on('ipc-theme-get', (event: IpcMainEvent) => {
+      event.returnValue = nativeTheme.themeSource;
+    })
+    .on('ipc-theme-set', (event: IpcMainEvent, theme: ('system' | 'dark' | 'light')) => {
+      const config = getConfig();
+
+      setConfig({
+        ...config,
+        theme,
+      });
+
+      nativeTheme.themeSource = theme;
+      event.sender.send('ipc-theme-changed', theme);
     })
     .on('error', (event: IpcMainEvent) => {
       logger.error('ipc-messages', 'Event error', {
