@@ -60,6 +60,16 @@ export default class Container extends React.Component<IContainerProps, IContain
     tab.onChange(value as TabType);
   };
 
+  // eslint-disable-next-line class-methods-use-this
+  renderNotificationBadge() {
+    return (
+      <Box
+        className={s.badge}
+        fill="attention"
+      />
+    );
+  }
+
   render() {
     const {
       language,
@@ -107,6 +117,7 @@ export default class Container extends React.Component<IContainerProps, IContain
               className={classnames(s.tab, 'b3')}
             >
               Updates
+              {update.info ? this.renderNotificationBadge() : null}
             </Tab>
             <Tab
               value="about"
