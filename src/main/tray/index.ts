@@ -12,15 +12,13 @@ const getTemplate = () => (
 const setIcon = (hasNotifications?: boolean) => {
   const icon = hasNotifications ? icons.trayNotification : icons.tray;
 
-  if (!trayElectron) {
-    trayElectron = new Tray(icon);
-  } else {
-    trayElectron.setImage(icon);
-  }
+  trayElectron.setImage(icon);
 };
 
 const create = () => {
-  setIcon();
+  if (!trayElectron) {
+    trayElectron = new Tray(icons.tray);
+  }
 
   const menu = Menu.buildFromTemplate(getTemplate());
 

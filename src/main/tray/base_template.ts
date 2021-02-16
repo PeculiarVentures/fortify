@@ -16,7 +16,7 @@ export const baseTemplate = (): MenuItemConstructorOptions[] => ([
   },
   {
     label: l10n.get('updates.check'),
-    click: async () => {
+    click: () => {
       windowsController.showPreferencesWindow('updates');
       autoUpdater.checkForUpdates();
     },
