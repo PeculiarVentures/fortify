@@ -39,6 +39,7 @@ export const CHECK_UPDATE = true;
 export const CHECK_UPDATE_INTERVAL = 24 * 60 * 60e3; // 24h
 
 export const icons = {
-  tray: path.join(ICON_DIR, 'tray/png', 'icon.png'),
-  favicon: path.join(ICON_DIR, 'tray/png', 'icon@2x.png'),
+  tray: path.join(ICON_DIR, 'tray/png/icon.png'),
+  trayNotification: path.join(ICON_DIR, 'tray_notification/png/icon.png'),
+  favicon: path.join(ICON_DIR, 'tray/png/icon@2x.png'),
 };
