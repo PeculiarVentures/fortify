@@ -3,9 +3,9 @@ import {
   Box,
   Typography,
   Select,
-  SelectItem,
   Switch,
   Button,
+  SelectChangeEvent,
 } from 'lib-react-components';
 import classnames from 'classnames';
 import { IntlContext } from '../../components/intl';
@@ -38,14 +38,16 @@ export class Settings extends React.Component<ISettingsProps> {
 
   context!: React.ContextType<typeof IntlContext>;
 
-  handleChangeLanguage = (_: Event, value: string | number) => {
+  handleChangeLanguage = (event: SelectChangeEvent) => {
     const { language } = this.props;
+    const { value } = event.target;
 
     language.onLanguageChange(value as string);
   };
 
-  handleChangeTheme = (_: Event, value: string | number) => {
+  handleChangeTheme = (event: SelectChangeEvent) => {
     const { theme } = this.props;
+    const { value } = event.target;
 
     theme.onThemeChange(value as ThemeType);
   };
@@ -73,20 +75,15 @@ export class Settings extends React.Component<ISettingsProps> {
               bgType="stroke"
               color="grey_2"
               onChange={this.handleChangeLanguage}
-            >
-              {list.map((value) => {
+              options={list.map((value) => {
                 const isoLang = ISO_LANGS[value];
 
-                return (
-                  <SelectItem
-                    key={value}
-                    value={value}
-                  >
-                    {isoLang ? isoLang.nativeName : value}
-                  </SelectItem>
-                );
+                return {
+                  value,
+                  label: isoLang ? isoLang.nativeName : value,
+                };
               })}
-            </Select>
+            />
           </div>
         </Box>
 
@@ -107,23 +104,11 @@ export class Settings extends React.Component<ISettingsProps> {
               color="grey_2"
               defaultValue={theme.value}
               onChange={this.handleChangeTheme}
-            >
-              <SelectItem
-                value="system"
-              >
-                Use system setting
-              </SelectItem>
-              <SelectItem
-                value="light"
-              >
-                Light
-              </SelectItem>
-              <SelectItem
-                value="dark"
-              >
-                Dark
-              </SelectItem>
-            </Select>
+              options={['system', 'light', 'dark'].map((value) => ({
+                value,
+                label: value,
+              }))}
+            />
           </div>
         </Box>
 
