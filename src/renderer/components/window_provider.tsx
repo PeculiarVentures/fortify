@@ -1,4 +1,4 @@
-import * as electron from 'electron';
+import { remote } from 'electron';
 import * as React from 'react';
 import * as winston from 'winston';
 import { IntlProvider } from './intl';
@@ -12,9 +12,7 @@ export default abstract class WindowProvider<P, S> extends React.Component<P, S>
   constructor(props: P) {
     super(props);
 
-    const $window = electron.remote.getCurrentWindow() as any;
-
-    this.params = $window.params || {};
+    this.params = (remote.getCurrentWindow() as any).params || {};
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -25,7 +23,7 @@ export default abstract class WindowProvider<P, S> extends React.Component<P, S>
   close = (...args: any[]) => {
     this.onClose(...args);
 
-    electron.remote.getCurrentWindow().close();
+    remote.getCurrentWindow().close();
   };
 
   abstract renderChildrens(): JSX.Element;

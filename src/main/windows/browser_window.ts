@@ -10,7 +10,7 @@ import logger from '../logger';
 import * as constants from '../constants';
 import { l10n } from '../l10n';
 
-type WindowAppType = 'about' | 'key-pin' | 'message' | 'p11-pin' | 'settings' | 'index';
+type WindowAppType = 'about' | 'key-pin' | 'message' | 'p11-pin' | 'preferences' | 'index';
 
 export interface IBrowserWindow extends ElectronWindow {
   app: WindowAppType;
@@ -136,6 +136,16 @@ export class BrowserWindow {
     return constants.windowSizes.default;
   }
 
+  public setParams(params: Assoc<any>) {
+    this.window.params = params || {};
+
+    this.window.webContents.send('window-params-changed', params);
+  }
+
+  public getParams() {
+    return this.window.params || {};
+  }
+
   public focus() {
     this.window.focus();
   }
@@ -146,5 +156,13 @@ export class BrowserWindow {
 
   public hide() {
     this.window.hide();
+  }
+
+  public reload() {
+    this.window.reload();
+  }
+
+  public close() {
+    this.window.close();
   }
 }

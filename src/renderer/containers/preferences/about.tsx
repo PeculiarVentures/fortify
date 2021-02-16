@@ -1,52 +1,25 @@
 import * as React from 'react';
 import { Typography } from 'lib-react-components';
-import { DialogLayout } from '../../components/layouts';
-import { WindowEvent } from '../../components/window_event';
 import { IntlContext } from '../../components/intl';
 
-const s = require('./styles/container.sass');
+const s = require('./styles/about.sass');
 
-export interface IContainerProps {
+interface IAboutProps {
+  name: any;
   version: string;
-  onClose: () => void;
 }
 
-export default class Container extends React.Component<IContainerProps> {
+// eslint-disable-next-line react/prefer-stateless-function
+export class About extends React.Component<IAboutProps> {
   static contextType = IntlContext;
 
-  onKeyDown = (e: KeyboardEvent) => {
-    const { onClose } = this.props;
-
-    switch (e.keyCode) {
-      case 13: // enter
-      case 27: // esc
-        onClose();
-        break;
-      default:
-        // nothing
-    }
-  };
-
   render() {
-    const { onClose, version } = this.props;
+    const { version } = this.props;
     const { intl } = this.context;
 
     return (
-      <>
-        <WindowEvent
-          event="keydown"
-          onCall={this.onKeyDown}
-        />
-        <DialogLayout
-          icon={(
-            <img
-              src="../static/icons/logo.svg"
-              alt="Fortify logo"
-              width="38"
-            />
-          )}
-          onReject={onClose}
-        >
+      <div className={s.root}>
+        <div>
           <Typography
             type="b3"
           >
@@ -91,8 +64,15 @@ export default class Container extends React.Component<IContainerProps> {
               />
             </a>
           </div>
-        </DialogLayout>
-      </>
+        </div>
+        <div>
+          <img
+            src="../static/icons/logo.svg"
+            alt="Fortify logo"
+            width="38"
+          />
+        </div>
+      </div>
     );
   }
 }

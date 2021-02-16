@@ -1,24 +1,23 @@
-import { app, screen, ipcMain } from 'electron';
+import { app, screen, nativeTheme } from 'electron';
 import * as fs from 'fs';
 import * as os from 'os';
 import {
   inject,
   injectable,
 } from 'tsyringe';
-import { autoUpdater } from './updater';
 import { l10n } from './l10n';
 import { tray } from './tray';
 import {
+  APP_USER_DIR,
   CHECK_UPDATE,
   CHECK_UPDATE_INTERVAL,
-  APP_USER_DIR,
 } from './constants';
 import { setConfig, getConfig } from './config';
 import logger, { loggingSwitch, loggingAnalyticsSwitch } from './logger';
 import { Server } from './server';
 import { firefoxProviders } from './firefox_providers';
-import { ipcMessages } from './ipc_messages';
-import { windowsController } from './windows';
+import { ipcMessages, sendToRenderers } from './ipc_messages';
+import { autoUpdater } from './updater';
 
 @injectable()
 export class Application {
@@ -44,6 +43,11 @@ export class Application {
      */
     loggingSwitch(!!this.config.logging);
     loggingAnalyticsSwitch(!!this.config.telemetry);
+
+    /**
+     * Init application theme.
+     */
+    this.initTheme();
 
     /**
      * Print start information about system and application.
@@ -109,16 +113,6 @@ export class Application {
       tray.create();
 
       /**
-       * Init show telemetry allow dialog.
-       */
-      await this.initTelemetryDialogShow();
-
-      /**
-       * Init check updates.
-       */
-      await this.initAutoUpdater();
-
-      /**
        * Init server service.
        */
       await this.initServer();
@@ -127,6 +121,11 @@ export class Application {
        * Init ipc server events.
        */
       ipcMessages.initServerEvents();
+
+      /**
+       * Init application auto updater.
+       */
+      this.initAutoUpdater();
     } catch (error) {
       logger.error('application', 'On ready error', {
         error: error.message,
@@ -162,18 +161,6 @@ export class Application {
     }
 
     l10n.setLang(lang);
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  private async initAutoUpdater() {
-    if (CHECK_UPDATE) {
-      await autoUpdater.checkForUpdates();
-
-      setInterval(
-        () => autoUpdater.checkForUpdates(),
-        CHECK_UPDATE_INTERVAL,
-      );
-    }
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -239,28 +226,38 @@ export class Application {
     }
   }
 
-  private async initTelemetryDialogShow() {
-    if (this.config.telemetry) {
-      try {
-        const questionWindowResult = await windowsController.showQuestionWindow({
-          text: l10n.get('question.telemetry.enable'),
-          id: 'question.telemetry.enable',
-          result: 0,
-          showAgain: true,
-          showAgainValue: true,
-          buttonRejectLabel: 'disable',
-        });
+  private initTheme() {
+    nativeTheme.themeSource = this.config.theme || 'system';
+  }
 
-        if (questionWindowResult.result) { // yes
-          logger.info('telemetry-dialog', 'User agreed to use telemetry');
-        } else { // no
-          logger.info('telemetry-dialog', 'User disagreed to use telemetry');
+  // eslint-disable-next-line class-methods-use-this
+  private async initAutoUpdater() {
+    autoUpdater.on('checking-for-update', () => {
+      sendToRenderers('ipc-checking-for-update');
+    });
 
-          ipcMain.emit('ipc-telemetry-status-change');
-        }
-      } catch {
-        //
-      }
+    autoUpdater.on('update-available', (info) => {
+      sendToRenderers('ipc-update-available', info);
+      tray.setIcon(true);
+    });
+
+    autoUpdater.on('update-not-available', () => {
+      sendToRenderers('ipc-update-not-available');
+      tray.setIcon();
+    });
+
+    autoUpdater.on('error', () => {
+      sendToRenderers('ipc-update-error');
+      tray.setIcon();
+    });
+
+    if (CHECK_UPDATE) {
+      await autoUpdater.checkForUpdates();
+
+      setInterval(
+        () => autoUpdater.checkForUpdates(),
+        CHECK_UPDATE_INTERVAL,
+      );
     }
   }
 }

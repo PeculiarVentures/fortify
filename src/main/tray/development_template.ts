@@ -29,16 +29,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         },
       },
       {
-        label: 'Error critical update',
-        click: () => {
-          windowsController.showErrorWindow(
-            {
-              text: l10n.get('error.critical.update'),
-            },
-          );
-        },
-      },
-      {
         type: 'separator',
       },
       {
@@ -49,35 +39,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               text: l10n.get('question.2key.remove', 'TEST'),
               id: 'question.2key.remove',
               result: 0,
-            },
-          );
-        },
-      },
-      {
-        label: 'Question update new',
-        click: () => {
-          windowsController.showQuestionWindow(
-            {
-              text: l10n.get('question.update.new', 'TEST'),
-              id: 'question.update.new',
-              result: 0,
-              showAgain: true,
-              showAgainValue: false,
-            },
-          );
-        },
-      },
-      {
-        label: 'Question telemetry enable',
-        click: () => {
-          windowsController.showQuestionWindow(
-            {
-              text: l10n.get('question.telemetry.enable'),
-              id: 'question.telemetry.enable',
-              result: 0,
-              showAgain: true,
-              showAgainValue: false,
-              buttonRejectLabel: 'disable',
             },
           );
         },

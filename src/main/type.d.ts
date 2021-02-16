@@ -29,6 +29,7 @@ interface IConfigure {
   cards: ICard[];
   userId: string;
   telemetry?: boolean;
+  theme: ('system' | 'dark' | 'light');
 }
 
 declare module 'sudo-prompt' {

@@ -9,6 +9,12 @@ const getTemplate = () => (
   baseTemplate().concat(isDevelopment ? developmentTemplate() : [])
 );
 
+const setIcon = (hasNotifications?: boolean) => {
+  const icon = hasNotifications ? icons.trayNotification : icons.tray;
+
+  trayElectron.setImage(icon);
+};
+
 const create = () => {
   if (!trayElectron) {
     trayElectron = new Tray(icons.tray);
@@ -27,4 +33,5 @@ const refresh = () => {
 export const tray = {
   create,
   refresh,
+  setIcon,
 };

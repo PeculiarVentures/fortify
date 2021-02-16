@@ -7,19 +7,12 @@ import {
 } from 'lib-react-components';
 import classnames from 'classnames';
 import { Sites } from './sites';
-import { Logging } from './logging';
-import { Language } from './language';
-import { Telemetry } from './telemetry';
+import { About } from './about';
+import { Settings } from './settings';
+import { Updates } from './updates';
 import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/container.sass');
-
-enum TabType {
-  sites = 1,
-  logging,
-  language,
-  telemetry,
-}
 
 export interface IContainerProps {
   logging: {
@@ -39,6 +32,19 @@ export interface IContainerProps {
     isFetching: IsFetchingType;
     onKeyRemove: (origin: string) => void;
   };
+  theme: {
+    value: ThemeType;
+    onThemeChange: (theme: ThemeType) => void;
+  };
+  update: {
+    isFetching: IsFetchingType;
+    info?: UpdateInfoType;
+  };
+  version: string;
+  tab: {
+    value: TabType;
+    onChange: (value: TabType) => void;
+  };
 }
 
 export interface IContainerState {
@@ -48,19 +54,21 @@ export interface IContainerState {
 export default class Container extends React.Component<IContainerProps, IContainerState> {
   static contextType = IntlContext;
 
-  constructor(props: IContainerProps) {
-    super(props);
+  handleChangeTab = (_: Event, value: string | number) => {
+    const { tab } = this.props;
 
-    this.state = {
-      tab: TabType.sites,
-    };
-  }
-
-  onChangeTab = (e: Event, value: string | number) => {
-    this.setState({
-      tab: value as TabType,
-    });
+    tab.onChange(value as TabType);
   };
+
+  // eslint-disable-next-line class-methods-use-this
+  renderNotificationBadge() {
+    return (
+      <Box
+        className={s.badge}
+        fill="attention"
+      />
+    );
+  }
 
   render() {
     const {
@@ -68,8 +76,11 @@ export default class Container extends React.Component<IContainerProps, IContain
       keys,
       logging,
       telemetry,
+      version,
+      theme,
+      update,
+      tab,
     } = this.props;
-    const { tab } = this.state;
     const { intl } = this.context;
 
     return (
@@ -82,57 +93,60 @@ export default class Container extends React.Component<IContainerProps, IContain
           strokeType="bottom"
         >
           <Tabs
-            value={tab}
+            value={tab.value}
             align="left"
-            onChange={this.onChangeTab}
+            onChange={this.handleChangeTab}
+            className={s.tabs}
+            color="grey_4"
+            colorOn="black"
           >
             <Tab
-              value={TabType.sites}
+              value="sites"
               className={classnames(s.tab, 'b3')}
-              color="grey_4"
             >
               {intl('sites')}
             </Tab>
             <Tab
-              value={TabType.logging}
+              value="settings"
               className={classnames(s.tab, 'b3')}
-              color="grey_4"
             >
-              {intl('logging')}
+              {intl('settings')}
             </Tab>
             <Tab
-              value={TabType.telemetry}
+              value="updates"
               className={classnames(s.tab, 'b3')}
-              color="grey_4"
             >
-              {intl('telemetry.title')}
+              {intl('updates')}
+              {update.info ? this.renderNotificationBadge() : null}
             </Tab>
             <Tab
-              value={TabType.language}
+              value="about"
               className={classnames(s.tab, 'b3')}
-              color="grey_4"
             >
-              {intl('language')}
+              {intl('about')}
             </Tab>
           </Tabs>
         </Box>
         <div className={s.content}>
-          <SegueHandler value={tab}>
+          <SegueHandler value={tab.value}>
             <Sites
-              name={TabType.sites}
+              name="sites"
               keys={keys}
             />
-            <Logging
-              name={TabType.logging}
-              logging={logging}
-            />
-            <Language
-              name={TabType.language}
+            <Settings
+              name="settings"
               language={language}
-            />
-            <Telemetry
-              name={TabType.telemetry}
+              logging={logging}
               telemetry={telemetry}
+              theme={theme}
+            />
+            <Updates
+              name="updates"
+              update={update}
+            />
+            <About
+              name="about"
+              version={version}
             />
           </SegueHandler>
         </div>
