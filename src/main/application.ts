@@ -9,6 +9,8 @@ import { l10n } from './l10n';
 import { tray } from './tray';
 import {
   APP_USER_DIR,
+  CHECK_UPDATE,
+  CHECK_UPDATE_INTERVAL,
 } from './constants';
 import { setConfig, getConfig } from './config';
 import logger, { loggingSwitch, loggingAnalyticsSwitch } from './logger';
@@ -229,21 +231,33 @@ export class Application {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private initAutoUpdater() {
+  private async initAutoUpdater() {
     autoUpdater.on('checking-for-update', () => {
       sendToRenderers('ipc-checking-for-update');
     });
 
     autoUpdater.on('update-available', (info) => {
       sendToRenderers('ipc-update-available', info);
+      tray.setIcon(true);
     });
 
     autoUpdater.on('update-not-available', () => {
       sendToRenderers('ipc-update-not-available');
+      tray.setIcon();
     });
 
     autoUpdater.on('error', () => {
       sendToRenderers('ipc-update-error');
+      tray.setIcon();
     });
+
+    if (CHECK_UPDATE) {
+      await autoUpdater.checkForUpdates();
+
+      setInterval(
+        () => autoUpdater.checkForUpdates(),
+        CHECK_UPDATE_INTERVAL,
+      );
+    }
   }
 }

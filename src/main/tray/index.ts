@@ -9,10 +9,18 @@ const getTemplate = () => (
   baseTemplate().concat(isDevelopment ? developmentTemplate() : [])
 );
 
-const create = () => {
+const setIcon = (hasNotifications?: boolean) => {
+  const icon = hasNotifications ? icons.trayNotification : icons.tray;
+
   if (!trayElectron) {
-    trayElectron = new Tray(icons.tray);
+    trayElectron = new Tray(icon);
+  } else {
+    trayElectron.setImage(icon);
   }
+};
+
+const create = () => {
+  setIcon();
 
   const menu = Menu.buildFromTemplate(getTemplate());
 
@@ -27,4 +35,5 @@ const refresh = () => {
 export const tray = {
   create,
   refresh,
+  setIcon,
 };
