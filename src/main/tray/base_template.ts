@@ -5,16 +5,17 @@ import {
 import { TOOLS_LINK } from '../constants';
 import { windowsController } from '../windows';
 import { autoUpdater } from '../updater';
+import { l10n } from '../l10n';
 
 export const baseTemplate = (): MenuItemConstructorOptions[] => ([
   {
-    label: 'About Fortify',
+    label: l10n.get('about.app'),
     click: () => {
       windowsController.showPreferencesWindow('about');
     },
   },
   {
-    label: 'Check For Updates...',
+    label: l10n.get('updates.check'),
     click: async () => {
       windowsController.showPreferencesWindow('updates');
       autoUpdater.checkForUpdates();
@@ -24,13 +25,13 @@ export const baseTemplate = (): MenuItemConstructorOptions[] => ([
     type: 'separator',
   },
   {
-    label: 'Preferences...',
+    label: l10n.get('preferences'),
     click: () => {
       windowsController.showPreferencesWindow('settings');
     },
   },
   {
-    label: 'Tools',
+    label: l10n.get('tools'),
     click: () => {
       shell.openExternal(TOOLS_LINK);
     },
@@ -39,7 +40,7 @@ export const baseTemplate = (): MenuItemConstructorOptions[] => ([
     type: 'separator',
   },
   {
-    label: 'Quit Fortify',
+    label: l10n.get('quit'),
     role: 'quit',
   },
 ]);

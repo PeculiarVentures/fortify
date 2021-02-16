@@ -54,7 +54,7 @@ export class Settings extends React.Component<ISettingsProps> {
 
   render() {
     const { telemetry, logging, theme } = this.props;
-    const { list, lang } = this.context;
+    const { list, lang, intl } = this.context;
 
     return (
       <>
@@ -66,7 +66,7 @@ export class Settings extends React.Component<ISettingsProps> {
           <Typography
             type="b3"
           >
-            Language
+            {intl('language')}
           </Typography>
           <div className={s.actions}>
             <Select
@@ -95,7 +95,7 @@ export class Settings extends React.Component<ISettingsProps> {
           <Typography
             type="b3"
           >
-            Theme
+            {intl('theme')}
           </Typography>
           <div className={s.actions}>
             <Select
@@ -106,7 +106,7 @@ export class Settings extends React.Component<ISettingsProps> {
               onChange={this.handleChangeTheme}
               options={['system', 'light', 'dark'].map((value) => ({
                 value,
-                label: value,
+                label: intl(`theme.${value}`),
               }))}
             />
           </div>
@@ -120,14 +120,14 @@ export class Settings extends React.Component<ISettingsProps> {
           <Typography
             type="b3"
           >
-            Telemetry
+            {intl('telemetry')}
           </Typography>
           <div className={s.actions}>
             <Switch
               colorOn="secondary"
               color="grey_1"
               iconColor="grey_4"
-              label="Enable usage and crash reports to help us ensure future versions of Fortify address the issues you may experience"
+              label={intl('telemetry.enable')}
               labelProps={{
                 type: 'c1',
                 color: 'grey_4',
@@ -149,7 +149,7 @@ export class Settings extends React.Component<ISettingsProps> {
           <Typography
             type="b3"
           >
-            Logging
+            {intl('logging')}
           </Typography>
           <div className={classnames(s.actions, s.m_alight)}>
             <Button
@@ -162,7 +162,7 @@ export class Settings extends React.Component<ISettingsProps> {
               }}
               onClick={logging.onLoggingOpen}
             >
-              View Log
+              {intl('view.log')}
             </Button>
             <Switch
               colorOn="secondary"

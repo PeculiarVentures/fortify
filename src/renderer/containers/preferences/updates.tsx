@@ -6,6 +6,7 @@ import {
   Box,
 } from 'lib-react-components';
 import { GITHUB_REPO_LINK, DOWNLOAD_LINK } from '../../../main/constants';
+import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/updates.sass');
 
@@ -18,8 +19,13 @@ interface IUpdatesProps {
 }
 
 export class Updates extends React.Component<IUpdatesProps> {
-  // eslint-disable-next-line class-methods-use-this
+  static contextType = IntlContext;
+
+  context!: React.ContextType<typeof IntlContext>;
+
   renderChekingState() {
+    const { intl } = this.context;
+
     return (
       <div className={s.container_cheking}>
         <CircularProgress
@@ -31,26 +37,28 @@ export class Updates extends React.Component<IUpdatesProps> {
           type="b3"
           color="grey_5_border"
         >
-          Cheking for updates
+          {intl('updates.checking')}
         </Typography>
       </div>
     );
   }
 
-  // eslint-disable-next-line class-methods-use-this
   renderLatestVersionState() {
+    const { intl } = this.context;
+
     return (
       <Typography
         type="b3"
         color="grey_5_border"
       >
-        You&apos;re on the latest version of Fortify.
+        {intl('updates.latest')}
       </Typography>
     );
   }
 
   renderUpdateVersionState() {
     const { update } = this.props;
+    const { intl } = this.context;
 
     return (
       <Box
@@ -61,14 +69,14 @@ export class Updates extends React.Component<IUpdatesProps> {
         <Typography
           type="h5"
         >
-          A new update is available.
+          {intl('updates.available')}
         </Typography>
         <Typography
           type="c1"
           color="grey_4"
           className={s.description_update_available}
         >
-          v{update.info?.version} from {new Date(update.info?.createdAt as any).toLocaleDateString()}
+          v{update.info?.version} ({new Date(update.info?.createdAt as any).toLocaleDateString()})
         </Typography>
         <div className={s.footer_update_available}>
           <Button
@@ -81,14 +89,14 @@ export class Updates extends React.Component<IUpdatesProps> {
             }}
             href={`${GITHUB_REPO_LINK}/releases/tag/${update.info?.version}`}
           >
-            Learn more about this update
+            {intl('updates.available.learn')}
           </Button>
           <Button
             size="large"
             color="secondary"
             href={DOWNLOAD_LINK}
           >
-            Download
+            {intl('download')}
           </Button>
         </div>
       </Box>

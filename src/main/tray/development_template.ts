@@ -29,16 +29,6 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
         },
       },
       {
-        label: 'Error critical update',
-        click: () => {
-          windowsController.showErrorWindow(
-            {
-              text: l10n.get('error.critical.update'),
-            },
-          );
-        },
-      },
-      {
         type: 'separator',
       },
       {

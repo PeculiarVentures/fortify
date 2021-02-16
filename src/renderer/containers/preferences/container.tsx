@@ -110,13 +110,13 @@ export default class Container extends React.Component<IContainerProps, IContain
               value="settings"
               className={classnames(s.tab, 'b3')}
             >
-              Settings
+              {intl('settings')}
             </Tab>
             <Tab
               value="updates"
               className={classnames(s.tab, 'b3')}
             >
-              Updates
+              {intl('updates')}
               {update.info ? this.renderNotificationBadge() : null}
             </Tab>
             <Tab
