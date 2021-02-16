@@ -53,7 +53,7 @@ class Updater extends EventEmitter {
         stack: error.stack,
       });
 
-      throw new UpdateError(l10n.get('error.update.server'));
+      throw new UpdateError('Unable to connect to update server');
     }
   }
 
@@ -75,7 +75,7 @@ class Updater extends EventEmitter {
         throw error;
       }
 
-      throw new UpdateError(l10n.get('error.update.check'));
+      throw new UpdateError('Unable to check updated version');
     }
   }
 
