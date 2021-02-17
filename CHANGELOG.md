@@ -1,3 +1,10 @@
+## [1.8.0](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.0) (17.02.2021)
+
+### Features
+
+- Update preferences window UI ([#395](https://github.com/PeculiarVentures/fortify/pull/395)).
+- Update `electron` dependency to `11.2.3` ([#397](https://github.com/PeculiarVentures/fortify/pull/397).
+
 ## [1.7.0](https://github.com/PeculiarVentures/fortify/releases/tag/1.7.0) (08.02.2021)
 
 ### Features
