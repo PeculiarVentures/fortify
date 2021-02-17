@@ -1,0 +1,15 @@
+.m_alight
+  display: flex
+  justify-content: space-between
+  align-items: center
+
+.item
+  @extend .m_alight
+  padding: 20px
+  min-height: 80px
+  &:not(:first-child)
+    margin-top: 10px
+
+.actions
+  width: 78%
+  margin-left: 10px

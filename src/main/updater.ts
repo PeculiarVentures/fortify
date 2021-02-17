@@ -1,32 +1,40 @@
 import { EventEmitter } from 'events';
-import { shell, app } from 'electron';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as fs from 'fs';
 import { request } from './utils';
-import { JWS_LINK, APP_DIR, DOWNLOAD_LINK } from './constants';
+import { JWS_LINK, APP_DIR } from './constants';
 import logger from './logger';
 import * as jws from './jws';
 import { UpdateError } from './errors';
-import { windowsController } from './windows';
 import { l10n } from './l10n';
 
+type UpdateInfo = {
+  version: string;
+  createdAt: number;
+  min?: string;
+};
+
 class Updater extends EventEmitter {
-  on(event: 'update-found', cb: (version: string) => void): this;
+  on(event: 'update-available', cb: (info: UpdateInfo) => void): this;
 
-  on(event: 'update-not-found', cb: () => void): this;
+  on(event: 'update-not-available', cb: () => void): this;
 
-  on(event: 'update-error', cb: (error: UpdateError) => void): this;
+  on(event: 'checking-for-update', cb: () => void): this;
+
+  on(event: 'error', cb: (error: UpdateError) => void): this;
 
   on(event: string, cb: (...args: any[]) => void) {
     return super.on(event, cb);
   }
 
-  emit(event: 'update-found', version: string): boolean;
+  emit(event: 'update-available', info: UpdateInfo): boolean;
 
-  emit(event: 'update-not-found'): boolean;
+  emit(event: 'update-not-available'): boolean;
 
-  emit(event: 'update-error', error: UpdateError): boolean;
+  emit(event: 'checking-for-update'): boolean;
+
+  emit(event: 'error', error: UpdateError): boolean;
 
   emit(event: string, ...args: any[]) {
     return super.emit(event, ...args);
@@ -45,14 +53,14 @@ class Updater extends EventEmitter {
         stack: error.stack,
       });
 
-      throw new UpdateError(l10n.get('error.update.server'));
+      throw new UpdateError('Unable to connect to update server');
     }
   }
 
   /**
    * Get info from trusted update.jws
    */
-  private async getUpdateInfo() {
+  private async getUpdateInfo(): Promise<UpdateInfo> {
     try {
       const jwsString = await this.getJWS();
 
@@ -67,64 +75,29 @@ class Updater extends EventEmitter {
         throw error;
       }
 
-      throw new UpdateError(l10n.get('error.update.check'));
+      throw new UpdateError('Unable to check updated version');
     }
   }
 
   async checkForUpdates() {
-    try {
-      logger.info('update', 'Check for new update');
+    this.emit('checking-for-update');
+    logger.info('update', 'Check for new update');
 
-      const update = await this.getUpdateInfo();
+    try {
+      const info = await this.getUpdateInfo();
       // Get current version
       const packageJson = fs.readFileSync(path.join(APP_DIR, 'package.json')).toString();
       const curVersion = JSON.parse(packageJson).version;
 
       // Compare versions
-      if (semver.lt(curVersion, update.version)) {
+      if (semver.lt(curVersion, info.version)) {
         logger.info('update', 'New version was found');
 
-        this.emit('update-found', update.version);
-
-        try {
-          const questionWindowResult = await windowsController.showQuestionWindow({
-            text: l10n.get('question.update.new', update.version),
-            id: 'question.update.new',
-            result: 0,
-            showAgain: true,
-            showAgainValue: false,
-          });
-
-          if (questionWindowResult.result) { // yes
-            logger.info('update', 'User agreed to download new version', {
-              version: update.version,
-            });
-
-            shell.openExternal(DOWNLOAD_LINK);
-          } else { // no
-            logger.info('update', 'User refused to download new version', {
-              version: update.version,
-            });
-          }
-        } catch {
-          //
-        }
-
-        if (update.min && semver.lt(curVersion, update.min)) {
-          logger.info('update', 'Version is critical. App is not matching to minimal criteria', {
-            version: update.version,
-          });
-
-          await windowsController.showErrorWindow({
-            text: l10n.get('error.critical.update'),
-          });
-
-          app.quit();
-        }
+        this.emit('update-available', info);
       } else {
         logger.info('update', 'New version wasn\'t found');
 
-        this.emit('update-not-found');
+        this.emit('update-not-available');
       }
     } catch (error) {
       logger.error('update', 'Update error', {
@@ -133,7 +106,7 @@ class Updater extends EventEmitter {
       });
 
       if (error instanceof UpdateError) {
-        this.emit('update-error', error);
+        this.emit('error', error);
       }
     }
   }

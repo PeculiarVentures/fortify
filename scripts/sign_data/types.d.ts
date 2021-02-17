@@ -13,6 +13,7 @@ declare interface CryptoKey {
 
 interface IUpdateInfoJson {
   version: string;
+  createdAt: number;
   min?: string;
 }
 

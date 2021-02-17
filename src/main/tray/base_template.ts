@@ -2,25 +2,33 @@ import {
   shell,
   MenuItemConstructorOptions,
 } from 'electron';
-import { l10n } from '../l10n';
 import { TOOLS_LINK } from '../constants';
 import { windowsController } from '../windows';
+import { autoUpdater } from '../updater';
+import { l10n } from '../l10n';
 
 export const baseTemplate = (): MenuItemConstructorOptions[] => ([
   {
-    label: l10n.get('about'),
+    label: l10n.get('about.app'),
     click: () => {
-      windowsController.showAboutWindow();
+      windowsController.showPreferencesWindow('about');
     },
   },
   {
-    label: l10n.get('settings'),
+    label: l10n.get('updates.check'),
     click: () => {
-      windowsController.showSettingsWindow();
+      windowsController.showPreferencesWindow('updates');
+      autoUpdater.checkForUpdates();
     },
   },
   {
     type: 'separator',
+  },
+  {
+    label: l10n.get('preferences'),
+    click: () => {
+      windowsController.showPreferencesWindow('settings');
+    },
   },
   {
     label: l10n.get('tools'),
@@ -29,7 +37,10 @@ export const baseTemplate = (): MenuItemConstructorOptions[] => ([
     },
   },
   {
-    label: l10n.get('exit'),
+    type: 'separator',
+  },
+  {
+    label: l10n.get('quit'),
     role: 'quit',
   },
 ]);

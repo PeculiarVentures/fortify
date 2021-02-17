@@ -147,7 +147,7 @@ export class Server {
               .replace(/\$\{reader\}/g, card.reader)
               .replace(/\$\{atr\}/g, atr.toUpperCase())
               .replace(/\$\{driver\}/g, crypto.randomBytes(20).toString('hex').toUpperCase());
-            const url = `${constants.SUPPORT_NEW_TOKEN_LINK}/issues/new?${querystring.stringify({
+            const url = `${constants.GITHUB_REPO_LINK}/issues/new?${querystring.stringify({
               title,
               body,
             })}`;
