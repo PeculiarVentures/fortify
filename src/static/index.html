@@ -157,15 +157,15 @@
 
     <script src="../../out/vendors.js"></script>
     <script>
-      const electron = require("electron");
-      const currentWindow = electron.remote.getCurrentWindow();
+      const searchParams = new URLSearchParams(location.search);
+      const currentWindow = searchParams.get('app');
 
-      if (!currentWindow.app) {
+      if (!currentWindow) {
         throw new Error("app parameter is empty");
       }
 
       const $script = document.createElement("script");
-      $script.setAttribute('src', `../../out/${currentWindow.app}.js`);
+      $script.setAttribute('src', `../../out/${currentWindow}.js`);
       document.body.appendChild($script);
     </script>
 	</body>

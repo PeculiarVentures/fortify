@@ -62,6 +62,9 @@ export class BrowserWindow {
       pathname: constants.HTML_PATH,
       protocol: 'file:',
       slashes: true,
+      query: {
+        app: options.app,
+      },
     }));
 
     this.window.lang = l10n.lang;
@@ -124,6 +127,7 @@ export class BrowserWindow {
         nodeIntegration: true,
         // Prevent open DevTools on production
         devTools: constants.isDevelopment,
+        enableRemoteModule: true,
       },
     };
   }
