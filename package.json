@@ -52,7 +52,7 @@
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^3.0.0",
     "extract-zip": "^1.7.0",
-    "fortify-prepare": "git+https://github.com/PeculiarVentures/fortify-prepare.git",
+    "fortify-prepare": "github:PeculiarVentures/fortify-prepare",
     "json-parser": "^3.1.2",
     "mocha": "^7.2.0",
     "node-gyp": "^7.1.2",
