@@ -80,7 +80,7 @@
     "classnames": "^2.2.6",
     "get-proxy-settings": "^0.1.11",
     "jose-jwe-jws": "github:microshine/js-jose",
-    "lib-react-components": "^3.0.0",
+    "lib-react-components": "^3.0.1",
     "mixpanel": "^0.13.0",
     "pkcs11js": "^1.2.1",
     "pkijs": "^2.1.91",
