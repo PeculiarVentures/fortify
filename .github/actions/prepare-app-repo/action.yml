@@ -2,7 +2,7 @@ name: Prepare app repository
 runs:
   using: "composite"
   steps:
-    - run: npm ci
+    - run: yarn install --frozen-lockfile
       shell: bash
-    - run: npm run build
+    - run: yarn build
       shell: bash

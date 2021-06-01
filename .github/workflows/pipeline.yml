@@ -24,7 +24,7 @@ jobs:
           APP_REPO_FOLDER: ../
           RELEASE_FOLDER: ../release
       - name: Sign data
-        run: npm run sign_data
+        run: yarn sign_data
         env:
           PRIVATE_KEY_BASE64: ${{ secrets.PRIVATE_KEY_BASE64 }}
           PUBLIC_KEY_BASE64: ${{ secrets.PUBLIC_KEY_BASE64 }}
