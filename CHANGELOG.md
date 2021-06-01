@@ -1,3 +1,31 @@
+## [1.8.1](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.1) (01.06.2021)
+
+### Features
+
+- Added log with `PKCS#11` information.
+```json
+{"source":"provider","library":"/usr/local/lib/libsoftokn3.dylib","manufacturerId":"Mozilla Foundation","cryptokiVersion":{"major":2,"minor":40},"libraryVersion":{"major":3,"minor":64},"firmwareVersion":{"major":0,"minor":0},"level":"info","message":"PKCS#11 library information","timestamp":"2021-05-26T09:57:30.827Z"}
+```
+- Supported configuration for `PKCS#11` templates.
+```json
+{
+  "id": "39b3d7a3662c4b48bb120d008dd18648",
+  "name": "SafeNet Authentication Client",
+  "config": {
+    "template": {
+      "copy": {
+        "private": {
+          "token": true,
+          "sensitive": true,
+          "extractable": false
+        }
+      }
+    }
+  }
+}
+```
+- Updated `PKCS#11` lib. It doesn't show System certificates.
+
 ## [1.8.0](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.0) (17.02.2021)
 
 ### Features
