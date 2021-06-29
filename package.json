@@ -16,7 +16,8 @@
     "clear": "rimraf out build",
     "rebuild": "yarn clear && yarn build",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./",
-    "test": "mocha"
+    "test": "mocha",
+    "upgrade": "yarn upgrade-interactive"
   },
   "keywords": [],
   "author": {
