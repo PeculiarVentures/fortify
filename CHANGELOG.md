@@ -1,3 +1,12 @@
+## [1.8.2](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.2) (05.07.2021)
+
+### Bug Fixes
+
+- Fix error on `ossl` property reading of null object.
+- Change driver for the `3BDF18008131FE7D006B020C0182011101434E53103180FC` token ([#423](https://github.com/PeculiarVentures/fortify/issues/423)).
+- Fix error on key generation ([#422](https://github.com/PeculiarVentures/fortify/issues/422)).
+- Fix error on IDPrime card removing ([#421](https://github.com/PeculiarVentures/fortify/issues/421)).
+
 ## [1.8.1](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.1) (01.06.2021)
 
 ### Features
