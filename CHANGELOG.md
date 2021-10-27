@@ -1,3 +1,13 @@
+## [1.8.3](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.3) (27.10.2021)
+
+### Features
+
+- Update `electron` dependency to `11.5.0`.
+
+### Bug Fixes
+
+- Fix startup error in Ubuntu ([#436](https://github.com/PeculiarVentures/fortify/issues/436)).
+
 ## [1.8.2](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.2) (05.07.2021)
 
 ### Bug Fixes
