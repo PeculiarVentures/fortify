@@ -84,7 +84,7 @@
     "lib-react-components": "^3.0.1",
     "mixpanel": "^0.13.0",
     "pkcs11js": "^1.2.1",
-    "pkijs": "^2.1.91",
+    "pkijs": "^2.2.1",
     "public-ip": "^4.0.3",
     "pvtsutils": "^1.2.1",
     "react": "^16.13.1",

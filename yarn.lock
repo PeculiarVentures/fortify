@@ -4537,10 +4537,19 @@ pkg-up@^2.0.0:
   dependencies:
     find-up "^2.1.0"
 
-pkijs@^2.1.91, pkijs@^2.1.95:
+pkijs@^2.1.95:
   version "2.1.95"
   resolved "https://registry.yarnpkg.com/pkijs/-/pkijs-2.1.95.tgz#f87f5ca69816ab765f9c5b5477056675249c885d"
   integrity sha512-e+lKETqg/YA1LdX+ld5tTr0VFDWI72XlZc87IGNaMsJX3aVDIC8kBAYOO4agCNSbpUAqjqLMRW5F0R5YQk9Z+Q==
+  dependencies:
+    asn1js "^2.1.1"
+    bytestreamjs "^1.0.29"
+    pvutils "^1.0.17"
+
+pkijs@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/pkijs/-/pkijs-2.2.1.tgz#f4ad272ed8092127f3ed5107dccd8e30bc882a9d"
+  integrity sha512-EzMnN5uwMPggjhQap+MeMG7pSc/1zQcc7GxW+NjJ2RLXgyoxpm7CakELlHtLK5KwKdiMpC6FtbYd13MNY88x6g==
   dependencies:
     asn1js "^2.1.1"
     bytestreamjs "^1.0.29"
