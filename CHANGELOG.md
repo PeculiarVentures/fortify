@@ -1,4 +1,4 @@
-## [1.8.3](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.3) (27.10.2021)
+=## [1.8.3](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.3) (27.10.2021)
 
 ### Features
 
