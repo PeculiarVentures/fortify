@@ -4502,10 +4502,17 @@ pify@^4.0.1:
   resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
   integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
 
-pkcs11js@^1.2.1, pkcs11js@^1.2.3:
+pkcs11js@^1.2.3:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/pkcs11js/-/pkcs11js-1.2.5.tgz#d40d21f99e610cab2a7cb452860fc45ae4e6e0a9"
   integrity sha512-ZOCi2ZqKV6LprMmODsQKxgxnwGyy5nQ+nbI6QeS1M5B7gaH09xIcz8BomukrtyLHs/z3eQvvzy1SAFYXrYOG4w==
+  dependencies:
+    nan "^2.14.2"
+
+pkcs11js@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/pkcs11js/-/pkcs11js-1.2.6.tgz#e0e8589899afd9f1c0d21f340736f8070728de5d"
+  integrity sha512-G3mgp0jcTO2A0fcqPdHEU4xYsmZgztMH10RmtUzTjf3pWxWaX7K3wTWVZInE6OaBucUS3d6St+8eUkqO44Hi3Q==
   dependencies:
     nan "^2.14.2"
 
