@@ -86,7 +86,7 @@
     "pkcs11js": "^1.2.1",
     "pkijs": "^2.1.91",
     "public-ip": "^4.0.3",
-    "pvtsutils": "^1.1.1",
+    "pvtsutils": "^1.2.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "reflect-metadata": "^0.1.13",
