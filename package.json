@@ -74,7 +74,7 @@
     "@babel/polyfill": "^7.10.4",
     "@peculiar/asn1-schema": "^2.0.38",
     "@peculiar/asn1-x509": "^2.0.38",
-    "@peculiar/webcrypto": "1.2.0",
+    "@peculiar/webcrypto": "1.0.22",
     "@webcrypto-local/cards": "^1.6.8",
     "@webcrypto-local/server": "^1.6.8",
     "asn1js": "^2.1.1",
