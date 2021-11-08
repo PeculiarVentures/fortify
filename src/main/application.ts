@@ -73,8 +73,6 @@ export class Application {
       app.dock.hide();
     }
 
-    app.allowRendererProcessReuse = true;
-
     /**
      * Don't quit when all windows are closed.
      */

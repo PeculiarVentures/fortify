@@ -1,4 +1,4 @@
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 import * as React from 'react';
 import * as winston from 'winston';
 import { IntlProvider } from './intl';

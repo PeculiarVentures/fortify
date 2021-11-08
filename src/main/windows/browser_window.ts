@@ -67,6 +67,8 @@ export class BrowserWindow {
       },
     }));
 
+    require('@electron/remote/main').enable(this.window.webContents);
+
     this.window.lang = l10n.lang;
     this.window.app = options.app;
     this.window.params = options.params || {};
@@ -125,9 +127,9 @@ export class BrowserWindow {
       ...this.getWindowSize(),
       webPreferences: {
         nodeIntegration: true,
+        contextIsolation: false,
         // Prevent open DevTools on production
         devTools: constants.isDevelopment,
-        enableRemoteModule: true,
       },
     };
   }

@@ -44,7 +44,7 @@
     "colors": "^1.4.0",
     "cross-env": "^7.0.2",
     "css-loader": "^5.2.6",
-    "electron": "^11.5.0",
+    "electron": "^15.3.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript": "^7.2.1",
     "eslint-plugin-import": "^2.22.0",
@@ -72,6 +72,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.10.4",
+    "@electron/remote": "^2.0.1",
     "@peculiar/asn1-schema": "^2.0.38",
     "@peculiar/asn1-x509": "^2.0.38",
     "@peculiar/webcrypto": "1.0.22",
