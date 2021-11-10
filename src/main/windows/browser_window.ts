@@ -5,7 +5,6 @@ import {
   shell,
   globalShortcut,
 } from 'electron';
-import * as url from 'url';
 import logger from '../logger';
 import * as constants from '../constants';
 import { l10n } from '../l10n';
@@ -58,14 +57,11 @@ export class BrowserWindow {
       id: options.params?.id,
     });
 
-    this.window.loadURL(url.format({
-      pathname: constants.HTML_PATH,
-      protocol: 'file:',
-      slashes: true,
+    this.window.loadFile(constants.HTML_PATH, {
       query: {
         app: options.app,
       },
-    }));
+    });
 
     this.window.lang = l10n.lang;
     this.window.app = options.app;
@@ -85,7 +81,7 @@ export class BrowserWindow {
 
     // Show page only after `lfinish-load` event and prevent show index page
     if (this.window.app !== 'index') {
-      this.window.webContents.on('did-finish-load', () => {
+      this.window.webContents.once('did-finish-load', () => {
         this.window.show();
       });
     }
@@ -128,6 +124,8 @@ export class BrowserWindow {
         // Prevent open DevTools on production
         devTools: constants.isDevelopment,
         enableRemoteModule: true,
+        // https://github.com/PeculiarVentures/fortify/issues/453
+        backgroundThrottling: false,
       },
     };
   }
