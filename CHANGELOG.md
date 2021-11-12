@@ -2,6 +2,7 @@
 
 ### Features
 
+- Add support to use custom driver ([#439](https://github.com/PeculiarVentures/fortify/issues/439)).
 - Update `electron` dependency to `11.5.0`.
 - Use `ts-loader` instead of `awesome-typescript-loader`.
 - Update `webcrypto-core` version to `1.3.0`.
@@ -10,13 +11,13 @@
 - Update `pkcs11js` version to `1.2.6`.
 - Update `asn1js` version to `2.1.1`.
 - Update `@peculiar/asn1-*` version to `2.0.38`.
-- Update `@peculiar/webcrypto` version to `1.2.0`.
 - Update `@webcrypto-local` version to `1.6.8`.
 
 ### Bug Fixes
 
 - Fix startup error in Ubuntu ([#436](https://github.com/PeculiarVentures/fortify/issues/436)).
 - Fortify is not valid win32 application ([#440](https://github.com/PeculiarVentures/fortify/issues/440)).
+- Fix PIN entered not shown until window moves ([#453](https://github.com/PeculiarVentures/fortify/issues/453)).
 
 ## [1.8.2](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.2) (05.07.2021)
 
