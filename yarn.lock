@@ -664,10 +664,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webcrypto-local/cards@^1.6.9":
-  version "1.6.9"
-  resolved "https://registry.yarnpkg.com/@webcrypto-local/cards/-/cards-1.6.9.tgz#7542e3c2b51775e459567291defb1fcabd41fc70"
-  integrity sha512-vv3wV1WUStUJ/uci30fXXpbMir0AjzSc3IWhEoGQbqH+YglOCj12ozKX2S7y8sQT6xIpjP1yyoxV5iJQb9GVJg==
+"@webcrypto-local/cards@^1.6.10":
+  version "1.6.10"
+  resolved "https://registry.yarnpkg.com/@webcrypto-local/cards/-/cards-1.6.10.tgz#47f7aeb1fc80e006e0f9bdca79d44e7a66c4ea7b"
+  integrity sha512-8rIbArsxiT0p+HRCF8OwoejU/29rcPdme6b0o3AVayS12RgKVlGGDKPLLyKacAkEaUe4TsHJlc2AThdnqP0Gbg==
   dependencies:
     "@peculiar/json-schema" "^1.1.12"
     tslib "^2.3.0"
@@ -691,15 +691,15 @@
     tslib "^2.3.0"
     tsprotobuf "^1.0.17"
 
-"@webcrypto-local/server@^1.6.9":
-  version "1.6.9"
-  resolved "https://registry.yarnpkg.com/@webcrypto-local/server/-/server-1.6.9.tgz#04fcb26c0aacaefbffc8ce4804d127b3ae529a97"
-  integrity sha512-S1J48/hZBZsuxH4vN8a03MMyqZCqMEm1IJ6MN483e5RDXATKyb5hWcvNge3uwlOEhc0e7/vWqh/2YikSt46/gg==
+"@webcrypto-local/server@^1.6.10":
+  version "1.6.10"
+  resolved "https://registry.yarnpkg.com/@webcrypto-local/server/-/server-1.6.10.tgz#40b6e16cb618885444186909b3768f90533bda6c"
+  integrity sha512-BXWtAChh6LFLIP/pg9QYsWOhs/EXMZXVOTD7M+cd9Y9kh4De5ybY85ZszaQ09/NNiGbDzoEm1z9ZX7/7gDPR/g==
   dependencies:
     "2key-ratchet" "^1.0.18"
     "@peculiar/json-schema" "^1.1.12"
     "@types/pvutils" "^1.0.0"
-    "@webcrypto-local/cards" "^1.6.9"
+    "@webcrypto-local/cards" "^1.6.10"
     "@webcrypto-local/core" "^1.6.5"
     "@webcrypto-local/proto" "^1.6.5"
     asn1js "^2.1.1"
@@ -3999,9 +3999,9 @@ nan@^2.12.1, nan@^2.14.0, nan@^2.14.2:
   integrity sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ==
 
 nanoid@^3.1.23:
-  version "3.1.23"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.23.tgz#f744086ce7c2bc47ee0a8472574d5c78e4183a81"
-  integrity sha512-FiB0kzdP0FFVGDKlRLEQ1BgDzU87dy5NnzjeW9YZNt+/c3+q82EQDUwniSAUxp/F0gFNI1ZhKU1FqYsMuqZVnw==
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.2.0.tgz#62667522da6673971cca916a6d3eff3f415ff80c"
+  integrity sha512-fmsZYa9lpn69Ad5eDn7FMcnnSR+8R34W9qJEijxYhTbfOWzr22n1QxCMzXLK+ODyW2973V3Fux959iQoUxzUIA==
 
 nanomatch@^1.2.9:
   version "1.2.13"
@@ -4617,9 +4617,9 @@ prepend-http@^2.0.0:
   integrity sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=
 
 prismjs@^1.23.0:
-  version "1.25.0"
-  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.25.0.tgz#6f822df1bdad965734b310b315a23315cf999756"
-  integrity sha512-WCjJHl1KEWbnkQom1+SzftbtXMKQoezOCYs5rECqMN+jP+apI7ftoflyqigqzopSO3hMhTEb0mFClA8lkolgEg==
+  version "1.27.0"
+  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.27.0.tgz#bb6ee3138a0b438a3653dd4d6ce0cc6510a45057"
+  integrity sha512-t13BGPUlFDR7wRB5kQDG4jjl7XeuH6jbJGt11JHPL96qwsEHNX2+68tFXqc1/k+/jALsbSWJKUOT/hcYAZ5LkA==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
