@@ -104,7 +104,7 @@ export class SslCertInstaller {
         }
       });
 
-      logger.info('ssl-installer', 'SSL certificate added to System KeyChain', {
+      logger.info('ssl-installer', 'SSL certificate added to User KeyChain', {
         certName,
       });
     });
