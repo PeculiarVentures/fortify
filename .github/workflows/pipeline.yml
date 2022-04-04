@@ -70,7 +70,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup msbuild
-        uses: microsoft/setup-msbuild@v1
+        uses: microsoft/setup-msbuild@v1.1
       - name: Setup NuGet.exe for use with actions
         uses: nuget/setup-nuget@v1.0.5
       - name: Prepare app repository
