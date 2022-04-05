@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 import { APP_CONFIG_FILE } from './constants';
 
 const defaultConfig: IConfigure = {
-  userId: uuidv4(),
+  userId: nanoid(36),
   providers: [],
   cards: [],
   disableCardUpdate: false,

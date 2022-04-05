@@ -126,6 +126,7 @@ export class BrowserWindow {
         enableRemoteModule: true,
         // https://github.com/PeculiarVentures/fortify/issues/453
         backgroundThrottling: false,
+        contextIsolation: false,
       },
     };
   }

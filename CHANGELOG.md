@@ -1,3 +1,18 @@
+## [1.8.4](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.4) (5.04.2022)
+
+### Features
+- Update `electron` dependency to `13.6.9`.
+- Update `minimist ` dependency to `1.2.6`.
+- Update `@webcrypto-local/* ` dependency to `1.6.11`.
+- Use `nanoid` instead of `uuid`.
+
+### Bug Fixes
+
+- Fix ERR_CERT_AUTHORITY_INVALID exception on Mac ([#475](https://github.com/PeculiarVentures/fortify/issues/475)).
+- Fix Firefox in Ubuntu can't communicate with Fortify ([#461](https://github.com/PeculiarVentures/fortify/issues/461)).
+- Fix Unable to open fortify tools in Chrome ([#409](https://github.com/PeculiarVentures/fortify/issues/409)).
+- Fix App doesn't install CA certificate to Firefox ([#327](https://github.com/PeculiarVentures/fortify/issues/327)).
+
 ## [1.8.3](https://github.com/PeculiarVentures/fortify/releases/tag/1.8.3) (27.10.2021)
 
 ### Features

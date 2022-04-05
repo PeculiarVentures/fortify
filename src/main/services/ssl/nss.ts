@@ -3,8 +3,8 @@
 import { execSync } from 'child_process';
 import * as os from 'os';
 import { BufferSourceConverter, Convert } from 'pvtsutils';
-import { PemConverter } from 'webcrypto-core';
 import logger from '../../logger';
+import { PemConverter } from './pem_converter';
 
 export interface INssCertUtilArguments {
   [key: string]: string | undefined;
@@ -433,9 +433,10 @@ export class NssCertUtils {
     if (ok && cert) {
       const derCert = BufferSourceConverter.toArrayBuffer(cert);
       const nssCertPem = this.get(certName);
-      const nssCertDer = PemConverter.toArrayBuffer(nssCertPem);
+      const nssCertDerList = PemConverter.decode(nssCertPem);
 
-      return Convert.ToHex(derCert) === Convert.ToHex(nssCertDer);
+      return nssCertDerList
+        .some((nssCertDer) => Convert.ToHex(derCert) === Convert.ToHex(nssCertDer));
     }
 
     return ok;
