@@ -5,7 +5,7 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import * as sudo from 'sudo-prompt';
+import * as childProcess from 'child_process';
 import { PemConverter } from 'webcrypto-core';
 import { Firefox } from './firefox';
 import { NssCertUtils } from './nss';
@@ -92,15 +92,11 @@ export class SslCertInstaller {
   private async installDarwin(certPath: string) {
     await new Promise((resolve, reject) => {
       const certName = this.policy.nssCertName;
-      const options = {
-        name: this.policy.osxAppName || 'Fortify application',
-        icons: this.policy.osxAppIcons || '/Applications/Fortify.app/Contents/Resources/static/icons/tray/mac/icon.icns',
-      };
       const { username } = os.userInfo();
 
       logger.info('ssl-installer', 'Adding CA certificate to System KeyChain');
 
-      sudo.exec(`certPath="${certPath}" certName="${certName}" userDir="${os.homedir()}" USER="${username}" bash ${SRC_DIR}/resources/osx-ssl.sh`, options, (err) => {
+      childProcess.exec(`certPath="${certPath}" certName="${certName}" userDir="${os.homedir()}" USER="${username}" bash ${SRC_DIR}/resources/osx-ssl.sh`, (err) => {
         if (err) {
           reject(err);
         } else {
@@ -108,7 +104,7 @@ export class SslCertInstaller {
         }
       });
 
-      logger.info('ssl-installer', 'SSL certificate added to System KeyChain', {
+      logger.info('ssl-installer', 'SSL certificate added to User KeyChain', {
         certName,
       });
     });

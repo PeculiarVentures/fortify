@@ -31,11 +31,3 @@ interface IConfigure {
   telemetry?: boolean;
   theme: ('system' | 'dark' | 'light');
 }
-
-declare module 'sudo-prompt' {
-  export function exec(
-    script: string,
-    options: any,
-    cb: (err: Error, stdout: Buffer) => void,
-  ): void;
-}

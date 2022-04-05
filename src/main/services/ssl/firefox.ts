@@ -27,10 +27,8 @@ export class Firefox {
       const profiles = fs.readdirSync(profilesFolder);
       // eslint-disable-next-line no-restricted-syntax
       for (const profile of profiles) {
-        if (/default/.test(profile)) {
-          const profileFolder = path.normalize(path.join(profilesFolder, profile));
-          res.push(profileFolder);
-        }
+        const profileFolder = path.normalize(path.join(profilesFolder, profile));
+        res.push(profileFolder);
       }
     } else {
       logger.info('firefox', 'Profiles folder does not exist', { path: profilesFolder });
