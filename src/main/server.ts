@@ -184,6 +184,10 @@ export class Server {
                 },
               );
               break;
+            case CODE.WEBSOCKET_VANISHED:
+              logger.info('server', 'Closing open disposable windows', {origin: (error as any).origin});
+              windowsController.destroyDisposableWindows((error as any).origin);
+              break;
             case CODE.PROVIDER_CRYPTO_NOT_FOUND:
               windowsController.showWarningWindow(
                 {
@@ -220,7 +224,7 @@ export class Server {
             const keyPinWindowResult = await windowsController.showKeyPinWindow({
               ...params,
               accept: false,
-            });
+            }, params.origin);
 
             params.resolve(keyPinWindowResult.accept);
 
@@ -231,7 +235,7 @@ export class Server {
             const p11PinWindowResult = await windowsController.showP11PinWindow({
               ...params,
               pin: '',
-            });
+            }, params.origin);
 
             if (p11PinWindowResult.pin) {
               params.resolve(p11PinWindowResult.pin);

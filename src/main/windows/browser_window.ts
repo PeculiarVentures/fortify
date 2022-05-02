@@ -146,7 +146,11 @@ export class BrowserWindow {
   }
 
   public getParams() {
-    return this.window.params || {};
+    try {
+      return this.window.params || {};
+    } catch {
+      return {};
+    }
   }
 
   public focus() {
