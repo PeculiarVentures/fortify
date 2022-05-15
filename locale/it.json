@@ -38,7 +38,7 @@
   "question.2key.remove": "Desideri rimuovere %1 dall'elenco dei siti attendibili?",
   "warning.title.oh_no": "Oh no, non ha funzionato!",
   "warn.ssl.install": "È necessario installare il certificato SSL radice di Fortify. Per eseguire questa operazione potrebbe essere necessaria la password di amministratore.",
-  "warn.ssl.renew": " Il certificato SSL di Fortify deve essere rinnovato. Esegui l'installer di Fortify per rinnovare il certificato.",
+  "warn.ssl.renew": "Il certificato SSL di Fortify deve essere rinnovato. Esegui l'installer di Fortify per rinnovare il certificato.",
   "warn.token.crypto_not_found": "La smart card inserita è supportata da Fortify, ma non è stato trovato il driver per il dispositivo. Assicurarsi che il file (%1) esista e in caso contrario installare il driver della smart card.",
   "warn.token.crypto_wrong": "Si è verificato un problema durante il caricamento del driver (%1) per il tuo token di sicurezza o la tua smart card.\nAssicurarsi che il driver sia installato correttamente e riprovare.",
   "warn.pcsc.cannot_start": "Sembra che lo `Smart Card Resource Manager` non funzioni. Imposta questo servizio e riavvia Fortify.",
