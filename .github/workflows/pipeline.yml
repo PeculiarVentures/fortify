@@ -1,15 +1,21 @@
 name: Create installers and draft release
 
-on:
-  push:
-    branches:
-      - main
-    pull_request:
-      - main
+on: push
 
 jobs:
+  checkout:
+    name: Check commit message
+    runs-on: ubuntu-18.04
+    if: "contains(github.event.head_commit.message, '[release]')"
+    steps:
+      - name: Logging
+        run: |
+          echo "Let's create the draft release"
+
   macos:
+    name: Create macos installer
     runs-on: macos-10.15
+    needs: [checkout]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -38,9 +44,10 @@ jobs:
           path: |
             ./release/*.jws
             ./release/*.pkg
-
   ubuntu:
+    name: Create ubuntu installer
     runs-on: ubuntu-18.04
+    needs: [checkout]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -65,7 +72,9 @@ jobs:
           path: ./release/*.deb
 
   windows:
+    name: Create windows installers
     runs-on: windows-2019
+    needs: [checkout]
     strategy:
       matrix:
         platform: [x86, x64]
@@ -97,7 +106,7 @@ jobs:
           path: ./release/*.msi
 
   create_release:
-    name: Prepare and create draft  release
+    name: Prepare and create draft release
     runs-on: ubuntu-18.04
     needs: [macos, ubuntu, windows]
     steps:
@@ -122,7 +131,6 @@ jobs:
           echo "::set-output name=debName::$(ls artifacts/*.deb | cut -d'/' -f2)"
           echo "::set-output name=msi64Name::$(ls artifacts/*x64*.msi | cut -d'/' -f2)"
           echo "::set-output name=msi86Name::$(ls artifacts/*x86*.msi | cut -d'/' -f2)"
-
       - name: Upload .pkg
         uses: actions/upload-release-asset@v1
         env:
