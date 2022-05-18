@@ -38,21 +38,25 @@ export class Firefox {
   }
 
   public static restart() {
-    switch (os.platform()) {
-      case 'win32':
-        execSync('taskkill /F /IM firefox.exe');
-        execSync('start firefox');
-        break;
-      case 'linux':
-        execSync('pkill firefox');
-        execSync('firefox&');
-        break;
-      case 'darwin':
-        execSync('pkill firefox');
-        execSync('open /Applications/Firefox.app');
-        break;
-      default:
-        throw new Error();
+    try {
+      switch (os.platform()) {
+        case 'win32':
+          execSync('taskkill /F /IM firefox.exe');
+          execSync('start firefox');
+          break;
+        case 'linux':
+          execSync('pkill firefox');
+          execSync('firefox&');
+          break;
+        case 'darwin':
+          execSync('pkill firefox');
+          execSync('open /Applications/Firefox.app');
+          break;
+        default:
+        // nothing
+      }
+    } catch (e) {
+      logger.warn('firefox', 'The error has occurred during the Firefox browser restarting', { error: `${e}` });
     }
   }
 }

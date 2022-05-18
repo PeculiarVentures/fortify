@@ -3,8 +3,9 @@ name: Create installers and draft release
 on:
   push:
     branches:
-      - master
-      - canary
+      - main
+    pull_request:
+      - main
 
 jobs:
   macos:
