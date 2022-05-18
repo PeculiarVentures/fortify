@@ -51,7 +51,7 @@ class WindowsController {
   }
 
   showPreferencesWindow(defaultTab?: ('about' | 'updates' | 'settings')) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const params = {
         defaultTab,
       };
@@ -181,7 +181,7 @@ class WindowsController {
   }
 
   showErrorWindow(params: IErrorWindowParams) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       /**
        * Don't create if the window exists.
        */
@@ -263,7 +263,7 @@ class WindowsController {
   }
 
   showWarningWindow(params: IWarningWindowParams) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (
         params.id
         && params.showAgain

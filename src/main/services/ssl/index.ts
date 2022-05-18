@@ -16,7 +16,7 @@ export enum CaCertificateStatus {
   none,
   valid,
   renew,
-  expired
+  expired,
 }
 
 export class SslService {
@@ -252,9 +252,10 @@ export class SslService {
 
         logger.info('ssl-service', 'Certificate added to trusted storages');
       } catch (error) {
+        const err = error instanceof Error ? error : new Error('Unknown error');
         logger.error('ssl-service', 'Cannot install SSL certificate', {
-          error: error.message,
-          stack: error.stack,
+          error: err.message,
+          stack: err.stack,
         });
 
         fs.unlinkSync(constants.APP_SSL_CERT_CA);
@@ -275,9 +276,10 @@ export class SslService {
       try {
         this.installer.installFirefox(constants.APP_SSL_CERT_CA);
       } catch (error) {
+        const err = error instanceof Error ? error : new Error('Unknown error');
         logger.error('ssl-service', 'Install Firefox', {
-          error: error.message,
-          stack: error.stack,
+          error: err.message,
+          stack: err.stack,
         });
       }
     }
