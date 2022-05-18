@@ -41,7 +41,7 @@ export class Server {
         options.config.pvpkcs11.push(path.join(__dirname, '..', 'libpvpkcs11.dylib'));
         break;
       default:
-        // nothing
+      // nothing
     }
   }
 
@@ -58,7 +58,7 @@ export class Server {
         options.config.opensc = path.join(process.execPath, '..', 'opensc-pkcs11.so');
         break;
       default:
-        // nothing
+      // nothing
     }
   }
 
@@ -81,9 +81,10 @@ export class Server {
     try {
       await sslService.run();
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('server', 'SSL service run error', {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
 
       await windowsController.showErrorWindow({
@@ -111,9 +112,10 @@ export class Server {
     try {
       this.load(sslData);
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('server', 'LocalServer is empty. webcrypto-local module wasn\'t loaded', {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
     }
 
@@ -155,9 +157,10 @@ export class Server {
             shell.openExternal(url);
           }
         } catch (error) {
+          const err = error instanceof Error ? error : new Error('Unknown error');
           logger.error('server', 'Token window', {
-            error: error.message,
-            stack: error.stack,
+            error: err.message,
+            stack: err.stack,
           });
         }
       })
@@ -167,6 +170,7 @@ export class Server {
           stack: error.stack,
         });
 
+        // eslint-disable-next-line no-prototype-builtins
         if (error.hasOwnProperty('code') && error.hasOwnProperty('type')) {
           const err = error as wsServer.WebCryptoLocalError;
           const { CODE } = wsServer.WebCryptoLocalError;
@@ -280,9 +284,10 @@ export class Server {
         }
       }
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('server', 'Cannot prepare config data error', {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
     }
   }
@@ -303,8 +308,10 @@ export class Server {
         }
       }
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('server', 'Cannot prepare config data error', {
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
     }
   }
@@ -330,10 +337,11 @@ export class Server {
 
           return;
         } catch (error) {
+          const err = error instanceof Error ? error : new Error('Unknown error');
           logger.error('server', 'Cannot get card.json error', {
             from: constants.APP_CARD_JSON_LINK,
-            error: error.message,
-            stack: error.stack,
+            error: err.message,
+            stack: err.stack,
           });
         }
 
@@ -356,10 +364,11 @@ export class Server {
           const jwsString = await request(constants.APP_CARD_JSON_LINK);
           remote = await jws.getContent(jwsString);
         } catch (error) {
+          const err = error instanceof Error ? error : new Error('Unknown error');
           logger.error('server', 'Cannot get file error', {
             file: constants.APP_CARD_JSON_LINK,
-            error: error.message,
-            stack: error.stack,
+            error: err.message,
+            stack: err.stack,
           });
         }
 
@@ -382,9 +391,10 @@ export class Server {
         }
       }
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('server', 'Cannot prepare card.json data error', {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
     }
   }

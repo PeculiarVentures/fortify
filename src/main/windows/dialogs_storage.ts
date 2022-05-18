@@ -21,10 +21,11 @@ export class DialogsStorage {
           throw new TypeError('Bad JSON format. Must be Array of strings');
         }
       } catch (error) {
+        const err = error instanceof Error ? error : new Error('Unknown error');
         logger.error('dialog-storage', 'Cannot parse JSON file', {
           file: constants.APP_DIALOG_FILE,
-          error: error.message,
-          stack: error.stack,
+          error: err.message,
+          stack: err.stack,
         });
       }
     }

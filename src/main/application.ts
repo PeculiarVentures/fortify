@@ -27,7 +27,7 @@ export class Application {
 
   constructor(
     @inject('server') public server: Server,
-  ) {}
+  ) { }
 
   // eslint-disable-next-line class-methods-use-this
   private beforeStart() {
@@ -127,9 +127,10 @@ export class Application {
        */
       this.initAutoUpdater();
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('application', 'On ready error', {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
     }
 
@@ -157,7 +158,7 @@ export class Application {
     let lang = this.config.locale;
 
     if (!lang) {
-      lang = app.getLocale().split('-')[0];
+      [lang] = app.getLocale().split('-');
     }
 
     l10n.setLang(lang);
@@ -218,9 +219,10 @@ export class Application {
 
         setConfig(this.config);
       } catch (error) {
+        const err = error instanceof Error ? error : new Error('Unknown error');
         logger.error('application', 'Firefox providers create error', {
-          error: error.message,
-          stack: error.stack,
+          error: err.message,
+          stack: err.stack,
         });
       }
     }
