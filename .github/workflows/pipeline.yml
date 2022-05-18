@@ -3,8 +3,9 @@ name: Create installers and draft release
 on:
   push:
     branches:
-      - master
-      - canary
+      - main
+    pull_request:
+      - main
 
 jobs:
   macos:
@@ -23,6 +24,7 @@ jobs:
         env:
           APP_REPO_FOLDER: ../
           RELEASE_FOLDER: ../release
+          ELECTRON_VERSION: '13.6.9'
       - name: Sign data
         run: yarn sign_data
         env:
@@ -55,6 +57,7 @@ jobs:
         env:
           APP_REPO_FOLDER: ../
           RELEASE_FOLDER: ../release
+          ELECTRON_VERSION: '13.6.9'
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -62,17 +65,18 @@ jobs:
           path: ./release/*.deb
 
   windows:
-    runs-on: windows-latest
+    runs-on: windows-2019
     strategy:
       matrix:
         platform: [x86, x64]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14.x'
       - name: Setup msbuild
-        uses: microsoft/setup-msbuild@v1
-      - name: Setup NuGet.exe for use with actions
-        uses: nuget/setup-nuget@v1.0.5
+        uses: microsoft/setup-msbuild@v1.1
       - name: Prepare app repository
         uses: ./.github/actions/prepare-app-repo
       - name: Prepare fortify-setup repository
@@ -85,6 +89,7 @@ jobs:
           Platform: ${{ matrix.platform }}
           APP_REPO_FOLDER: ../
           RELEASE_FOLDER: ../release
+          ELECTRON_VERSION: '13.6.9'
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:

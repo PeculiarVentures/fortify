@@ -7,7 +7,7 @@
 <h4 align="center">Fortify enables web applications to use smart cards, local certificate stores and do certificate enrollment. For Mac, Windows, and Linux.</h4>
 
 <p align="center">
-  <a href="https://github.com/PeculiarVentures/fortify/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" alt="License: AGPL v3"></a>
+  <a href="https://github.com/PeculiarVentures/fortify/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" alt="License: AGPL v3"></a>
   <a href="https://github.com/PeculiarVentures/fortify/releases"><img src="https://img.shields.io/github/v/release/PeculiarVentures/fortify.svg" alt="github release version"></a>
   <a href="https://github.com/PeculiarVentures/fortify/releases"><img src="https://img.shields.io/github/downloads/PeculiarVentures/fortify/total.svg" alt="github release downloads"></a>
 </p>
@@ -16,12 +16,9 @@
 - [Architecture](#architecture)
 - [How does it work?](#how-does-it-work)
 - [How can I use it?](#how-can-i-use-it)
-- [Download](https://fortifyapp.com/#download)
-- [Documentation](https://fortifyapp.com/docs/overview)
-- [FAQ](https://fortifyapp.com/#faq)
-- [Guides](https://fortifyapp.com/#guides)
-- [Examples](https://fortifyapp.com/examples/certificate-enrollment)
-- [Tools](https://tools.fortifyapp.com/)
+- [Installing](#installing)
+  - [Binaries](#binaries)
+  - [Building from source](#building-from-source)
 
 ## Background
 Fortify is a client application that you install that runs in the background as a tray application in Windows, OSX, and Linux that provides these missing capabilities to authorized applications.
