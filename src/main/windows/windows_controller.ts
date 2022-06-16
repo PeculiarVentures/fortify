@@ -7,6 +7,7 @@ import { l10n } from '../l10n';
 import { windowSizes } from '../constants';
 import logger from '../logger';
 import { DialogsStorage } from './dialogs_storage';
+import { Assoc } from '../types';
 
 interface IP11PinWindowParams {
   pin: string;

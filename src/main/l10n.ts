@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import * as fs from 'fs';
 import * as path from 'path';
 import logger from './logger';
+import { Assoc } from './types';
 import { printf } from './utils';
 
 const LANG_DIR = path.join(__dirname, typeof navigator === 'undefined' ? '' : '..', '..', 'locale');

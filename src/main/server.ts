@@ -17,6 +17,7 @@ import * as jws from './jws';
 import { request } from './utils';
 import { getConfig } from './config';
 import './crypto';
+import { ICard, IConfigure, IConfigureJson } from './types';
 
 export class Server {
   server!: wsServer.LocalServer;
@@ -189,7 +190,7 @@ export class Server {
               );
               break;
             case CODE.WEBSOCKET_VANISHED:
-              logger.info('server', 'Closing open disposable windows', {origin: (error as any).origin});
+              logger.info('server', 'Closing open disposable windows', { origin: (error as any).origin });
               windowsController.destroyDisposableWindows((error as any).origin);
               break;
             case CODE.PROVIDER_CRYPTO_NOT_FOUND:
@@ -300,14 +301,19 @@ export class Server {
   private prepareCards() {
     try {
       if (fs.existsSync(constants.APP_CONFIG_FILE)) {
-        const json = JSON.parse(fs.readFileSync(constants.APP_CONFIG_FILE).toString());
+        const json = JSON.parse(
+          fs
+            .readFileSync(constants.APP_CONFIG_FILE)
+            .toString(),
+        ) as IConfigureJson;
 
         if (json.cards) {
-          this.config.cards = json.cards.map((card: any) => ({
+          this.config.cards = json.cards.map((card): ICard => ({
             name: card.name,
             atr: Buffer.from(card.atr, 'hex'),
-            readOnly: card.readOnly,
+            readOnly: card.readOnly || false,
             libraries: card.libraries,
+            config: card.config,
           }));
         }
       }

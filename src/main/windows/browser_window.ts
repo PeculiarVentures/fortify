@@ -8,6 +8,7 @@ import {
 import logger from '../logger';
 import * as constants from '../constants';
 import { l10n } from '../l10n';
+import { Assoc } from '../types';
 
 type WindowAppType = 'about' | 'key-pin' | 'message' | 'p11-pin' | 'preferences' | 'index';
 

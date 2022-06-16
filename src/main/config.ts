@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { nanoid } from 'nanoid';
 import { APP_CONFIG_FILE } from './constants';
+import { IConfigure } from './types';
 
 const defaultConfig: IConfigure = {
   userId: nanoid(36),
