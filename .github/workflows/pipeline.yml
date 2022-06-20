@@ -44,7 +44,7 @@ jobs:
           path: |
             ./release/*.jws
             ./release/*.pkg
-            ./config.schema.json
+            config.schema.json
 
   ubuntu:
     name: Create ubuntu installer
