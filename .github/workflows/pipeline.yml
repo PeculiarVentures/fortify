@@ -78,12 +78,15 @@ jobs:
     strategy:
       matrix:
         platform: [x86, x64]
+    env:
+      Platform: ${{ matrix.platform }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
           node-version: '14.x'
+          architecture: ${{ matrix.platform }}
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v1.1
       - name: Prepare app repository
@@ -95,7 +98,6 @@ jobs:
       - name: Create installer
         run: npm run build --prefix ./fortify-setup
         env:
-          Platform: ${{ matrix.platform }}
           APP_REPO_FOLDER: ../
           RELEASE_FOLDER: ../release
           ELECTRON_VERSION: '13.6.9'
