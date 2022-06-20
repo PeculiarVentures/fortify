@@ -115,6 +115,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               origin: 'https://TEST.com/',
               accept: true,
             },
+            'test'
           );
         },
       },
@@ -126,6 +127,7 @@ export const developmentTemplate = (): MenuItemConstructorOptions[] => ([
               pin: '',
               origin: 'https://TEST.com/',
             },
+            'test'
           );
         },
       },

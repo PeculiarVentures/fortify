@@ -7,6 +7,7 @@ import { l10n } from '../l10n';
 import { windowSizes } from '../constants';
 import logger from '../logger';
 import { DialogsStorage } from './dialogs_storage';
+import { Assoc } from '../types';
 
 interface IP11PinWindowParams {
   pin: string;
@@ -45,13 +46,20 @@ interface IWarningWindowParams {
 
 class WindowsController {
   windows: Assoc<BrowserWindow> = {};
+  private disposableWindowsBySocketId: Assoc<BrowserWindow[]> = {};
 
   static getScreenSize() {
     return screen.getPrimaryDisplay().bounds;
   }
 
+  destroyDisposableWindows(socketId: string) {
+    const arr = [...this.disposableWindowsBySocketId[socketId] || []];
+    this.disposableWindowsBySocketId[socketId] = [];
+    arr.forEach(w => w.window.destroy());
+  }
+
   showPreferencesWindow(defaultTab?: ('about' | 'updates' | 'settings')) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const params = {
         defaultTab,
       };
@@ -89,7 +97,7 @@ class WindowsController {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  showP11PinWindow(params: IP11PinWindowParams): Promise<IP11PinWindowParams> {
+  showP11PinWindow(params: IP11PinWindowParams, socketId: string): Promise<IP11PinWindowParams> {
     return new Promise((resolve) => {
       const browserWindow = new BrowserWindow({
         params: {
@@ -102,14 +110,23 @@ class WindowsController {
         },
         title: params.label || l10n.get('p11-pin'),
         onClosed: () => {
+          this.disposableWindowsBySocketId[socketId] = this.disposableWindowsBySocketId[socketId].filter(w => {
+            try {
+              return w.window.id !== browserWindow.window.id;
+            } catch {
+              return false;
+            }
+          });
           resolve(browserWindow.getParams() as IP11PinWindowParams);
         },
       });
+      this.disposableWindowsBySocketId[socketId] = this.disposableWindowsBySocketId[socketId] || [];
+      this.disposableWindowsBySocketId[socketId].push(browserWindow);
     });
   }
 
   // eslint-disable-next-line class-methods-use-this
-  showKeyPinWindow(params: IKeyPinWindowParams): Promise<IKeyPinWindowParams> {
+  showKeyPinWindow(params: IKeyPinWindowParams, socketId: string): Promise<IKeyPinWindowParams> {
     return new Promise((resolve) => {
       const { width, height } = WindowsController.getScreenSize();
 
@@ -128,9 +145,18 @@ class WindowsController {
           y: height - windowSizes.default.height,
         },
         onClosed: () => {
+          this.disposableWindowsBySocketId[socketId] = this.disposableWindowsBySocketId[socketId].filter(w => {
+            try {
+              return w.window.id !== browserWindow.window.id;
+            } catch {
+              return false;
+            }
+          });
           resolve(browserWindow.getParams() as IKeyPinWindowParams);
         },
       });
+      this.disposableWindowsBySocketId[socketId] = this.disposableWindowsBySocketId[socketId] || [];
+      this.disposableWindowsBySocketId[socketId].push(browserWindow);
     });
   }
 
@@ -181,7 +207,7 @@ class WindowsController {
   }
 
   showErrorWindow(params: IErrorWindowParams) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       /**
        * Don't create if the window exists.
        */
@@ -263,7 +289,7 @@ class WindowsController {
   }
 
   showWarningWindow(params: IWarningWindowParams) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (
         params.id
         && params.showAgain

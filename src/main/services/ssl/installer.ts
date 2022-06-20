@@ -90,7 +90,7 @@ export class SslCertInstaller {
   }
 
   private async installDarwin(certPath: string) {
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       const certName = this.policy.nssCertName;
       const { username } = os.userInfo();
 
@@ -147,9 +147,10 @@ export class SslCertInstaller {
         });
         installed = true;
       } catch (error) {
+        const err = error instanceof Error ? error : new Error('Unknown error');
         logger.error('ssl-installer', 'SSL install error', {
-          error: error.message,
-          stack: error.stack,
+          error: err.message,
+          stack: err.stack,
         });
       }
     }

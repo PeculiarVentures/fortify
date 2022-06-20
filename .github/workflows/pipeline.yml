@@ -1,15 +1,39 @@
 name: Create installers and draft release
 
-on:
-  push:
-    branches:
-      - main
-    pull_request:
-      - main
+on: push
+
+env:
+  # fortify-setup package dependency
+  APP_REPO_FOLDER: ../
+  # fortify-setup package dependency
+  RELEASE_FOLDER: ../release
+  # fortify-setup package dependency
+  ELECTRON_VERSION: '13.6.9'
+  # sign-data script dependency
+  OUTPUT_FOLDER_PATH: ./release
+  # sign-data script dependency
+  PRIVATE_KEY_BASE64: ${{ secrets.PRIVATE_KEY_BASE64 }}
+  # sign-data script dependency
+  PUBLIC_KEY_BASE64: ${{ secrets.PUBLIC_KEY_BASE64 }}
+  # fortify-setup clone token
+  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  # actions/create-release dependency
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+  checkout:
+    if: >-
+      contains(github.event.head_commit.message, '[release]')
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Logging
+        run: |
+          echo "Let's create the draft release"
+
   macos:
+    name: Create macos installer
     runs-on: macos-10.15
+    needs: [checkout]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -17,20 +41,10 @@ jobs:
         uses: ./.github/actions/prepare-app-repo
       - name: Prepare fortify-setup repository
         uses: ./.github/actions/prepare-fortify-setup-repo
-        env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       - name: Create installer
         run: npm run build --prefix ./fortify-setup
-        env:
-          APP_REPO_FOLDER: ../
-          RELEASE_FOLDER: ../release
-          ELECTRON_VERSION: '13.6.9'
       - name: Sign data
         run: yarn sign_data
-        env:
-          PRIVATE_KEY_BASE64: ${{ secrets.PRIVATE_KEY_BASE64 }}
-          PUBLIC_KEY_BASE64: ${{ secrets.PUBLIC_KEY_BASE64 }}
-          OUTPUT_FOLDER_PATH: ./release
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -40,7 +54,9 @@ jobs:
             ./release/*.pkg
 
   ubuntu:
+    name: Create ubuntu installer
     runs-on: ubuntu-18.04
+    needs: [checkout]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -50,14 +66,8 @@ jobs:
         uses: ./.github/actions/prepare-app-repo
       - name: Prepare fortify-setup repository
         uses: ./.github/actions/prepare-fortify-setup-repo
-        env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       - name: Create installer
         run: npm run build --prefix ./fortify-setup
-        env:
-          APP_REPO_FOLDER: ../
-          RELEASE_FOLDER: ../release
-          ELECTRON_VERSION: '13.6.9'
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -65,31 +75,29 @@ jobs:
           path: ./release/*.deb
 
   windows:
+    name: Create windows installers
     runs-on: windows-2019
+    needs: [checkout]
     strategy:
       matrix:
         platform: [x86, x64]
+    env:
+      Platform: ${{ matrix.platform }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
           node-version: '14.x'
+          architecture: ${{ matrix.platform }}
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v1.1
       - name: Prepare app repository
         uses: ./.github/actions/prepare-app-repo
       - name: Prepare fortify-setup repository
         uses: ./.github/actions/prepare-fortify-setup-repo
-        env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       - name: Create installer
         run: npm run build --prefix ./fortify-setup
-        env:
-          Platform: ${{ matrix.platform }}
-          APP_REPO_FOLDER: ../
-          RELEASE_FOLDER: ../release
-          ELECTRON_VERSION: '13.6.9'
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -97,7 +105,7 @@ jobs:
           path: ./release/*.msi
 
   create_release:
-    name: Prepare and create draft  release
+    name: Prepare and create draft release
     runs-on: ubuntu-18.04
     needs: [macos, ubuntu, windows]
     steps:
@@ -105,16 +113,16 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: artifacts
+
       - name: Create draft release
         id: create_release
         uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Draft release ${{ github.ref }}
           draft: true
           prerelease: false
+
       - name: Get artifact names
         id: getfilename
         run: |
@@ -125,8 +133,6 @@ jobs:
 
       - name: Upload .pkg
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifacts/${{ steps.getfilename.outputs.pkgName }}
@@ -135,8 +141,6 @@ jobs:
 
       - name: Upload .deb
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifacts/${{ steps.getfilename.outputs.debName }}
@@ -145,8 +149,6 @@ jobs:
 
       - name: Upload .msi (x64)
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifacts/${{ steps.getfilename.outputs.msi64Name }}
@@ -155,8 +157,6 @@ jobs:
 
       - name: Upload .msi (x86)
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifacts/${{ steps.getfilename.outputs.msi86Name }}
@@ -165,8 +165,6 @@ jobs:
 
       - name: Upload update.jws
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifacts/update.jws
@@ -175,8 +173,6 @@ jobs:
 
       - name: Upload card.jws
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifacts/card.jws

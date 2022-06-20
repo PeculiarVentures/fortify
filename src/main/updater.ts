@@ -7,7 +7,6 @@ import { JWS_LINK, APP_DIR } from './constants';
 import logger from './logger';
 import * as jws from './jws';
 import { UpdateError } from './errors';
-import { l10n } from './l10n';
 
 type UpdateInfo = {
   version: string;
@@ -47,10 +46,11 @@ class Updater extends EventEmitter {
 
       return response.replace(/[\n\r]/g, '');
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('update', 'JWS GET error', {
         jwsLink: JWS_LINK,
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
 
       throw new UpdateError('Unable to connect to update server');
@@ -64,11 +64,12 @@ class Updater extends EventEmitter {
     try {
       const jwsString = await this.getJWS();
 
-      return jws.getContent(jwsString);
+      return await jws.getContent(jwsString);
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('update', 'Get info error', {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
 
       if (error instanceof UpdateError) {
@@ -100,9 +101,10 @@ class Updater extends EventEmitter {
         this.emit('update-not-available');
       }
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('update', 'Update error', {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
 
       if (error instanceof UpdateError) {

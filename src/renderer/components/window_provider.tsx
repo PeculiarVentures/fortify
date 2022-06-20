@@ -7,7 +7,7 @@ import DocumentTitle from './document_title';
 winston.add(new winston.transports.Console());
 
 export default abstract class WindowProvider<P, S> extends React.Component<P, S> {
-  public params: Assoc<any>;
+  public params: Record<string, any>;
 
   constructor(props: P) {
     super(props);

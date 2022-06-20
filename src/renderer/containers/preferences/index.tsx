@@ -233,7 +233,7 @@ class Root extends WindowProvider<{}, IRootState> {
   /**
    * Window section.
    */
-  private onWindowParamsChangeListener = (_: IpcRendererEvent, params: Assoc<any>) => {
+  private onWindowParamsChangeListener = (_: IpcRendererEvent, params: Record<string, any>) => {
     const { defaultTab } = params;
     const { activeTab } = this.state;
 

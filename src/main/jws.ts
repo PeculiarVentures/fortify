@@ -30,8 +30,10 @@ export async function getContent(jws: string) {
 
     verifier = new jose.JoseJWS.Verifier(joseCrypto, jws.replace(/[\n\r]/g, ''));
   } catch (error) {
+    const err = error instanceof Error ? error : new Error('Unknown error');
     logger.error('jws', 'Malformed update metadata', {
-      stack: error.stack,
+      error: err.message,
+      stack: err.stack,
     });
 
     throw new Error('Unable to check JWS. Malformed update metadata.');
@@ -42,8 +44,10 @@ export async function getContent(jws: string) {
   try {
     verifyRes = await verifier.verify();
   } catch (error) {
+    const err = error instanceof Error ? error : new Error('Unknown error');
     logger.error('jws', 'Cannot verify JWS signature', {
-      stack: error.stack,
+      error: err.message,
+      stack: err.stack,
     });
 
     throw new Error('Unable to check JWS. Cannot verify JWS signature.');

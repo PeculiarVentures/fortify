@@ -2,8 +2,7 @@ import * as x509 from '@peculiar/asn1-x509';
 import * as asn from '@peculiar/asn1-schema';
 import { Convert } from 'pvtsutils';
 import * as core from 'webcrypto-core';
-
-const pkijs = require('pkijs');
+import * as pkijs from 'pkijs';
 
 export interface IName {
   commonName: string,

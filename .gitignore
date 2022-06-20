@@ -8,3 +8,4 @@ node_modules
 .idea
 
 nss
+config.schema.json

@@ -17,6 +17,7 @@ import * as jws from './jws';
 import { request } from './utils';
 import { getConfig } from './config';
 import './crypto';
+import { ICard, IConfigure, IConfigureJson } from './types';
 
 export class Server {
   server!: wsServer.LocalServer;
@@ -41,7 +42,7 @@ export class Server {
         options.config.pvpkcs11.push(path.join(__dirname, '..', 'libpvpkcs11.dylib'));
         break;
       default:
-        // nothing
+      // nothing
     }
   }
 
@@ -58,7 +59,7 @@ export class Server {
         options.config.opensc = path.join(process.execPath, '..', 'opensc-pkcs11.so');
         break;
       default:
-        // nothing
+      // nothing
     }
   }
 
@@ -81,9 +82,10 @@ export class Server {
     try {
       await sslService.run();
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('server', 'SSL service run error', {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
 
       await windowsController.showErrorWindow({
@@ -111,9 +113,10 @@ export class Server {
     try {
       this.load(sslData);
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('server', 'LocalServer is empty. webcrypto-local module wasn\'t loaded', {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
     }
 
@@ -155,9 +158,10 @@ export class Server {
             shell.openExternal(url);
           }
         } catch (error) {
+          const err = error instanceof Error ? error : new Error('Unknown error');
           logger.error('server', 'Token window', {
-            error: error.message,
-            stack: error.stack,
+            error: err.message,
+            stack: err.stack,
           });
         }
       })
@@ -167,6 +171,7 @@ export class Server {
           stack: error.stack,
         });
 
+        // eslint-disable-next-line no-prototype-builtins
         if (error.hasOwnProperty('code') && error.hasOwnProperty('type')) {
           const err = error as wsServer.WebCryptoLocalError;
           const { CODE } = wsServer.WebCryptoLocalError;
@@ -183,6 +188,10 @@ export class Server {
                   showAgainValue: false,
                 },
               );
+              break;
+            case CODE.WEBSOCKET_VANISHED:
+              logger.info('server', 'Closing open disposable windows', { origin: (error as any).origin });
+              windowsController.destroyDisposableWindows((error as any).origin);
               break;
             case CODE.PROVIDER_CRYPTO_NOT_FOUND:
               windowsController.showWarningWindow(
@@ -220,7 +229,7 @@ export class Server {
             const keyPinWindowResult = await windowsController.showKeyPinWindow({
               ...params,
               accept: false,
-            });
+            }, params.origin);
 
             params.resolve(keyPinWindowResult.accept);
 
@@ -231,7 +240,7 @@ export class Server {
             const p11PinWindowResult = await windowsController.showP11PinWindow({
               ...params,
               pin: '',
-            });
+            }, params.origin);
 
             if (p11PinWindowResult.pin) {
               params.resolve(p11PinWindowResult.pin);
@@ -280,9 +289,10 @@ export class Server {
         }
       }
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('server', 'Cannot prepare config data error', {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
     }
   }
@@ -291,20 +301,27 @@ export class Server {
   private prepareCards() {
     try {
       if (fs.existsSync(constants.APP_CONFIG_FILE)) {
-        const json = JSON.parse(fs.readFileSync(constants.APP_CONFIG_FILE).toString());
+        const json = JSON.parse(
+          fs
+            .readFileSync(constants.APP_CONFIG_FILE)
+            .toString(),
+        ) as IConfigureJson;
 
         if (json.cards) {
-          this.config.cards = json.cards.map((card: any) => ({
+          this.config.cards = json.cards.map((card): ICard => ({
             name: card.name,
             atr: Buffer.from(card.atr, 'hex'),
-            readOnly: card.readOnly,
+            readOnly: card.readOnly || false,
             libraries: card.libraries,
+            config: card.config,
           }));
         }
       }
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('server', 'Cannot prepare config data error', {
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
     }
   }
@@ -330,10 +347,11 @@ export class Server {
 
           return;
         } catch (error) {
+          const err = error instanceof Error ? error : new Error('Unknown error');
           logger.error('server', 'Cannot get card.json error', {
             from: constants.APP_CARD_JSON_LINK,
-            error: error.message,
-            stack: error.stack,
+            error: err.message,
+            stack: err.stack,
           });
         }
 
@@ -356,10 +374,11 @@ export class Server {
           const jwsString = await request(constants.APP_CARD_JSON_LINK);
           remote = await jws.getContent(jwsString);
         } catch (error) {
+          const err = error instanceof Error ? error : new Error('Unknown error');
           logger.error('server', 'Cannot get file error', {
             file: constants.APP_CARD_JSON_LINK,
-            error: error.message,
-            stack: error.stack,
+            error: err.message,
+            stack: err.stack,
           });
         }
 
@@ -382,9 +401,10 @@ export class Server {
         }
       }
     } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
       logger.error('server', 'Cannot prepare card.json data error', {
-        error: error.message,
-        stack: error.stack,
+        error: err.message,
+        stack: err.stack,
       });
     }
   }
