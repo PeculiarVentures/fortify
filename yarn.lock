@@ -790,10 +790,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webcrypto-local/cards@^1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@webcrypto-local/cards/-/cards-1.7.1.tgz#3ad77fb51e1e0666447e76a19a1cd562b2b45ab1"
-  integrity sha512-tdwABmvEac8/CpAeQfHhTyRJa04cSvH571+afPBVz/jtHIdlWp727csvF/gA3WEhQVfUXiqTd6c81TNzHUFF6A==
+"@webcrypto-local/cards@^1.7.2":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@webcrypto-local/cards/-/cards-1.7.2.tgz#314ceaf7688692e5c47d4aabb659a780ec270b1d"
+  integrity sha512-5WGa2Ll/BKqcMZw0avoiuWVrHsHVSUPiyD3w+ECRZxSIvF+IWv/vvicSaDBb3WlSVgTZ+Se13sd7St2mzu2rdw==
   dependencies:
     "@peculiar/json-schema" "^1.1.12"
     tslib "^2.4.0"
@@ -817,17 +817,17 @@
     tslib "^2.4.0"
     tsprotobuf "^1.0.17"
 
-"@webcrypto-local/server@^1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@webcrypto-local/server/-/server-1.7.1.tgz#fff630d713efad1e7e5fc51fa38f0c5567eeaeb5"
-  integrity sha512-eQj/oTpkTIZTpzLJ0esvjSZi2YF3P+D2ImnbFuwr7kHOeTy+Jc6mpVNMG4an4lhh7GTjYffxCUqzxYAijBgvaw==
+"@webcrypto-local/server@^1.7.2":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@webcrypto-local/server/-/server-1.7.2.tgz#9a3dde157dc0c11014330cf30e636c5b874bb26f"
+  integrity sha512-Zu8ymssvqXg0KZ0qCG9ybJmGs1OnCUahheQvdcmj8T4cuE2HFczxYeMLAGg2O/cLbhahmK+NWLDuV/dq9/d6Pg==
   dependencies:
     "2key-ratchet" "^1.0.18"
     "@peculiar/json-schema" "^1.1.12"
     "@peculiar/webcrypto" "1.0.22"
     "@peculiar/x509" "^1.7.0"
     "@types/pvutils" "^1.0.1"
-    "@webcrypto-local/cards" "^1.7.1"
+    "@webcrypto-local/cards" "^1.7.2"
     "@webcrypto-local/core" "^1.7.0"
     "@webcrypto-local/proto" "^1.7.0"
     asn1js "^3.0.5"
