@@ -35,6 +35,8 @@ jobs:
         run: npm run build --prefix ./fortify-setup
       - name: Sign data
         run: yarn sign_data
+      - name: Build config schema
+        run: yarn build:schema
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -42,6 +44,8 @@ jobs:
           path: |
             ./release/*.jws
             ./release/*.pkg
+            ./config.schema.json
+
   ubuntu:
     name: Create ubuntu installer
     runs-on: ubuntu-18.04
@@ -116,7 +120,6 @@ jobs:
       - name: Create draft release
         id: create_release
         uses: actions/create-release@v1
-
         with:
           tag_name: ${{ github.ref }}
           release_name: Draft release ${{ github.ref }}
@@ -176,3 +179,11 @@ jobs:
           asset_path: artifacts/card.jws
           asset_name: card.jws
           asset_content_type: application/jose
+
+      - name: Upload config.schema.json
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/config.schema.json
+          asset_name: config.schema.json
+          asset_content_type: application/json
