@@ -59,9 +59,8 @@ export class BrowserWindow {
     });
 
     this.window.loadFile(constants.HTML_PATH, {
-      query: {
-        app: options.app,
-      },
+      hash: `/${options.app}`,
+      query: options.params || {},
     });
 
     this.window.lang = l10n.lang;
@@ -81,7 +80,7 @@ export class BrowserWindow {
     });
 
     // Show page only after `lfinish-load` event and prevent show index page
-    if (this.window.app !== 'index') {
+    if (options.app !== 'index') {
       this.window.webContents.once('did-finish-load', () => {
         this.window.show();
       });
@@ -121,13 +120,14 @@ export class BrowserWindow {
       show: false,
       ...this.getWindowSize(),
       webPreferences: {
-        nodeIntegration: true,
+        // nodeIntegration: true,
         // Prevent open DevTools on production
         devTools: constants.isDevelopment,
-        enableRemoteModule: true,
+        // enableRemoteModule: true,
         // https://github.com/PeculiarVentures/fortify/issues/453
         backgroundThrottling: false,
-        contextIsolation: false,
+        // contextIsolation: false,
+        preload: constants.PRELOAD_PATH,
       },
     };
   }

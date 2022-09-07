@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { ipcRenderer } from 'electron';
 import { IntlContext, IIntlContext } from './intl_context';
-import { printf } from '../../../main/utils';
+import { printf } from '../../../main/utils/printf';
 
 interface IIntlProviderProps {
   children: React.ReactNode;
@@ -9,13 +8,13 @@ interface IIntlProviderProps {
 
 export default class IntlProvider extends React.Component<IIntlProviderProps, IIntlContext> {
   UNSAFE_componentWillMount() {
-    ipcRenderer.on('ipc-language-changed', this.onLanguageListener);
+    window.electronAPI.onLanguageChange(this.onLanguageListener);
 
     this.onLanguageListener();
   }
 
   onLanguageListener = () => {
-    const l10n = ipcRenderer.sendSync('ipc-language-get');
+    const l10n = window.electronAPI.getLanguage();
 
     this.setState({
       lang: l10n.lang,

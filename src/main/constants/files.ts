@@ -21,6 +21,7 @@ export const SRC_DIR = path.join(APP_DIR, 'src');
 export const RESOURCES_DIR = path.join(SRC_DIR, 'resources');
 export const STATIC_DIR = path.join(SRC_DIR, 'static');
 export const HTML_PATH = path.join(STATIC_DIR, 'index.html');
+export const PRELOAD_PATH = path.join(APP_DIR, 'out/preload.js');
 export const ICON_DIR = path.join(STATIC_DIR, 'icons');
 
 export const APP_LOG_FILE = path.join(APP_USER_DIR, 'fortify.log');

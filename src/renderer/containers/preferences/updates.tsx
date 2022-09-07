@@ -5,10 +5,12 @@ import {
   CircularProgress,
   Box,
 } from 'lib-react-components';
-import { GITHUB_REPO_LINK, DOWNLOAD_LINK } from '../../../main/constants';
 import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/updates.sass');
+
+const GITHUB_REPO_LINK = '';
+const DOWNLOAD_LINK = '';
 
 interface IUpdatesProps {
   name: any;

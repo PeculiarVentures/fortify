@@ -138,6 +138,13 @@ const initEvents = () => {
     .on('ipc-update-check', () => {
       autoUpdater.checkForUpdates();
     })
+    .on('window-close', (event) => {
+      const window = BrowserWindow.fromWebContents(event.sender);
+
+      if (window) {
+        window.close();
+      }
+    })
     .on('error', (event: IpcMainEvent) => {
       logger.error('ipc-messages', 'Event error', {
         event: event.toString(),
