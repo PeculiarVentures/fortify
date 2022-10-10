@@ -17,7 +17,7 @@
 ### Other Changes
 
 - Update `minimist ` dependency to `1.2.6`.
-- Update `@webcrypto-local/*` dependency to `1.7.2`.
+- Update `@webcrypto-local/*` dependency to `1.7.3`.
 - Update `typescript` dependency to `4.6.4`.
 - Update `asn1js` dependency to `3.0.3`.
 - Update `ts-node` dependency to `10.7.0`.
