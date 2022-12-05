@@ -4,5 +4,5 @@ runs:
   steps:
     - run: git clone https://$ACCESS_TOKEN:x-oauth-basic@github.com/PeculiarVentures/fortify-setup.git --depth=1 --branch=master
       shell: bash
-    - run: npm ci --prefix ./fortify-setup
+    - run: yarn --cwd ./fortify-setup install --frozen-lockfile
       shell: bash

@@ -42,7 +42,7 @@ jobs:
       - name: Prepare fortify-setup repository
         uses: ./.github/actions/prepare-fortify-setup-repo
       - name: Create installer
-        run: npm run build --prefix ./fortify-setup
+        run: yarn --cwd ./fortify-setup build
       - name: Sign data
         run: yarn sign_data
       - name: Archive build artifacts
@@ -67,7 +67,7 @@ jobs:
       - name: Prepare fortify-setup repository
         uses: ./.github/actions/prepare-fortify-setup-repo
       - name: Create installer
-        run: npm run build --prefix ./fortify-setup
+        run: yarn --cwd ./fortify-setup build
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -97,7 +97,7 @@ jobs:
       - name: Prepare fortify-setup repository
         uses: ./.github/actions/prepare-fortify-setup-repo
       - name: Create installer
-        run: npm run build --prefix ./fortify-setup
+        run: yarn --cwd ./fortify-setup build
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
