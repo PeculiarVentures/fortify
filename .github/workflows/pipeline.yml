@@ -36,7 +36,7 @@ jobs:
     needs: [checkout]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Prepare app repository
         uses: ./.github/actions/prepare-app-repo
       - name: Prepare fortify-setup repository
@@ -59,7 +59,7 @@ jobs:
     needs: [checkout]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install OS dependencies
         run: sudo apt-get install libpcsclite-dev
       - name: Prepare app repository
@@ -85,7 +85,7 @@ jobs:
       Platform: ${{ matrix.platform }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '14.x'
