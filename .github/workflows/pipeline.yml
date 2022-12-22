@@ -110,7 +110,7 @@ jobs:
     needs: [macos, ubuntu, windows]
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: artifacts
 
