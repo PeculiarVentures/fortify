@@ -113,68 +113,18 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: artifacts
+          path: artifacts
+
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: artifacts
 
       - name: Create draft release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref }}
-          release_name: Draft release ${{ github.ref }}
+          name: Draft release ${{ github.ref }}
           draft: true
           prerelease: false
-
-      - name: Get artifact names
-        id: getfilename
-        run: |
-          echo "::set-output name=pkgName::$(ls artifacts/*.pkg | cut -d'/' -f2)"
-          echo "::set-output name=debName::$(ls artifacts/*.deb | cut -d'/' -f2)"
-          echo "::set-output name=msi64Name::$(ls artifacts/*x64*.msi | cut -d'/' -f2)"
-          echo "::set-output name=msi86Name::$(ls artifacts/*x86*.msi | cut -d'/' -f2)"
-
-      - name: Upload .pkg
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/${{ steps.getfilename.outputs.pkgName }}
-          asset_name: ${{ steps.getfilename.outputs.pkgName }}
-          asset_content_type: application/octet-stream
-
-      - name: Upload .deb
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/${{ steps.getfilename.outputs.debName }}
-          asset_name: ${{ steps.getfilename.outputs.debName }}
-          asset_content_type: application/octet-stream
-
-      - name: Upload .msi (x64)
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/${{ steps.getfilename.outputs.msi64Name }}
-          asset_name: ${{ steps.getfilename.outputs.msi64Name }}
-          asset_content_type: application/octet-stream
-
-      - name: Upload .msi (x86)
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/${{ steps.getfilename.outputs.msi86Name }}
-          asset_name: ${{ steps.getfilename.outputs.msi86Name }}
-          asset_content_type: application/octet-stream
-
-      - name: Upload update.jws
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/update.jws
-          asset_name: update.jws
-          asset_content_type: application/jose
-
-      - name: Upload card.jws
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/card.jws
-          asset_name: card.jws
-          asset_content_type: application/jose
+          files: artifacts/*
