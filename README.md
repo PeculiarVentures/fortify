@@ -71,8 +71,7 @@ Visit the [the official website](https://fortifyapp.com/#download) to find the i
 ```
 git clone git@github.com:PeculiarVentures/fortify.git
 cd fortify
-npm install
-npm run build
-npm start
+yarn
+yarn build
+yarn start
 ```
-
