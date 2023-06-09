@@ -24,7 +24,7 @@ jobs:
   checkout:
     if: >-
       contains(github.event.head_commit.message, '[release]')
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Logging
         run: |
@@ -55,7 +55,7 @@ jobs:
 
   ubuntu:
     name: Create ubuntu installer
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: [checkout]
     steps:
       - name: Checkout
@@ -106,7 +106,7 @@ jobs:
 
   create_release:
     name: Prepare and create draft release
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: [macos, ubuntu, windows]
     steps:
       - name: Download artifacts
