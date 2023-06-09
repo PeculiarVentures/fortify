@@ -255,7 +255,7 @@
     asn1js "^3.0.5"
     tslib "^2.4.0"
 
-"@peculiar/asn1-schema@^1.0.3", "@peculiar/asn1-schema@^2.1.6", "@peculiar/asn1-schema@^2.1.9", "@peculiar/asn1-schema@^2.3.3", "@peculiar/asn1-schema@^2.3.6":
+"@peculiar/asn1-schema@^1.0.3", "@peculiar/asn1-schema@^2.1.9", "@peculiar/asn1-schema@^2.3.3", "@peculiar/asn1-schema@^2.3.6":
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/@peculiar/asn1-schema/-/asn1-schema-2.1.9.tgz#273f4b1a9487dfea37c7999aca2cd12c79674673"
   integrity sha512-Ipio+pXGpL/Vb0qB4GnOgFMgc1RAhKHOVy24rQYLvmOAVp9z/aFb+VdIiQH09NjgvGVmaWOUqSWd9vRHk3xbrg==
@@ -795,57 +795,57 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webcrypto-local/cards@^1.7.6":
-  version "1.7.6"
-  resolved "https://registry.yarnpkg.com/@webcrypto-local/cards/-/cards-1.7.6.tgz#b4cb9ed0638b08238c5060675c72f6c20dfa8974"
-  integrity sha512-39QV1yYocEgZH2su7Us3gkvFuBBRA81MY2tUAhU63PCHyLCeMlFYU797mfRUTXumvE3w7iytagzMTi4LDxRFOg==
+"@webcrypto-local/cards@^1.7.8":
+  version "1.7.8"
+  resolved "https://registry.yarnpkg.com/@webcrypto-local/cards/-/cards-1.7.8.tgz#f5cedd1daa64e4a98c83aab919701716195dcc69"
+  integrity sha512-x4aZa94425zjO6gxro9DFzDs3BMtAEYNtO+ryeUYgzg7HtAm4DAJvvIpO5XKOkTmUH32JndnWzlutdAxdQua9g==
   dependencies:
     "@peculiar/json-schema" "^1.1.12"
     tslib "^2.4.0"
 
-"@webcrypto-local/core@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@webcrypto-local/core/-/core-1.7.0.tgz#1335cc7e3209a966e84a04b47243dad957e4b026"
-  integrity sha512-8sELTpTfjQ0ODA0LDTTHRizg17u7WU0gbcLcwgRv4GJkkCeKe4e1RnwIeB7+iCGXbjAD7CKxiUrjkuD0c433mA==
+"@webcrypto-local/core@^1.7.7":
+  version "1.7.7"
+  resolved "https://registry.yarnpkg.com/@webcrypto-local/core/-/core-1.7.7.tgz#d369d42f16b66dcd9b67bc834d69f02262c89d6f"
+  integrity sha512-OAj4iWqAcfX1gSD2/DCHlVr6faG4AelbDaHADxzlT1A561mCa+GFb6bjv/4bUpcIpMf/J9UGHng81YLeOCzacA==
   dependencies:
     "2key-ratchet" "^1.0.18"
     pvtsutils "^1.3.2"
     tslib "^2.4.0"
 
-"@webcrypto-local/proto@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@webcrypto-local/proto/-/proto-1.7.0.tgz#358b9158c71f8e921c7967eac5bd8b5d3ada1d34"
-  integrity sha512-hBdXO2dUJzK5yi4FhEjnqqj5pz2f0b/RnkT3Xgrf5uGNKhabEfvx5A8HK0azvOq+uzGlxmj0RoA33p/ojdYROA==
+"@webcrypto-local/proto@^1.7.7":
+  version "1.7.7"
+  resolved "https://registry.yarnpkg.com/@webcrypto-local/proto/-/proto-1.7.7.tgz#19f9001eff1df525e8bf649c027f585b24cea876"
+  integrity sha512-ekEOBC+HSVOiOnAa+klUpwsj7KxlHrsOqT2OiWTvtjQ5ZEyZXiWwtV++h9RiaHqWiMegnjfZc96tjuycjaQP1Q==
   dependencies:
-    "@webcrypto-local/core" "^1.7.0"
+    "@webcrypto-local/core" "^1.7.7"
     pvtsutils "^1.3.2"
     tslib "^2.4.0"
     tsprotobuf "^1.0.17"
 
-"@webcrypto-local/server@^1.7.6":
-  version "1.7.6"
-  resolved "https://registry.yarnpkg.com/@webcrypto-local/server/-/server-1.7.6.tgz#f1adb87da5e44622f724e321e63ed466419002f0"
-  integrity sha512-PZRDxZI43QbBtzdA+bmYDKfXD8cvyIaYD9qOS8sMClvgjhMqerVV6F9E1OzxW0qwd4J+/qZHJbapsCJn0Ix+UQ==
+"@webcrypto-local/server@^1.7.8":
+  version "1.7.8"
+  resolved "https://registry.yarnpkg.com/@webcrypto-local/server/-/server-1.7.8.tgz#21c0f706771f90dcca56e579cd4379daaa124fdc"
+  integrity sha512-3N9hrgS9rltOdcLfDZKrHMhufVJlbg1lUBhOuV++hYkDQZhHnZPmqNiMat78DRFJQzsuwdBkZ7nIQY9s2xHHqw==
   dependencies:
     "2key-ratchet" "^1.0.18"
     "@peculiar/json-schema" "^1.1.12"
     "@peculiar/webcrypto" "1.0.22"
     "@peculiar/x509" "^1.7.0"
     "@types/pvutils" "^1.0.1"
-    "@webcrypto-local/cards" "^1.7.6"
-    "@webcrypto-local/core" "^1.7.0"
-    "@webcrypto-local/proto" "^1.7.0"
+    "@webcrypto-local/cards" "^1.7.8"
+    "@webcrypto-local/core" "^1.7.7"
+    "@webcrypto-local/proto" "^1.7.7"
     asn1js "^3.0.5"
     graphene-pk11 "^2.3.0"
-    node-webcrypto-p11 "^2.6.1"
+    node-webcrypto-p11 "^2.6.3"
     pcsclite "^1.0.0"
     pkijs "^3.0.5"
     pvtsutils "^1.3.2"
     pvutils "^1.1.3"
     request "^2.88.0"
     tslib "^2.4.0"
-    webcrypto-core "^1.7.5"
-    ws "^8.8.0"
+    webcrypto-core "^1.7.7"
+    ws "^8.13.0"
 
 "@webpack-cli/configtest@^1.1.1":
   version "1.1.1"
@@ -4352,20 +4352,20 @@ node-libs-browser@^2.2.1:
     util "^0.11.0"
     vm-browserify "^1.0.1"
 
-node-webcrypto-p11@^2.6.1:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/node-webcrypto-p11/-/node-webcrypto-p11-2.6.1.tgz#1a9ce089a13a30efeb84e3d820ed23c46a5c0752"
-  integrity sha512-tUWX7oqLUhta9U8rz8G++MGN3XlomEaBPkfg+Vf2gkOGSJIFYeoHq2TB8+0LiHIopq9V3PS20xMfryas/xcx1w==
+node-webcrypto-p11@^2.6.3:
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/node-webcrypto-p11/-/node-webcrypto-p11-2.6.3.tgz#8e138398e2aba6ac1fc5135d0be3d58a682a706b"
+  integrity sha512-re1Q6i+nAYtFtvUQ2Dkeu/q/3GEezWpIvDZ79ftMj6Mt0iw9Id9JSNdzhEhuMs7JuEjcLg7J2029h1RrF48v/g==
   dependencies:
-    "@peculiar/asn1-schema" "^2.3.3"
-    "@peculiar/asn1-x509" "^2.3.4"
+    "@peculiar/asn1-schema" "^2.3.6"
+    "@peculiar/asn1-x509" "^2.3.6"
     "@peculiar/json-schema" "^1.1.12"
     "@peculiar/x509" "^1.9.3"
     graphene-pk11 "^2.3.2"
     pkcs11js "^1.3.1"
     pvtsutils "^1.3.2"
     tslib "^2.5.0"
-    webcrypto-core "^1.7.6"
+    webcrypto-core "^1.7.7"
 
 nopt@^5.0.0:
   version "5.0.0"
@@ -6247,12 +6247,12 @@ watchpack@^1.7.4:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
 
-webcrypto-core@^1.0.17, webcrypto-core@^1.7.5, webcrypto-core@^1.7.6:
-  version "1.7.6"
-  resolved "https://registry.yarnpkg.com/webcrypto-core/-/webcrypto-core-1.7.6.tgz#e32c4a12a13de4251f8f9ef336a6cba7cdec9b55"
-  integrity sha512-TBPiewB4Buw+HI3EQW+Bexm19/W4cP/qZG/02QJCXN+iN+T5sl074vZ3rJcle/ZtDBQSgjkbsQO/1eFcxnSBUA==
+webcrypto-core@^1.0.17, webcrypto-core@^1.7.5, webcrypto-core@^1.7.7:
+  version "1.7.7"
+  resolved "https://registry.yarnpkg.com/webcrypto-core/-/webcrypto-core-1.7.7.tgz#06f24b3498463e570fed64d7cab149e5437b162c"
+  integrity sha512-7FjigXNsBfopEj+5DV2nhNpfic2vumtjjgPmeDKk45z+MJwXKKfhPB7118Pfzrmh4jqOMST6Ch37iPAHoImg5g==
   dependencies:
-    "@peculiar/asn1-schema" "^2.1.6"
+    "@peculiar/asn1-schema" "^2.3.6"
     "@peculiar/json-schema" "^1.1.12"
     asn1js "^3.0.1"
     pvtsutils "^1.3.2"
@@ -6419,10 +6419,10 @@ wrappy@1:
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 
-ws@^8.8.0:
-  version "8.8.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.8.0.tgz#8e71c75e2f6348dbf8d78005107297056cb77769"
-  integrity sha512-JDAgSYQ1ksuwqfChJusw1LSJ8BizJ2e/vVu5Lxjq3YvNJNlROv1ui4i+c/kUUrPheBvQl4c5UbERhTwKa6QBJQ==
+ws@^8.13.0:
+  version "8.13.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.13.0.tgz#9a9fb92f93cf41512a0735c8f4dd09b8a1211cd0"
+  integrity sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==
 
 xtend@^4.0.0, xtend@~4.0.1:
   version "4.0.2"
