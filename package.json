@@ -94,7 +94,7 @@
     "react-dom": "^16.13.1",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
-    "semver": "^6.3.0",
+    "semver": "^7.5.2",
     "tsyringe": "^4.7.0",
     "webcrypto-core": "^1.7.5",
     "winston": "^3.3.3",
