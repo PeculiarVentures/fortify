@@ -12,5 +12,3 @@ type UpdateInfoType = {
   version: string;
   createdAt: number;
 };
-
-type TabType = 'sites' | 'settings' | 'updates' | 'about';

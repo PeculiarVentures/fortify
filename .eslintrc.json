@@ -1,4 +1,4 @@
-{ 
+{
   "extends": [
     "airbnb",
     "airbnb-typescript"
@@ -17,6 +17,7 @@
     "no-bitwise": 0,
     "no-await-in-loop": 0,
     "no-use-before-define": 0,
-    "no-param-reassign": 0
+    "no-param-reassign": 0,
+    "react/function-component-definition": 0
   }
 }

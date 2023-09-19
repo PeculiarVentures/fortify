@@ -6,11 +6,12 @@ import {
   globalShortcut,
 } from 'electron';
 import logger from '../logger';
+import { WindowsName } from '../../shared';
 import * as constants from '../constants';
 import { l10n } from '../l10n';
 import { Assoc } from '../types';
 
-type WindowAppType = 'about' | 'key-pin' | 'message' | 'p11-pin' | 'preferences' | 'index';
+type WindowAppType = WindowsName | 'index';
 
 export interface IBrowserWindow extends ElectronWindow {
   app: WindowAppType;
@@ -59,9 +60,8 @@ export class BrowserWindow {
     });
 
     this.window.loadFile(constants.HTML_PATH, {
-      query: {
-        app: options.app,
-      },
+      hash: `/${options.app}`,
+      query: options.params || {},
     });
 
     this.window.lang = l10n.lang;
@@ -81,7 +81,7 @@ export class BrowserWindow {
     });
 
     // Show page only after `lfinish-load` event and prevent show index page
-    if (this.window.app !== 'index') {
+    if (options.app !== 'index') {
       this.window.webContents.once('did-finish-load', () => {
         this.window.show();
       });

@@ -9,7 +9,7 @@ import {
 } from 'lib-react-components';
 import classnames from 'classnames';
 import { IntlContext } from '../../components/intl';
-import { ISO_LANGS } from '../../conts';
+import { ISO_LANGS } from '../../constants';
 
 const s = require('./styles/settings.sass');
 

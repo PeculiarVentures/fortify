@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ISO_LANGS } from '../../conts';
+import { ISO_LANGS } from '../../constants';
 
 export interface IIntlContext {
   lang: string;
