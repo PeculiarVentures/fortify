@@ -1,9 +1,8 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import WindowProvider from '../../components/window_provider';
 import Container from './container';
 
-class Root extends WindowProvider<{}, {}> {
+export class KeyPin extends WindowProvider<{}, {}> {
   onReject = () => {
     this.params.accept = false;
     this.close();
@@ -25,8 +24,3 @@ class Root extends WindowProvider<{}, {}> {
     );
   }
 }
-
-ReactDOM.render(
-  <Root />,
-  document.getElementById('root'),
-);

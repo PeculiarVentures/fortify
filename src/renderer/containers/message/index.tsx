@@ -1,9 +1,8 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import WindowProvider from '../../components/window_provider';
 import Container from './container';
 
-class Root extends WindowProvider<{}, {}> {
+export class Message extends WindowProvider<{}, {}> {
   onApprove = (showAgain?: boolean) => {
     this.params.result = 1;
     this.close(showAgain);
@@ -30,8 +29,3 @@ class Root extends WindowProvider<{}, {}> {
     );
   }
 }
-
-ReactDOM.render(
-  <Root />,
-  document.getElementById('root'),
-);

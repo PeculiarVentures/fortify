@@ -1,10 +1,6 @@
-import { remote } from 'electron';
 import * as React from 'react';
-import * as winston from 'winston';
 import { IntlProvider } from './intl';
 import DocumentTitle from './document_title';
-
-winston.add(new winston.transports.Console());
 
 export default abstract class WindowProvider<P, S> extends React.Component<P, S> {
   public params: Record<string, any>;
@@ -12,7 +8,8 @@ export default abstract class WindowProvider<P, S> extends React.Component<P, S>
   constructor(props: P) {
     super(props);
 
-    this.params = (remote.getCurrentWindow() as any).params || {};
+    const searchParams = new URLSearchParams(window.location.search);
+    this.params = Object.fromEntries(searchParams);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -23,7 +20,7 @@ export default abstract class WindowProvider<P, S> extends React.Component<P, S>
   close = (...args: any[]) => {
     this.onClose(...args);
 
-    remote.getCurrentWindow().close();
+    window.electronAPI.closeWindow();
   };
 
   abstract renderChildrens(): JSX.Element;

@@ -1,14 +1,10 @@
+/* eslint-disable class-methods-use-this */
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { ipcRenderer, IpcRendererEvent } from 'electron';
-import * as path from 'path';
-import * as fs from 'fs';
+import type { IpcRendererEvent } from 'electron';
 import WindowProvider from '../../components/window_provider';
 import Container from './container';
 
-const PACKAGE_PATH = path.join(__dirname, '../../package.json');
-
-interface IRootState {
+interface IPreferencesState {
   activeTab: TabType;
   keys: {
     list: IKey[];
@@ -23,7 +19,7 @@ interface IRootState {
   };
 }
 
-class Root extends WindowProvider<{}, IRootState> {
+export class Preferences extends WindowProvider<{}, IPreferencesState> {
   version: string;
 
   constructor(props: {}) {
@@ -43,7 +39,7 @@ class Root extends WindowProvider<{}, IRootState> {
       },
     };
 
-    this.version = Root.getVersion();
+    this.version = window.electronAPI.version;
   }
 
   componentWillMount() {
@@ -51,57 +47,50 @@ class Root extends WindowProvider<{}, IRootState> {
      * Keys section.
      */
     this.keysListGet();
-    ipcRenderer.on('ipc-2key-changed', this.keysListGet);
+    window.electronAPI.onIdentitiesChange(this.keysListGet);
 
     /**
      * Logging section.
      */
     this.loggingGet();
-    ipcRenderer.on('ipc-logging-status-changed', this.onLoggingChangedListener);
+    window.electronAPI.onLoggingStatusChange(this.onLoggingChangedListener);
 
     /**
      * Telemetry section.
      */
     this.telemetryGet();
-    ipcRenderer.on('ipc-telemetry-status-changed', this.onTelemetryChangedListener);
+    window.electronAPI.onTelemetryStatusChange(this.onTelemetryChangedListener);
 
     /**
      * Theme section.
      */
     this.themeGet();
-    ipcRenderer.on('ipc-theme-changed', this.onThemeChangedListener);
+    window.electronAPI.onThemeChange(this.onThemeChangedListener);
 
     /**
      * Update section.
      */
-    ipcRenderer.send('ipc-update-check');
-    ipcRenderer.on('ipc-checking-for-update', this.onUpdateChekingListener);
-    ipcRenderer.on('ipc-update-available', this.onUpdateAvailableListener);
-    ipcRenderer.on('ipc-update-not-available', this.onUpdateNotAvailableListener);
-    ipcRenderer.on('ipc-update-error', this.onUpdateErrorListener);
+    window.electronAPI.checkUpdates();
+    window.electronAPI.onUpdateChecking(this.onUpdateChekingListener);
+    window.electronAPI.onUpdateAvailable(this.onUpdateAvailableListener);
+    window.electronAPI.onUpdateNotAvailable(this.onUpdateNotAvailableListener);
+    window.electronAPI.onUpdateError(this.onUpdateErrorListener);
 
     /**
      * Window section.
      */
-    ipcRenderer.on('window-params-changed', this.onWindowParamsChangeListener);
-  }
-
-  static getVersion() {
-    const json = fs.readFileSync(PACKAGE_PATH, { encoding: 'utf8' });
-    const data = JSON.parse(json);
-
-    return data.version;
+    window.electronAPI.onWindowParamsChange(this.onWindowParamsChangeListener);
   }
 
   /**
    * Keys section.
    */
   private handleKeyRemove = (origin: string) => {
-    ipcRenderer.send('ipc-2key-remove', origin);
+    window.electronAPI.removeIdentities(origin);
   };
 
   private keysListGet = () => {
-    const list = ipcRenderer.sendSync('ipc-2key-list-get');
+    const list = window.electronAPI.getIdentities();
 
     this.setState({
       keys: {
@@ -115,7 +104,7 @@ class Root extends WindowProvider<{}, IRootState> {
    * Logging section.
    */
   private loggingGet() {
-    const status = ipcRenderer.sendSync('ipc-logging-status-get');
+    const status = window.electronAPI.getLoggingStatus();
 
     this.setState({
       logging: status,
@@ -123,11 +112,11 @@ class Root extends WindowProvider<{}, IRootState> {
   }
 
   private handleLoggingStatusChange = () => {
-    ipcRenderer.send('ipc-logging-status-change');
+    window.electronAPI.toggleLoggingStatus();
   };
 
   private handleLoggingOpen = () => {
-    ipcRenderer.send('ipc-logging-open');
+    window.electronAPI.openLoggingFile();
   };
 
   private onLoggingChangedListener = (_: IpcRendererEvent, status: boolean) => {
@@ -140,14 +129,14 @@ class Root extends WindowProvider<{}, IRootState> {
    * Language section.
    */
   private handleLanguageChange = (lang: string) => {
-    ipcRenderer.send('ipc-language-set', lang);
+    window.electronAPI.updateLanguage(lang);
   };
 
   /**
    * Telemetry section.
    */
   private telemetryGet() {
-    const status = ipcRenderer.sendSync('ipc-telemetry-status-get');
+    const status = window.electronAPI.getTelemetryStatus();
 
     this.setState({
       telemetry: status,
@@ -161,14 +150,14 @@ class Root extends WindowProvider<{}, IRootState> {
   };
 
   private handleTelemetryStatusChange = () => {
-    ipcRenderer.send('ipc-telemetry-status-change');
+    window.electronAPI.toggleTelemetryStatus();
   };
 
   /**
    * Theme section.
    */
   private themeGet() {
-    const theme = ipcRenderer.sendSync('ipc-theme-get');
+    const theme = window.electronAPI.getTheme();
 
     this.setState({
       theme,
@@ -182,7 +171,7 @@ class Root extends WindowProvider<{}, IRootState> {
   };
 
   private handleThemeChange = (theme: ThemeType) => {
-    ipcRenderer.send('ipc-theme-set', theme);
+    window.electronAPI.updateTheme(theme);
   };
 
   /**
@@ -284,8 +273,3 @@ class Root extends WindowProvider<{}, IRootState> {
     );
   }
 }
-
-ReactDOM.render(
-  <Root />,
-  document.getElementById('root'),
-);

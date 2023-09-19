@@ -1,9 +1,8 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import WindowProvider from '../../components/window_provider';
 import Container from './container';
 
-class Root extends WindowProvider<{}, {}> {
+export class P11Pin extends WindowProvider<{}, {}> {
   onApprove = (password: string) => {
     this.params.pin = password;
     this.close();
@@ -24,8 +23,3 @@ class Root extends WindowProvider<{}, {}> {
     );
   }
 }
-
-ReactDOM.render(
-  <Root />,
-  document.getElementById('root'),
-);
