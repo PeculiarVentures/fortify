@@ -2,6 +2,7 @@ import {
   screen,
   BrowserWindow as ElectronWindow,
 } from 'electron';
+import { WindowPreferencesName, WindowsName } from '../../shared';
 import { BrowserWindow } from './browser_window';
 import { l10n } from '../l10n';
 import { windowSizes } from '../constants';
@@ -55,10 +56,10 @@ class WindowsController {
   destroyDisposableWindows(socketId: string) {
     const arr = [...this.disposableWindowsBySocketId[socketId] || []];
     this.disposableWindowsBySocketId[socketId] = [];
-    arr.forEach(w => w.window.destroy());
+    arr.forEach((w) => w.window.destroy());
   }
 
-  showPreferencesWindow(defaultTab?: ('about' | 'updates' | 'settings')) {
+  showPreferencesWindow(defaultTab?: WindowPreferencesName) {
     return new Promise<void>((resolve) => {
       const params = {
         defaultTab,
@@ -67,11 +68,11 @@ class WindowsController {
       /**
        * Don't create if the window exists.
        */
-      if (this.windows.preferences) {
-        this.windows.preferences.focus();
-        this.windows.preferences.show();
+      if (this.windows[WindowsName.Preferences]) {
+        this.windows[WindowsName.Preferences].focus();
+        this.windows[WindowsName.Preferences].show();
 
-        this.windows.preferences.setParams(params);
+        this.windows[WindowsName.Preferences].setParams(params);
 
         if (this.windows.question) {
           this.windows.question.close();
@@ -82,13 +83,13 @@ class WindowsController {
         return;
       }
 
-      this.windows.preferences = new BrowserWindow({
+      this.windows[WindowsName.Preferences] = new BrowserWindow({
         size: 'default',
-        app: 'preferences',
+        app: WindowsName.Preferences,
         title: '',
         params,
         onClosed: () => {
-          delete this.windows.preferences;
+          delete this.windows[WindowsName.Preferences];
 
           resolve();
         },
@@ -104,7 +105,7 @@ class WindowsController {
           ...params,
         },
         size: 'default',
-        app: 'p11-pin',
+        app: WindowsName.P11Pin,
         windowOptions: {
           alwaysOnTop: true,
         },
@@ -136,7 +137,7 @@ class WindowsController {
           ...params,
         },
         size: 'default',
-        app: 'key-pin',
+        app: WindowsName.KeyPin,
         title: l10n.get('key-pin'),
         windowOptions: {
           modal: true,
@@ -191,7 +192,7 @@ class WindowsController {
           titleKey: 'question',
           ...params,
         },
-        app: 'message',
+        app: WindowsName.Message,
         size: 'small',
         windowOptions: {
           alwaysOnTop: true,
@@ -226,7 +227,7 @@ class WindowsController {
           titleKey: 'error',
           ...params,
         },
-        app: 'message',
+        app: WindowsName.Message,
         size: 'small',
         title: l10n.get('error'),
         windowOptions: {
@@ -267,7 +268,7 @@ class WindowsController {
           titleKey: 'question',
           ...params,
         },
-        app: 'message',
+        app: WindowsName.Message,
         size: 'small',
         windowOptions: {
           alwaysOnTop: true,
@@ -322,7 +323,7 @@ class WindowsController {
           titleKey: params.title || 'warning',
           ...params,
         },
-        app: 'message',
+        app: WindowsName.Message,
         size: 'small',
         windowOptions: {
           alwaysOnTop: true,

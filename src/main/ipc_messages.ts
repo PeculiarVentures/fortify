@@ -5,6 +5,7 @@ import {
   BrowserWindow,
   nativeTheme,
 } from 'electron';
+import { WindowsName } from '../shared';
 import { APP_LOG_FILE } from './constants';
 import { windowsController } from './windows';
 import { l10n } from './l10n';
@@ -43,7 +44,7 @@ const initServerEvents = () => {
           text: l10n.get('question.2key.remove', arg),
           id: 'question.2key.remove',
           result: 0,
-        }, windowsController.windows.preferences.window);
+        }, windowsController.windows[WindowsName.Preferences].window);
 
         if (questionWindowResult.result) {
           logger.info('ipc-messages', 'Removing 2key session key', {

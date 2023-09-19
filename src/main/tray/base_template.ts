@@ -2,6 +2,7 @@ import {
   shell,
   MenuItemConstructorOptions,
 } from 'electron';
+import { WindowPreferencesName } from '../../shared';
 import { TOOLS_LINK } from '../constants';
 import { windowsController } from '../windows';
 import { autoUpdater } from '../updater';
@@ -11,13 +12,13 @@ export const baseTemplate = (): MenuItemConstructorOptions[] => ([
   {
     label: l10n.get('about.app'),
     click: () => {
-      windowsController.showPreferencesWindow('about');
+      windowsController.showPreferencesWindow(WindowPreferencesName.About);
     },
   },
   {
     label: l10n.get('updates.check'),
     click: () => {
-      windowsController.showPreferencesWindow('updates');
+      windowsController.showPreferencesWindow(WindowPreferencesName.Updates);
       autoUpdater.checkForUpdates();
     },
   },
@@ -27,7 +28,7 @@ export const baseTemplate = (): MenuItemConstructorOptions[] => ([
   {
     label: l10n.get('preferences'),
     click: () => {
-      windowsController.showPreferencesWindow('settings');
+      windowsController.showPreferencesWindow(WindowPreferencesName.Settings);
     },
   },
   {
