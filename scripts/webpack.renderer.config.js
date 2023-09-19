@@ -5,10 +5,7 @@ const baseConfig = require('./webpack.base.config');
 module.exports = merge.smart(baseConfig, {
   target: 'electron-renderer',
   entry: {
-    message: path.join(__dirname, '../src/renderer/containers/message/index.tsx'),
-    'key-pin': path.join(__dirname, '../src/renderer/containers/key_pin/index.tsx'),
-    'p11-pin': path.join(__dirname, '../src/renderer/containers/p11_pin/index.tsx'),
-    preferences: path.join(__dirname, '../src/renderer/containers/preferences/index.tsx'),
+    index: path.join(__dirname, '../src/renderer/index.tsx'),
   },
   optimization: {
     splitChunks: {
