@@ -1,15 +1,15 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
+import { WindowPreferencesName } from '../../../shared';
 import WindowProvider from '../../components/window_provider';
 import Container from './container';
 
 const PACKAGE_PATH = path.join(__dirname, '../../package.json');
 
 interface IRootState {
-  activeTab: TabType;
+  activeTab: WindowPreferencesName;
   keys: {
     list: IKey[];
     isFetching: IsFetchingType;
@@ -23,14 +23,14 @@ interface IRootState {
   };
 }
 
-class Root extends WindowProvider<{}, IRootState> {
+export class Preferences extends WindowProvider<{}, IRootState> {
   version: string;
 
   constructor(props: {}) {
     super(props);
 
     this.state = {
-      activeTab: this.params.defaultTab || 'settings',
+      activeTab: this.params.defaultTab || WindowPreferencesName.Settings,
       keys: {
         list: [],
         isFetching: 'pending',
@@ -43,7 +43,7 @@ class Root extends WindowProvider<{}, IRootState> {
       },
     };
 
-    this.version = Root.getVersion();
+    this.version = Preferences.getVersion();
   }
 
   componentWillMount() {
@@ -224,7 +224,7 @@ class Root extends WindowProvider<{}, IRootState> {
   /**
    * UI section.
    */
-  private handleChangeTab = (value: TabType) => {
+  private handleChangeTab = (value: WindowPreferencesName) => {
     this.setState({
       activeTab: value,
     });
@@ -284,8 +284,3 @@ class Root extends WindowProvider<{}, IRootState> {
     );
   }
 }
-
-ReactDOM.render(
-  <Root />,
-  document.getElementById('root'),
-);

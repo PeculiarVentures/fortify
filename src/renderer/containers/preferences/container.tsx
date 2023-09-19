@@ -6,11 +6,12 @@ import {
   SegueHandler,
 } from 'lib-react-components';
 import classnames from 'classnames';
+import { WindowPreferencesName } from '../../../shared';
+import { IntlContext } from '../../components/intl';
 import { Sites } from './sites';
 import { About } from './about';
 import { Settings } from './settings';
 import { Updates } from './updates';
-import { IntlContext } from '../../components/intl';
 
 const s = require('./styles/container.sass');
 
@@ -42,13 +43,13 @@ export interface IContainerProps {
   };
   version: string;
   tab: {
-    value: TabType;
-    onChange: (value: TabType) => void;
+    value: WindowPreferencesName;
+    onChange: (value: WindowPreferencesName) => void;
   };
 }
 
 export interface IContainerState {
-  tab: TabType;
+  tab: WindowPreferencesName;
 }
 
 export default class Container extends React.Component<IContainerProps, IContainerState> {
@@ -57,7 +58,7 @@ export default class Container extends React.Component<IContainerProps, IContain
   handleChangeTab = (_: Event, value: string | number) => {
     const { tab } = this.props;
 
-    tab.onChange(value as TabType);
+    tab.onChange(value as WindowPreferencesName);
   };
 
   // eslint-disable-next-line class-methods-use-this
@@ -101,26 +102,26 @@ export default class Container extends React.Component<IContainerProps, IContain
             colorOn="black"
           >
             <Tab
-              value="sites"
+              value={WindowPreferencesName.Sites}
               className={classnames(s.tab, 'b3')}
             >
               {intl('sites')}
             </Tab>
             <Tab
-              value="settings"
+              value={WindowPreferencesName.Settings}
               className={classnames(s.tab, 'b3')}
             >
               {intl('settings')}
             </Tab>
             <Tab
-              value="updates"
+              value={WindowPreferencesName.Updates}
               className={classnames(s.tab, 'b3')}
             >
               {intl('updates')}
               {update.info ? this.renderNotificationBadge() : null}
             </Tab>
             <Tab
-              value="about"
+              value={WindowPreferencesName.About}
               className={classnames(s.tab, 'b3')}
             >
               {intl('about')}
@@ -130,22 +131,22 @@ export default class Container extends React.Component<IContainerProps, IContain
         <div className={s.content}>
           <SegueHandler value={tab.value}>
             <Sites
-              name="sites"
+              name={WindowPreferencesName.Sites}
               keys={keys}
             />
             <Settings
-              name="settings"
+              name={WindowPreferencesName.Settings}
               language={language}
               logging={logging}
               telemetry={telemetry}
               theme={theme}
             />
             <Updates
-              name="updates"
+              name={WindowPreferencesName.Updates}
               update={update}
             />
             <About
-              name="about"
+              name={WindowPreferencesName.About}
               version={version}
             />
           </SegueHandler>
