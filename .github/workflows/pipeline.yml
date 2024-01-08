@@ -35,12 +35,15 @@ jobs:
     runs-on: macos-11
     needs: [checkout]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '16.x'
+          node-version: 16
+          cache: 'yarn'
           architecture: ${{ matrix.platform }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
       - name: Prepare app repository
         uses: ./.github/actions/prepare-app-repo
       - name: Prepare fortify-setup repository
@@ -62,11 +65,11 @@ jobs:
     runs-on: ubuntu-20.04
     needs: [checkout]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '16.x'
+          node-version: 16
+          cache: 'yarn'
           architecture: ${{ matrix.platform }}
       - name: Install OS dependencies
         run: sudo apt-get install libpcsclite-dev
@@ -92,11 +95,11 @@ jobs:
     env:
       Platform: ${{ matrix.platform }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '14.x'
+          node-version: 16
+          cache: 'yarn'
           architecture: ${{ matrix.platform }}
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v1.1
