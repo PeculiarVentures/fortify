@@ -77,7 +77,7 @@
     "@peculiar/asn1-schema": "^2.1.9",
     "@peculiar/asn1-x509": "^2.1.9",
     "@peculiar/webcrypto": "1.0.22",
-    "@webcrypto-local/cards": "^1.7.9",
+    "@webcrypto-local/cards": "^1.8.1",
     "@webcrypto-local/server": "^1.7.8",
     "asn1js": "^3.0.5",
     "classnames": "^2.2.6",
