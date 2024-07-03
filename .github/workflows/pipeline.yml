@@ -32,7 +32,7 @@ jobs:
 
   macos:
     name: Create macos installer
-    runs-on: macos-11
+    runs-on: macos-12
     needs: [checkout]
     steps:
       - uses: actions/checkout@v4
