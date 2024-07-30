@@ -800,10 +800,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webcrypto-local/cards@^1.10.1", "@webcrypto-local/cards@^1.7.8":
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/@webcrypto-local/cards/-/cards-1.10.1.tgz#2e3fd212d848c6bc45bc4818f4b2c8db240b2c1b"
-  integrity sha512-HefHKphfZu+NUPmDPwYD9J8Z9EzqsFD5CFBpqjN7CftOMDqGynUWafzmW/7MrK7OvlTL/myn5a7ENy+n+jappg==
+"@webcrypto-local/cards@^1.10.2", "@webcrypto-local/cards@^1.7.8":
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/@webcrypto-local/cards/-/cards-1.10.2.tgz#0dede5f89682b800955d80c6b4add10a996c20a1"
+  integrity sha512-nrFMFatEMzv9a14wWUFB0o2Re/J4c2XgIxRzMaxY361DsAzI9S3HjMsgj/PwnuXnrGALbLWjYFIqPBaiOMX7FQ==
   dependencies:
     "@peculiar/json-schema" "^1.1.12"
     tslib "^2.6.3"
