@@ -1,3 +1,10 @@
+> [!CAUTION]
+> **This Repository is no longer maintained** <br />
+> This repository has been archived and is no longer maintained, also we are not going to be updating issues or pull requests on this repository. The application has been moved to a new [fortify-releases](https://github.com/PeculiarVentures/fortify-releases) repository.
+> If you are having a question about Fortify then please contact [support](mailto:support@fortifyapp.com).
+
+---
+
 <p align="center">
   <a href="https://fortifyapp.com/" rel="noopener" target="_blank"><img width="128" src="src/static/icons/tray/png/icon@16x.png" alt="Fortify logo"></a></p>
 </p>
